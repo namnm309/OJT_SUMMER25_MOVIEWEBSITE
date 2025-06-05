@@ -1,0 +1,245 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{51106C1E-2583-4D40-AE26-6A5C17CC478C}|ControllerLayer\\ControllerLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\controllerlayer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{51106C1E-2583-4D40-AE26-6A5C17CC478C}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FF1312E8-6611-4F02-B615-D06D16BD5427}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\infrastructurelayer\\data\\moviecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FF1312E8-6611-4F02-B615-D06D16BD5427}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\data\\moviecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\domainlayer\\entities\\movie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\movie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\domainlayer\\entities\\movieimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\movieimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\domainlayer\\entities\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\domainlayer\\enum\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\enum\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\domainlayer\\enum\\moviestatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\enum\\moviestatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{51106C1E-2583-4D40-AE26-6A5C17CC478C}|ControllerLayer\\ControllerLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\controllerlayer\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{51106C1E-2583-4D40-AE26-6A5C17CC478C}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\domainlayer\\enum\\movieversion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\enum\\movieversion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\domainlayer\\domainlayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{79EB24A5-62DC-4D52-A0F3-52BFDBFDDDC8}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\domainlayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FF1312E8-6611-4F02-B615-D06D16BD5427}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\infrastructurelayer\\infrastructurelayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{FF1312E8-6611-4F02-B615-D06D16BD5427}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\infrastructurelayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FF1312E8-6611-4F02-B615-D06D16BD5427}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\infrastructurelayer\\readme.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{FF1312E8-6611-4F02-B615-D06D16BD5427}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\readme.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C28C6367-4945-4754-8846-B8AA28483CA1}|ApplicationLayer\\ApplicationLayer.csproj|e:\\github\\c-sharp\\ojt_summer25_group2_movie\\applicationlayer\\applicationlayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{C28C6367-4945-4754-8846-B8AA28483CA1}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\applicationlayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\Program.cs",
+              "RelativeDocumentMoniker": "ControllerLayer\\Program.cs",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\Program.cs",
+              "RelativeToolTip": "ControllerLayer\\Program.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-05T02:43:43.15Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UserRole.cs",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\Enum\\UserRole.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Enum\\UserRole.cs",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\Enum\\UserRole.cs",
+              "RelativeToolTip": "DomainLayer\\Enum\\UserRole.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-05T02:42:48.219Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MovieVersion.cs",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\Enum\\MovieVersion.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Enum\\MovieVersion.cs",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\Enum\\MovieVersion.cs",
+              "RelativeToolTip": "DomainLayer\\Enum\\MovieVersion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-05T02:42:43.435Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MovieStatus.cs",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\Enum\\MovieStatus.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Enum\\MovieStatus.cs",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\Enum\\MovieStatus.cs",
+              "RelativeToolTip": "DomainLayer\\Enum\\MovieStatus.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-05T02:42:34.4Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MovieImage.cs",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\Entities\\MovieImage.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\MovieImage.cs",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\Entities\\MovieImage.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\MovieImage.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-05T02:42:08.842Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Users.cs",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\Entities\\Users.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Users.cs",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\Entities\\Users.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\Users.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-05T02:40:48.307Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Movie.cs",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\Entities\\Movie.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Movie.cs",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\Entities\\Movie.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\Movie.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-05T02:40:18.655Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MovieContext.cs",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\Data\\MovieContext.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Data\\MovieContext.cs",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\Data\\MovieContext.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Data\\MovieContext.cs",
+              "ViewState": "AgIAADIAAAAAAAAAAAAmwGUAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-05T02:39:04.611Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "InfrastructureLayer",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\InfrastructureLayer.csproj",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\InfrastructureLayer.csproj",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\InfrastructureLayer.csproj",
+              "RelativeToolTip": "InfrastructureLayer\\InfrastructureLayer.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-06-05T02:34:51.7Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\appsettings.json",
+              "RelativeDocumentMoniker": "ControllerLayer\\appsettings.json",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\appsettings.json",
+              "RelativeToolTip": "ControllerLayer\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-06-05T02:34:11.244Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Readme.txt",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\Readme.txt",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Readme.txt",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\Readme.txt",
+              "RelativeToolTip": "InfrastructureLayer\\Readme.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-06-05T02:37:09.71Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ApplicationLayer",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\ApplicationLayer.csproj",
+              "RelativeDocumentMoniker": "ApplicationLayer\\ApplicationLayer.csproj",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\ApplicationLayer.csproj",
+              "RelativeToolTip": "ApplicationLayer\\ApplicationLayer.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-06-05T02:26:00.427Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "DomainLayer",
+              "DocumentMoniker": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj",
+              "RelativeDocumentMoniker": "DomainLayer\\DomainLayer.csproj",
+              "ToolTip": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj",
+              "RelativeToolTip": "DomainLayer\\DomainLayer.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-06-05T02:25:41.218Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
