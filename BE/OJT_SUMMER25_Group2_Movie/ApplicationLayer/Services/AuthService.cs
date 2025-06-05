@@ -48,6 +48,7 @@ namespace ApplicationLayer.Services
 
             await _userRepo.CreateAsync(user);
 
-            return SuccessResp.Ok("Register successfully.");        }
+            return SuccessResp.Ok("Register successfully.");        
+        }
     }
 }

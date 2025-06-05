@@ -21,7 +21,7 @@ namespace ControllerLayer
             builder.Services.AddDbContext<MovieContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Đăng ký AutoMapper
+            //Đăng ký AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
             // Đăng ký repository generic
