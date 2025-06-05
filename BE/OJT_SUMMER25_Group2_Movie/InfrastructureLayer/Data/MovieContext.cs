@@ -29,7 +29,8 @@ namespace MovieWebApplication.Data
             // Configure User 
             modelBuilder.Entity<Users>(entity =>
             {
-               
+                entity.HasKey(x => x.Id);
+
                 entity.HasIndex(u => u.Username)
                     .IsUnique()
                     .HasDatabaseName("IX_Users_Username");
@@ -79,6 +80,8 @@ namespace MovieWebApplication.Data
             // Configure Movie 
             modelBuilder.Entity<Movie>(entity =>
             {
+                entity.HasKey(x => x.Id);
+
                 entity.Property(m => m.Title)
                     .HasMaxLength(200)
                     .IsRequired();
@@ -107,7 +110,7 @@ namespace MovieWebApplication.Data
             {
                 entity.Property(mi => mi.ImageUrl)
                     .HasMaxLength(500)
-                    .IsRequired();
+                    .IsRequired();  
 
                 entity.Property(mi => mi.Description)
                     .HasMaxLength(200);

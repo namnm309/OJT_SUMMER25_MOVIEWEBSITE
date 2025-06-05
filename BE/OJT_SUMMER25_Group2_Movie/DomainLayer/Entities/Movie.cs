@@ -5,11 +5,8 @@ using DomainLayer.Enum;
 namespace DomainLayer.Entities
 {
     [Table("tbl_movies")]
-    public class Movie
+    public class Movie : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid MovieId { get; set; }
 
         [Required]
         [MaxLength(200)]

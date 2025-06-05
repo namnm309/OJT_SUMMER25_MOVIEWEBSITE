@@ -10,3 +10,20 @@ E:\Github\C-Sharp\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\Ap
 E:\Github\C-Sharp\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\refint\ApplicationLayer.dll
 E:\Github\C-Sharp\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.pdb
 E:\Github\C-Sharp\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\ref\ApplicationLayer.dll
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.csproj.AssemblyReference.cache
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.GeneratedMSBuildEditorConfig.editorconfig
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.AssemblyInfoInputs.cache
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.AssemblyInfo.cs
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.csproj.CoreCompileInputs.cache
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.dll
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\refint\ApplicationLayer.dll
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.pdb
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.deps.json
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.dll
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.pdb
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\bin\Debug\net8.0\DomainLayer.dll
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\bin\Debug\net8.0\InfrastructureLayer.dll
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\bin\Debug\net8.0\DomainLayer.pdb
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\bin\Debug\net8.0\InfrastructureLayer.pdb
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\Applicat.033E422A.Up2Date
+D:\THUC TAP\PROJECT\New folder\ojt_summer25_group2_movie\BE\OJT_SUMMER25_Group2_Movie\ApplicationLayer\obj\Debug\net8.0\ref\ApplicationLayer.dll

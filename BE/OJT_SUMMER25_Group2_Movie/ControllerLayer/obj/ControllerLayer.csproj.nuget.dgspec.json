@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\ControllerLayer.csproj": {}
+    "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\ControllerLayer.csproj": {}
   },
   "projects": {
-    "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\ApplicationLayer.csproj": {
+    "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\ApplicationLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\ApplicationLayer.csproj",
+        "projectUniqueName": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\ApplicationLayer.csproj",
         "projectName": "ApplicationLayer",
-        "projectPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\ApplicationLayer.csproj",
-        "packagesPath": "C:\\Users\\MinhNam\\.nuget\\packages\\",
-        "outputPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\obj\\",
+        "projectPath": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\ApplicationLayer.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\MinhNam\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,13 +26,19 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj": {
+                "projectPath": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj"
+              },
+              "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\InfrastructureLayer.csproj": {
+                "projectPath": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\InfrastructureLayer.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -45,11 +51,17 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[14.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -66,24 +78,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\ControllerLayer.csproj": {
+    "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\ControllerLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\ControllerLayer.csproj",
+        "projectUniqueName": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\ControllerLayer.csproj",
         "projectName": "ControllerLayer",
-        "projectPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\ControllerLayer.csproj",
-        "packagesPath": "C:\\Users\\MinhNam\\.nuget\\packages\\",
-        "outputPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\obj\\",
+        "projectPath": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\ControllerLayer.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\ControllerLayer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\MinhNam\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -92,21 +104,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\ApplicationLayer.csproj": {
-                "projectPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\ApplicationLayer.csproj"
-              },
-              "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj": {
-                "projectPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj"
-              },
-              "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\InfrastructureLayer.csproj": {
-                "projectPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\InfrastructureLayer.csproj"
+              "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\ApplicationLayer.csproj": {
+                "projectPath": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\ApplicationLayer\\ApplicationLayer.csproj"
               }
             }
           }
@@ -121,7 +126,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -157,24 +162,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj": {
+    "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj",
+        "projectUniqueName": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj",
         "projectName": "DomainLayer",
-        "projectPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj",
-        "packagesPath": "C:\\Users\\MinhNam\\.nuget\\packages\\",
-        "outputPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\obj\\",
+        "projectPath": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\MinhNam\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -183,7 +188,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -202,11 +206,23 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "AutoWrapper.Core": {
+              "target": "Package",
+              "version": "[4.5.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -223,24 +239,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\InfrastructureLayer.csproj": {
+    "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\InfrastructureLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\InfrastructureLayer.csproj",
+        "projectUniqueName": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\InfrastructureLayer.csproj",
         "projectName": "InfrastructureLayer",
-        "projectPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\InfrastructureLayer.csproj",
-        "packagesPath": "C:\\Users\\MinhNam\\.nuget\\packages\\",
-        "outputPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\obj\\",
+        "projectPath": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\InfrastructureLayer.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\InfrastructureLayer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\MinhNam\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -249,15 +265,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj": {
-                "projectPath": "E:\\Github\\C-Sharp\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj"
+              "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj": {
+                "projectPath": "D:\\THUC TAP\\PROJECT\\New folder\\ojt_summer25_group2_movie\\BE\\OJT_SUMMER25_Group2_Movie\\DomainLayer\\DomainLayer.csproj"
               }
             }
           }
@@ -272,12 +287,16 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[9.0.5, )"
@@ -287,6 +306,12 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.1, )"
             },
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
@@ -304,9 +329,17 @@
               "target": "Package",
               "version": "[9.0.4, )"
             },
+            "Portable.BouncyCastle": {
+              "target": "Package",
+              "version": "[1.9.0, )"
+            },
             "System.Data.SqlClient": {
               "target": "Package",
               "version": "[4.9.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.5.0, )"
             }
           },
           "imports": [
@@ -325,7 +358,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

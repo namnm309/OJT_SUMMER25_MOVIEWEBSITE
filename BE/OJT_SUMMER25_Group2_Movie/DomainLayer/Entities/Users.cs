@@ -5,12 +5,8 @@ using DomainLayer.Enum;
 namespace DomainLayer.Entities
 {    
     [Table("tbl_users")]
-    public class Users
+    public class Users : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid UserId { get; set; }
-
         // Auth
         [Required]
         [MaxLength(50)]
@@ -43,12 +39,6 @@ namespace DomainLayer.Entities
         // Score
         [Column(TypeName = "double precision")]
         public double Score { get; set; } = 0.0;
-
-        [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        [Required]
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         // Additional Info
         [Column(TypeName = "date")]
