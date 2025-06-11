@@ -1,0 +1,217 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\MovieWebApp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|d:\\moviewebapp\\controllerlayer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D9EF50-B81A-490B-B62B-D4F2C435945A}|UI\\UI.csproj|d:\\moviewebapp\\ui\\models\\editprofileviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{81D9EF50-B81A-490B-B62B-D4F2C435945A}|UI\\UI.csproj|solutionrelative:ui\\models\\editprofileviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D9EF50-B81A-490B-B62B-D4F2C435945A}|UI\\UI.csproj|d:\\moviewebapp\\ui\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{81D9EF50-B81A-490B-B62B-D4F2C435945A}|UI\\UI.csproj|solutionrelative:ui\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D9EF50-B81A-490B-B62B-D4F2C435945A}|UI\\UI.csproj|d:\\moviewebapp\\ui\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{81D9EF50-B81A-490B-B62B-D4F2C435945A}|UI\\UI.csproj|solutionrelative:ui\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|d:\\moviewebapp\\domainlayer\\enum\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\enum\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|d:\\moviewebapp\\controllerlayer\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|d:\\moviewebapp\\infrastructurelayer\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|d:\\moviewebapp\\infrastructurelayer\\data\\moviecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\data\\moviecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|d:\\moviewebapp\\applicationlayer\\applicationlayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\applicationlayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|d:\\moviewebapp\\controllerlayer\\controllerlayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\controllerlayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|d:\\moviewebapp\\infrastructurelayer\\infrastructurelayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\infrastructurelayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|d:\\moviewebapp\\domainlayer\\entities\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EditProfileViewModel.cs",
+              "DocumentMoniker": "D:\\MovieWebApp\\UI\\Models\\EditProfileViewModel.cs",
+              "RelativeDocumentMoniker": "UI\\Models\\EditProfileViewModel.cs",
+              "ToolTip": "D:\\MovieWebApp\\UI\\Models\\EditProfileViewModel.cs",
+              "RelativeToolTip": "UI\\Models\\EditProfileViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T18:18:01.946Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DashboardController.cs",
+              "DocumentMoniker": "D:\\MovieWebApp\\UI\\Controllers\\DashboardController.cs",
+              "RelativeDocumentMoniker": "UI\\Controllers\\DashboardController.cs",
+              "ToolTip": "D:\\MovieWebApp\\UI\\Controllers\\DashboardController.cs",
+              "RelativeToolTip": "UI\\Controllers\\DashboardController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T18:17:59.901Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\MovieWebApp\\UI\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "UI\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\MovieWebApp\\UI\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "UI\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAxwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T18:17:52.053Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\MovieWebApp\\ControllerLayer\\appsettings.json",
+              "RelativeDocumentMoniker": "ControllerLayer\\appsettings.json",
+              "ToolTip": "D:\\MovieWebApp\\ControllerLayer\\appsettings.json",
+              "RelativeToolTip": "ControllerLayer\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-06-10T15:33:57.803Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\MovieWebApp\\ControllerLayer\\Program.cs",
+              "RelativeDocumentMoniker": "ControllerLayer\\Program.cs",
+              "ToolTip": "D:\\MovieWebApp\\ControllerLayer\\Program.cs",
+              "RelativeToolTip": "ControllerLayer\\Program.cs",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAAAFUAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T15:31:19.176Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "README.md",
+              "DocumentMoniker": "D:\\MovieWebApp\\InfrastructureLayer\\README.md",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\README.md",
+              "ToolTip": "D:\\MovieWebApp\\InfrastructureLayer\\README.md",
+              "RelativeToolTip": "InfrastructureLayer\\README.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2025-06-10T15:22:09.054Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "MovieContext.cs",
+              "DocumentMoniker": "D:\\MovieWebApp\\InfrastructureLayer\\Data\\MovieContext.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Data\\MovieContext.cs",
+              "ToolTip": "D:\\MovieWebApp\\InfrastructureLayer\\Data\\MovieContext.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Data\\MovieContext.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAAAB8AAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T15:20:58.195Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UserRole.cs",
+              "DocumentMoniker": "D:\\MovieWebApp\\DomainLayer\\Enum\\UserRole.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Enum\\UserRole.cs",
+              "ToolTip": "D:\\MovieWebApp\\DomainLayer\\Enum\\UserRole.cs",
+              "RelativeToolTip": "DomainLayer\\Enum\\UserRole.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T15:19:29.922Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Users.cs",
+              "DocumentMoniker": "D:\\MovieWebApp\\DomainLayer\\Entities\\Users.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Users.cs",
+              "ToolTip": "D:\\MovieWebApp\\DomainLayer\\Entities\\Users.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\Users.cs",
+              "ViewState": "AgIAADYAAAAAAAAAAAA9wBUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T15:19:02.423Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "InfrastructureLayer.csproj",
+              "DocumentMoniker": "D:\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\InfrastructureLayer.csproj",
+              "ToolTip": "D:\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj",
+              "RelativeToolTip": "InfrastructureLayer\\InfrastructureLayer.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-06-10T15:17:38.044Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ControllerLayer.csproj",
+              "DocumentMoniker": "D:\\MovieWebApp\\ControllerLayer\\ControllerLayer.csproj",
+              "RelativeDocumentMoniker": "ControllerLayer\\ControllerLayer.csproj",
+              "ToolTip": "D:\\MovieWebApp\\ControllerLayer\\ControllerLayer.csproj",
+              "RelativeToolTip": "ControllerLayer\\ControllerLayer.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-06-10T15:16:43.954Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ApplicationLayer.csproj",
+              "DocumentMoniker": "D:\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj",
+              "RelativeDocumentMoniker": "ApplicationLayer\\ApplicationLayer.csproj",
+              "ToolTip": "D:\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj",
+              "RelativeToolTip": "ApplicationLayer\\ApplicationLayer.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-06-10T15:16:36.369Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
