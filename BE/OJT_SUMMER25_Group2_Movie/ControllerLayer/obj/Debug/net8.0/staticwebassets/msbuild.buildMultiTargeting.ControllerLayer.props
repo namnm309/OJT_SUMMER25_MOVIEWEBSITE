@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\ControllerLayer.props" />
-</Project>
