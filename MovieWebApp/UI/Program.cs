@@ -39,6 +39,9 @@ namespace UI
 
             builder.Services.AddAuthorization();
 
+            // Đăng ký ApiService
+            builder.Services.AddScoped<UI.Services.IApiService, UI.Services.ApiService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

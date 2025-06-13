@@ -70,10 +70,22 @@ namespace DomainLayer.Entities
         [MaxLength(500)]
         public string? Avatar { get; set; }
 
+        // === EMPLOYEE FIELDS (for Admin/Staff roles) ===
+        
+        // Position chỉ áp dụng cho Admin/Staff
+        [MaxLength(50)]
+        public string? Position { get; set; }
+        
+        // Salary chỉ áp dụng cho Admin/Staff  
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? Salary { get; set; }
+        
+        // Hire date chỉ áp dụng cho Admin/Staff
+        [Column(TypeName = "date")]
+        public DateTime? HireDate { get; set; }
+
         // Quan hệ với bảng bookings và pointHistories
         public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public virtual ICollection<PointHistory> PointHistories { get; set; } = new List<PointHistory>();
-
-
     }
 }

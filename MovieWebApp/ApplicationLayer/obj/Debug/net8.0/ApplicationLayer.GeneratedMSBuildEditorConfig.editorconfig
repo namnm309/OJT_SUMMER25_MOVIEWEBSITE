@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ApplicationLayer
-build_property.ProjectDir = C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\
+build_property.ProjectDir = D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

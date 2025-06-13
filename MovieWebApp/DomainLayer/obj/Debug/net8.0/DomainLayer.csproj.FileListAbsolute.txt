@@ -20,3 +20,38 @@ C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\obj\Debug\net8.0\D
 C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\obj\Debug\net8.0\refint\DomainLayer.dll
 C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.pdb
 C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\obj\Debug\net8.0\ref\DomainLayer.dll
+E:\Github\C-Sharp\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.deps.json
+E:\Github\C-Sharp\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.dll
+E:\Github\C-Sharp\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.pdb
+E:\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.GeneratedMSBuildEditorConfig.editorconfig
+E:\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfoInputs.cache
+E:\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfo.cs
+E:\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.csproj.CoreCompileInputs.cache
+E:\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.sourcelink.json
+E:\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.dll
+E:\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\refint\DomainLayer.dll
+E:\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.pdb
+E:\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\ref\DomainLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.deps.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfoInputs.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfo.cs
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.csproj.CoreCompileInputs.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.sourcelink.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\refint\DomainLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\DomainLayer\obj\Debug\net8.0\ref\DomainLayer.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.deps.json
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.pdb
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.GeneratedMSBuildEditorConfig.editorconfig
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfoInputs.cache
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfo.cs
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.csproj.CoreCompileInputs.cache
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\refint\DomainLayer.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.pdb
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\ref\DomainLayer.dll

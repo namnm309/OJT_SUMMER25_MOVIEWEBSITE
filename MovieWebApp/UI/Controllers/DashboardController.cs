@@ -2,19 +2,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
+using UI.Services;
 
 namespace UI.Controllers
 {
     [Authorize]
     public class DashboardController : Controller
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _apiBaseUrl;
+        private readonly IApiService _apiService;
 
-        public DashboardController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public DashboardController(IApiService apiService)
         {
-            _httpClient = httpClientFactory.CreateClient("ApiClient");
-            _apiBaseUrl = configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7285";
+            _apiService = apiService;
         }
 
         public IActionResult Index()
@@ -76,18 +75,16 @@ namespace UI.Controllers
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{_apiBaseUrl}/api/user/members");
-                if (response.IsSuccessStatusCode)
+                var result = await _apiService.GetAsync<JsonElement[]>("/api/user/members");
+                
+                if (result.Success && result.Data != null)
                 {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var members = JsonSerializer.Deserialize<JsonElement[]>(responseContent);
-                    
-                    ViewBag.Members = members;
+                    ViewBag.Members = result.Data;
                     return View();
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Failed to load members list.";
+                    TempData["ErrorMessage"] = result.Message;
                 }
             }
             catch (Exception ex)

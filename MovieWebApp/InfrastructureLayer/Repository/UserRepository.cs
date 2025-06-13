@@ -1,69 +1,56 @@
 using DomainLayer.Entities;
+using DomainLayer.Enum;
 using InfrastructureLayer.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfrastructureLayer.Repository
 {
-    public class UserRepository : IUserRepository
+    // UserRepository kế thừa GenericRepository để có sẵn các methods cơ bản
+    // + implement các methods đặc biệt cho Users
+    public class UserRepository : GenericRepository<Users>, IUserRepository
     {
-        private readonly MovieContext _context;
-
-        public UserRepository(MovieContext context)
+        // Constructor gọi constructor của GenericRepository
+        public UserRepository(MovieContext context) : base(context)
         {
-            _context = context;
         }
+
+        // === USER-SPECIFIC METHODS ===
+        // Chỉ implement các methods đặc biệt, các methods cơ bản đã có từ GenericRepository
 
         public async Task<Users?> GetByUsernameAsync(string username)
         {
-            return await _context.Users
+            // Sử dụng _dbSet từ GenericRepository
+            return await _dbSet
                 .FirstOrDefaultAsync(u => u.Username == username && u.IsActive);
         }
 
         public async Task<Users?> GetByEmailAsync(string email)
         {
-            return await _context.Users
+            return await _dbSet
                 .FirstOrDefaultAsync(u => u.Email == email && u.IsActive);
-        }
-
-        public async Task<Users?> GetByIdAsync(Guid userId)
-        {
-            return await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == userId && u.IsActive);
         }
 
         public async Task<List<Users>> GetAllMembersAsync()
         {
-            return await _context.Users
-                .Where(u => u.IsActive)
+            // Chỉ lấy users có role Member và đang active
+            return await _dbSet
+                .Where(u => u.IsActive && u.Role == UserRole.Member)
                 .OrderByDescending(u => u.CreatedAt)
                 .ToListAsync();
         }
 
-        public async Task<Users> CreateAsync(Users user)
-        {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
-
-        public async Task<Users> UpdateAsync(Users user)
-        {
-            user.UpdatedAt = DateTime.UtcNow;
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
-
         public async Task<bool> IsUsernameExistsAsync(string username)
         {
-            return await _context.Users
-                .AnyAsync(u => u.Username == username && u.IsActive);
+            // Sử dụng ExistsAsync từ GenericRepository
+            return await ExistsAsync(u => u.Username == username && u.IsActive);
         }
 
         public async Task<bool> IsEmailExistsAsync(string email)
         {
-            return await _context.Users
-                .AnyAsync(u => u.Email == email && u.IsActive);
+            return await ExistsAsync(u => u.Email == email && u.IsActive);
         }
+
+        // Note: CreateAsync, UpdateAsync, GetByIdAsync đã có sẵn từ GenericRepository!
+        // Không cần implement lại nữa 🎉
     }
 } 

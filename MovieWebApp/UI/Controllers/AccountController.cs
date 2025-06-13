@@ -1,28 +1,33 @@
 using Microsoft.AspNetCore.Mvc;
 using UI.Models;
 using System.Text.Json;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using UI.Services;
 
 namespace UI.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _apiBaseUrl;
+        private readonly IApiService _apiService;
 
-        public AccountController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public AccountController(IApiService apiService)
         {
-            _httpClient = httpClientFactory.CreateClient("ApiClient");
-            _apiBaseUrl = configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7049"; // API URL
+            _apiService = apiService;
         }
 
         [HttpGet]
-        public IActionResult Login(string? returnUrl = null)
+        public async Task<IActionResult> Login(string? returnUrl = null, bool forceLogout = false)
         {
+            // Option để force logout trước khi show login page
+            if (forceLogout && User.Identity?.IsAuthenticated == true)
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return RedirectToAction("Login", new { returnUrl });
+            }
+            
             if (User.Identity?.IsAuthenticated == true)
             {
                 return RedirectToAction("Index", "Dashboard");
@@ -50,41 +55,11 @@ namespace UI.Controllers
                     rememberMe = model.RememberMe
                 };
 
-                var json = JsonSerializer.Serialize(loginData);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var result = await _apiService.PostAsync<JsonElement>("/api/user/login", loginData);
 
-                var response = await _httpClient.PostAsync($"{_apiBaseUrl}/api/user/login", content);
-                var responseContent = await response.Content.ReadAsStringAsync();
-
-                // Debug logging
-                Console.WriteLine($"🔍 API Response Status: {response.StatusCode}");
-                Console.WriteLine($"🔍 API Response Content: {responseContent}");
-
-                if (response.IsSuccessStatusCode)
+                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
-                    var result = JsonSerializer.Deserialize<JsonElement>(responseContent);
-                    
-                    // Check if login was actually successful
-                    if (result.TryGetProperty("success", out var successProp) && !successProp.GetBoolean())
-                    {
-                        var message = result.TryGetProperty("message", out var messageProp) 
-                            ? messageProp.GetString() 
-                            : "Login failed";
-                        ModelState.AddModelError("", message ?? "Login failed");
-                        return View(model);
-                    }
-                    
-                    // Forward cookies từ API response tới UI
-                    if (response.Headers.TryGetValues("Set-Cookie", out var cookies))
-                    {
-                        foreach (var cookie in cookies)
-                        {
-                            Response.Headers.Add("Set-Cookie", cookie);
-                        }
-                    }
-                    
-                    // Parse user data và tạo claims cho UI
-                    var userElement = result.GetProperty("user");
+                    var userElement = result.Data;
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, userElement.GetProperty("userId").ToString()),
@@ -96,8 +71,8 @@ namespace UI.Controllers
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var authProperties = new AuthenticationProperties
                     {
-                        IsPersistent = model.RememberMe,
-                        ExpiresUtc = model.RememberMe ? DateTimeOffset.UtcNow.AddDays(7) : DateTimeOffset.UtcNow.AddHours(2)
+                        IsPersistent = false,  // Disable persistence for debugging
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)  // Short session for testing
                     };
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -112,12 +87,7 @@ namespace UI.Controllers
                 }
                 else
                 {
-                    var errorResult = JsonSerializer.Deserialize<JsonElement>(responseContent);
-                    var message = errorResult.TryGetProperty("message", out var messageProp) 
-                        ? messageProp.GetString() 
-                        : "Login failed";
-                    
-                    ModelState.AddModelError("", message ?? "Login failed");
+                    ModelState.AddModelError("", result.Message);
                 }
             }
             catch (Exception ex)
@@ -164,25 +134,16 @@ namespace UI.Controllers
                     gender = model.Gender
                 };
 
-                var json = JsonSerializer.Serialize(registerData);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var result = await _apiService.PostAsync<JsonElement>("/api/user/register", registerData);
 
-                var response = await _httpClient.PostAsync($"{_apiBaseUrl}/api/user/register", content);
-                var responseContent = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
+                if (result.Success)
                 {
                     TempData["SuccessMessage"] = "Registration successful! Please login to continue.";
                     return RedirectToAction("Login");
                 }
                 else
                 {
-                    var errorResult = JsonSerializer.Deserialize<JsonElement>(responseContent);
-                    var message = errorResult.TryGetProperty("message", out var messageProp) 
-                        ? messageProp.GetString() 
-                        : "Registration failed";
-                    
-                    ModelState.AddModelError("", message ?? "Registration failed");
+                    ModelState.AddModelError("", result.Message);
                 }
             }
             catch (Exception ex)
@@ -200,7 +161,7 @@ namespace UI.Controllers
         {
             try
             {
-                await _httpClient.PostAsync($"{_apiBaseUrl}/api/user/logout", null);
+                await _apiService.PostAsync("/api/user/logout");
             }
             catch
             {
@@ -219,12 +180,11 @@ namespace UI.Controllers
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{_apiBaseUrl}/api/user/profile");
-                if (response.IsSuccessStatusCode)
+                var result = await _apiService.GetAsync<JsonElement>("/api/user/profile");
+                
+                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var userProfile = JsonSerializer.Deserialize<JsonElement>(responseContent);
-
+                    var userProfile = result.Data;
                     var model = new EditProfileViewModel
                     {
                         UserId = Guid.Parse(userProfile.GetProperty("userId").ToString()),
@@ -245,6 +205,10 @@ namespace UI.Controllers
                     };
 
                     return View(model);
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = result.Message;
                 }
             }
             catch (Exception ex)
@@ -281,25 +245,16 @@ namespace UI.Controllers
                     confirmNewPassword = model.ConfirmNewPassword
                 };
 
-                var json = JsonSerializer.Serialize(editData);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var result = await _apiService.PutAsync<JsonElement>("/api/user/profile", editData);
 
-                var response = await _httpClient.PutAsync($"{_apiBaseUrl}/api/user/profile", content);
-                var responseContent = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
+                if (result.Success)
                 {
                     TempData["SuccessMessage"] = "Profile updated successfully!";
                     return RedirectToAction("Profile");
                 }
                 else
                 {
-                    var errorResult = JsonSerializer.Deserialize<JsonElement>(responseContent);
-                    var message = errorResult.TryGetProperty("message", out var messageProp) 
-                        ? messageProp.GetString() 
-                        : "Update failed";
-                    
-                    ModelState.AddModelError("", message ?? "Update failed");
+                    ModelState.AddModelError("", result.Message);
                 }
             }
             catch (Exception ex)

@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DomainLayer.Enum;
 
 namespace DomainLayer.Entities
 {
@@ -20,9 +21,14 @@ namespace DomainLayer.Entities
         [Required]
         public DateTime EndDate { get; set; }
         
+        // Giá trị khuyến mãi (có thể là % hoặc số tiền cố định)
         [Required]
-        [Range(0, 100)]
-        public int DiscountPercent { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal PromotionValue { get; set; }
+        
+        // Loại khuyến mãi: Percentage hoặc FixedAmount
+        [Required]
+        public PromotionType PromotionType { get; set; } = PromotionType.Percentage;
         
         [Required]
         public string Description { get; set; }

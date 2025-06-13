@@ -248,34 +248,102 @@
     to { opacity: 1; }
 }
 
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .hero-section {
+        padding: 30px 50px;
+    }
+    
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .movies-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
-    .hero-title {
-        font-size: 2.5rem;
+    .hero-section {
+        padding: 20px 20px;
+        min-height: 500px;
     }
     
-    .hero-subtitle {
-        font-size: 1.2rem;
+    .nav-content {
+        flex-direction: column;
+        gap: 20px;
     }
     
-    .section-title {
-        font-size: 2rem;
+    .nav-left, .nav-center, .nav-right {
+        width: 100%;
     }
     
-    .btn-hero {
-        padding: 12px 30px;
-        font-size: 1rem;
-        margin: 5px;
-        display: block;
-        margin-bottom: 10px;
+    .nav-links {
+        justify-content: center;
+        flex-wrap: wrap;
     }
     
-    .feature-card {
-        margin-bottom: 2rem;
+    .movie-title {
+        font-size: 28px;
     }
     
-    .stat-number {
-        font-size: 2.5rem;
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-bottom {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .movies-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .featured-banner {
+        padding: 20px;
+    }
+    
+    .banner-ratings {
+        padding: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .movies-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-register, .btn-login {
+        text-align: center;
+    }
+    
+    .movie-controls {
+        justify-content: center;
+    }
+    
+    .pagination-dots {
+        gap: 8px;
     }
 }
 
@@ -284,11 +352,6 @@
     position: absolute;
     opacity: 0.1;
     animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
 }
 
 .floating-1 {

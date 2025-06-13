@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "7NEICYsqpbk=",
+  "dgSpecHash": "BmQV4Lvychc=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\ControllerLayer\\ControllerLayer.csproj",
+  "projectFilePath": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\ControllerLayer\\ControllerLayer.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Ngoc Lan\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\Ngoc Lan\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\Ngoc Lan\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\Ngoc Lan\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\Ngoc Lan\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.5\\microsoft.entityframeworkcore.9.0.5.nupkg.sha512",
     "C:\\Users\\Ngoc Lan\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\9.0.5\\microsoft.entityframeworkcore.abstractions.9.0.5.nupkg.sha512",
     "C:\\Users\\Ngoc Lan\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\9.0.5\\microsoft.entityframeworkcore.analyzers.9.0.5.nupkg.sha512",

@@ -134,3 +134,217 @@ C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ControllerLayer\obj\Debug\net8
 C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.pdb
 C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.genruntimeconfig.cache
 C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ref\ControllerLayer.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\appsettings.Development.json
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\appsettings.json
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.staticwebassets.endpoints.json
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.exe
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.deps.json
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.runtimeconfig.json
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.pdb
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\AutoMapper.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\BCrypt.Net-Next.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Caching.Abstractions.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Configuration.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Binder.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Logging.Configuration.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Logging.Console.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.OpenApi.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Npgsql.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.Data.SqlClient.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.IO.Pipelines.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.Text.Encodings.Web.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.Text.Json.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\win-arm64\native\sni.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\win-x64\native\sni.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\win-x86\native\sni.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\unix\lib\net8.0\System.Data.SqlClient.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Data.SqlClient.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ApplicationLayer.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\DomainLayer.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\InfrastructureLayer.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ApplicationLayer.pdb
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\DomainLayer.pdb
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\InfrastructureLayer.pdb
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.csproj.AssemblyReference.cache
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.GeneratedMSBuildEditorConfig.editorconfig
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.AssemblyInfoInputs.cache
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.AssemblyInfo.cs
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.csproj.CoreCompileInputs.cache
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.MvcApplicationPartsAssemblyInfo.cs
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.MvcApplicationPartsAssemblyInfo.cache
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.sourcelink.json
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\scopedcss\bundle\ControllerLayer.styles.css
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets.build.json
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets.development.json
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\Controll.584DE69A.Up2Date
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\refint\ControllerLayer.dll
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.pdb
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.genruntimeconfig.cache
+E:\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ref\ControllerLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\appsettings.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.exe
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.deps.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.runtimeconfig.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\AutoMapper.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Caching.Abstractions.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Configuration.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Logging.Configuration.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Logging.Console.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.OpenApi.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Npgsql.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.Data.SqlClient.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.IO.Pipelines.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.Text.Encodings.Web.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.Text.Json.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\win-arm64\native\sni.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\win-x64\native\sni.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\win-x86\native\sni.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\unix\lib\net8.0\System.Data.SqlClient.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Data.SqlClient.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ApplicationLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\DomainLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\InfrastructureLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ApplicationLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\DomainLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\bin\Debug\net8.0\InfrastructureLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.csproj.AssemblyReference.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.AssemblyInfoInputs.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.AssemblyInfo.cs
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.csproj.CoreCompileInputs.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.sourcelink.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets\msbuild.ControllerLayer.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets\msbuild.build.ControllerLayer.props
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.ControllerLayer.props
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.ControllerLayer.props
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets.pack.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\scopedcss\bundle\ControllerLayer.styles.css
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\Controll.584DE69A.Up2Date
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\refint\ControllerLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.genruntimeconfig.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\Github\C-Sharp\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ref\ControllerLayer.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\appsettings.Development.json
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\appsettings.json
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.exe
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.deps.json
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.runtimeconfig.json
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ControllerLayer.pdb
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\AutoMapper.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\BCrypt.Net-Next.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Caching.Abstractions.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Configuration.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Binder.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Logging.Configuration.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Logging.Console.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Microsoft.OpenApi.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Npgsql.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.Data.SqlClient.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.IO.Pipelines.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.Text.Encodings.Web.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\System.Text.Json.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\win-arm64\native\sni.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\win-x64\native\sni.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\win-x86\native\sni.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\unix\lib\net8.0\System.Data.SqlClient.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Data.SqlClient.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ApplicationLayer.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\DomainLayer.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\InfrastructureLayer.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\ApplicationLayer.pdb
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\DomainLayer.pdb
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\bin\Debug\net8.0\InfrastructureLayer.pdb
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.csproj.AssemblyReference.cache
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.GeneratedMSBuildEditorConfig.editorconfig
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.AssemblyInfoInputs.cache
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.AssemblyInfo.cs
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.csproj.CoreCompileInputs.cache
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.MvcApplicationPartsAssemblyInfo.cs
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.MvcApplicationPartsAssemblyInfo.cache
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets.build.json
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets.development.json
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets\msbuild.ControllerLayer.Microsoft.AspNetCore.StaticWebAssets.props
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets\msbuild.build.ControllerLayer.props
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.ControllerLayer.props
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.ControllerLayer.props
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\staticwebassets.pack.json
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\scopedcss\bundle\ControllerLayer.styles.css
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\Controll.584DE69A.Up2Date
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\refint\ControllerLayer.dll
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.pdb
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ControllerLayer.genruntimeconfig.cache
+D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ControllerLayer\obj\Debug\net8.0\ref\ControllerLayer.dll

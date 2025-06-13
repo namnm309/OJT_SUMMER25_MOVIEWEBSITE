@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj": {}
+    "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj": {
+    "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj",
+        "projectUniqueName": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj",
         "projectName": "ApplicationLayer",
-        "projectPath": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj",
+        "projectPath": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj",
         "packagesPath": "C:\\Users\\Ngoc Lan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\ApplicationLayer\\obj\\",
+        "outputPath": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\ApplicationLayer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Ngoc Lan\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -29,11 +29,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\DomainLayer\\DomainLayer.csproj": {
-                "projectPath": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\DomainLayer\\DomainLayer.csproj"
+              "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\DomainLayer\\DomainLayer.csproj": {
+                "projectPath": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\DomainLayer\\DomainLayer.csproj"
               },
-              "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj": {
-                "projectPath": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj"
+              "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj": {
+                "projectPath": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj"
               }
             }
           }
@@ -53,6 +53,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
             "BCrypt.Net-Next": {
               "target": "Package",
               "version": "[4.0.3, )"
@@ -78,14 +86,14 @@
         }
       }
     },
-    "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\DomainLayer\\DomainLayer.csproj": {
+    "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\DomainLayer\\DomainLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\DomainLayer\\DomainLayer.csproj",
+        "projectUniqueName": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\DomainLayer\\DomainLayer.csproj",
         "projectName": "DomainLayer",
-        "projectPath": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\DomainLayer\\DomainLayer.csproj",
+        "projectPath": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\DomainLayer\\DomainLayer.csproj",
         "packagesPath": "C:\\Users\\Ngoc Lan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\DomainLayer\\obj\\",
+        "outputPath": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\DomainLayer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Ngoc Lan\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -139,14 +147,14 @@
         }
       }
     },
-    "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj": {
+    "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj",
+        "projectUniqueName": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj",
         "projectName": "InfrastructureLayer",
-        "projectPath": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj",
+        "projectPath": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj",
         "packagesPath": "C:\\Users\\Ngoc Lan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\InfrastructureLayer\\obj\\",
+        "outputPath": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\InfrastructureLayer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Ngoc Lan\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -164,8 +172,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\DomainLayer\\DomainLayer.csproj": {
-                "projectPath": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\DomainLayer\\DomainLayer.csproj"
+              "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\DomainLayer\\DomainLayer.csproj": {
+                "projectPath": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\DomainLayer\\DomainLayer.csproj"
               }
             }
           }

@@ -39,6 +39,12 @@ namespace ControllerLayer
             builder.Services.AddDbContext<MovieContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            // Đăng ký AutoMapper
+            builder.Services.AddAutoMapper(typeof(ApplicationLayer.Mappings.MovieMappingProfile));
+
+            // Đăng ký Generic Repository Pattern
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            
             // Đăng ký Repository và Services
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
@@ -62,21 +68,20 @@ namespace ControllerLayer
 
             var app = builder.Build();
 
-            //Tự động tạo database nếu chưa có và seed dữ liệu
+            //Tự động migrate database và seed dữ liệu
             using (var scope = app.Services.CreateScope())
             {
                 Console.WriteLine("Đang kiểm tra database...");
                 var context = scope.ServiceProvider.GetRequiredService<MovieContext>();
 
-                //Lưu ý nếu sử dụng EnsureCreated thì sẽ ko dùng đc Migrations 
-                //Migrations vẫn sẽ auto tạo đc db và vip hơn nhiều 
+                // Temporary: Use EnsureCreated to bootstrap database
                 if (context.Database.EnsureCreated())
                 {
-                    Console.WriteLine("Database đã được tạo thành công!");
+                    Console.WriteLine("Database created successfully with new schema!");
                 }
                 else
                 {
-                    Console.WriteLine("Database đã tồn tại!");
+                    Console.WriteLine("Database already exists!");
                 }
 
                 // Seed dữ liệu admin mặc định

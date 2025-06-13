@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\UI\\UI.csproj": {}
+    "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\UI\\UI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\UI\\UI.csproj": {
+    "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\UI\\UI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\UI\\UI.csproj",
+        "projectUniqueName": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\UI\\UI.csproj",
         "projectName": "UI",
-        "projectPath": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\UI\\UI.csproj",
+        "projectPath": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\UI\\UI.csproj",
         "packagesPath": "C:\\Users\\Ngoc Lan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Ngoc Lan\\OneDrive\\Máy tính\\MovieWebApp\\UI\\obj\\",
+        "outputPath": "D:\\Gitlab\\ojt_summer25_group2_movie\\MovieWebApp\\UI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Ngoc Lan\\AppData\\Roaming\\NuGet\\NuGet.Config",

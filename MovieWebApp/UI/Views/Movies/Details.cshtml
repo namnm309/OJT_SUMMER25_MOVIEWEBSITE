@@ -1,0 +1,425 @@
+@{
+    ViewData["Title"] = "Chi tiết phim";
+    var movieId = ViewData["MovieId"];
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4 col-md-5 mb-4">
+            <div class="movie-poster-section">
+                <img src="https://via.placeholder.com/400x600?text=Movie+Poster" alt="Movie Poster" class="img-fluid rounded shadow">
+                <div class="action-buttons mt-3">
+                    <a href="@Url.Action("Showtimes", new { id = movieId })" class="btn btn-primary btn-lg w-100 mb-2">
+                        <i class="fas fa-ticket-alt"></i> Đặt vé ngay
+                    </a>
+                    <button class="btn btn-outline-danger w-100 mb-2" onclick="toggleWishlist()">
+                        <i class="fas fa-heart"></i> Thêm vào yêu thích
+                    </button>
+                    <button class="btn btn-outline-primary w-100" onclick="shareMovie()">
+                        <i class="fas fa-share"></i> Chia sẻ
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 col-md-7">
+            <div class="movie-details">
+                <div class="movie-header">
+                    <h1 class="movie-title">Phim Bom Tấn 2024</h1>
+                    <div class="movie-meta">
+                        <span class="rating">
+                            <i class="fas fa-star"></i> 8.5/10
+                        </span>
+                        <span class="duration">
+                            <i class="fas fa-clock"></i> 120 phút
+                        </span>
+                        <span class="release-date">
+                            <i class="fas fa-calendar"></i> 15/03/2024
+                        </span>
+                        <span class="age-rating">
+                            <span class="badge badge-warning">T16</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="movie-info-tabs">
+                    <ul class="nav nav-tabs" id="movieTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                                Tổng quan
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="cast-tab" data-bs-toggle="tab" data-bs-target="#cast" type="button" role="tab">
+                                Diễn viên
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+                                Đánh giá
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="movieTabContent">
+                        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                            <div class="overview-content">
+                                <h4>Cốt truyện</h4>
+                                <p class="plot">
+                                    Một câu chuyện hấp dẫn về cuộc phiêu lưu của những người hùng trong thế giới tương lai.
+                                    Với những pha hành động nghẹt thở và hiệu ứng đặc biệt đỉnh cao, bộ phim hứa hẹn
+                                    mang đến trải nghiệm điện ảnh không thể quên.
+                                </p>
+
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <h5>Thông tin phim</h5>
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td><strong>Đạo diễn:</strong></td>
+                                                <td>Nguyễn Văn A</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Thể loại:</strong></td>
+                                                <td>Hành động, Phiêu lưu</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Quốc gia:</strong></td>
+                                                <td>Việt Nam</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Ngôn ngữ:</strong></td>
+                                                <td>Tiếng Việt</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Trailer</h5>
+                                        <div class="video-container">
+                                            <div class="video-placeholder">
+                                                <i class="fas fa-play-circle"></i>
+                                                <span>Xem trailer</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="cast" role="tabpanel">
+                            <div class="cast-content">
+                                <h4>Diễn viên chính</h4>
+                                <div class="row">
+                                    <div class="col-md-3 col-sm-6 mb-3">
+                                        <div class="cast-card">
+                                            <img src="https://via.placeholder.com/150x200?text=Actor+1" alt="Actor" class="img-fluid rounded">
+                                            <h6 class="mt-2 mb-1">Trần Văn B</h6>
+                                            <small class="text-muted">Nhân vật chính</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-3">
+                                        <div class="cast-card">
+                                            <img src="https://via.placeholder.com/150x200?text=Actor+2" alt="Actor" class="img-fluid rounded">
+                                            <h6 class="mt-2 mb-1">Lê Thị C</h6>
+                                            <small class="text-muted">Nữ chính</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-3">
+                                        <div class="cast-card">
+                                            <img src="https://via.placeholder.com/150x200?text=Actor+3" alt="Actor" class="img-fluid rounded">
+                                            <h6 class="mt-2 mb-1">Phạm Văn D</h6>
+                                            <small class="text-muted">Phản diện</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-3">
+                                        <div class="cast-card">
+                                            <img src="https://via.placeholder.com/150x200?text=Actor+4" alt="Actor" class="img-fluid rounded">
+                                            <h6 class="mt-2 mb-1">Hoàng Thị E</h6>
+                                            <small class="text-muted">Vai phụ</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="reviews" role="tabpanel">
+                            <div class="reviews-content">
+                                <div class="reviews-summary">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="rating-overview text-center">
+                                                <h2 class="rating-score">8.5</h2>
+                                                <div class="stars">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                </div>
+                                                <p>Dựa trên 1,234 đánh giá</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="rating-breakdown">
+                                                <div class="rating-bar">
+                                                    <span>5★</span>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: 60%"></div>
+                                                    </div>
+                                                    <span>60%</span>
+                                                </div>
+                                                <div class="rating-bar">
+                                                    <span>4★</span>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: 25%"></div>
+                                                    </div>
+                                                    <span>25%</span>
+                                                </div>
+                                                <div class="rating-bar">
+                                                    <span>3★</span>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: 10%"></div>
+                                                    </div>
+                                                    <span>10%</span>
+                                                </div>
+                                                <div class="rating-bar">
+                                                    <span>2★</span>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: 3%"></div>
+                                                    </div>
+                                                    <span>3%</span>
+                                                </div>
+                                                <div class="rating-bar">
+                                                    <span>1★</span>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style="width: 2%"></div>
+                                                    </div>
+                                                    <span>2%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="user-reviews mt-4">
+                                    <h5>Đánh giá của khán giả</h5>
+                                    <div class="review-item">
+                                        <div class="reviewer-info">
+                                            <strong>Minh Hoàng</strong>
+                                            <div class="review-rating">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                            <small class="text-muted">2 ngày trước</small>
+                                        </div>
+                                        <p class="review-text">
+                                            Bộ phim rất hay, kịch tính và có nhiều pha hành động đẹp mắt.
+                                            Diễn xuất của các diễn viên rất tự nhiên và cuốn hút.
+                                        </p>
+                                    </div>
+
+                                    <div class="review-item">
+                                        <div class="reviewer-info">
+                                            <strong>Thu Hương</strong>
+                                            <div class="review-rating">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="far fa-star"></i>
+                                            </div>
+                                            <small class="text-muted">5 ngày trước</small>
+                                        </div>
+                                        <p class="review-text">
+                                            Câu chuyện hấp dẫn, hiệu ứng đẹp. Tuy nhiên có một số phần hơi dài dòng.
+                                            Nhìn chung vẫn là một bộ phim đáng xem.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .movie-poster-section img {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .action-buttons .btn {
+            border-radius: 8px;
+        }
+
+        .movie-header {
+            margin-bottom: 2rem;
+        }
+
+        .movie-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .movie-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .movie-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+        }
+
+        .rating {
+            color: #ffa500 !important;
+            font-weight: 600;
+        }
+
+        .badge-warning {
+            background-color: #ffc107;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #dc3545;
+            border-bottom: 2px solid #dc3545;
+            background: none;
+        }
+
+        .tab-content {
+            padding: 2rem 0;
+        }
+
+        .cast-card {
+            text-align: center;
+        }
+
+        .cast-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .video-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            border: 2px dashed #dee2e6;
+        }
+
+        .video-placeholder i {
+            font-size: 3rem;
+            color: #dc3545;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .rating-overview .rating-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ffa500;
+            margin-bottom: 0.5rem;
+        }
+
+        .rating-overview .stars {
+            color: #ffa500;
+            margin-bottom: 0.5rem;
+        }
+
+        .rating-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .rating-bar span:first-child {
+            width: 30px;
+            text-align: right;
+        }
+
+        .rating-bar .progress {
+            flex: 1;
+            height: 8px;
+        }
+
+        .rating-bar span:last-child {
+            width: 40px;
+            text-align: left;
+        }
+
+        .review-item {
+            border-bottom: 1px solid #eee;
+            padding: 1rem 0;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-rating {
+            color: #ffa500;
+        }
+
+        @@media (max-width: 768px) {
+            .movie-title {
+                font-size: 2rem;
+            }
+
+            .movie-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function toggleWishlist() {
+            alert("Đã thêm vào danh sách yêu thích!");
+        }
+
+        function shareMovie() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Phim Bom Tấn 2024',
+                    text: 'Xem phim hay tại rạp!',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('Đã sao chép link phim!');
+                });
+            }
+        }
+    </script>
+}
