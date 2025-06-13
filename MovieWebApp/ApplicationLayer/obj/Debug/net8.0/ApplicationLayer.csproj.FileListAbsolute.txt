@@ -85,3 +85,20 @@ D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.
 D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\refint\ApplicationLayer.dll
 D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.pdb
 D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ref\ApplicationLayer.dll
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.deps.json
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.dll
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.pdb
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\DomainLayer.dll
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\InfrastructureLayer.dll
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\DomainLayer.pdb
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\InfrastructureLayer.pdb
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.csproj.AssemblyReference.cache
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.GeneratedMSBuildEditorConfig.editorconfig
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.AssemblyInfoInputs.cache
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.AssemblyInfo.cs
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.csproj.CoreCompileInputs.cache
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\Applicat.033E422A.Up2Date
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.dll
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\refint\ApplicationLayer.dll
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.pdb
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ref\ApplicationLayer.dll

@@ -442,12 +442,18 @@
           "InfrastructureLayer": "1.0.0"
         },
         "runtime": {
-          "ApplicationLayer.dll": {}
+          "ApplicationLayer.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "DomainLayer/1.0.0": {
         "runtime": {
-          "DomainLayer.dll": {}
+          "DomainLayer.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "InfrastructureLayer/1.0.0": {
@@ -463,7 +469,10 @@
           "System.Data.SqlClient": "4.9.0"
         },
         "runtime": {
-          "InfrastructureLayer.dll": {}
+          "InfrastructureLayer.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

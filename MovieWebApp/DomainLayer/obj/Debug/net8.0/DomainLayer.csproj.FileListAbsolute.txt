@@ -55,3 +55,14 @@ D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\Dom
 D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\refint\DomainLayer.dll
 D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.pdb
 D:\Gitlab\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\ref\DomainLayer.dll
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.deps.json
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.dll
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.pdb
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.GeneratedMSBuildEditorConfig.editorconfig
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfoInputs.cache
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfo.cs
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.csproj.CoreCompileInputs.cache
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.dll
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\refint\DomainLayer.dll
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.pdb
+E:\ki-5\C shape core\OJT_MOVEI\ojt_summer25_group2_movie\MovieWebApp\DomainLayer\obj\Debug\net8.0\ref\DomainLayer.dll

@@ -796,7 +796,10 @@
       "System.Threading.Channels/7.0.0": {},
       "DomainLayer/1.0.0": {
         "runtime": {
-          "DomainLayer.dll": {}
+          "DomainLayer.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }
