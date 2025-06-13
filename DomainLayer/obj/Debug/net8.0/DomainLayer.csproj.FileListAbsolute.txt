@@ -1,0 +1,33 @@
+D:\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.deps.json
+D:\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.dll
+D:\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.pdb
+D:\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.GeneratedMSBuildEditorConfig.editorconfig
+D:\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfoInputs.cache
+D:\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfo.cs
+D:\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.csproj.CoreCompileInputs.cache
+D:\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.dll
+D:\MovieWebApp\DomainLayer\obj\Debug\net8.0\refint\DomainLayer.dll
+D:\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.pdb
+D:\MovieWebApp\DomainLayer\obj\Debug\net8.0\ref\DomainLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.deps.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\bin\Debug\net8.0\DomainLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfoInputs.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfo.cs
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.csproj.CoreCompileInputs.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\obj\Debug\net8.0\refint\DomainLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\obj\Debug\net8.0\DomainLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\DomainLayer\obj\Debug\net8.0\ref\DomainLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\DomainLayer\bin\Debug\net8.0\DomainLayer.deps.json
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\DomainLayer\bin\Debug\net8.0\DomainLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\DomainLayer\bin\Debug\net8.0\DomainLayer.pdb
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\DomainLayer\obj\Debug\net8.0\DomainLayer.GeneratedMSBuildEditorConfig.editorconfig
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfoInputs.cache
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfo.cs
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\DomainLayer\obj\Debug\net8.0\DomainLayer.csproj.CoreCompileInputs.cache
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\DomainLayer\obj\Debug\net8.0\DomainLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\DomainLayer\obj\Debug\net8.0\refint\DomainLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\DomainLayer\obj\Debug\net8.0\DomainLayer.pdb
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\DomainLayer\obj\Debug\net8.0\ref\DomainLayer.dll

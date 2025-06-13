@@ -1,0 +1,51 @@
+D:\MovieWebApp\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.deps.json
+D:\MovieWebApp\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.runtimeconfig.json
+D:\MovieWebApp\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.dll
+D:\MovieWebApp\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.pdb
+D:\MovieWebApp\InfrastructureLayer\bin\Debug\net8.0\DomainLayer.dll
+D:\MovieWebApp\InfrastructureLayer\bin\Debug\net8.0\DomainLayer.pdb
+D:\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.csproj.AssemblyReference.cache
+D:\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.GeneratedMSBuildEditorConfig.editorconfig
+D:\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.AssemblyInfoInputs.cache
+D:\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.AssemblyInfo.cs
+D:\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.csproj.CoreCompileInputs.cache
+D:\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\Infrastr.B5BC0072.Up2Date
+D:\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.dll
+D:\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\refint\InfrastructureLayer.dll
+D:\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.pdb
+D:\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.genruntimeconfig.cache
+D:\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\ref\InfrastructureLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.deps.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.runtimeconfig.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\bin\Debug\net8.0\DomainLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\bin\Debug\net8.0\DomainLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.csproj.AssemblyReference.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.AssemblyInfoInputs.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.AssemblyInfo.cs
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.csproj.CoreCompileInputs.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\Infrastr.B5BC0072.Up2Date
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\refint\InfrastructureLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.genruntimeconfig.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\InfrastructureLayer\obj\Debug\net8.0\ref\InfrastructureLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.deps.json
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.runtimeconfig.json
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\bin\Debug\net8.0\InfrastructureLayer.pdb
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\bin\Debug\net8.0\DomainLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\bin\Debug\net8.0\DomainLayer.pdb
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.csproj.AssemblyReference.cache
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.GeneratedMSBuildEditorConfig.editorconfig
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.AssemblyInfoInputs.cache
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.AssemblyInfo.cs
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.csproj.CoreCompileInputs.cache
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\obj\Debug\net8.0\Infrastr.B5BC0072.Up2Date
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\obj\Debug\net8.0\refint\InfrastructureLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.pdb
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\obj\Debug\net8.0\InfrastructureLayer.genruntimeconfig.cache
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\InfrastructureLayer\obj\Debug\net8.0\ref\InfrastructureLayer.dll

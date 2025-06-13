@@ -1,0 +1,51 @@
+D:\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.deps.json
+D:\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.dll
+D:\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.pdb
+D:\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\DomainLayer.dll
+D:\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\InfrastructureLayer.dll
+D:\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\DomainLayer.pdb
+D:\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\InfrastructureLayer.pdb
+D:\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.csproj.AssemblyReference.cache
+D:\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.GeneratedMSBuildEditorConfig.editorconfig
+D:\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.AssemblyInfoInputs.cache
+D:\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.AssemblyInfo.cs
+D:\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.csproj.CoreCompileInputs.cache
+D:\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\Applicat.033E422A.Up2Date
+D:\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.dll
+D:\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\refint\ApplicationLayer.dll
+D:\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.pdb
+D:\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ref\ApplicationLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.deps.json
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\DomainLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\InfrastructureLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\DomainLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\bin\Debug\net8.0\InfrastructureLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.csproj.AssemblyReference.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.AssemblyInfoInputs.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.AssemblyInfo.cs
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.csproj.CoreCompileInputs.cache
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\Applicat.033E422A.Up2Date
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\refint\ApplicationLayer.dll
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.pdb
+C:\Users\Ngoc Lan\OneDrive\Máy tính\MovieWebApp\ApplicationLayer\obj\Debug\net8.0\ref\ApplicationLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.deps.json
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\bin\Debug\net8.0\ApplicationLayer.pdb
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\bin\Debug\net8.0\DomainLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\bin\Debug\net8.0\InfrastructureLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\bin\Debug\net8.0\DomainLayer.pdb
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\bin\Debug\net8.0\InfrastructureLayer.pdb
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.csproj.AssemblyReference.cache
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.GeneratedMSBuildEditorConfig.editorconfig
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.AssemblyInfoInputs.cache
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.AssemblyInfo.cs
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.csproj.CoreCompileInputs.cache
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\obj\Debug\net8.0\Applicat.033E422A.Up2Date
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\obj\Debug\net8.0\refint\ApplicationLayer.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\obj\Debug\net8.0\ApplicationLayer.pdb
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\ApplicationLayer\obj\Debug\net8.0\ref\ApplicationLayer.dll
