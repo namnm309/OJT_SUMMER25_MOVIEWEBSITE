@@ -1,0 +1,6 @@
+{
+  "command": "dotnet run ",
+  "serverUrl": "http://localhost:5073",
+  "authenticateProxy": false,
+  "commitMode": "commits"
+}
