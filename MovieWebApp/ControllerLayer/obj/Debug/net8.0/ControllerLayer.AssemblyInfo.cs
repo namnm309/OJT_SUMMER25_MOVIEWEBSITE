@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ControllerLayer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bd80597fa04cf17c7391bbde0e91fc5f21eb5081")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+df4ffc1336a995fd3427bd627005eabf47d7b58f")]
 [assembly: System.Reflection.AssemblyProductAttribute("ControllerLayer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ControllerLayer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

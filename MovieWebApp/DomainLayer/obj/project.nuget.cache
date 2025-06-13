@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FR71td+N8Is=",
+  "dgSpecHash": "SYPXUz9Yi44=",
   "success": true,
-  "projectFilePath": "D:\\THUC TAP\\PROJECT\\Complete\\ojt_summer25_group2_movie\\MovieWebApp\\DomainLayer\\DomainLayer.csproj",
+  "projectFilePath": "D:\\THUC TAP\\PROJECT\\Project\\ojt_summer25_group2_movie\\MovieWebApp\\DomainLayer\\DomainLayer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\autowrapper.core\\4.5.1\\autowrapper.core.4.5.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

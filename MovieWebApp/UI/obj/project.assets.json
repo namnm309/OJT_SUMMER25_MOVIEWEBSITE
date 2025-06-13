@@ -5660,11 +5660,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\THUC TAP\\PROJECT\\Complete\\ojt_summer25_group2_movie\\MovieWebApp\\UI\\UI.csproj",
+      "projectUniqueName": "D:\\THUC TAP\\PROJECT\\Project\\ojt_summer25_group2_movie\\MovieWebApp\\UI\\UI.csproj",
       "projectName": "UI",
-      "projectPath": "D:\\THUC TAP\\PROJECT\\Complete\\ojt_summer25_group2_movie\\MovieWebApp\\UI\\UI.csproj",
+      "projectPath": "D:\\THUC TAP\\PROJECT\\Project\\ojt_summer25_group2_movie\\MovieWebApp\\UI\\UI.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "D:\\THUC TAP\\PROJECT\\Complete\\ojt_summer25_group2_movie\\MovieWebApp\\UI\\obj\\",
+      "outputPath": "D:\\THUC TAP\\PROJECT\\Project\\ojt_summer25_group2_movie\\MovieWebApp\\UI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

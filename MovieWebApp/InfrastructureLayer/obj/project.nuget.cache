@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ilaxQa73338=",
+  "dgSpecHash": "ks9HqVw0FZU=",
   "success": true,
-  "projectFilePath": "D:\\THUC TAP\\PROJECT\\Complete\\ojt_summer25_group2_movie\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj",
+  "projectFilePath": "D:\\THUC TAP\\PROJECT\\Project\\ojt_summer25_group2_movie\\MovieWebApp\\InfrastructureLayer\\InfrastructureLayer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\autowrapper.core\\4.5.1\\autowrapper.core.4.5.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
