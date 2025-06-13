@@ -2173,11 +2173,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\THUC TAP\\PROJECT\\Project\\ojt_summer25_group2_movie\\MovieWebApp\\ControllerLayer\\ControllerLayer.csproj",
+      "projectUniqueName": "D:\\THUC TAP\\PROJECT\\Complete\\ojt_summer25_group2_movie\\MovieWebApp\\ControllerLayer\\ControllerLayer.csproj",
       "projectName": "ControllerLayer",
-      "projectPath": "D:\\THUC TAP\\PROJECT\\Project\\ojt_summer25_group2_movie\\MovieWebApp\\ControllerLayer\\ControllerLayer.csproj",
+      "projectPath": "D:\\THUC TAP\\PROJECT\\Complete\\ojt_summer25_group2_movie\\MovieWebApp\\ControllerLayer\\ControllerLayer.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "D:\\THUC TAP\\PROJECT\\Project\\ojt_summer25_group2_movie\\MovieWebApp\\ControllerLayer\\obj\\",
+      "outputPath": "D:\\THUC TAP\\PROJECT\\Complete\\ojt_summer25_group2_movie\\MovieWebApp\\ControllerLayer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2198,8 +2198,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\THUC TAP\\PROJECT\\Project\\ojt_summer25_group2_movie\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj": {
-              "projectPath": "D:\\THUC TAP\\PROJECT\\Project\\ojt_summer25_group2_movie\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj"
+            "D:\\THUC TAP\\PROJECT\\Complete\\ojt_summer25_group2_movie\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj": {
+              "projectPath": "D:\\THUC TAP\\PROJECT\\Complete\\ojt_summer25_group2_movie\\MovieWebApp\\ApplicationLayer\\ApplicationLayer.csproj"
             }
           }
         }

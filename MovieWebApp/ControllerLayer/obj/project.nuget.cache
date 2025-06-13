@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "f+DpP5A7kV8=",
+  "dgSpecHash": "K/FSJ0Texag=",
   "success": true,
-  "projectFilePath": "D:\\THUC TAP\\PROJECT\\Project\\ojt_summer25_group2_movie\\MovieWebApp\\ControllerLayer\\ControllerLayer.csproj",
+  "projectFilePath": "D:\\THUC TAP\\PROJECT\\Complete\\ojt_summer25_group2_movie\\MovieWebApp\\ControllerLayer\\ControllerLayer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\automapper\\14.0.0\\automapper.14.0.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\autowrapper.core\\4.5.1\\autowrapper.core.4.5.1.nupkg.sha512",
