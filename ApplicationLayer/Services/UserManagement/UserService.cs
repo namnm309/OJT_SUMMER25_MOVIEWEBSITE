@@ -64,7 +64,7 @@ namespace ApplicationLayer.Services.UserManagement
                 var user = _mapper.Map<Users>(registerRequest);
                 
                 // Set những field đặc biệt (không map tự động)
-                user.UserId = Guid.NewGuid();
+                user.Id = Guid.NewGuid();
                 user.Password = HashPassword(registerRequest.Password); // Hash password
 
                 await _userRepository.CreateAsync(user);

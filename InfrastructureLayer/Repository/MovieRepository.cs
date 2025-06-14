@@ -15,13 +15,13 @@ namespace InfrastructureLayer.Repository
         // retrieve all movies from the database
         public async Task<List<Movie>> GetAllMoviesAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await dbSet.ToListAsync();
         }
 
         // retrieve a movie by its ID
         public async Task<Movie?> GetMovieByIdAsync(Guid id)
         {
-            return await _dbSet.FindAsync(id);
+            return await dbSet.FindAsync(id);
         }
     }
 }

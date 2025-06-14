@@ -1,4 +1,6 @@
 ﻿using ApplicationLayer.DTO.MovieManagement;
+using DomainLayer.Enum;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +13,10 @@ namespace ApplicationLayer.Services.MovieManagement
     {
         Task<List<MovieListDto>> GetAllAsync();
         Task<MovieListDto?> GetByIdAsync(Guid movieId);
+        Task<IActionResult> CreateMovie(MovieCreateDto Dto);
+        Task<IActionResult> ViewMovie();
+        Task<IActionResult> UpdateMovie(MovieUpdateDto Dto);
+        Task<IActionResult> DeleteMovie(Guid Id);
+        Task<IActionResult> ChangeStatus(Guid Id, MovieStatus status);
     }
 }

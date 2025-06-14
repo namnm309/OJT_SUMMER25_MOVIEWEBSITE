@@ -13,7 +13,7 @@ namespace ApplicationLayer.Mappings
             
             // Map từ Users entity sang UserResponseDto
             CreateMap<Users, UserResponseDto>()
-                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
@@ -30,7 +30,7 @@ namespace ApplicationLayer.Mappings
 
             // Map từ RegisterRequestDto sang Users entity
             CreateMap<RegisterRequestDto, Users>()
-                .ForMember(dest => dest.UserId, opt => opt.Ignore()) // Auto-generated
+                .ForMember(dest => dest.Id, opt => opt.Ignore()) // Auto-generated
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
                 .ForMember(dest => dest.Password, opt => opt.Ignore()) // Sẽ hash riêng
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
@@ -58,7 +58,7 @@ namespace ApplicationLayer.Mappings
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Avatar))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
                 // Ignore các field không được update
-                .ForMember(dest => dest.UserId, opt => opt.Ignore())
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Username, opt => opt.Ignore())
                 .ForMember(dest => dest.Password, opt => opt.Ignore())
                 .ForMember(dest => dest.Role, opt => opt.Ignore())

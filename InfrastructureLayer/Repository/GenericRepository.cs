@@ -104,7 +104,7 @@ namespace InfrastructureLayer.Repository
             return await query.AsNoTracking().FirstOrDefaultAsync(predicate);
         }
 
-        public virtual async Task<T> FoundOrThrowAsync(Guid id, string message = "not exist", params string[] navigationProperties)
+        public virtual async Task<T> FoundOrThrowAsync(Guid id, string? message = "not exist", params string[] navigationProperties)
         {
             var query = ApplyNavigation(navigationProperties);
             T entity = await query.AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
@@ -193,7 +193,7 @@ namespace InfrastructureLayer.Repository
             return await query.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate = null, params string[] navigationProperties)
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>>? predicate = null, params string[] navigationProperties)
         {
             IQueryable<T> query = _context.Set<T>();
 

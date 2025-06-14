@@ -13,15 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApplicationLayer.Services.MovieManagement
 {
-    public interface IMovieService
-    {
-        Task<IActionResult> CreateMovie(MovieCreateDto Dto);
-        Task<IActionResult> ViewMovie();
-        Task<IActionResult> UpdateMovie(MovieUpdateDto Dto);
-        Task<IActionResult> DeleteMovie(Guid Id);
-        Task<IActionResult> ChangeStatus(Guid Id, MovieStatus status);
-    }
-
     public class MovieService : IMovieService
     {
         private readonly IGenericRepository<Movie> _movieRepo;
@@ -31,13 +22,26 @@ namespace ApplicationLayer.Services.MovieManagement
         private readonly IGenericRepository<ShowTime> _showtimeRepo;
         private readonly IGenericRepository<CinemaRoom> _roomRepo;
 
-        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IMapper mapper)
+        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IMapper mapper)
         {
             _movieRepo = movieRepo;
             _mapper = mapper;
             _genreRepo = genreRepo;
             _imageRepo = imageRepo;
             _showtimeRepo = showtimeRepo;
+            _roomRepo = roomRepo;
+        }
+
+        public async Task<List<MovieListDto>> GetAllAsync()
+        {
+            var movies = await _movieRepo.ListAsync();
+            return _mapper.Map<List<MovieListDto>>(movies);
+        }
+
+        public async Task<MovieListDto?> GetByIdAsync(Guid movieId)
+        {
+            var movie = await _movieRepo.FindByIdAsync(movieId);
+            return movie == null ? null : _mapper.Map<MovieListDto>(movie);
         }
 
         public async Task<IActionResult> CreateMovie(MovieCreateDto Dto)

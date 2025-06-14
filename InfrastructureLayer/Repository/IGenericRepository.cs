@@ -14,7 +14,7 @@ namespace InfrastructureLayer.Repository
         Task CreateRangeAsync(IEnumerable<T> entities);
         Task<List<T>> ListAsync(params string[] navigationProperties);
         Task<T> FindByIdAsync(Guid id, params string[] navigationProperties);
-        Task<T> FoundOrThrowAsync(Guid id, string message = Constants.Errors.NOT_EXIST_ERROR, params string[] navigationProperties);
+        Task<T> FoundOrThrowAsync(Guid id, string? message = Constants.Errors.NOT_EXIST_ERROR, params string[] navigationProperties);
         Task<List<T>> WhereAsync(Expression<Func<T, bool>> predicate, params string[] navigationProperties);
         Task<T> UpdateAsync(T updated);
         Task<T> DeleteAsync(Guid id);
@@ -32,7 +32,7 @@ namespace InfrastructureLayer.Repository
         params string[] navigationProperties);
         Task<int> CountAsync(Expression<Func<T, bool>>? filter = null);
         Task<T> FindAsync(Expression<Func<T, bool>> predicate, params string[] navigationProperties);
-        Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate = null, params string[] navigationProperties);
+        Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>>? predicate = null, params string[] navigationProperties);
         Task<T> CreateWithoutCreatedAtAsync(T entity);
 
     }

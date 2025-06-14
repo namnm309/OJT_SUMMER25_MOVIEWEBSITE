@@ -8,11 +8,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-<<<<<<<< HEAD:UI/Properties/launchSettings.json
-      "applicationUrl": "http://localhost:5073"
-========
       "applicationUrl": "http://localhost:5274"
->>>>>>>> origin/PhatNTH:ControllerLayer/Properties/launchSettings.json
     },
     "https": {
       "commandName": "Project",
@@ -22,11 +18,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-<<<<<<<< HEAD:UI/Properties/launchSettings.json
-      "applicationUrl": "https://localhost:7069;http://localhost:5073"
-========
       "applicationUrl": "https://localhost:7049;http://localhost:5274"
->>>>>>>> origin/PhatNTH:ControllerLayer/Properties/launchSettings.json
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -53,13 +45,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-<<<<<<<< HEAD:UI/Properties/launchSettings.json
-      "applicationUrl": "http://localhost:29387",
-      "sslPort": 44355
-========
-      "applicationUrl": "http://localhost:50586",
-      "sslPort": 44335
->>>>>>>> origin/PhatNTH:ControllerLayer/Properties/launchSettings.json
+      "applicationUrl": "http://localhost:51455/",
+      "sslPort": 44338
     }
   }
 }
