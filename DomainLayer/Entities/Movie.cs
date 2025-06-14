@@ -5,31 +5,23 @@ using DomainLayer.Enum;
 namespace DomainLayer.Entities
 {
     [Table("tbl_movies")]
-    public class Movie
+    public class Movie : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid MovieId { get; set; }
-
-        
         [Required]
         [MaxLength(200)]
         public string Title { get; set; } = string.Empty;
 
-        [Column(TypeName = "date")]
+        [Required]
         public DateTime? ReleaseDate { get; set; }
 
-        [Column(TypeName = "date")]
-        public DateTime? StartDate { get; set; }
-
-        [Column(TypeName = "date")]
+        [Required]
         public DateTime? EndDate { get; set; }
 
         [MaxLength(100)]
         public string? ProductionCompany { get; set; }
 
         [MaxLength(50)]
-        public string? RunningTime { get; set; }
+        public int RunningTime { get; set; }
 
         public MovieVersion? Version { get; set; }
 
@@ -46,13 +38,7 @@ namespace DomainLayer.Entities
         public string? Content { get; set; }
 
         [Required]
-        public MovieStatus Status { get; set; } = MovieStatus.ChuaCo;
-
-        [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        [Required]
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public MovieStatus Status { get; set; }
 
         // Navigation properties
         public virtual ICollection<MovieImage> MovieImages { get; set; } = new List<MovieImage>();

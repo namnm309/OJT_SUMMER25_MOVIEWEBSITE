@@ -1,34 +1,56 @@
 ﻿using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.Services.MovieManagement;
-using Microsoft.AspNetCore.Authorization;
+using DomainLayer.Enum;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControllerLayer.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
-    public class MovieController : ControllerBase
+    [Route("api/v1/movie")]
+    public class MovieController : Controller
     {
         private readonly IMovieService _movieService;
-        public MovieController(IMovieService movieService)
+        private readonly ILogger<MovieController> _logger;
+
+        public MovieController(IMovieService movieService, ILogger<MovieController> logger)
         {
             _movieService = movieService;
+            _logger = logger;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<MovieListDto>> GetAllMovies()
+        [HttpPost("Create")]
+        public async Task<IActionResult> CreateMovie([FromBody] MovieCreateDto Dto)
         {
-            var movies = await _movieService.GetAllAsync();
-            return Ok(movies);
+            _logger.LogInformation("Create Movie");
+            return await _movieService.CreateMovie(Dto);
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<MovieListDto>> GetById(Guid id)
+        [HttpGet("View")]
+        public async Task<IActionResult> ViewListMovie()
         {
-            var dto = await _movieService.GetByIdAsync(id);
-            if (dto == null) return NotFound();
-            return Ok(dto);
+            _logger.LogInformation("View List Movie");
+            return await _movieService.ViewMovie();
+        }
+
+        [HttpPatch("Update")]
+        public async Task<IActionResult> UpdateMovie([FromBody] MovieUpdateDto Dto)
+        {
+            _logger.LogInformation("Update Movie");
+            return await _movieService.UpdateMovie(Dto);
+        }
+
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> DeleteMovie(Guid Id)
+        {
+            _logger.LogInformation("Delete Movie");
+            return await _movieService.DeleteMovie(Id);
+        }
+
+        [HttpPatch("ChangeStatus")]
+        public async Task<IActionResult> ChangeStatus(Guid Id, MovieStatus Status)
+        {
+            _logger.LogInformation("Update Movie");
+            return await _movieService.ChangeStatus(Id, Status);
         }
     }
 }

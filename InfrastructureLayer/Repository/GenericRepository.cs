@@ -1,119 +1,219 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
+using DomainLayer.Entities;
+using DomainLayer.Exceptions;
 using InfrastructureLayer.Data;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1;
 
 namespace InfrastructureLayer.Repository
 {
-    // Generic Repository Implementation - triển khai interface cho tất cả entities
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         protected readonly MovieContext _context;
-        protected readonly DbSet<T> _dbSet;
-
+        protected DbSet<T> dbSet;
         public GenericRepository(MovieContext context)
         {
             _context = context;
-            _dbSet = context.Set<T>(); // Set<T>() = DbSet cho entity type T
+            dbSet = context.Set<T>();
         }
 
-        // === BASIC CRUD OPERATIONS ===
-
-        public async Task<T> CreateAsync(T entity)
+        public async Task<int> CountAsync()
         {
-            // Thêm entity vào DbSet
-            await _dbSet.AddAsync(entity);
-            // Lưu thay đổi vào database
+            return await dbSet.AsNoTracking().CountAsync();
+        }
+
+        public virtual async Task<int> CountAsync(Expression<Func<T, bool>>? filter = null)
+        {
+            IQueryable<T> query = dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.CountAsync();
+        }
+
+        public virtual async Task<T> CreateAsync(T entity)
+        {
+            entity.CreatedAt = DateTime.UtcNow;
+            entity.UpdatedAt = DateTime.UtcNow;
+            await dbSet.AddAsync(entity);
             await _context.SaveChangesAsync();
+
             return entity;
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public virtual async Task CreateRangeAsync(IEnumerable<T> entities)
         {
-            // Lấy tất cả entities từ DbSet
-            return await _dbSet.ToListAsync();
-        }
-
-        public async Task<T?> GetByIdAsync(Guid id)
-        {
-            // Tìm entity theo primary key (ID)
-            return await _dbSet.FindAsync(id);
-        }
-
-        public async Task<T> UpdateAsync(T entity)
-        {
-            // Đánh dấu entity đã thay đổi
-            _dbSet.Update(entity);
-            // Lưu thay đổi
+            foreach (var entity in entities)
+            {
+                entity.CreatedAt = DateTime.UtcNow;
+                entity.UpdatedAt = DateTime.UtcNow;
+            }
+            await _context.AddRangeAsync(entities);
             await _context.SaveChangesAsync();
+        }
+
+        public virtual async Task<T> DeleteAsync(Guid id)
+        {
+            T _entity = await FindByIdAsync(id);
+            if (_entity == null)
+            {
+                return null;
+            }
+            dbSet.Remove(_entity);
+            await _context.SaveChangesAsync();
+            return _entity;
+        }
+
+        public virtual async Task DeleteAsync(T _entity)
+        {
+            dbSet.Remove(_entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public virtual async Task DeleteRangeAsync(IEnumerable<T> entities)
+        {
+            dbSet.RemoveRange(entities);
+            await _context.SaveChangesAsync();
+        }
+
+        public virtual async Task<T> FindByIdAsync(Guid id, params string[] navigationProperties)
+        {
+            var query = ApplyNavigation(navigationProperties);
+            T entity = await query.AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
             return entity;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public virtual async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, params string[] navigationProperties)
         {
-            // Tìm entity cần xóa
-            var entity = await GetByIdAsync(id);
-            if (entity == null)
+            var query = dbSet.AsQueryable();
+
+            // Áp dụng Include cho tất cả các navigation properties được truyền vào
+            foreach (var navigationProperty in navigationProperties)
             {
-                return false; // Không tìm thấy entity
+                query = query.Include(navigationProperty);
             }
 
-            // Xóa entity
-            _dbSet.Remove(entity);
+            return await query.AsNoTracking().FirstOrDefaultAsync(predicate);
+        }
+
+        public virtual async Task<T> FoundOrThrowAsync(Guid id, string message = "not exist", params string[] navigationProperties)
+        {
+            var query = ApplyNavigation(navigationProperties);
+            T entity = await query.AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
+            if (entity is null)
+            {
+                throw new NotFoundException(message);
+            }
+            return entity;
+        }
+
+        public virtual async Task<List<T>> ListAsync(params string[] navigationProperties)
+        {
+            var query = ApplyNavigation(navigationProperties);
+            return await query.AsNoTracking().ToListAsync();
+        }
+
+        public virtual async Task<long> SumAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, long>> sumExpression)
+        {
+            return await dbSet.AsQueryable().AsNoTracking().Where(predicate).SumAsync(sumExpression);
+        }
+
+        public virtual async Task<T> UpdateAsync(T updated)
+        {
+            updated.UpdatedAt = DateTime.UtcNow;
+            _context.Attach(updated).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return true;
+            return updated;
         }
 
-        // === QUERY OPERATIONS ===
-
-        public async Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        public virtual async Task UpdateRangeAsync(IEnumerable<T> entities)
         {
-            // Tìm entities theo điều kiện (lambda expression)
-            // Ví dụ: await FindAsync(u => u.IsActive == true)
-            return await _dbSet.Where(predicate).ToListAsync();
+            _context.UpdateRange(entities);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        public virtual async Task<List<T>> WhereAsync(Expression<Func<T, bool>> predicate, params string[] navigationProperties)
         {
-            // Tìm entity đầu tiên theo điều kiện, return null nếu không có
-            return await _dbSet.FirstOrDefaultAsync(predicate);
+            List<T> list;
+            var query = dbSet.AsQueryable();
+            foreach (string navigationProperty in navigationProperties)
+                query = query.Include(navigationProperty);//got to reaffect it.
+
+            list = await query.Where(predicate).ToListAsync<T>();
+            return list;
         }
 
-        public async Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null)
+        public virtual async Task<List<T>> WhereAsync(Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, int? page = null, int? pageSize = null, params string[] navigationProperties)
         {
-            // Đếm entities, có thể có điều kiện hoặc không
-            if (predicate == null)
+            IQueryable<T> query = ApplyNavigation(navigationProperties);
+
+            if (filter != null)
             {
-                return await _dbSet.CountAsync(); // Đếm tất cả
+                query = query.Where(filter);
             }
-            return await _dbSet.CountAsync(predicate); // Đếm theo điều kiện
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip(page.Value * pageSize.Value).Take(pageSize.Value);
+            }
+
+            return await query.AsNoTracking().ToListAsync();
         }
 
-        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
+        private IQueryable<T> ApplyNavigation(params string[] navigationProperties)
         {
-            // Check có entity nào thoả điều kiện không
-            return await _dbSet.AnyAsync(predicate);
+            var query = dbSet.AsQueryable();
+            foreach (string navigationProperty in navigationProperties)
+                query = query.Include(navigationProperty);
+            return query;
         }
 
-        // === ADVANCED OPERATIONS ===
-
-        public async Task<List<T>> GetPagedAsync(int page, int pageSize)
+        public async Task<T> FindAsync(Expression<Func<T, bool>> predicate, params string[] navigationProperties)
         {
-            // Pagination: bỏ qua (page-1)*pageSize record đầu, lấy pageSize records
-            // Page bắt đầu từ 1, không phải 0
-            return await _dbSet
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            IQueryable<T> query = _context.Set<T>();
+
+            foreach (var navigationProperty in navigationProperties)
+            {
+                query = query.Include(navigationProperty);
+            }
+
+            return await query.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<List<T>> FindPagedAsync(Expression<Func<T, bool>> predicate, int page, int pageSize)
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate = null, params string[] navigationProperties)
         {
-            // Tìm theo điều kiện + pagination
-            return await _dbSet
-                .Where(predicate)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            IQueryable<T> query = _context.Set<T>();
+
+            foreach (var navigationProperty in navigationProperties)
+            {
+                query = query.Include(navigationProperty);
+            }
+
+            return predicate == null
+                ? await query.ToListAsync()
+                : await query.Where(predicate).ToListAsync();
+        }
+
+        public async Task<T> CreateWithoutCreatedAtAsync(T entity)
+        {
+            entity.UpdatedAt = DateTime.UtcNow;
+            await dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
+
+            return entity;
         }
     }
-} 
+}

@@ -4,12 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DomainLayer.Entities
 {
     [Table("tbl_movie_images")]
-    public class MovieImage
+    public class MovieImage : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid ImageId { get; set; }
-
         [Required]
         public Guid MovieId { get; set; }
 

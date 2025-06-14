@@ -10,12 +10,8 @@ using DomainLayer.Enum;
 namespace DomainLayer.Entities
 {
     [Table("tbl_users")]
-    public class Users
+    public class Users : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid UserId { get; set; }
-
         [Required]
         [MaxLength(50)]
         public string Username { get; set; } = string.Empty;
@@ -51,17 +47,11 @@ namespace DomainLayer.Entities
         [Column(TypeName = "double precision")]
         public double Score { get; set; } = 0.0;
 
-        [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        [Required]
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
         [Column(TypeName = "date")]
         public DateTime? BirthDate { get; set; }
 
         [MaxLength(10)]
-        public string? Gender { get; set; }
+        public UserGender Gender { get; set; }
 
         [Required]
         public bool IsActive { get; set; } = true;
@@ -70,22 +60,10 @@ namespace DomainLayer.Entities
         [MaxLength(500)]
         public string? Avatar { get; set; }
 
-        // === EMPLOYEE FIELDS (for Admin/Staff roles) ===
-        
-        // Position chỉ áp dụng cho Admin/Staff
-        [MaxLength(50)]
-        public string? Position { get; set; }
-        
-        // Salary chỉ áp dụng cho Admin/Staff  
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal? Salary { get; set; }
-        
-        // Hire date chỉ áp dụng cho Admin/Staff
-        [Column(TypeName = "date")]
-        public DateTime? HireDate { get; set; }
-
         // Quan hệ với bảng bookings và pointHistories
         public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public virtual ICollection<PointHistory> PointHistories { get; set; } = new List<PointHistory>();
+
+
     }
 }

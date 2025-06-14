@@ -14,7 +14,7 @@ namespace ApplicationLayer.DTO.UserManagement
         public UserRole Role { get; set; }
         public double Score { get; set; }
         public DateTime? BirthDate { get; set; }
-        public string? Gender { get; set; }
+        public UserGender Gender { get; set; }
         public string? Avatar { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

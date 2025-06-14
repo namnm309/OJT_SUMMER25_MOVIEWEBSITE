@@ -5,15 +5,8 @@ using DomainLayer.Enum;
 namespace DomainLayer.Entities
 {
     [Table("tbl_point_histories")]
-    public class PointHistory
+    public class PointHistory : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid PointHistoryId { get; set; }
-
-        [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
         [Required]
         public double Points { get; set; }
 

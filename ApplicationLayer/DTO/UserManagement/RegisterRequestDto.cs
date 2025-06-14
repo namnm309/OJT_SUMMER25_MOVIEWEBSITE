@@ -1,3 +1,4 @@
+using DomainLayer.Enum;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApplicationLayer.DTO.UserManagement
@@ -40,6 +41,6 @@ namespace ApplicationLayer.DTO.UserManagement
         public DateTime? BirthDate { get; set; }
 
         [StringLength(10, ErrorMessage = "Gender cannot exceed 10 characters")]
-        public string? Gender { get; set; }
+        public UserGender Gender { get; set; }
     }
 } 

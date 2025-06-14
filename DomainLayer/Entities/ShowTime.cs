@@ -5,29 +5,13 @@ using DomainLayer.Enum;
 namespace DomainLayer.Entities
 {
     [Table("tbl_show_times")]
-    public class ShowTime
+    public class ShowTime : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid ShowTimeId { get; set; }
+        [Required]
+        public DateTime? ShowDate { get; set; }
 
-        [Required]
-        [Column(TypeName = "date")]
-        public DateTime ShowDate { get; set; }
-
-        [Required]
-        [Column(TypeName = "time")]
-        public TimeSpan StartTime { get; set; }
-        
-        [Required]
-        [Column(TypeName = "time")]
-        public TimeSpan EndTime { get; set; }
-
-        [Required]
-        public ShowTimeStatus Status { get; set; } = ShowTimeStatus.Available;
-
-        [Required]
-        public decimal Price { get; set; }
+        //[Required]
+        //public ShowTimeStatus Status { get; set; } = ShowTimeStatus.Available;
 
         // Foreign keys
         [Required]
