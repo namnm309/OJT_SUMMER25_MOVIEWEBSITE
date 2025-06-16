@@ -63,7 +63,7 @@ namespace UI.Controllers
 
             return userRole switch
             {
-                "Admin" => View("AdminDashboard"),
+                "2" => View("AdminDashboard"),
                 "Staff" => View("StaffDashboard"), 
                 "Member" => View("MemberDashboard"),
                 _ => View("MemberDashboard")
