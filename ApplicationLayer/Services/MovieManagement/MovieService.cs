@@ -65,10 +65,6 @@ namespace ApplicationLayer.Services.MovieManagement
             if (Dto.Images.Count(i => i.IsPrimary) != 1)
                 return ErrorResp.BadRequest("Exactly one image must be marked as primary");
 
-            var movie = _mapper.Map<Movie>(Dto);
-            movie.Status = MovieStatus.NotAvailable;
-
-            await _movieRepo.CreateAsync(movie);
 
             foreach (var genreId in Dto.GenreIds)
             {
@@ -83,6 +79,11 @@ namespace ApplicationLayer.Services.MovieManagement
                 if (room == null)
                     return ErrorResp.NotFound($"Cinema room with ID {st.RoomId} not found");
             }
+
+            var movie = _mapper.Map<Movie>(Dto);
+            movie.Status = MovieStatus.NotAvailable;
+
+            await _movieRepo.CreateAsync(movie);
 
             // Map danh sách thể loại (GenreIds -> MovieGenres)
             var movieGenres = Dto.GenreIds.Select(id => new MovieGenre
@@ -145,8 +146,6 @@ namespace ApplicationLayer.Services.MovieManagement
             if (Dto.Images.Count(i => i.IsPrimary) != 1)
                 return ErrorResp.BadRequest("Exactly one image must be marked as primary");
 
-            _mapper.Map(Dto, movie);
-
             foreach (var genreId in Dto.GenreIds)
             {
                 var genre = await _genreRepo.FindByIdAsync(genreId);
@@ -160,6 +159,8 @@ namespace ApplicationLayer.Services.MovieManagement
                 if (room == null)
                     return ErrorResp.NotFound($"Cinema room with ID {st.RoomId} not found");
             }
+
+            _mapper.Map(Dto, movie);
 
             // Cập nhật Genres
             movie.MovieGenres.Clear();
