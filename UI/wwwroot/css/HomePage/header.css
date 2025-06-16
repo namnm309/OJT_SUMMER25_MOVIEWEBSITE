@@ -1,0 +1,243 @@
+﻿/* Header and Navigation styles */
+
+/* Navigation */
+.hero-nav {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto 20px auto;
+    padding: 0 20px;
+    transform: translateX(-50px);
+    position: relative; /* Thêm position relative */
+    z-index: 100; /* Z-index cao hơn background layers */
+}
+
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    width: 100%;
+    min-width: 0;
+    flex-wrap: nowrap;
+    position: relative; /* Thêm position relative */
+    z-index: 101; /* Z-index cao hơn hero-nav */
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 280px; /* Giảm min-width để tránh overflow */
+    max-width: 400px; /* Thêm max-width để kiểm soát */
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 16px;
+}
+
+.btn-register, .btn-login {
+    padding: 6px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 400;
+    color: white;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.20);
+    text-align: center;
+    transition: all 0.3s ease;
+    white-space: nowrap; /* Không cho text xuống dòng */
+    display: inline-flex; /* Sử dụng inline-flex */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    min-width: 80px; /* Đảm bảo button có độ rộng tối thiểu */
+}
+
+.btn-register {
+    background: #df2144;
+}
+
+.btn-login {
+    border: 1px solid #df2144;
+    color: #df2144;
+}
+
+/* Search Box */
+.search-box {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%); /* Gradient background */
+    border: 0.5px solid rgba(255, 255, 255, 0.1); /* Border nhẹ */
+    border-radius: 12px; /* Bo góc đẹp hơn */
+    padding: 12px 16px; /* Tăng padding */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    max-width: 380px; /* Tăng max-width */
+    min-width: 280px; /* Tăng min-width */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Thêm shadow */
+    backdrop-filter: blur(10px); /* Hiệu ứng blur */
+    transition: all 0.3s ease; /* Thêm transition */
+}
+
+.search-box:hover {
+    border-color: rgba(223, 33, 68, 0.3); /* Border màu brand khi hover */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); /* Shadow đậm hơn */
+    transform: translateY(-1px); /* Nâng lên nhẹ */
+}
+
+.search-box:focus-within {
+    border-color: #df2144; /* Border màu brand khi focus */
+    box-shadow: 0 0 0 3px rgba(223, 33, 68, 0.1); /* Glow effect */
+}
+
+.search-input {
+    background: none;
+    border: none;
+    color: #ffffff; /* Màu text trắng hơn */
+    font-size: 16px;
+    flex: 1;
+    outline: none;
+    padding: 6px 0; /* Tăng padding */
+    font-weight: 400;
+    height: 15px;
+}
+
+.search-input::placeholder {
+    color: #bbb; /* Placeholder sáng hơn */
+    opacity: 0.8;
+    font-style: italic; /* Thêm italic cho placeholder */
+}
+
+.search-icon {
+    color: #df2144; /* Màu icon theo brand */
+    width: 22px;
+    height: 21px;
+    transition: all 0.3s ease;
+}
+
+.search-box:hover .search-icon {
+    transform: scale(1.1); /* Phóng to icon khi hover */
+}
+
+/* Navigation Center - Chỉnh sang trái một chút */
+.nav-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-width: 400px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px; /* Tăng gap để có khoảng cách đẹp hơn */
+    white-space: nowrap;
+    margin-left: 200px;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 8px 20px; /* Tăng padding left/right từ 12px lên 20px */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border-radius: 4px;
+    margin: 0 4px; /* Thêm margin 2 bên để tạo khoảng cách */
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.1); /* Thêm hover effect */
+}
+
+.nav-link.active {
+    font-size: 18px;
+    font-weight: 700;
+    flex-direction: column;
+    position: relative;
+    background: rgba(223, 33, 68, 0.1); /* Thêm background cho active */
+}
+
+.nav-underline {
+    width: 85px;
+    height: 2px;
+    background: #df2144;
+    border-radius: 1px;
+}
+
+/* Navigation Right */
+.nav-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Căn về bên phải */
+    gap: 16px; /* Giảm gap */
+    flex: 1;
+    min-width: 280px; /* Giảm min-width để tránh overflow */
+    max-width: 400px; /* Thêm max-width để kiểm soát */
+    margin-left: -80px;
+}
+
+.divider {
+    width: 2px;
+    height: 50px;
+    background: white;
+    border-radius: 1px;
+}
+
+/* Brand */
+.brand {
+    text-align: right;
+}
+
+.brand-header {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Tăng gap */
+    justify-content: flex-end;
+}
+
+.brand-name {
+    font-size: 14px; /* Tăng font size */
+    font-weight: 700;
+    color: white;
+}
+
+.brand-logo {
+    width: 44px; /* Tăng size logo */
+    height: 36px; /* Tăng size logo */
+    background: #df2144;
+    border-radius: 4px;
+}
+
+.brand-subtitle {
+    font-size: 14px; /* Tăng font size */
+    color: white;
+    margin-top: 4px;
+}
+
+/* Search Toggle */
+.search-toggle {
+    color: #df2144;
+    width: 44px; /* Tăng size */
+    height: 44px; /* Tăng size */
+    transition: transform 0.3s ease;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-toggle:hover {
+    background: rgba(223, 33, 68, 0.1); /* Thêm hover effect */
+}
+
+.search-toggle.collapsed {
+    transform: rotate(180deg);
+}

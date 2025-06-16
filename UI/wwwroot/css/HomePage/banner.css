@@ -1,0 +1,332 @@
+/* Featured Banner Section */
+.featured-banner {
+    width: 100%;
+    min-height: 500px;
+    padding: 40px 94px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    margin: 40px 0;
+}
+
+/* Banner background với hiệu ứng overlay */
+.featured-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.8) 100%);
+    z-index: 1;
+}
+
+/* Banner Content */
+.banner-content {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+}
+
+/* Banner Info */
+.banner-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 500px;
+    flex: 1;
+}
+
+/* Banner Header */
+.banner-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.banner-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.banner-title-vn {
+    font-size: 14px;
+    color: #a8a8a8;
+    text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+    margin: 0;
+    font-style: italic;
+}
+
+/* Banner Plot Section */
+.banner-plot {
+    margin-bottom: 20px;
+}
+
+.banner-plot h3 {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    text-align: left;
+    position: relative;
+}
+
+.banner-plot h3::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: #df2144;
+    border-radius: 1px;
+}
+
+.banner-plot p {
+    color: #e0e0e0;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+    text-align: justify;
+}
+
+/* Banner Genre Section */
+.banner-genre {
+    margin-bottom: 20px;
+}
+
+.banner-genre h3 {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    text-align: left;
+    position: relative;
+}
+
+.banner-genre h3::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: #df2144;
+    border-radius: 1px;
+}
+
+.banner-genre p {
+    color: #e0e0e0;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Banner Ratings */
+.banner-ratings {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rating-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.rating-item i {
+    color: #df2144;
+    font-size: 16px;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.rating-item span {
+    color: #e0e0e0;
+}
+
+/* Banner Button */
+.btn-banner {
+    background: linear-gradient(135deg, #df2144 0%, #c01d3a 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 16px 32px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(223, 33, 68, 0.3);
+    position: relative;
+    overflow: hidden;
+    min-width: 280px;
+    text-align: center;
+}
+
+.btn-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-banner:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(223, 33, 68, 0.4);
+    background: linear-gradient(135deg, #e8244a 0%, #d0203f 100%);
+}
+
+.btn-banner:hover::before {
+    left: 100%;
+}
+
+.btn-banner:active {
+    transform: translateY(0);
+    transition: transform 0.1s ease;
+}
+
+/* Banner Image/Poster (nếu có) */
+.banner-poster {
+    flex: 0 0 300px;
+    height: 400px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    position: relative;
+    transform: perspective(1000px) rotateY(-5deg);
+    transition: transform 0.3s ease;
+}
+
+.banner-poster:hover {
+    transform: perspective(1000px) rotateY(0deg) scale(1.02);
+}
+
+.banner-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .featured-banner {
+        padding: 30px 50px;
+    }
+    
+    .banner-content {
+        gap: 40px;
+    }
+    
+    .banner-title {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .featured-banner {
+        padding: 20px;
+        min-height: 400px;
+    }
+    
+    .banner-content {
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
+    }
+    
+    .banner-info {
+        max-width: 100%;
+    }
+    
+    .banner-title {
+        font-size: 28px;
+    }
+    
+    .banner-plot h3,
+    .banner-genre h3 {
+        text-align: center;
+    }
+    
+    .banner-plot h3::after,
+    .banner-genre h3::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .banner-ratings {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn-banner {
+        min-width: 250px;
+        padding: 14px 28px;
+        font-size: 14px;
+    }
+    
+    .banner-poster {
+        flex: none;
+        width: 250px;
+        height: 350px;
+        transform: none;
+    }
+}
+
+/* Animation Effects */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.banner-info > * {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.banner-info > *:nth-child(1) { animation-delay: 0.1s; }
+.banner-info > *:nth-child(2) { animation-delay: 0.2s; }
+.banner-info > *:nth-child(3) { animation-delay: 0.3s; }
+.banner-info > *:nth-child(4) { animation-delay: 0.4s; }
+.banner-info > *:nth-child(5) { animation-delay: 0.5s; }
+
+/* Performance Optimizations */
+.featured-banner,
+.banner-content,
+.btn-banner {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}

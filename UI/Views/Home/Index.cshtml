@@ -1,0 +1,524 @@
+@{
+    ViewData["Title"] = "Trang Chủ - Cinema City";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/HomePage/base.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/HomePage/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/HomePage/header.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/HomePage/hero.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/HomePage/button.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/HomePage/responsive.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/HomePage/banner.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" asp-append-version="true" />
+    <style>
+        /* Movie Cards Hover Effect Styles */
+        .movie-card {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.05);
+        }
+
+        /* Movie Poster */
+        .movie-poster {
+            position: relative;
+            aspect-ratio: 2/3;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .movie-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Hover Overlay - Initially Hidden */
+        .movie-card .movie-poster-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0.90) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        /* Show overlay on hover */
+        .movie-card:hover .movie-poster-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Hide original image on hover */
+        .movie-card:hover .movie-poster img {
+            opacity: 0.3;
+        }
+
+        /* Featured card always shows overlay */
+        .movie-card.featured .movie-poster-overlay {
+            opacity: 1;
+            visibility: visible;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0.80) 0%, transparent 100%), url('https://image.tmdb.org/t/p/w500/NNxYkU70HPurnNCSiCjYAmacwm.jpg') lightgray 50% / cover no-repeat;
+        }
+
+        .movie-card.featured .movie-poster img {
+            display: none;
+        }
+
+        .movie-card.featured .movie-meta,
+        .movie-card.featured .movie-name {
+            opacity: 1;
+        }
+
+        /* Overlay Content */
+        .overlay-content {
+            color: white;
+            text-align: center;
+            padding: 0 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+            height: 100%;
+            position: relative;
+        }
+
+        .overlay-content h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            color: white;
+        }
+
+        .overlay-content p {
+            font-size: 11px;
+            line-height: 1.4;
+            margin: 0;
+            text-align: justify;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .overlay-cursor {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            color: white;
+            font-size: 20px;
+            opacity: 0.7;
+        }
+
+        .overlay-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            gap: 10px;
+        }
+
+        .detail-col {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .detail-value {
+            font-size: 10px;
+            font-weight: 400;
+            color: white;
+        }
+
+        /* Hide meta and name on hover for non-featured cards */
+        .movie-card:not(.featured):hover .movie-meta,
+        .movie-card:not(.featured):hover .movie-name {
+            opacity: 0;
+        }
+    </style>
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<div class="cinema-homepage">
+    <!-- Hero Section -->
+    <div class="hero-section" id="heroSection">
+        <!-- Navigation -->
+        <div class="hero-nav">
+            <div class="nav-content">
+                <div class="nav-left">
+                    <div class="auth-buttons">
+                        <a href="@Url.Action("Register", "Account")" class="btn-register">Đăng ký</a>
+                        <a href="@Url.Action("Login", "Account")" class="btn-login">Đăng nhập</a>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" placeholder="Tìm kiếm phim..." class="search-input">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+                <div class="nav-center">
+                    <div class="nav-links">
+                        <a href="#" class="nav-link">Giới thiệu</a>
+                        <a href="@Url.Action("Index", "Events")" class="nav-link">
+                            <span>Sự kiện</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <a href="@Url.Action("Index", "Products")" class="nav-link">
+                            <span>Sản phẩm</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <a href="@Url.Action("Index", "Movies")" class="nav-link">
+                            <span>Phim</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <div class="divider"></div>
+                    <div class="brand">
+                        <div class="brand-content">
+                            <div class="brand-header">
+                                <span class="brand-name">Cinema City</span>
+                                <div class="brand-logo"></div>
+                            </div>
+                            <div class="brand-subtitle">Rạp chiếu phim hiện đại</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Movie Content -->
+        <div class="movie-content" id="movieContent">
+            <div class="movie-info">
+                <div class="movie-header">
+                    <h1 class="movie-title" id="movieTitle">Oppenheimer 2023</h1>
+                    <p class="movie-title-vn" id="movieTitleVn">Cha đẻ bom nguyên tử</p>
+                </div>
+                
+                <div class="movie-details">
+                    <div class="plot-section">
+                        <h3>Tóm tắt nội dung</h3>
+                        <p id="moviePlot">
+                            Phim Oppenheimer kể về cuộc đời của J. Robert Oppenheimer, nhà vật lý lý thuyết người Mỹ được mệnh danh là "cha đẻ của bom nguyên tử" vì vai trò của ông trong Dự án Manhattan - chương trình nghiên cứu và phát triển vũ khí hạt nhân đầu tiên của thế giới trong Thế chiến II.
+                        </p>
+                    </div>
+
+                    <div class="genre-section">
+                        <h3>Thể loại</h3>
+                        <p id="movieGenre">Lịch sử, Tiểu sử, Chính kịch</p>
+                    </div>
+
+                    <div class="ratings-section">
+                        <div class="rating-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="duration">3 Giờ</span>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-primary" onclick="bookTickets()">
+                            <i class="fas fa-ticket-alt"></i>
+                            Đặt vé ngay
+                        </button>
+                        <button class="btn-secondary" onclick="showMovieInfo()">
+                            <i class="fas fa-info-circle"></i>
+                            Thông tin phim
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="movie-controls">
+                <div class="control-left">
+                    <button class="nav-btn" onclick="previousMovie()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                
+                <div class="pagination-dots" id="paginationDots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+
+                <div class="control-right">
+                    <button class="nav-btn" onclick="nextMovie()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Search Section -->
+    <div class="search-section">
+        <div class="search-header" onclick="toggleSearch()">
+            <i class="fas fa-chevron-up search-toggle"></i>
+            <h2>Tìm kiếm nâng cao phim và TV series</h2>
+        </div>
+        
+        <div class="search-form" id="searchForm">
+            <div class="form-grid">
+                <div class="form-column">
+                    <div class="form-group">
+                        <label>Năm phát hành đến</label>
+                        <select class="form-select">
+                            <option>Chưa chọn</option>
+                            <option>2024</option>
+                            <option>2023</option>
+                            <option>2022</option>
+                        </select>
+                    </div>                  
+                </div>
+
+                <div class="form-column">
+                    <div class="form-group">
+                        <label>Năm phát hành từ</label>
+                        <select class="form-select">
+                            <option>Chưa chọn</option>
+                            <option>1990</option>
+                            <option>2000</option>
+                            <option>2010</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form-column">
+                    <div class="form-group">
+                        <label>Thể loại</label>
+                        <select class="form-select">
+                            <option>Tất cả</option>
+                            <option>Hành động</option>
+                            <option>Tình cảm</option>
+                            <option>Kinh dị</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Chất lượng</label>
+                        <select class="form-select">
+                            <option>Tất cả</option>
+                            <option>4K</option>
+                            <option>HD</option>
+                            <option>Full HD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Độ tuổi</label>
+                        <select class="form-select">
+                            <option>Tất cả</option>
+                            <option>P</option>
+                            <option>T13</option>
+                            <option>T16</option>
+                            <option>T18</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-column">
+                    <div class="form-group">
+                        <label>Loại</label>
+                        <select class="form-select">
+                            <option>Tất cả</option>
+                            <option>Phim lẻ</option>
+                            <option>Phim bộ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quốc gia</label>
+                        <select class="form-select">
+                            <option>Tất cả</option>
+                            <option>Việt Nam</option>
+                            <option>Mỹ</option>
+                            <option>Hàn Quốc</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Diễn viên</label>
+                        <input type="text" class="form-input" placeholder="Nhập tên diễn viên">
+                    </div>
+                    <div class="form-group">
+                        <label>Đạo diễn</label>
+                        <input type="text" class="form-input" placeholder="Nhập tên đạo diễn">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-bottom">
+                <button class="btn-search">Áp dụng bộ lọc và tìm kiếm</button>
+                
+                <div class="sort-section">
+                    <label>Sắp xếp</label>
+                    <select class="form-select">
+                        <option>Theo năm phát hành</option>
+                        <option>Theo tên phim</option>
+                    </select>
+                </div>
+
+                <div class="toggle-section">
+                    <div class="toggle-item">
+                        <span>Phụ đề</span>
+                        <div class="toggle-switch active">
+                            <div class="toggle-circle"></div>
+                        </div>
+                    </div>
+                    <div class="toggle-item">
+                        <span>Lồng tiếng</span>
+                        <div class="toggle-switch">
+                            <div class="toggle-circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommended Movies Section -->
+    <div class="recommended-section">
+        <div class="section-header">
+            <div class="nav-controls">
+                <button class="nav-btn" onclick="slideMovies('left')">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="nav-btn" onclick="slideMovies('right')">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            <h2>Phim đề xuất</h2>
+        </div>
+
+        <div class="movies-grid" id="moviesGrid">
+            <!-- Card 1: Tick Tick... Boom! with hover overlay -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg" alt="Tick Tick... Boom!" loading="lazy">
+                    <div class="movie-poster-overlay">
+                        <div class="overlay-content">
+                            <h3>Tóm tắt nội dung</h3>
+                            <p>Một nhạc sĩ trẻ đầy tham vọng đang cố gắng viết vở nhạc kịch tuyệt vời tiếp theo trong khi đối mặt với áp lực về tuổi tác và tình yêu...</p>
+                            <div class="overlay-details">
+                                <div class="detail-col">
+                                    <span class="detail-label">Thể loại</span>
+                                    <span class="detail-value">Nhạc kịch, Tiểu sử</span>
+                                </div>
+                                <div class="detail-col">
+                                    <span class="detail-label">Độ tuổi</span>
+                                    <span class="detail-value">T13</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>1h 55m</span>
+                    </div>
+                </div>
+                <h3 class="movie-name">Tick Tick... Boom 2021</h3>
+            </div>
+
+            <!-- Card 3: Killers of the Flower Moon with hover overlay -->
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="https://image.tmdb.org/t/p/w500/dKqa850uvbNSCaQCV4Im1XlzEtQ.jpg" alt="Killers of the Flower Moon" loading="lazy">
+                    <div class="movie-poster-overlay">
+                        <div class="overlay-content">
+                            <h3>Tóm tắt nội dung</h3>
+                            <p>Dựa trên câu chuyện có thật về vụ sát hại hàng loạt người dân bộ lạc Osage ở Oklahoma những năm 1920 sau khi họ trở nên giàu có từ dầu mỏ...</p>
+                            <div class="overlay-details">
+                                <div class="detail-col">
+                                    <span class="detail-label">Thể loại</span>
+                                    <span class="detail-value">Tội phạm, Chính kịch</span>
+                                </div>
+                                <div class="detail-col">
+                                    <span class="detail-label">Độ tuổi</span>
+                                    <span class="detail-value">R</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>3h 26m</span>
+                    </div>
+                </div>
+                <h3 class="movie-name">Killers Of The Flower...</h3>
+            </div>
+        </div>
+
+        <button class="view-all-btn">
+            <i class="fas fa-chevron-left"></i>
+            <span>Xem tất cả</span>
+        </button>
+    </div>
+
+    <!-- Featured Banner Section -->
+    <div class="featured-banner">
+        <div class="banner-content">
+            <div class="banner-info">
+                <div class="banner-header">
+                    <h2 class="banner-title">Peaky Blinders</h2>
+                    <p class="banner-title-vn">Băng đảng Peaky Blinders</p>
+                </div>
+                
+                <div class="banner-plot">
+                    <h3>Tóm tắt nội dung</h3>
+                    <p>Trong thập niên 20, khi các băng đảng ở thành phố Birmingham, Anh ngày càng nhiều, một băng đảng cố gắng đưa mình lên vị trí quyền lực trong thập kỷ này...</p>
+                </div>
+
+                <div class="banner-genre">
+                    <h3>Thể loại</h3>
+                    <p>Hành động, Chính kịch, Tội phạm</p>
+                </div>
+
+                <div class="banner-ratings">
+                    <div class="rating-item">
+                        <i class="fas fa-clock"></i>
+                        <span>60 phút</span>
+                    </div>
+                </div>
+
+                <button class="btn-banner">
+                    Xem và tải về với tất cả chất lượng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.movieUrls = {
+        moviesIndex: '@Url.Action("Index", "Movies")',
+        movieDetails: '@Url.Action("Details", "Movies")'
+    };
+</script>
+<script src="~/js/homepage.js"></script>
