@@ -120,6 +120,16 @@ namespace UI.Controllers
 
             try
             {
+                // Chuyển đổi gender từ string sang enum UserGender
+                int genderValue = 1; // Mặc định là Male (1)
+                if (!string.IsNullOrEmpty(model.Gender))
+                {
+                    if (model.Gender.Equals("Nữ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        genderValue = 2; // Female
+                    }
+                }
+
                 var registerData = new
                 {
                     username = model.Username,
@@ -131,7 +141,7 @@ namespace UI.Controllers
                     identityCard = model.IdentityCard,
                     address = model.Address,
                     birthDate = model.BirthDate,
-                    gender = model.Gender
+                    gender = genderValue // Sử dụng giá trị số của enum
                 };
 
                 var result = await _apiService.PostAsync<JsonElement>("/api/user/register", registerData);

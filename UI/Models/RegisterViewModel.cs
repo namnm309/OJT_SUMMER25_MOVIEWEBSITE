@@ -51,8 +51,8 @@ namespace UI.Models
     [DataType(DataType.Date)]
     public DateTime? BirthDate { get; set; }
 
-    [StringLength(10, ErrorMessage = "Giới tính không được vượt quá 10 ký tự")]
+    [Required(ErrorMessage = "Giới tính là bắt buộc")]
     [Display(Name = "Giới tính")]
-    public string? Gender { get; set; }
+    public string Gender { get; set; } = "Nam"; // Mặc định là Nam (tương ứng với Male=1)
     }
 } 
