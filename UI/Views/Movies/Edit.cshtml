@@ -1,0 +1,226 @@
+@model UI.Models.MovieUpdateViewModel
+@{
+    ViewData["Title"] = "Chỉnh sửa phim";
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mt-4">
+            <i class="fas fa-edit me-2 text-warning"></i>@ViewData["Title"]
+        </h1>
+        <a asp-action="MovieManagement" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Quay lại
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">
+                <i class="fas fa-film me-2 text-primary"></i>Thông tin phim
+            </h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label fw-bold">Tên phim</label>
+                            <input asp-for="Title" class="form-control" placeholder="Nhập tên phim" required />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="ReleaseDate" class="form-label fw-bold">Ngày phát hành</label>
+                                    <input asp-for="ReleaseDate" class="form-control" type="date" required />
+                                    <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="EndDate" class="form-label fw-bold">Ngày kết thúc</label>
+                                    <input asp-for="EndDate" class="form-control" type="date" required />
+                                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="ProductionCompany" class="form-label fw-bold">Hãng sản xuất</label>
+                                    <input asp-for="ProductionCompany" class="form-control" placeholder="Nhập hãng sản xuất" />
+                                    <span asp-validation-for="ProductionCompany" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Director" class="form-label fw-bold">Đạo diễn</label>
+                                    <input asp-for="Director" class="form-control" placeholder="Nhập tên đạo diễn" />
+                                    <span asp-validation-for="Director" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="RunningTime" class="form-label fw-bold">Thời lượng (phút)</label>
+                                    <input asp-for="RunningTime" class="form-control" type="number" min="1" placeholder="Nhập thời lượng" required />
+                                    <span asp-validation-for="RunningTime" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Version" class="form-label fw-bold">Phiên bản</label>
+                                    <select asp-for="Version" class="form-select" required>
+                                        <option value="">-- Chọn phiên bản --</option>
+                                        <option value="2D">2D</option>
+                                        <option value="3D">3D</option>
+                                    </select>
+                                    <span asp-validation-for="Version" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Actors" class="form-label fw-bold">Diễn viên</label>
+                            <textarea asp-for="Actors" class="form-control" rows="2" placeholder="Nhập danh sách diễn viên"></textarea>
+                            <span asp-validation-for="Actors" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="TrailerUrl" class="form-label fw-bold">URL Trailer</label>
+                            <input asp-for="TrailerUrl" class="form-control" placeholder="Nhập URL trailer (YouTube, Vimeo...)" />
+                            <span asp-validation-for="TrailerUrl" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Content" class="form-label fw-bold">Nội dung phim</label>
+                            <textarea asp-for="Content" class="form-control" rows="4" placeholder="Nhập nội dung phim"></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Thể loại</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="Genres" value="1" id="genre1">
+                                        <label class="form-check-label" for="genre1">
+                                            Hành động
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="Genres" value="2" id="genre2">
+                                        <label class="form-check-label" for="genre2">
+                                            Hài kịch
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="Genres" value="3" id="genre3">
+                                        <label class="form-check-label" for="genre3">
+                                            Chính kịch
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="Genres" value="4" id="genre4">
+                                        <label class="form-check-label" for="genre4">
+                                            Kinh dị
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="Genres" value="5" id="genre5">
+                                        <label class="form-check-label" for="genre5">
+                                            Lãng mạn
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="Genres" value="6" id="genre6">
+                                        <label class="form-check-label" for="genre6">
+                                            Khoa học viễn tưởng
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Poster phim</label>
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <div class="poster-preview mb-3">
+                                        <img id="posterPreview" src="@Model.ImageUrl" class="img-fluid border" onerror="this.src='https://via.placeholder.com/300x450?text=Poster+Phim'" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="ImageUrl" class="form-label">URL Hình ảnh</label>
+                                        <input asp-for="ImageUrl" class="form-control" placeholder="Nhập URL hình ảnh" required />
+                                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                                    </div>
+                                    <small class="text-muted">Hình ảnh sẽ được sử dụng làm poster chính của phim</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <button type="submit" class="btn btn-warning px-5">
+                        <i class="fas fa-save me-2"></i>Cập nhật phim
+                    </button>
+                    <a asp-action="MovieManagement" class="btn btn-outline-secondary px-5 ms-2">
+                        <i class="fas fa-times me-2"></i>Hủy
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Preview poster image when URL changes
+            $('#ImageUrl').on('input', function() {
+                var imageUrl = $(this).val();
+                if (imageUrl) {
+                    $('#posterPreview').attr('src', imageUrl);
+                } else {
+                    $('#posterPreview').attr('src', 'https://via.placeholder.com/300x450?text=Poster+Phim');
+                }
+            });
+            
+            // Form validation
+            $('form').on('submit', function(e) {
+                var genresSelected = $('input[name="Genres"]:checked').length > 0;
+                if (!genresSelected) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn ít nhất một thể loại phim');
+                }
+            });
+            
+            // Check selected genres based on model
+            var selectedGenres = @Html.Raw(Json.Serialize(Model.Genres ?? new List<string>()));
+            if (selectedGenres && selectedGenres.length > 0) {
+                selectedGenres.forEach(function(genreId) {
+                    $('input[name="Genres"][value="' + genreId + '"]').prop('checked', true);
+                });
+            }
+        });
+    </script>
+} 

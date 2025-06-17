@@ -1,0 +1,422 @@
+@{
+    ViewData["Title"] = "Sự Kiện";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-calendar-alt me-2"></i>Sự Kiện
+                </h1>
+                <p class="page-subtitle">Cập nhật những sự kiện thú vị và hoạt động đặc biệt tại rạp</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="search-container">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Tìm kiếm sự kiện..." id="eventSearch">
+                    <button class="btn btn-primary" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="filter-container">
+                <select class="form-select" id="eventTypeFilter">
+                    <option value="">Tất cả loại sự kiện</option>
+                    <option value="premiere">Công chiếu phim</option>
+                    <option value="contest">Cuộc thi</option>
+                    <option value="promotion">Khuyến mãi</option>
+                    <option value="workshop">Workshop</option>
+                    <option value="festival">Liên hoan phim</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="date-filter">
+                <input type="date" class="form-control" id="eventDateFilter">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 col-md-6 mb-4">
+            <div class="event-card">
+                <div class="event-image">
+                    <img src="https://via.placeholder.com/600x300?text=Công+Chiếu+Phim" alt="Event Image" class="img-fluid">
+                    <div class="event-date-badge">
+                        <span class="day">15</span>
+                        <span class="month">THG 3</span>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="event-meta">
+                        <span class="event-type premiere">Công chiếu</span>
+                        <span class="event-time">
+                            <i class="fas fa-clock"></i> 19:00
+                        </span>
+                    </div>
+                    <h4 class="event-title">Công Chiếu Phim Bom Tấn Mùa Hè</h4>
+                    <p class="event-description">
+                        Tham gia buổi công chiếu đặc biệt với sự góp mặt của đạo diễn và dàn diễn viên chính.
+                        Cơ hội gặp gỡ thần tượng và nhận quà tặng độc quyền.
+                    </p>
+                    <div class="event-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Rạp Galaxy Nguyễn Du
+                    </div>
+                    <div class="event-actions">
+                        <a href="@Url.Action("Details", new { id = 1 })" class="btn btn-primary">
+                            <i class="fas fa-info-circle"></i> Chi tiết
+                        </a>
+                        <button class="btn btn-success">
+                            <i class="fas fa-ticket-alt"></i> Đăng ký
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 mb-4">
+            <div class="event-card">
+                <div class="event-image">
+                    <img src="https://via.placeholder.com/600x300?text=Cuộc+Thi+Review" alt="Event Image" class="img-fluid">
+                    <div class="event-date-badge">
+                        <span class="day">20</span>
+                        <span class="month">THG 3</span>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="event-meta">
+                        <span class="event-type contest">Cuộc thi</span>
+                        <span class="event-time">
+                            <i class="fas fa-clock"></i> Cả ngày
+                        </span>
+                    </div>
+                    <h4 class="event-title">Cuộc Thi Review Phim Hay Nhất</h4>
+                    <p class="event-description">
+                        Thể hiện tài năng viết lách của bạn trong cuộc thi review phim.
+                        Giải thưởng hấp dẫn dành cho những bài viết xuất sắc nhất.
+                    </p>
+                    <div class="event-location">
+                        <i class="fas fa-globe"></i>
+                        Online - Tất cả rạp
+                    </div>
+                    <div class="event-actions">
+                        <a href="@Url.Action("Details", new { id = 2 })" class="btn btn-primary">
+                            <i class="fas fa-info-circle"></i> Chi tiết
+                        </a>
+                        <button class="btn btn-success">
+                            <i class="fas fa-pen"></i> Tham gia
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 mb-4">
+            <div class="event-card">
+                <div class="event-image">
+                    <img src="https://via.placeholder.com/600x300?text=Khuyến+Mãi" alt="Event Image" class="img-fluid">
+                    <div class="event-date-badge">
+                        <span class="day">25</span>
+                        <span class="month">THG 3</span>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="event-meta">
+                        <span class="event-type promotion">Khuyến mãi</span>
+                        <span class="event-time">
+                            <i class="fas fa-clock"></i> 10:00 - 22:00
+                        </span>
+                    </div>
+                    <h4 class="event-title">Ngày Hội Giảm Giá 50%</h4>
+                    <p class="event-description">
+                        Ưu đãi đặc biệt giảm giá 50% tất cả vé phim và combo bắp nước.
+                        Áp dụng cho thành viên và khách hàng mới.
+                    </p>
+                    <div class="event-location">
+                        <i class="fas fa-store"></i>
+                        Tất cả rạp trong hệ thống
+                    </div>
+                    <div class="event-actions">
+                        <a href="@Url.Action("Details", new { id = 3 })" class="btn btn-primary">
+                            <i class="fas fa-info-circle"></i> Chi tiết
+                        </a>
+                        <button class="btn btn-success">
+                            <i class="fas fa-tag"></i> Sử dụng ngay
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 mb-4">
+            <div class="event-card">
+                <div class="event-image">
+                    <img src="https://via.placeholder.com/600x300?text=Workshop" alt="Event Image" class="img-fluid">
+                    <div class="event-date-badge">
+                        <span class="day">30</span>
+                        <span class="month">THG 3</span>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="event-meta">
+                        <span class="event-type workshop">Workshop</span>
+                        <span class="event-time">
+                            <i class="fas fa-clock"></i> 14:00 - 17:00
+                        </span>
+                    </div>
+                    <h4 class="event-title">Workshop Làm Phim Cơ Bản</h4>
+                    <p class="event-description">
+                        Học hỏi những kỹ năng cơ bản về làm phim từ các chuyên gia.
+                        Phù hợp cho người mới bắt đầu và yêu thích điện ảnh.
+                    </p>
+                    <div class="event-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Rạp CGV Vincom
+                    </div>
+                    <div class="event-actions">
+                        <a href="@Url.Action("Details", new { id = 4 })" class="btn btn-primary">
+                            <i class="fas fa-info-circle"></i> Chi tiết
+                        </a>
+                        <button class="btn btn-success">
+                            <i class="fas fa-user-plus"></i> Đăng ký
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="text-center">
+                <a href="@Url.Action("Calendar")" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-calendar"></i> Xem Lịch Sự Kiện
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <nav aria-label="Phân trang sự kiện">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Trước</a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Sau</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .event-image {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-image img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .event-card:hover .event-image img {
+            transform: scale(1.05);
+        }
+
+        .event-date-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-date-badge .day {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            line-height: 1;
+        }
+
+        .event-date-badge .month {
+            display: block;
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .event-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 250px);
+        }
+
+        .event-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .event-type {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .event-type.premiere {
+            background: #dc3545;
+        }
+
+        .event-type.contest {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .event-type.promotion {
+            background: #28a745;
+        }
+
+        .event-type.workshop {
+            background: #6f42c1;
+        }
+
+        .event-type.festival {
+            background: #fd7e14;
+        }
+
+        .event-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .event-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .event-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .event-location {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .event-location i {
+            color: #dc3545;
+            margin-right: 5px;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .event-actions .btn {
+            flex: 1;
+        }
+
+        .search-container, .filter-container, .date-filter {
+            margin-bottom: 1rem;
+        }
+
+        .input-group .btn {
+            border-left: none;
+        }
+
+        .form-select, .form-control {
+            border-radius: 5px;
+        }
+
+        @@media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .event-meta {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .event-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+}
