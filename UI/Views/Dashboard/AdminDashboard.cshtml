@@ -43,6 +43,11 @@
                             <i class="fas fa-chart-line me-2"></i>Báo cáo thống kê
                         </a>
                     </div>
+                    <div class="col-md-3 mb-3">
+                        <a asp-controller="Promotions" asp-action="Index" class="btn btn-outline-info w-100">
+                            <i class="fas fa-calendar-alt me-2"></i>Quản lý khuyến mãi
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -89,7 +94,7 @@
                 <div class="d-flex align-items-center">
                     <div class="stats-icon bg-warning">
                         <i class="fas fa-ticket-alt"></i>
-                    </div>
+                    </div>  
                     <div class="ms-3">
                         <h5 class="card-title mb-0">@ViewBag.TotalBookings</h5>
                         <p class="card-text text-muted small mb-0">Vé đã đặt hôm nay</p>

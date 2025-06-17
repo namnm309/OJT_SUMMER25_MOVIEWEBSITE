@@ -16,11 +16,22 @@ namespace ApplicationLayer.DTO.PromotionManagement
         [StringLength(100)]
         public string Title { get; set; }
 
-        [Required]
-        public DateTime StartDate { get; set; }
+        private DateTime _startDate;
+        private DateTime _endDate;
 
         [Required]
-        public DateTime EndDate { get; set; }
+        public DateTime StartDate
+        {
+            get => _startDate;
+            set => _startDate = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
+
+        [Required]
+        public DateTime EndDate
+        {
+            get => _endDate;
+            set => _endDate = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
 
         [Required]
         [Range(0, 100)]

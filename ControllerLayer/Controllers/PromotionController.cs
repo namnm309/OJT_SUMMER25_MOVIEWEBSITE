@@ -22,6 +22,13 @@ namespace ControllerLayer.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllPromotions()
+        {
+            _logger.LogInformation("Getting all promotions");
+            return await _promotionService.GetAllPromotions();
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreatePromotion([FromBody] PromotionCreateDto Dto)
         {
@@ -29,12 +36,7 @@ namespace ControllerLayer.Controllers
             return await _promotionService.CreatePromotion(Dto);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllPromotions()
-        {
-            _logger.LogInformation("Getting all promotions");
-            return await _promotionService.GetAllPromotions();
-        }
+        
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPromotionById(Guid id)

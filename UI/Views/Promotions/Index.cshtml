@@ -1,0 +1,129 @@
+﻿@model List<UI.Models.PromotionViewModel>
+@{
+    ViewData["Title"] = "Quản lý khuyến mãi";
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mt-4">
+            <i class="fas fa-tags me-2 text-primary"></i>@ViewData["Title"]
+        </h1>
+        <div>
+            <button id="refreshBtn" class="btn btn-outline-primary me-2">
+                <i class="fas fa-sync-alt me-2"></i>Tải lại
+            </button>
+            <a asp-action="Create" class="btn btn-success">
+                <i class="fas fa-plus me-2"></i>Thêm khuyến mãi
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2 text-secondary"></i>Danh sách khuyến mãi
+                </h5>
+                <div class="small text-muted">
+                    Hiển thị <span class="fw-bold">@Model.Count</span> khuyến mãi
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-nowrap">Tên khuyến mãi</th>
+                            <th class="text-nowrap">Ngày bắt đầu</th>
+                            <th class="text-nowrap">Ngày kết thúc</th>
+                            <th class="text-nowrap text-center">Giảm giá (%)</th>
+                            <th class="text-nowrap">Hình ảnh</th>
+                            <th class="text-nowrap text-center">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var promotion in Model)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@promotion.Title</td>
+                                    <td>@promotion.StartDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@promotion.EndDate.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success">@promotion.DiscountPercent%</span>
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(promotion.ImageUrl))
+                                        {
+                                            <img src="@promotion.ImageUrl" alt="Promotion image" style="max-width: 100px; max-height: 60px;" />
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Không có hình</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a asp-action="Edit" asp-route-id="@promotion.Id" class="btn btn-outline-warning" title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form asp-action="Delete" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@promotion.Id" />
+                                                <button type="submit" class="btn btn-outline-danger"
+                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa khuyến mãi này?')"
+                                                        title="Xóa">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">Không có khuyến mãi nào</h5>
+                                        <p class="text-muted mb-0">Nhấn nút "Thêm khuyến mãi" để bắt đầu</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Xử lý nút tải lại
+            $('#refreshBtn').click(function() {
+                location.reload();
+            });
+        });
+    </script>
+}
