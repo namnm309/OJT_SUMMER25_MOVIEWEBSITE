@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application.ResponseCode;
+using ApplicationLayer.DTO;
 using ApplicationLayer.DTO.MovieManagement;
 using AutoMapper;
 using DomainLayer.Entities;
 using DomainLayer.Enum;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ApplicationLayer.Services.MovieManagement
 {
@@ -115,10 +117,28 @@ namespace ApplicationLayer.Services.MovieManagement
             return SuccessResp.Ok("Create movie successfully");
         }
 
-        public async Task<IActionResult> ViewMovie()
+        public async Task<IActionResult> ViewMovie(PaginationReq query)
         {
+            int page = query.Page <= 0 ? 1 : query.Page;
+            int pageSize = query.PageSize <= 0 ? 10 : query.PageSize;
+
             var movies = await _movieRepo.ListAsync();
-            var result = _mapper.Map<List<MovieResponseDto>>(movies);
+
+            var pagedMovies = movies
+                .Skip(page * pageSize)
+                .Take(pageSize) 
+                .ToList();
+
+            var result = _mapper.Map<List<MovieResponseDto>>(pagedMovies);
+
+            var response = new
+            {
+                Data = result,
+                Total = movies.Count,
+                Page = query.Page,
+                PageSize = query.PageSize,
+            };
+
             return SuccessResp.Ok(result);
         }
 
