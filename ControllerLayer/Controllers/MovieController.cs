@@ -28,10 +28,17 @@ namespace ControllerLayer.Controllers
         }
 
         [HttpGet("View")]
-        public async Task<IActionResult> ViewListMovie([FromQuery] PaginationReq query)
+        public async Task<IActionResult> ViewListMovie()
         {
             _logger.LogInformation("View List Movie");
-            return await _movieService.ViewMovie(query);
+            return await _movieService.ViewMovie();
+        }
+
+        [HttpGet("ViewWithPagination")]
+        public async Task<IActionResult> ViewListMovies([FromQuery] PaginationReq query)
+        {
+            _logger.LogInformation("View List Movie");
+            return await _movieService.ViewMoviesWithPagination(query);
         }
 
         [HttpGet("GetById")]

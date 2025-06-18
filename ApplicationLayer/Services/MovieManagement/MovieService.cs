@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application.ResponseCode;
+using ApplicationLayer.DTO;
 using ApplicationLayer.DTO.MovieManagement;
 using AutoMapper;
 using DomainLayer.Entities;
@@ -191,6 +192,30 @@ namespace ApplicationLayer.Services.MovieManagement
             }).ToList();
             
             return SuccessResp.Ok(result);
+        }
+
+        //Code movie with pagination 
+        public async Task<IActionResult> ViewMoviesWithPagination(PaginationReq query)
+        {
+            int page = query.Page <= 0 ? 1 : query.Page;
+            int pageSize = query.PageSize <= 0 ? 10 : query.PageSize;
+
+            var movies = await _movieRepo.ListAsync();
+
+            var pagedMovies = movies
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var response = new
+            {
+                Data = pagedMovies,
+                Total = movies.Count,
+                Page = query.Page,
+                PageSize = query.PageSize,
+            };
+
+            return SuccessResp.Ok(response);
         }
 
         public async Task<IActionResult> UpdateMovie(MovieUpdateDto Dto)
