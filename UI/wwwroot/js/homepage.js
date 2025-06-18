@@ -1,5 +1,5 @@
-﻿// Movie data for carousel
-const movies = [
+﻿// Movie data for carousel - lấy từ server hoặc dùng dữ liệu mặc định
+const movies = window.heroMovies || [
     {
         title: "Oppenheimer 2023",
         titleVn: "Cha đẻ bom nguyên tử",
@@ -52,6 +52,39 @@ document.addEventListener('DOMContentLoaded', function() {
     updateMovieDisplay();
     startMovieCarousel();
     updatePaginationDots();
+    const userDropdown = document.getElementById('userDropdown');
+    const dropdownMenu = userDropdown?.nextElementSibling;
+    
+    if (userDropdown && dropdownMenu) {
+        // Toggle dropdown on click
+        userDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+            
+            // Toggle chevron rotation
+            const chevron = userDropdown.querySelector('.fa-chevron-down');
+            if (chevron) {
+                chevron.style.transform = dropdownMenu.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0)';
+                chevron.style.transition = 'transform 0.3s ease';
+            }
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+                const chevron = userDropdown.querySelector('.fa-chevron-down');
+                if (chevron) {
+                    chevron.style.transform = 'rotate(0)';
+                }
+            }
+        });
+        
+        // Prevent dropdown from closing when clicking inside
+        dropdownMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
 });
 
 // Initialize carousel with smooth transitions
@@ -259,12 +292,22 @@ document.addEventListener('click', function(e) {
 
 // Action button functions
 function bookTickets() {
-    window.location.href = window.movieUrls.moviesIndex;
+    const currentMovie = movies[currentMovieIndex];
+    if (currentMovie && currentMovie.id) {
+        window.location.href = window.movieUrls.moviesIndex + '?movieId=' + currentMovie.id;
+    } else {
+        window.location.href = window.movieUrls.moviesIndex;
+    }
 }
 
 function showMovieInfo() {
-    const movieId = currentMovieIndex + 1;
-    window.location.href = window.movieUrls.movieDetails + '?id=' + movieId;
+    const currentMovie = movies[currentMovieIndex];
+    if (currentMovie && currentMovie.id) {
+        window.location.href = window.movieUrls.movieDetails + '/' + currentMovie.id;
+    } else {
+        // Fallback nếu không có ID
+        window.location.href = window.movieUrls.moviesIndex;
+    }
 }
 
 // Search section toggle with smooth animation

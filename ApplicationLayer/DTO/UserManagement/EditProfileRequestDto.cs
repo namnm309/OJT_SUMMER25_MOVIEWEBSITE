@@ -28,7 +28,6 @@ namespace ApplicationLayer.DTO.UserManagement
 
         public DateTime? BirthDate { get; set; }
 
-        [StringLength(10, ErrorMessage = "Gender cannot exceed 10 characters")]
         public UserGender Gender { get; set; }
 
         [StringLength(500, ErrorMessage = "Avatar URL cannot exceed 500 characters")]
@@ -41,4 +40,4 @@ namespace ApplicationLayer.DTO.UserManagement
         [Compare("NewPassword", ErrorMessage = "Password and confirm password do not match")]
         public string? ConfirmNewPassword { get; set; }
     }
-} 
+}

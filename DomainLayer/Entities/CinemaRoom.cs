@@ -12,6 +12,8 @@ namespace DomainLayer.Entities
 
         [Required]
         public int TotalSeats { get; set; }
+        
+        public bool IsActive { get; set; } = true;
 
         // Navigation properties
         public virtual ICollection<Seat> Seats { get; set; } = new List<Seat>();

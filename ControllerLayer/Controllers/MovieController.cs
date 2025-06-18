@@ -1,7 +1,9 @@
-﻿using ApplicationLayer.DTO.MovieManagement;
+﻿using ApplicationLayer.DTO;
+using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.Services.MovieManagement;
 using DomainLayer.Enum;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 
 namespace ControllerLayer.Controllers
 {
@@ -32,6 +34,23 @@ namespace ControllerLayer.Controllers
             return await _movieService.ViewMovie();
         }
 
+        [HttpGet("ViewWithPagination")]
+        public async Task<IActionResult> ViewListMovies([FromQuery] PaginationReq query)
+        {
+            _logger.LogInformation("View List Movie");
+            return await _movieService.ViewMoviesWithPagination(query);
+        }
+
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetById(Guid movieId)
+        {
+            _logger.LogInformation("Get Movie By Id: {MovieId}", movieId);
+            var movie = await _movieService.GetByIdAsync(movieId);
+            if (movie == null)
+                return NotFound("Movie not found");
+            return Ok(new { data = movie });
+        }
+
         [HttpPatch("Update")]
         public async Task<IActionResult> UpdateMovie([FromBody] MovieUpdateDto Dto)
         {
@@ -51,6 +70,22 @@ namespace ControllerLayer.Controllers
         {
             _logger.LogInformation("Update Movie");
             return await _movieService.ChangeStatus(Id, Status);
+        }
+
+        [HttpGet("genres")]
+        [EnableCors("PublicAPI")]
+        public async Task<IActionResult> GetAllGenres()
+        {
+            _logger.LogInformation("Get All Genres");
+            return await _movieService.GetAllGenres();
+        }
+
+        [HttpGet("cinemarooms")]
+        [EnableCors("PublicAPI")]
+        public async Task<IActionResult> GetAllCinemaRooms()
+        {
+            _logger.LogInformation("Get All Cinema Rooms");
+            return await _movieService.GetAllCinemaRooms();
         }
     }
 }

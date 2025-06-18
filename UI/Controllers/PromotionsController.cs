@@ -19,9 +19,10 @@ namespace UI.Controllers
             _logger = logger;
         }
 
+        // Public view để user xem danh sách khuyến mãi
         public async Task<IActionResult> Index()
         {
-            ViewData["Title"] = "Quản lý khuyến mãi";
+            ViewData["Title"] = "Khuyến mãi";
 
             try
             {
