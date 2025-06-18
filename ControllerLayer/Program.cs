@@ -4,11 +4,8 @@ using InfrastructureLayer.Data;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-<<<<<<< HEAD
-using ApplicationLayer.Services.CinemaRoomManagement;
-=======
 using ApplicationLayer.Services.PromotionManagement;
->>>>>>> origin/dev
+using ApplicationLayer.Services.CinemaRoomManagement;
 
 namespace ControllerLayer
 {
@@ -71,11 +68,9 @@ namespace ControllerLayer
             builder.Services.AddScoped<IMovieService, MovieService>();
             builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 
-<<<<<<< HEAD
-            builder.Services.AddScoped<ICinemaRoomService, CinemaRoomService>();
-=======
             builder.Services.AddScoped<IPromotionService, PromotionService>();
->>>>>>> origin/dev
+
+            builder.Services.AddScoped<ICinemaRoomService, CinemaRoomService>();
 
             // Cấu hình Authentication với Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
