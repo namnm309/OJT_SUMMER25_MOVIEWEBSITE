@@ -27,7 +27,7 @@ namespace ControllerLayer.Controllers
         }
 
         [HttpGet("View")]
-        public async Task<IActionResult> ViewListMovie([FromBody] PaginationReq query)
+        public async Task<IActionResult> ViewListMovie([FromQuery] PaginationReq query)
         {
             _logger.LogInformation("View List Movie");
             return await _movieService.ViewMovie(query);

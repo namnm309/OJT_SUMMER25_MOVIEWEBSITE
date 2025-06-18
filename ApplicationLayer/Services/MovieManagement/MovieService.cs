@@ -125,21 +125,19 @@ namespace ApplicationLayer.Services.MovieManagement
             var movies = await _movieRepo.ListAsync();
 
             var pagedMovies = movies
-                .Skip(page * pageSize)
+                .Skip((page - 1) * pageSize)
                 .Take(pageSize) 
                 .ToList();
 
-            var result = _mapper.Map<List<MovieResponseDto>>(pagedMovies);
-
             var response = new
             {
-                Data = result,
+                Data = pagedMovies,
                 Total = movies.Count,
                 Page = query.Page,
                 PageSize = query.PageSize,
             };
 
-            return SuccessResp.Ok(result);
+            return SuccessResp.Ok(response);
         }
 
         public async Task<IActionResult> UpdateMovie(MovieUpdateDto Dto)
