@@ -75,21 +75,30 @@ namespace UI.Controllers
 
             try
             {
+                var promotionData = new
+                {
+                    title = model.Title,
+                    startDate = model.StartDate.ToString("yyyy-MM-dd"),
+                    endDate = model.EndDate.ToString("yyyy-MM-dd"),
+                    discountPercent = model.DiscountPercent,
+                    description = model.Description,
+                    imageUrl = model.ImageUrl
+                };
 
-                var result = await _apiService.PostAsync<PromotionViewModel>("/api/v1/promotions", model);
+                var result = await _apiService.PostAsync<JsonElement>("/api/v1/promotions", promotionData);
 
-                if (result.Success || result.StatusCode == HttpStatusCode.Created)
+                if (result.Success)
                 {
                     TempData["SuccessMessage"] = "Thêm khuyến mãi thành công!";
-                    return RedirectToAction(nameof(Index)); // Sử dụng nameof để tránh lỗi chính tả
+                    return RedirectToAction("Index");
                 }
 
-                ModelState.AddModelError("", result.Message ?? "Có lỗi xảy ra khi thêm khuyến mãi");
+                ModelState.AddModelError("", result.Message);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating promotion");
-                ModelState.AddModelError("", "Đã xảy ra lỗi khi thêm khuyến mãi");
+                ModelState.AddModelError("", $"Đã xảy ra lỗi: {ex.Message}");
             }
 
             return View(model);

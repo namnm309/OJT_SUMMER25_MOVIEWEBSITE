@@ -43,6 +43,14 @@ namespace UI
 
             builder.Services.AddAuthorization();
 
+            // Add Session services
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             // Đăng ký ApiService
             builder.Services.AddScoped<UI.Services.IApiService, UI.Services.ApiService>();
             
@@ -66,6 +74,7 @@ namespace UI
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSession();
 
             // Thêm routing cho Areas
             app.MapControllerRoute(
