@@ -362,8 +362,8 @@
                         <div class="brand-name">Cinema City</div>
                         <div class="brand-subtitle">Rạp chiếu phim hiện đại</div>
                     </div>
-                </a>
-            </div>
+                        </a>
+                    </div>
             <nav class="nav-links">
                 <a href="@Url.Action("Index", "Home")" class="nav-link">Trang chủ</a>
                 <a href="@Url.Action("Index", "Movies")" class="nav-link">Phim</a>
@@ -429,20 +429,20 @@
                 </a>
             </div>
             <div class="col-md-3 mb-4">
-                <a href="@Url.Action("Profile", "Account")" class="action-btn">
+                <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="action-btn">
                     <i class="fas fa-user-edit"></i>
                     <span>Chỉnh sửa hồ sơ</span>
                 </a>
-            </div>
-        </div>
+    </div>
+</div>
 
-        <!-- User Info -->
-        <div class="row">
-            <div class="col-12">
-                <div class="dashboard-card">
-                    <h5 class="card-title">
-                        <i class="fas fa-user-circle me-2"></i>Thông tin tài khoản
-                    </h5>
+<!-- User Info -->
+<div class="row">
+    <div class="col-12">
+        <div class="dashboard-card">
+                <h5 class="card-title">
+                    <i class="fas fa-user-circle me-2"></i>Thông tin tài khoản
+                </h5>
                     <div class="info-grid">
                         <div class="info-item">
                             <div class="info-label">Tên đăng nhập</div>
@@ -461,18 +461,18 @@
                             <div class="info-value">
                                 <span class="badge bg-info">@ViewBag.Role</span>
                             </div>
-                        </div>
+                    </div>
                         <div class="info-item">
                             <div class="info-label">Trạng thái</div>
                             <div class="info-value">
-                                @if(ViewBag.IsActive)
-                                {
-                                    <span class="badge bg-success">Hoạt động</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">Không hoạt động</span>
-                                }
+                            @if(ViewBag.IsActive)
+                            {
+                                <span class="badge bg-success">Hoạt động</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Không hoạt động</span>
+                            }
                             </div>
                         </div>
                         <div class="info-item">
@@ -490,8 +490,8 @@
         <div class="footer-container">
             <div class="footer-content">
                 <p>&copy; @DateTime.Now.Year Cinema City. Tất cả quyền được bảo lưu.</p>
-            </div>
-        </div>
+    </div>
+</div> 
     </footer>
 
     <!-- Scripts -->

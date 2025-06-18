@@ -1,4 +1,5 @@
 using UI.Models;
+using UI.Areas.EmployeeManagement.Models;
 using UI.Services;
 
 namespace UI.Areas.EmployeeManagement.Services

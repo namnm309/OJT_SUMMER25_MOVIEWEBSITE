@@ -1,4 +1,5 @@
 using UI.Models;
+using UI.Areas.CinemaManagement.Models;
 using UI.Services;
 
 namespace UI.Areas.CinemaManagement.Services

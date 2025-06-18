@@ -36,7 +36,7 @@
                 <a href="@Url.Action("Index", "Home")" class="nav-link">Trang chủ</a>
                 <a href="@Url.Action("Index", "Movies")" class="nav-link">Phim</a>
                 <a href="@Url.Action("Index", "Events")" class="nav-link">Sự kiện</a>
-                <a href="@Url.Action("Index", "Dashboard")" class="nav-link active">Dashboard</a>
+                <a href="@Url.Action("Index", "Dashboard", new { area = "" })" class="nav-link active">Dashboard</a>
                 
                 <div class="user-menu">
                     <div class="user-info">
@@ -63,8 +63,8 @@
 
         <div class="row mb-3">
             <div class="col-12">
-                <a href="/Dashboard" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> Quay lại
+                <a href="@Url.Action("Index", "Dashboard", new { area = "" })" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Quay lại Dashboard
                 </a>
             </div>
         </div>

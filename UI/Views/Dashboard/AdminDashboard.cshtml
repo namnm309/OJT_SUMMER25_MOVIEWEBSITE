@@ -30,8 +30,8 @@
                         <div class="brand-name">Cinema City</div>
                         <div class="brand-subtitle">Rạp chiếu phim hiện đại</div>
                     </div>
-                </a>
-            </div>
+                        </a>
+                    </div>
             <nav class="nav-links">
                 <a href="@Url.Action("Index", "Home")" class="nav-link">Trang chủ</a>
                 <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
@@ -41,7 +41,7 @@
                     </button>
                 </form>
             </nav>
-        </div>
+                    </div>
     </header>
 
     <!-- Dashboard Layout -->
@@ -81,7 +81,7 @@
                         <i class="fas fa-calendar-alt"></i>
                         Sự kiện
                     </a>
-                    <a href="@Url.Action("Index", "Promotions")" class="menu-item">
+                    <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="menu-item">
                         <i class="fas fa-gift"></i>
                         Khuyến mãi
                     </a>
@@ -90,11 +90,11 @@
                 <!-- Management -->
                 <div class="menu-section">
                     <div class="menu-title">Quản trị hệ thống</div>
-                    <a href="@Url.Action("Members", "Dashboard")" class="menu-item">
+                    <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="menu-item">
                         <i class="fas fa-users"></i>
                         Quản lý thành viên
                     </a>
-                    <a href="@Url.Action("MovieManagement", "Movies")" class="menu-item">
+                    <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="menu-item">
                         <i class="fas fa-video"></i>
                         Quản lý phim
                     </a>
@@ -106,12 +106,12 @@
                         <i class="fas fa-chart-line"></i>
                         Báo cáo thống kê
                     </a>
-                </div>
+        </div>
 
                 <!-- Personal -->
                 <div class="menu-section">
                     <div class="menu-title">Cá nhân</div>
-                    <a href="@Url.Action("Profile", "Account")" class="menu-item">
+                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="menu-item">
                         <i class="fas fa-user-edit"></i>
                         Chỉnh sửa hồ sơ
                     </a>
@@ -119,7 +119,7 @@
                         <i class="fas fa-cog"></i>
                         Cài đặt
                     </a>
-                </div>
+    </div>
             </nav>
         </aside>
 
@@ -136,115 +136,115 @@
                         Chào mừng Admin!
                     </h1>
                     <p class="page-subtitle">Tổng quan quản trị hệ thống rạp chiếu phim</p>
-                </div>
+</div>
 
-                <!-- System Stats -->
+<!-- System Stats -->
                 <div class="row mb-5">
-                    <div class="col-md-3 mb-4">
-                        <div class="dashboard-card stats-card">
-                            <div class="d-flex align-items-center">
-                                <div class="stats-icon bg-primary">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <div class="ms-3">
+    <div class="col-md-3 mb-4">
+        <div class="dashboard-card stats-card">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon bg-primary">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="ms-3">
                                     <h5>@ViewBag.TotalUsers</h5>
                                     <p>Tổng thành viên</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div class="col-md-3 mb-4">
-                        <div class="dashboard-card stats-card">
-                            <div class="d-flex align-items-center">
-                                <div class="stats-icon bg-success">
-                                    <i class="fas fa-film"></i>
-                                </div>
-                                <div class="ms-3">
+    <div class="col-md-3 mb-4">
+        <div class="dashboard-card stats-card">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon bg-success">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <div class="ms-3">
                                     <h5>@ViewBag.TotalMovies</h5>
                                     <p>Phim trong hệ thống</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div class="col-md-3 mb-4">
-                        <div class="dashboard-card stats-card">
-                            <div class="d-flex align-items-center">
-                                <div class="stats-icon bg-warning">
-                                    <i class="fas fa-ticket-alt"></i>
-                                </div>
-                                <div class="ms-3">
+    <div class="col-md-3 mb-4">
+        <div class="dashboard-card stats-card">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon bg-warning">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>  
+                    <div class="ms-3">
                                     <h5>@ViewBag.TotalBookings</h5>
                                     <p>Vé đã đặt hôm nay</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div class="col-md-3 mb-4">
-                        <div class="dashboard-card stats-card">
-                            <div class="d-flex align-items-center">
-                                <div class="stats-icon bg-info">
-                                    <i class="fas fa-dollar-sign"></i>
-                                </div>
-                                <div class="ms-3">
+    <div class="col-md-3 mb-4">
+        <div class="dashboard-card stats-card">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon bg-info">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="ms-3">
                                     <h5>@ViewBag.TodayRevenue</h5>
                                     <p>Doanh thu hôm nay</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <!-- Quick Actions -->
                 <div class="row mb-5">
                     <div class="col-12">
-                        <div class="dashboard-card">
-                            <h5 class="card-title">
+        <div class="dashboard-card">
+                <h5 class="card-title">
                                 <i class="fas fa-bolt me-2"></i>Truy cập nhanh
-                            </h5>
+                </h5>
                             <div class="row">
                                 <div class="col-md-4 mb-3">
-                                    <a asp-controller="Dashboard" asp-action="Members" class="btn btn-outline-primary w-100">
+                                    <a asp-area="UserManagement" asp-controller="Members" asp-action="Index" class="btn btn-outline-primary w-100">
                                         <i class="fas fa-users me-2"></i>
                                         Quản lý thành viên
                                     </a>
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <a asp-controller="Movies" asp-action="MovieManagement" class="btn btn-outline-success w-100">
+                                    <a asp-area="MovieManagement" asp-controller="Movies" asp-action="Index" class="btn btn-outline-success w-100">
                                         <i class="fas fa-film me-2"></i>
                                         Quản lý phim
-                                    </a>
+                    </a>
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <a asp-controller="Promotions" asp-action="Index" class="btn btn-outline-warning w-100">
+                                    <a asp-area="PromotionManagement" asp-controller="Promotions" asp-action="Index" class="btn btn-outline-warning w-100">
                                         <i class="fas fa-gift me-2"></i>
                                         Quản lý khuyến mãi
                                     </a>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
                 <!-- Notifications and Recent Activity -->
                 <div class="row">
-                    <div class="col-md-6 mb-4">
-                        <div class="dashboard-card">
-                            <h5 class="card-title">
-                                <i class="fas fa-bell me-2"></i>Thông báo hệ thống
-                            </h5>
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Hệ thống đang hoạt động bình thường
-                            </div>
-                            <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                Có <strong>@ViewBag.PendingTasks</strong> nhiệm vụ cần xử lý
-                            </div>
-                        </div>
-                    </div>
+    <div class="col-md-6 mb-4">
+        <div class="dashboard-card">
+                <h5 class="card-title">
+                    <i class="fas fa-bell me-2"></i>Thông báo hệ thống
+                </h5>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Hệ thống đang hoạt động bình thường
+                </div>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Có <strong>@ViewBag.PendingTasks</strong> nhiệm vụ cần xử lý
+                </div>
+            </div>
+        </div>
 
                     <div class="col-md-6 mb-4">
                         <div class="dashboard-card">
@@ -277,8 +277,8 @@
         <div class="footer-container">
             <div class="footer-content">
                 <p>&copy; @DateTime.Now.Year Cinema City. Tất cả quyền được bảo lưu.</p>
-            </div>
-        </div>
+    </div>
+</div> 
     </footer>
 
     <!-- Scripts -->

@@ -21,8 +21,9 @@ namespace ApplicationLayer.Services.MovieManagement
         private readonly IGenericRepository<MovieImage> _imageRepo;
         private readonly IGenericRepository<ShowTime> _showtimeRepo;
         private readonly IGenericRepository<CinemaRoom> _roomRepo;
+        private readonly IGenericRepository<Genre> _genreEntityRepo;
 
-        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IMapper mapper)
+        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IGenericRepository<Genre> genreEntityRepo, IMapper mapper)
         {
             _movieRepo = movieRepo;
             _mapper = mapper;
@@ -30,6 +31,7 @@ namespace ApplicationLayer.Services.MovieManagement
             _imageRepo = imageRepo;
             _showtimeRepo = showtimeRepo;
             _roomRepo = roomRepo;
+            _genreEntityRepo = genreEntityRepo;
         }
 
         public async Task<List<MovieListDto>> GetAllAsync()
@@ -285,6 +287,33 @@ namespace ApplicationLayer.Services.MovieManagement
             await _movieRepo.UpdateAsync(movie);
 
             return SuccessResp.Ok("Changed Status Successfully");
+        }
+
+        public async Task<IActionResult> GetAllGenres()
+        {
+            var genres = await _genreEntityRepo.ListAsync();
+            var genreDtos = genres.Select(g => new GenreDto
+            {
+                Id = g.Id,
+                Name = g.GenreName,
+                Description = g.Description
+            }).ToList();
+
+            return SuccessResp.Ok(genreDtos);
+        }
+
+        public async Task<IActionResult> GetAllCinemaRooms()
+        {
+            var rooms = await _roomRepo.ListAsync();
+            var roomDtos = rooms.Select(r => new CinemaRoomDto
+            {
+                Id = r.Id,
+                RoomName = r.RoomName,
+                TotalSeats = r.TotalSeats,
+                IsActive = r.IsActive
+            }).ToList();
+
+            return SuccessResp.Ok(roomDtos);
         }
     }
 }

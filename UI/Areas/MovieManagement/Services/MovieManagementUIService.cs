@@ -1,4 +1,5 @@
 using UI.Models;
+using UI.Areas.MovieManagement.Models;
 using UI.Services;
 
 namespace UI.Areas.MovieManagement.Services

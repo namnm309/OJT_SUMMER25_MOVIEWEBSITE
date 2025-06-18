@@ -1,11 +1,14 @@
-﻿using System.Net;
+using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using UI.Models;
 using UI.Services;
 
-namespace UI.Controllers
+namespace UI.Areas.PromotionManagement.Controllers
 {
+    [Area("PromotionManagement")]
+    [Authorize(Roles = "Admin,Staff")]
     public class PromotionsController : Controller
     {
         private readonly IApiService _apiService;
@@ -19,10 +22,9 @@ namespace UI.Controllers
             _logger = logger;
         }
 
-        // Public view để user xem danh sách khuyến mãi
         public async Task<IActionResult> Index()
         {
-            ViewData["Title"] = "Khuyến mãi";
+            ViewData["Title"] = "Quản lý khuyến mãi";
 
             try
             {
@@ -80,7 +82,7 @@ namespace UI.Controllers
                 if (result.Success || result.StatusCode == HttpStatusCode.Created)
                 {
                     TempData["SuccessMessage"] = "Thêm khuyến mãi thành công!";
-                    return RedirectToAction(nameof(Index)); // Sử dụng nameof để tránh lỗi chính tả
+                    return RedirectToAction(nameof(Index));
                 }
 
                 ModelState.AddModelError("", result.Message ?? "Có lỗi xảy ra khi thêm khuyến mãi");
@@ -139,10 +141,8 @@ namespace UI.Controllers
 
             try
             {
-                // Log tất cả dữ liệu nhận được
                 _logger.LogInformation("Received model: {@Model}", model);
                 var result = await _apiService.PutAsync<JsonElement>("/api/v1/promotions", model);
-                // Log kết quả
                 _logger.LogInformation("Service returned: {@Result}", result);
 
                 if (result.Success)
@@ -188,4 +188,4 @@ namespace UI.Controllers
             return RedirectToAction("Index");
         }
     }
-}
+} 

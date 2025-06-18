@@ -16,6 +16,7 @@
         public string? TrailerUrl { get; set; }
         public string? ImageUrl { get; set; }
         public string? PrimaryImageUrl { get; set; }
+        public int Status { get; set; } // 0 = NotAvailable, 1 = Available, 2 = ComingSoon, 3 = Stopped
         public List<string> Genres { get; set; } = new List<string>();
         public List<MovieShowTimeViewModel> ShowTimes { get; set; } = new List<MovieShowTimeViewModel>();
         public List<MovieImageViewModel> Images { get; set; } = new List<MovieImageViewModel>();

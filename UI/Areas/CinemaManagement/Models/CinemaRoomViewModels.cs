@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace UI.Models
+namespace UI.Areas.CinemaManagement.Models
 {
     public class CinemaRoomCreateViewModel
     {

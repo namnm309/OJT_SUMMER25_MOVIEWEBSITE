@@ -18,5 +18,9 @@ namespace ApplicationLayer.Services.MovieManagement
         Task<IActionResult> UpdateMovie(MovieUpdateDto Dto);
         Task<IActionResult> DeleteMovie(Guid Id);
         Task<IActionResult> ChangeStatus(Guid Id, MovieStatus status);
+        
+        // New methods for getting genres and cinema rooms
+        Task<IActionResult> GetAllGenres();
+        Task<IActionResult> GetAllCinemaRooms();
     }
 }
