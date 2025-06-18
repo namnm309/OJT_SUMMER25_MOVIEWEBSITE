@@ -4,52 +4,23 @@ namespace UI.Models
 {
     public class PromotionViewModel
     {
-        public string? Id { get; set; }
+        public string Id { get; set; }
 
-        [Required(ErrorMessage = "Vui l?ng nh?p tiêu ğ?.")]
-        [StringLength(100, MinimumLength = 5, ErrorMessage = "Tiêu ğ? ph?i t? 5-100 k? t?")]
-        public string? Title { get; set; }
+        [Required(ErrorMessage = "Vui l?ng nh?p tên khuy?n m?i")]
+        public string Title { get; set; }
 
-        [Required(ErrorMessage = "Vui l?ng nh?p ngày b?t ğ?u.")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Required(ErrorMessage = "Vui l?ng ch?n ngày b?t Eu")]
         public DateTime StartDate { get; set; }
 
-        [Required(ErrorMessage = "Vui l?ng nh?p ngày k?t thúc.")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        [CustomValidation(typeof(PromotionViewModel), "ValidateEndDate")]
+        [Required(ErrorMessage = "Vui l?ng ch?n ngày k?t thúc")]
         public DateTime EndDate { get; set; }
 
-        [Required(ErrorMessage = "Vui l?ng nh?p ph?n trãm gi?m giá")]
-        [Range(1, 100, ErrorMessage = "Ph?n trãm gi?m giá ph?i t? 1 ğ?n 100")]
-        [Display(Name = "Ph?n trãm gi?m giá")]
+        [Required(ErrorMessage = "Vui l?ng nh?p ph?n trãm gi?m giE")]
+        [Range(1, 100, ErrorMessage = "Ph?n trãm gi?m giEph?i t? 1 En 100")]
         public int DiscountPercent { get; set; }
 
-        [StringLength(500, ErrorMessage = "Mô t? không quá 500 k? t?")]
-        [DataType(DataType.MultilineText)]
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
-        [Url(ErrorMessage = "URL h?nh ?nh không h?p l?")]
-        [Display(Name = "URL h?nh ?nh")]
-        public string? ImageUrl { get; set; }
-
-        // Custom validation method
-        public static ValidationResult? ValidateEndDate(DateTime endDate, ValidationContext context)
-        {
-            var instance = (PromotionViewModel)context.ObjectInstance;
-
-            if (endDate < instance.StartDate)
-            {
-                return new ValidationResult("Ngày k?t thúc ph?i sau ngày b?t ğ?u");
-            }
-
-            if (endDate > instance.StartDate.AddYears(1))
-            {
-                return new ValidationResult("Khuy?n m?i không ğı?c kéo dài quá 1 nãm");
-            }
-
-            return ValidationResult.Success;
-        }
+        public string ImageUrl { get; set; }
     }
 }

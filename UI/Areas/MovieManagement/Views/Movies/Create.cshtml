@@ -21,6 +21,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
     
+
     <style>
         body {
             background-color: #0a0a0a;
@@ -440,19 +441,16 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             let showtimeIndex = 1;
             let genres = [];
             let cinemaRooms = [];
-            
-            // Get API base URL from ViewBag
-            var apiBaseUrl = '@ViewBag.ApiBaseUrl' || 'http://localhost:5274';
-            
-            // Set default dates
+
+            // Set default dates (chỉ cho release/end date)
             var today = new Date();
             var todayStr = today.toISOString().split('T')[0];
             var nextMonthStr = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate()).toISOString().split('T')[0];
-            
+
             // Set default values if empty
             if (!$('#ReleaseDate').val()) {
                 $('#ReleaseDate').val(todayStr);
@@ -460,6 +458,8 @@
             if (!$('#EndDate').val()) {
                 $('#EndDate').val(nextMonthStr);
             }
+
+            // KHÔNG set giá trị mặc định cho datetime-local để user tự chọn
 
             // Initialize Select2 for genres
             $('#genreSelect').select2({
@@ -469,56 +469,119 @@
                 width: '100%'
             });
 
-            // Load genres from API with better error handling
+            // Helper function to extract data from API response
+            function extractDataFromResponse(response, dataName = 'data') {
+                console.log(`=== ${dataName.toUpperCase()} RESPONSE DEBUG ===`);
+                console.log('Response type:', typeof response);
+                console.log('Response is array:', Array.isArray(response));
+                console.log('Full response:', response);
+
+                if (Array.isArray(response)) {
+                    console.log(`${dataName} is direct array with ${response.length} items`);
+                    return response;
+                }
+
+                if (response && response.data && response.data.data && Array.isArray(response.data.data)) {
+                    console.log(`${dataName} found in response.data.data with ${response.data.data.length} items`);
+                    return response.data.data;
+                }
+
+                if (response && response.data && Array.isArray(response.data)) {
+                    console.log(`${dataName} found in response.data with ${response.data.length} items`);
+                    return response.data;
+                }
+
+                if (response && response.success && response.data && response.data.data && Array.isArray(response.data.data)) {
+                    console.log(`${dataName} found in response.success.data.data with ${response.data.data.length} items`);
+                    return response.data.data;
+                }
+
+                console.error(`No valid ${dataName} array found in response`);
+                console.log('Available properties:', Object.keys(response || {}));
+                return [];
+            }
+
+            // Load genres from API
             $.ajax({
                 url: '@Url.Action("GetGenres", "Movies", new { area = "MovieManagement" })',
                 method: 'GET',
-                success: function(response) {
-                    console.log('Genres response:', response);
-                    if (response && response.success && response.data) {
-                        genres = response.data;
+                success: function (response) {
+                    console.log('Full genres response:', response);
+
+                    let genresData = [];
+                    if (response && response.data && response.data.data && Array.isArray(response.data.data)) {
+                        genresData = response.data.data;
+                    }
+                    else if (response && response.data && Array.isArray(response.data)) {
+                        genresData = response.data;
+                    }
+                    else if (Array.isArray(response)) {
+                        genresData = response;
+                    }
+
+                    console.log('Extracted genres data:', genresData);
+
+                    if (genresData.length > 0) {
+                        genres = genresData;
                         $('#genreSelect').empty();
-                        genres.forEach(function(genre) {
+
+                        genres.forEach(function (genre) {
+                            console.log('Adding genre:', genre.name, 'ID:', genre.id);
                             var option = new Option(genre.name, genre.id, false, false);
                             $('#genreSelect').append(option);
                         });
+
                         $('#genreSelect').trigger('change');
+                        console.log(`Successfully loaded ${genres.length} genres`);
                     } else {
-                        console.error('Invalid genres response:', response);
+                        console.error('No genres found in response');
+                        alert('Không tìm thấy dữ liệu thể loại phim.');
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Failed to load genres:', error);
-                    console.error('Response:', xhr.responseText);
-                    console.error('Status:', xhr.status);
                     alert('Không thể tải danh sách thể loại. Vui lòng kiểm tra kết nối với server.');
                 }
             });
 
-            // Load cinema rooms from API with better error handling
+            // Load cinema rooms from API
             $.ajax({
                 url: '@Url.Action("GetCinemaRooms", "Movies", new { area = "MovieManagement" })',
                 method: 'GET',
-                success: function(response) {
-                    console.log('Cinema rooms response:', response);
-                    if (response && response.success && response.data) {
-                        cinemaRooms = response.data;
+                success: function (response) {
+                    console.log('Full cinema rooms response:', response);
+
+                    let roomsData = [];
+                    if (response && response.data && response.data.data && Array.isArray(response.data.data)) {
+                        roomsData = response.data.data;
+                    }
+                    else if (response && response.data && Array.isArray(response.data)) {
+                        roomsData = response.data;
+                    }
+                    else if (Array.isArray(response)) {
+                        roomsData = response;
+                    }
+
+                    console.log('Extracted rooms data:', roomsData);
+
+                    if (roomsData.length > 0) {
+                        cinemaRooms = roomsData;
                         updateRoomSelects();
+                        console.log(`Successfully loaded ${cinemaRooms.length} cinema rooms`);
                     } else {
-                        console.error('Invalid cinema rooms response:', response);
+                        console.error('No cinema rooms found in response');
+                        alert('Không tìm thấy dữ liệu phòng chiếu.');
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Failed to load cinema rooms:', error);
-                    console.error('Response:', xhr.responseText);
-                    console.error('Status:', xhr.status);
                     alert('Không thể tải danh sách phòng chiếu. Vui lòng kiểm tra kết nối với server.');
                 }
             });
 
             // Update all room selects with cinema rooms
             function updateRoomSelects() {
-                $('.room-select').each(function() {
+                $('.room-select').each(function () {
                     var selectedValue = $(this).val();
                     $(this).empty().append('<option value="">-- Chọn phòng --</option>');
                     cinemaRooms.forEach(room => {
@@ -531,7 +594,7 @@
             }
 
             // Preview poster image
-            $('#ImageUrl').on('input', function() {
+            $('#ImageUrl').on('input', function () {
                 var imageUrl = $(this).val();
                 if (imageUrl) {
                     $('#posterPreview').attr('src', imageUrl);
@@ -540,8 +603,8 @@
                 }
             });
 
-            // Add showtime
-            $('#addShowtime').click(function() {
+            // Add showtime KHÔNG có giá trị mặc định
+            $('#addShowtime').click(function () {
                 var newShowtime = `
                     <div class="showtime-item" data-index="${showtimeIndex}">
                         <div class="row">
@@ -569,13 +632,13 @@
             });
 
             // Remove showtime
-            window.removeShowtime = function(index) {
+            window.removeShowtime = function (index) {
                 $(`[data-index="${index}"]`).remove();
             };
 
             // Add additional image
             let imageIndex = 1;
-            $('#additionalImages').click(function() {
+            $('#additionalImages').click(function () {
                 var imageUrl = prompt('Nhập URL hình ảnh:');
                 if (imageUrl) {
                     var imageHtml = `
@@ -597,12 +660,50 @@
             });
 
             // Remove additional image
-            window.removeImage = function(index) {
+            window.removeImage = function (index) {
                 $(`#image-${index}`).remove();
             };
 
+            // Validation cho datetime chỉ để kiểm tra không được để trống và phải là thời gian tương lai
+            $(document).on('change', 'input[type="datetime-local"]', function () {
+                var selectedTime = new Date($(this).val());
+                var now = new Date();
+
+                if (selectedTime < now) {
+                    alert('Thời gian chiếu không thể là thời gian trong quá khứ!');
+                    $(this).focus(); // Focus lại để user chọn lại
+                }
+            });
+
             // Form submission
-            $('#createMovieForm').on('submit', function(e) {
+            $('#createMovieForm').on('submit', function (e) {
+                // Validate showtimes
+                var hasValidShowtime = false;
+                var hasInvalidTime = false;
+                var now = new Date();
+
+                $('input[name^="ShowTimes"][name$=".ShowDate"]').each(function () {
+                    if ($(this).val()) {
+                        hasValidShowtime = true;
+                        var showTime = new Date($(this).val());
+                        if (showTime < now) {
+                            hasInvalidTime = true;
+                        }
+                    }
+                });
+
+                if (!hasValidShowtime) {
+                    e.preventDefault();
+                    alert('Vui lòng thêm ít nhất một lịch chiếu');
+                    return false;
+                }
+
+                if (hasInvalidTime) {
+                    e.preventDefault();
+                    alert('Có lịch chiếu trong quá khứ, vui lòng kiểm tra lại!');
+                    return false;
+                }
+
                 // Add primary image to Images array
                 var primaryImageUrl = $('#ImageUrl').val();
                 if (primaryImageUrl) {

@@ -75,30 +75,20 @@ namespace UI.Controllers
 
             try
             {
-                var promotionData = new
-                {
-                    title = model.Title,
-                    startDate = model.StartDate.ToString("yyyy-MM-dd"),
-                    endDate = model.EndDate.ToString("yyyy-MM-dd"),
-                    discountPercent = model.DiscountPercent,
-                    description = model.Description,
-                    imageUrl = model.ImageUrl
-                };
+                var result = await _apiService.PostAsync<PromotionViewModel>("/api/v1/promotions", model);
 
-                var result = await _apiService.PostAsync<JsonElement>("/api/v1/promotions", promotionData);
-
-                if (result.Success)
+                if (result.Success || result.StatusCode == HttpStatusCode.Created)
                 {
                     TempData["SuccessMessage"] = "Thêm khuyến mãi thành công!";
-                    return RedirectToAction("Index");
+                    return RedirectToAction(nameof(Index)); // Sử dụng nameof để tránh lỗi chính tả
                 }
 
-                ModelState.AddModelError("", result.Message);
+                ModelState.AddModelError("", result.Message ?? "Có lỗi xảy ra khi thêm khuyến mãi");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating promotion");
-                ModelState.AddModelError("", $"Đã xảy ra lỗi: {ex.Message}");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi thêm khuyến mãi");
             }
 
             return View(model);
@@ -149,9 +139,11 @@ namespace UI.Controllers
 
             try
             {
-                
+                // Log tất cả dữ liệu nhận được
+                _logger.LogInformation("Received model: {@Model}", model);
                 var result = await _apiService.PutAsync<JsonElement>("/api/v1/promotions", model);
-                
+                // Log kết quả
+                _logger.LogInformation("Service returned: {@Result}", result);
 
                 if (result.Success)
                 {
