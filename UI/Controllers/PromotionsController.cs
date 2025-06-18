@@ -74,6 +74,7 @@ namespace UI.Controllers
 
             try
             {
+
                 var result = await _apiService.PostAsync<PromotionViewModel>("/api/v1/promotions", model);
 
                 if (result.Success || result.StatusCode == HttpStatusCode.Created)
@@ -138,11 +139,9 @@ namespace UI.Controllers
 
             try
             {
-                // Log tất cả dữ liệu nhận được
-                _logger.LogInformation("Received model: {@Model}", model);
+                
                 var result = await _apiService.PutAsync<JsonElement>("/api/v1/promotions", model);
-                // Log kết quả
-                _logger.LogInformation("Service returned: {@Result}", result);
+                
 
                 if (result.Success)
                 {
