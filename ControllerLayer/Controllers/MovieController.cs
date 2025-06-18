@@ -1,4 +1,5 @@
-﻿using ApplicationLayer.DTO.MovieManagement;
+﻿using ApplicationLayer.DTO;
+using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.Services.MovieManagement;
 using DomainLayer.Enum;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +27,10 @@ namespace ControllerLayer.Controllers
         }
 
         [HttpGet("View")]
-        public async Task<IActionResult> ViewListMovie()
+        public async Task<IActionResult> ViewListMovie([FromBody] PaginationReq query)
         {
             _logger.LogInformation("View List Movie");
-            return await _movieService.ViewMovie();
+            return await _movieService.ViewMovie(query);
         }
 
         [HttpPatch("Update")]

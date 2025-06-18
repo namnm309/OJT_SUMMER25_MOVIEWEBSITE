@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application.ResponseCode;
+using ApplicationLayer.DTO;
 using ApplicationLayer.DTO.MovieManagement;
 using AutoMapper;
 using DomainLayer.Entities;
 using DomainLayer.Enum;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ApplicationLayer.Services.MovieManagement
 {
@@ -65,10 +67,6 @@ namespace ApplicationLayer.Services.MovieManagement
             if (Dto.Images.Count(i => i.IsPrimary) != 1)
                 return ErrorResp.BadRequest("Exactly one image must be marked as primary");
 
-            var movie = _mapper.Map<Movie>(Dto);
-            movie.Status = MovieStatus.NotAvailable;
-
-            await _movieRepo.CreateAsync(movie);
 
             foreach (var genreId in Dto.GenreIds)
             {
@@ -83,6 +81,11 @@ namespace ApplicationLayer.Services.MovieManagement
                 if (room == null)
                     return ErrorResp.NotFound($"Cinema room with ID {st.RoomId} not found");
             }
+
+            var movie = _mapper.Map<Movie>(Dto);
+            movie.Status = MovieStatus.NotAvailable;
+
+            await _movieRepo.CreateAsync(movie);
 
             // Map danh sách thể loại (GenreIds -> MovieGenres)
             var movieGenres = Dto.GenreIds.Select(id => new MovieGenre
@@ -114,10 +117,28 @@ namespace ApplicationLayer.Services.MovieManagement
             return SuccessResp.Ok("Create movie successfully");
         }
 
-        public async Task<IActionResult> ViewMovie()
+        public async Task<IActionResult> ViewMovie(PaginationReq query)
         {
+            int page = query.Page <= 0 ? 1 : query.Page;
+            int pageSize = query.PageSize <= 0 ? 10 : query.PageSize;
+
             var movies = await _movieRepo.ListAsync();
-            var result = _mapper.Map<List<MovieResponseDto>>(movies);
+
+            var pagedMovies = movies
+                .Skip(page * pageSize)
+                .Take(pageSize) 
+                .ToList();
+
+            var result = _mapper.Map<List<MovieResponseDto>>(pagedMovies);
+
+            var response = new
+            {
+                Data = result,
+                Total = movies.Count,
+                Page = query.Page,
+                PageSize = query.PageSize,
+            };
+
             return SuccessResp.Ok(result);
         }
 
@@ -145,8 +166,6 @@ namespace ApplicationLayer.Services.MovieManagement
             if (Dto.Images.Count(i => i.IsPrimary) != 1)
                 return ErrorResp.BadRequest("Exactly one image must be marked as primary");
 
-            _mapper.Map(Dto, movie);
-
             foreach (var genreId in Dto.GenreIds)
             {
                 var genre = await _genreRepo.FindByIdAsync(genreId);
@@ -160,6 +179,8 @@ namespace ApplicationLayer.Services.MovieManagement
                 if (room == null)
                     return ErrorResp.NotFound($"Cinema room with ID {st.RoomId} not found");
             }
+
+            _mapper.Map(Dto, movie);
 
             // Cập nhật Genres
             movie.MovieGenres.Clear();
