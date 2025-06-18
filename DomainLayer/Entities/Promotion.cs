@@ -5,11 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DomainLayer.Entities
 {
     [Table("tbl_promotions")]
-    public class Promotion
-    {
-        [Key]
-        public Guid Id { get; set; }
-        
+    public class Promotion : BaseEntity
+    {     
         [Required]
         [StringLength(100)]
         public string Title { get; set; }
@@ -28,9 +25,5 @@ namespace DomainLayer.Entities
         public string Description { get; set; }
         
         public string ImageUrl { get; set; }
-        
-        public DateTime CreatedAt { get; set; }
-        
-        public DateTime UpdatedAt { get; set; }
     }
 } 

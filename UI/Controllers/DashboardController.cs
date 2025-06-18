@@ -2,19 +2,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
+using UI.Services;
 
 namespace UI.Controllers
 {
     [Authorize]
     public class DashboardController : Controller
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _apiBaseUrl;
+        private readonly IApiService _apiService;
 
-        public DashboardController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public DashboardController(IApiService apiService)
         {
-            _httpClient = httpClientFactory.CreateClient("ApiClient");
-            _apiBaseUrl = configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7285";
+            _apiService = apiService;
         }
 
         public IActionResult Index()
@@ -64,38 +63,14 @@ namespace UI.Controllers
 
             return userRole switch
             {
-                "Admin" => View("AdminDashboard"),
-                "Staff" => View("StaffDashboard"), 
+                "2" => View("AdminDashboard"),
+                "3" => View("StaffDashboard"), 
+                "1" => View("MemberDashboard"),
                 "Member" => View("MemberDashboard"),
+                "Admin" => View("AdminDashboard"),
+                "Staff" => View("StaffDashboard"),
                 _ => View("MemberDashboard")
             };
-        }
-
-        [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> Members()
-        {
-            try
-            {
-                var response = await _httpClient.GetAsync($"{_apiBaseUrl}/api/user/members");
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var members = JsonSerializer.Deserialize<JsonElement[]>(responseContent);
-                    
-                    ViewBag.Members = members;
-                    return View();
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "Failed to load members list.";
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Error loading members: {ex.Message}";
-            }
-
-            return View();
         }
 
         [Authorize(Roles = "Admin")]
@@ -110,4 +85,4 @@ namespace UI.Controllers
             return View();
         }
     }
-} 
+}

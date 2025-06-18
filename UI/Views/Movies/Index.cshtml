@@ -1,0 +1,319 @@
+@{
+    ViewData["Title"] = "Phim";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-film me-2"></i>Phim Đang Chiếu
+                </h1>
+                <p class="page-subtitle">Khám phá những bộ phim mới nhất và hấp dẫn nhất</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="search-container">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Tìm kiếm phim..." id="movieSearch">
+                    <button class="btn btn-primary" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="filter-container">
+                <select class="form-select" id="genreFilter">
+                    <option value="">Tất cả thể loại</option>
+                    <option value="action">Hành động</option>
+                    <option value="comedy">Hài kịch</option>
+                    <option value="drama">Chính kịch</option>
+                    <option value="horror">Kinh dị</option>
+                    <option value="romance">Lãng mạn</option>
+                    <option value="thriller">Ly kỳ</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="https://via.placeholder.com/300x450?text=Phim+1" alt="Movie Poster" class="img-fluid">
+                    <div class="movie-overlay">
+                        <div class="movie-actions">
+                            <a href="@Url.Action("Details", new { id = 1 })" class="btn btn-primary btn-sm">
+                                <i class="fas fa-info-circle"></i> Chi tiết
+                            </a>
+                            <a href="@Url.Action("Showtimes", new { id = 1 })" class="btn btn-success btn-sm">
+                                <i class="fas fa-clock"></i> Lịch chiếu
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h5 class="movie-title">Phim Bom Tấn 2024</h5>
+                    <p class="movie-genre">Hành động, Phiêu lưu</p>
+                    <div class="movie-meta">
+                        <span class="movie-rating">
+                            <i class="fas fa-star"></i> 8.5
+                        </span>
+                        <span class="movie-duration">
+                            <i class="fas fa-clock"></i> 120 phút
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="https://via.placeholder.com/300x450?text=Phim+2" alt="Movie Poster" class="img-fluid">
+                    <div class="movie-overlay">
+                        <div class="movie-actions">
+                            <a href="@Url.Action("Details", new { id = 2 })" class="btn btn-primary btn-sm">
+                                <i class="fas fa-info-circle"></i> Chi tiết
+                            </a>
+                            <a href="@Url.Action("Showtimes", new { id = 2 })" class="btn btn-success btn-sm">
+                                <i class="fas fa-clock"></i> Lịch chiếu
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h5 class="movie-title">Hài Kịch Vui Nhộn</h5>
+                    <p class="movie-genre">Hài kịch, Gia đình</p>
+                    <div class="movie-meta">
+                        <span class="movie-rating">
+                            <i class="fas fa-star"></i> 7.8
+                        </span>
+                        <span class="movie-duration">
+                            <i class="fas fa-clock"></i> 95 phút
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="https://via.placeholder.com/300x450?text=Phim+3" alt="Movie Poster" class="img-fluid">
+                    <div class="movie-overlay">
+                        <div class="movie-actions">
+                            <a href="@Url.Action("Details", new { id = 3 })" class="btn btn-primary btn-sm">
+                                <i class="fas fa-info-circle"></i> Chi tiết
+                            </a>
+                            <a href="@Url.Action("Showtimes", new { id = 3 })" class="btn btn-success btn-sm">
+                                <i class="fas fa-clock"></i> Lịch chiếu
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h5 class="movie-title">Tình Yêu Lãng Mạn</h5>
+                    <p class="movie-genre">Lãng mạn, Chính kịch</p>
+                    <div class="movie-meta">
+                        <span class="movie-rating">
+                            <i class="fas fa-star"></i> 7.2
+                        </span>
+                        <span class="movie-duration">
+                            <i class="fas fa-clock"></i> 110 phút
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <img src="https://via.placeholder.com/300x450?text=Phim+4" alt="Movie Poster" class="img-fluid">
+                    <div class="movie-overlay">
+                        <div class="movie-actions">
+                            <a href="@Url.Action("Details", new { id = 4 })" class="btn btn-primary btn-sm">
+                                <i class="fas fa-info-circle"></i> Chi tiết
+                            </a>
+                            <a href="@Url.Action("Showtimes", new { id = 4 })" class="btn btn-success btn-sm">
+                                <i class="fas fa-clock"></i> Lịch chiếu
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h5 class="movie-title">Kinh Dị Đêm Khuya</h5>
+                    <p class="movie-genre">Kinh dị, Ly kỳ</p>
+                    <div class="movie-meta">
+                        <span class="movie-rating">
+                            <i class="fas fa-star"></i> 6.9
+                        </span>
+                        <span class="movie-duration">
+                            <i class="fas fa-clock"></i> 105 phút
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <nav aria-label="Phân trang phim">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Trước</a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Sau</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
+        .movie-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .movie-poster {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .movie-poster img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .movie-card:hover .movie-poster img {
+            transform: scale(1.05);
+        }
+
+        .movie-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .movie-card:hover .movie-overlay {
+            opacity: 1;
+        }
+
+        .movie-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .movie-info {
+            padding: 1rem;
+        }
+
+        .movie-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .movie-genre {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .movie-rating {
+            color: #ffa500;
+        }
+
+        .movie-duration {
+            color: #666;
+        }
+
+        .search-container, .filter-container {
+            margin-bottom: 1rem;
+        }
+
+        .input-group .btn {
+            border-left: none;
+        }
+
+        .form-select {
+            border-radius: 5px;
+        }
+
+        @@media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .movie-poster img {
+                height: 300px;
+            }
+        }
+    </style>
+}

@@ -5,12 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DomainLayer.Entities
 {
     [Table("tbl_employees")]
-    public class Employee
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid EmployeeId { get; set; }
-        
+    public class Employee : BaseEntity
+    {   
         [Required]
         [MaxLength(100)]
         public string FullName { get; set; } = string.Empty;
@@ -52,11 +48,5 @@ namespace DomainLayer.Entities
         
         [MaxLength(50)]
         public string? UserId { get; set; }
-        
-        [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        
-        [Required]
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 } 

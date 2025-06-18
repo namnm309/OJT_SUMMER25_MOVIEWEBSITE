@@ -28,7 +28,7 @@ namespace InfrastructureLayer.Repository
         public async Task<Users?> GetByIdAsync(Guid userId)
         {
             return await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == userId && u.IsActive);
+                .FirstOrDefaultAsync(u => u.Id == userId && u.IsActive);
         }
 
         public async Task<List<Users>> GetAllMembersAsync()

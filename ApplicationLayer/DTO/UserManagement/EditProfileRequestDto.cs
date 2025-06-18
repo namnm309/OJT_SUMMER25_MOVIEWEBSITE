@@ -1,3 +1,4 @@
+using DomainLayer.Enum;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApplicationLayer.DTO.UserManagement
@@ -27,8 +28,7 @@ namespace ApplicationLayer.DTO.UserManagement
 
         public DateTime? BirthDate { get; set; }
 
-        [StringLength(10, ErrorMessage = "Gender cannot exceed 10 characters")]
-        public string? Gender { get; set; }
+        public UserGender Gender { get; set; }
 
         [StringLength(500, ErrorMessage = "Avatar URL cannot exceed 500 characters")]
         public string? Avatar { get; set; }
@@ -40,4 +40,4 @@ namespace ApplicationLayer.DTO.UserManagement
         [Compare("NewPassword", ErrorMessage = "Password and confirm password do not match")]
         public string? ConfirmNewPassword { get; set; }
     }
-} 
+}

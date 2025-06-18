@@ -10,12 +10,8 @@ using DomainLayer.Enum;
 namespace DomainLayer.Entities
 {
     [Table("tbl_users")]
-    public class Users
+    public class Users : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid UserId { get; set; }
-
         [Required]
         [MaxLength(50)]
         public string Username { get; set; } = string.Empty;
@@ -51,17 +47,11 @@ namespace DomainLayer.Entities
         [Column(TypeName = "double precision")]
         public double Score { get; set; } = 0.0;
 
-        [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        [Required]
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
         [Column(TypeName = "date")]
         public DateTime? BirthDate { get; set; }
 
         [MaxLength(10)]
-        public string? Gender { get; set; }
+        public UserGender Gender { get; set; }
 
         [Required]
         public bool IsActive { get; set; } = true;

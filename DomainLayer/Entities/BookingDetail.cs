@@ -4,12 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DomainLayer.Entities
 {
     [Table("tbl_booking_details")]
-    public class BookingDetail
+    public class BookingDetail : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid BookingDetailId { get; set; }
-
         [Required]
         public decimal Price { get; set; }
 

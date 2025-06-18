@@ -10,6 +10,7 @@ namespace DomainLayer.Enum
     {
         Member = 1,
         Admin = 2,
-        Staff = 3
+        Staff = 3,
+        Manager = 4
     }
 }

@@ -5,12 +5,8 @@ using DomainLayer.Enum;
 namespace DomainLayer.Entities
 {
     [Table("tbl_bookings")]
-    public class Booking
+    public class Booking : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid BookingId { get; set; }
-
         [Required]
         [MaxLength(20)]
         public string BookingCode { get; set; } = string.Empty;

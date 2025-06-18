@@ -9,16 +9,11 @@ using System.Threading.Tasks;
 namespace DomainLayer.Entities
 {
     [Table("tbl_tickets")]
-    public class Ticket
+    public class Ticket : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid TicketId { get; set; }
-
         [Required]
-        [StringLength(50)]
-        public string TicketName { get; set; } = string.Empty;
-
+        [StringLength(100)]
+        public string MovieName { get; set; } = string.Empty;
 
     }
 }

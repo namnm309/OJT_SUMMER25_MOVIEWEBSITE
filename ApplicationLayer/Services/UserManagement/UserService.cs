@@ -2,16 +2,19 @@ using ApplicationLayer.DTO.UserManagement;
 using DomainLayer.Entities;
 using DomainLayer.Enum;
 using InfrastructureLayer.Repository;
+using AutoMapper;
 
 namespace ApplicationLayer.Services.UserManagement
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper; // AutoMapper để convert objects
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         //Login
@@ -30,7 +33,8 @@ namespace ApplicationLayer.Services.UserManagement
                     return (false, null, "Username/password is invalid. Please try again!");
                 }
 
-                var userResponse = MapToUserResponseDto(user);
+                // Dùng AutoMapper để convert từ Users entity sang UserResponseDto
+                var userResponse = _mapper.Map<UserResponseDto>(user);
                 return (true, userResponse, "Login successful");
             }
             catch (Exception ex)
@@ -56,24 +60,12 @@ namespace ApplicationLayer.Services.UserManagement
                     return (false, "Email already exists");
                 }
 
-                var user = new Users
-                {
-                    UserId = Guid.NewGuid(),
-                    Username = registerRequest.Username,
-                    Password = HashPassword(registerRequest.Password),
-                    Email = registerRequest.Email,
-                    FullName = registerRequest.FullName,
-                    Phone = registerRequest.Phone,
-                    IdentityCard = registerRequest.IdentityCard,
-                    Address = registerRequest.Address,
-                    BirthDate = registerRequest.BirthDate,
-                    Gender = registerRequest.Gender,
-                    Role = UserRole.Member,
-                    Score = 0.0,
-                    IsActive = true,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                };
+                // Dùng AutoMapper để convert từ RegisterRequestDto sang Users entity
+                var user = _mapper.Map<Users>(registerRequest);
+                
+                // Set những field đặc biệt (không map tự động)
+                user.Id = Guid.NewGuid();
+                user.Password = HashPassword(registerRequest.Password); // Hash password
 
                 await _userRepository.CreateAsync(user);
                 return (true, "Registration successful");
@@ -118,7 +110,8 @@ namespace ApplicationLayer.Services.UserManagement
                 }
 
                 var updatedUser = await _userRepository.UpdateAsync(user);
-                var userResponse = MapToUserResponseDto(updatedUser);
+                // Dùng AutoMapper để convert
+                var userResponse = _mapper.Map<UserResponseDto>(updatedUser);
 
                 return (true, userResponse, "Update information successfully");
             }
@@ -128,18 +121,20 @@ namespace ApplicationLayer.Services.UserManagement
             }
         }
 
-        //Xemm all user => admin
+        //Xem all user => admin
         public async Task<List<UserResponseDto>> GetAllMembersAsync()
         {
             var users = await _userRepository.GetAllMembersAsync();
-            return users.Select(MapToUserResponseDto).ToList();
+            // Dùng AutoMapper để convert List<Users> sang List<UserResponseDto>
+            return _mapper.Map<List<UserResponseDto>>(users);
         }
 
         //Tìm user - id 
         public async Task<UserResponseDto?> GetUserByIdAsync(Guid userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            return user == null ? null : MapToUserResponseDto(user);
+            // Dùng AutoMapper để convert, return null nếu user không tồn tại
+            return user == null ? null : _mapper.Map<UserResponseDto>(user);
         }
 
         //Method hash password xài chung 
@@ -154,26 +149,7 @@ namespace ApplicationLayer.Services.UserManagement
             return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
         }
 
-        //
-        private UserResponseDto MapToUserResponseDto(Users user)
-        {
-            return new UserResponseDto
-            {
-                UserId = user.UserId,
-                Username = user.Username,
-                Email = user.Email,
-                FullName = user.FullName,
-                Phone = user.Phone,
-                IdentityCard = user.IdentityCard,
-                Address = user.Address,
-                Role = user.Role,
-                Score = user.Score,
-                BirthDate = user.BirthDate,
-                Gender = user.Gender,
-                Avatar = user.Avatar,
-                CreatedAt = user.CreatedAt,
-                UpdatedAt = user.UpdatedAt
-            };
-        }
+        // Method MapToUserResponseDto đã được thay thế bằng AutoMapper
+        // Không cần manual mapping nữa! 🎉
     }
 } 

@@ -1,0 +1,435 @@
+@{
+    ViewData["Title"] = "Lịch chiếu";
+    var movieId = ViewData["MovieId"];
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="movie-header">
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <img src="https://via.placeholder.com/150x225?text=Movie" alt="Movie Poster" class="img-fluid rounded">
+                    </div>
+                    <div class="col-md-10">
+                        <h1 class="movie-title">Phim Bom Tấn 2024</h1>
+                        <div class="movie-info">
+                            <span class="duration"><i class="fas fa-clock"></i> 120 phút</span>
+                            <span class="genre"><i class="fas fa-tags"></i> Hành động, Phiêu lưu</span>
+                            <span class="rating"><i class="fas fa-star"></i> 8.5/10</span>
+                        </div>
+                        <a href="@Url.Action("Details", new { id = movieId })" class="btn btn-outline-primary">
+                            <i class="fas fa-info-circle"></i> Xem chi tiết phim
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="date-selector">
+                <label for="showDate" class="form-label">Chọn ngày:</label>
+                <div class="date-buttons">
+                    <button class="btn btn-outline-primary active" data-date="2024-03-15">
+                        <div class="date-info">
+                            <span class="day">Hôm nay</span>
+                            <span class="date">15/03</span>
+                        </div>
+                    </button>
+                    <button class="btn btn-outline-primary" data-date="2024-03-16">
+                        <div class="date-info">
+                            <span class="day">Thứ 7</span>
+                            <span class="date">16/03</span>
+                        </div>
+                    </button>
+                    <button class="btn btn-outline-primary" data-date="2024-03-17">
+                        <div class="date-info">
+                            <span class="day">CN</span>
+                            <span class="date">17/03</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="cinema-filter">
+                <label for="cinemaSelect" class="form-label">Chọn rạp:</label>
+                <select class="form-select" id="cinemaSelect">
+                    <option value="">Tất cả rạp</option>
+                    <option value="galaxy">Galaxy Cinema</option>
+                    <option value="cgv">CGV Cinema</option>
+                    <option value="lotte">Lotte Cinema</option>
+                    <option value="bhd">BHD Star Cinema</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="format-filter">
+                <label for="formatSelect" class="form-label">Định dạng:</label>
+                <select class="form-select" id="formatSelect">
+                    <option value="">Tất cả định dạng</option>
+                    <option value="2d">2D</option>
+                    <option value="3d">3D</option>
+                    <option value="imax">IMAX</option>
+                    <option value="4dx">4DX</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="showtimes-container">
+        <div class="cinema-showtimes">
+            <div class="cinema-header">
+                <h4>
+                    <i class="fas fa-building"></i>
+                    Galaxy Cinema Nguyễn Du
+                </h4>
+                <p class="cinema-address">116 Nguyễn Du, Quận 1, TP.HCM</p>
+            </div>
+            <div class="showtimes-grid">
+                <div class="showtime-card">
+                    <div class="showtime-info">
+                        <div class="time">10:00</div>
+                        <div class="format">2D Phụ đề</div>
+                        <div class="room">Phòng 1</div>
+                    </div>
+                    <div class="seat-info">
+                        <span class="available-seats">45 ghế trống</span>
+                        <div class="price">85.000đ</div>
+                    </div>
+                    <button class="btn btn-primary btn-book">Đặt vé</button>
+                </div>
+
+                <div class="showtime-card">
+                    <div class="showtime-info">
+                        <div class="time">13:30</div>
+                        <div class="format">3D Phụ đề</div>
+                        <div class="room">Phòng 2</div>
+                    </div>
+                    <div class="seat-info">
+                        <span class="available-seats">22 ghế trống</span>
+                        <div class="price">95.000đ</div>
+                    </div>
+                    <button class="btn btn-primary btn-book">Đặt vé</button>
+                </div>
+
+                <div class="showtime-card">
+                    <div class="showtime-info">
+                        <div class="time">16:45</div>
+                        <div class="format">IMAX 2D</div>
+                        <div class="room">Phòng IMAX</div>
+                    </div>
+                    <div class="seat-info">
+                        <span class="available-seats">8 ghế trống</span>
+                        <div class="price">150.000đ</div>
+                    </div>
+                    <button class="btn btn-primary btn-book">Đặt vé</button>
+                </div>
+
+                <div class="showtime-card">
+                    <div class="showtime-info">
+                        <div class="time">20:15</div>
+                        <div class="format">2D Phụ đề</div>
+                        <div class="room">Phòng 3</div>
+                    </div>
+                    <div class="seat-info">
+                        <span class="available-seats">12 ghế trống</span>
+                        <div class="price">85.000đ</div>
+                    </div>
+                    <button class="btn btn-primary btn-book">Đặt vé</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cinema-showtimes">
+            <div class="cinema-header">
+                <h4>
+                    <i class="fas fa-building"></i>
+                    CGV Vincom Center
+                </h4>
+                <p class="cinema-address">70-72 Lê Thánh Tôn, Quận 1, TP.HCM</p>
+            </div>
+            <div class="showtimes-grid">
+                <div class="showtime-card">
+                    <div class="showtime-info">
+                        <div class="time">09:45</div>
+                        <div class="format">2D Phụ đề</div>
+                        <div class="room">Phòng 5</div>
+                    </div>
+                    <div class="seat-info">
+                        <span class="available-seats">38 ghế trống</span>
+                        <div class="price">90.000đ</div>
+                    </div>
+                    <button class="btn btn-primary btn-book">Đặt vé</button>
+                </div>
+
+                <div class="showtime-card">
+                    <div class="showtime-info">
+                        <div class="time">14:20</div>
+                        <div class="format">4DX</div>
+                        <div class="room">Phòng 4DX</div>
+                    </div>
+                    <div class="seat-info">
+                        <span class="available-seats">15 ghế trống</span>
+                        <div class="price">200.000đ</div>
+                    </div>
+                    <button class="btn btn-primary btn-book">Đặt vé</button>
+                </div>
+
+                <div class="showtime-card sold-out">
+                    <div class="showtime-info">
+                        <div class="time">18:00</div>
+                        <div class="format">3D Phụ đề</div>
+                        <div class="room">Phòng 6</div>
+                    </div>
+                    <div class="seat-info">
+                        <span class="sold-out-text">Hết vé</span>
+                        <div class="price">100.000đ</div>
+                    </div>
+                    <button class="btn btn-secondary btn-book" disabled>Hết vé</button>
+                </div>
+
+                <div class="showtime-card">
+                    <div class="showtime-info">
+                        <div class="time">21:30</div>
+                        <div class="format">2D Phụ đề</div>
+                        <div class="room">Phòng 7</div>
+                    </div>
+                    <div class="seat-info">
+                        <span class="available-seats">33 ghế trống</span>
+                        <div class="price">90.000đ</div>
+                    </div>
+                    <button class="btn btn-primary btn-book">Đặt vé</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .movie-header {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .movie-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .movie-info {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .movie-info span {
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .movie-info .rating {
+            color: #ffa500;
+            font-weight: 600;
+        }
+
+        .date-selector, .cinema-filter, .format-filter {
+            margin-bottom: 1rem;
+        }
+
+        .date-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .date-buttons .btn {
+            padding: 0.5rem 1rem;
+            text-align: center;
+        }
+
+        .date-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .date-info .day {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .date-info .date {
+            font-size: 0.9rem;
+        }
+
+        .cinema-showtimes {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cinema-header h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .cinema-address {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .showtimes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .showtime-card {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .showtime-card:hover {
+            border-color: #dc3545;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .showtime-card.sold-out {
+            background: #f8f9fa;
+            border-color: #dee2e6;
+            opacity: 0.7;
+        }
+
+        .showtime-info {
+            flex: 1;
+        }
+
+        .showtime-info .time {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .showtime-info .format {
+            font-size: 0.9rem;
+            color: #dc3545;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .showtime-info .room {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .seat-info {
+            text-align: center;
+            margin-right: 1rem;
+        }
+
+        .available-seats {
+            font-size: 0.8rem;
+            color: #28a745;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .sold-out-text {
+            font-size: 0.8rem;
+            color: #dc3545;
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .price {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .btn-book {
+            min-width: 80px;
+            font-weight: 600;
+        }
+
+        @@media (max-width: 768px) {
+            .movie-title {
+                font-size: 1.5rem;
+            }
+
+            .movie-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .showtimes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .showtime-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .seat-info {
+                margin-right: 0;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Date selector functionality
+        document.querySelectorAll('.date-buttons .btn').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.date-buttons .btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Here you would typically make an AJAX call to load showtimes for the selected date
+                console.log('Selected date:', this.dataset.date);
+            });
+        });
+
+        // Book ticket functionality
+        document.querySelectorAll('.btn-book').forEach(button => {
+            button.addEventListener('click', function() {
+                if (!this.disabled) {
+                    alert('Chuyển hướng đến trang chọn ghế...');
+                    // Here you would redirect to seat selection page
+                }
+            });
+        });
+
+        // Filter functionality
+        document.getElementById('cinemaSelect').addEventListener('change', function() {
+            console.log('Cinema filter:', this.value);
+            // Filter showtimes by cinema
+        });
+
+        document.getElementById('formatSelect').addEventListener('change', function() {
+            console.log('Format filter:', this.value);
+            // Filter showtimes by format
+        });
+    </script>
+}

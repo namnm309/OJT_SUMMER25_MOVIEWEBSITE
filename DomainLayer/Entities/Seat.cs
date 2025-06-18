@@ -5,12 +5,8 @@ using DomainLayer.Enum;
 namespace DomainLayer.Entities
 {
     [Table("tbl_seats")]
-    public class Seat
+    public class Seat : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid SeatId { get; set; }
-
         [Required]
         [MaxLength(10)]
         public string SeatCode { get; set; } = string.Empty;
