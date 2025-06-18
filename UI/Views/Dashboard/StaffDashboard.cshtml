@@ -1,160 +1,314 @@
 @{
     ViewData["Title"] = "Bảng điều khiển nhân viên";
+    Layout = null;
 }
 
-<div class="row">
-    <div class="col-12">
-        <div class="page-header">
-            <h1 class="page-title">
-                <i class="fas fa-user-tie me-2 text-info"></i>
-                Chào mừng nhân viên, @ViewBag.UserName!
-            </h1>
-            <p class="page-subtitle">Quản lý vé và dịch vụ khách hàng</p>
-        </div>
-    </div>
-</div>
-
-<!-- Staff Quick Actions -->
-<div class="row">
-    <div class="col-12 mb-4">
-        <div class="dashboard-card">
-            <div class="card-body">
-                <h5 class="card-title">
-                    <i class="fas fa-tasks me-2"></i>Công việc hàng ngày
-                </h5>
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <a href="#" class="btn btn-outline-primary w-100">
-                            <i class="fas fa-ticket-alt me-2"></i>Bán vé tại quầy
-                        </a>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <a asp-controller="Dashboard" asp-action="Members" class="btn btn-outline-success w-100">
-                            <i class="fas fa-users me-2"></i>Xem danh sách thành viên
-                        </a>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <a href="#" class="btn btn-outline-info w-100">
-                            <i class="fas fa-calendar-check me-2"></i>Kiểm tra lịch chiếu
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Work Stats -->
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="dashboard-card stats-card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon bg-primary">
-                        <i class="fas fa-ticket-alt"></i>
-                    </div>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cinema City</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="brand-section">
+                <a href="@Url.Action("Index", "Home")" class="d-flex align-items-center text-decoration-none">
+                    <div class="brand-logo"></div>
                     <div class="ms-3">
-                        <h5 class="card-title mb-0">@ViewBag.TodayTickets</h5>
-                        <p class="card-text text-muted small mb-0">Vé bán hôm nay</p>
+                        <div class="brand-name">Cinema City</div>
+                        <div class="brand-subtitle">Rạp chiếu phim hiện đại</div>
+                    </div>
+                </a>
+            </div>
+            <nav class="nav-links">
+                <a href="@Url.Action("Index", "Home")" class="nav-link">Trang chủ</a>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-link nav-link text-decoration-none">
+                        <i class="fas fa-sign-out-alt me-1"></i>Đăng xuất
+                    </button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Dashboard Layout -->
+    <div class="dashboard-layout">
+        <!-- Sidebar Toggle Button (Mobile) -->
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <div class="user-profile">
+                    <div class="user-avatar-large">
+                        @ViewBag.UserName?.Substring(0, 1).ToUpper()
+                    </div>
+                    <div class="user-details">
+                        <h3>@ViewBag.FullName</h3>
+                        <span class="user-role-badge badge bg-warning">Nhân viên</span>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="col-md-4 mb-4">
-        <div class="dashboard-card stats-card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon bg-success">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="ms-3">
-                        <h5 class="card-title mb-0">@ViewBag.TotalCustomers</h5>
-                        <p class="card-text text-muted small mb-0">Khách hàng đã phục vụ</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4 mb-4">
-        <div class="dashboard-card stats-card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon bg-warning">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="ms-3">
-                        <h5 class="card-title mb-0">@ViewBag.WorkingHours</h5>
-                        <p class="card-text text-muted small mb-0">Giờ làm việc hôm nay</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Two Columns Layout -->
-<div class="row">
-    <!-- Personal Info -->
-    <div class="col-md-6 mb-4">
-        <div class="dashboard-card">
-            <div class="card-body">
-                <h5 class="card-title">
-                    <i class="fas fa-user-circle me-2"></i>Thông tin cá nhân
-                </h5>
-                <p><strong>Tên đăng nhập:</strong> @ViewBag.UserName</p>
-                <p><strong>Email:</strong> @ViewBag.Email</p>
-                <p><strong>Vai trò:</strong> <span class="badge bg-warning">@ViewBag.Role</span></p>
-                <p><strong>Họ tên:</strong> @ViewBag.FullName</p>
-                <p><strong>Trạng thái:</strong> 
-                    @if(ViewBag.IsActive)
-                    {
-                        <span class="badge bg-success">Hoạt động</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">Không hoạt động</span>
-                    }
-                </p>
-                <p><strong>Ngày bắt đầu làm:</strong> @ViewBag.CreatedAt</p>
-                
-                <div class="mt-3">
-                    <a asp-controller="Account" asp-action="Profile" class="btn btn-outline-primary me-2">
-                        <i class="fas fa-user-edit me-1"></i>Chỉnh sửa hồ sơ
+            <nav class="sidebar-menu">
+                <!-- Main Menu -->
+                <div class="menu-section">
+                    <div class="menu-title">Menu Chính</div>
+                    <a href="@Url.Action("Index", "Dashboard")" class="menu-item active">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
                     </a>
-                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-outline-danger">
-                            <i class="fas fa-sign-out-alt me-1"></i>Đăng xuất
-                        </button>
-                    </form>
+                    <a href="@Url.Action("Index", "Movies")" class="menu-item">
+                        <i class="fas fa-film"></i>
+                        Danh sách phim
+                    </a>
+                    <a href="@Url.Action("Index", "Events")" class="menu-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        Sự kiện
+                    </a>
+                </div>
+
+                <!-- Work Tasks -->
+                <div class="menu-section">
+                    <div class="menu-title">Công việc</div>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-ticket-alt"></i>
+                        Bán vé tại quầy
+                    </a>
+                    <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="menu-item">
+                        <i class="fas fa-users"></i>
+                        Danh sách thành viên
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-calendar-check"></i>
+                        Kiểm tra lịch chiếu
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-box"></i>
+                        Quản lý sản phẩm
+                    </a>
+                </div>
+
+                <!-- Personal -->
+                <div class="menu-section">
+                    <div class="menu-title">Cá nhân</div>
+                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="menu-item">
+                        <i class="fas fa-user-edit"></i>
+                        Chỉnh sửa hồ sơ
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-history"></i>
+                        Lịch sử làm việc
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Backdrop for mobile -->
+        <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="dashboard-container">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <i class="fas fa-user-tie"></i>
+                        Chào mừng nhân viên!
+                    </h1>
+                    <p class="page-subtitle">Quản lý vé và dịch vụ khách hàng</p>
+                </div>
+
+                <!-- Work Stats -->
+                <div class="row mb-5">
+                    <div class="col-md-4 mb-4">
+                        <div class="dashboard-card stats-card">
+                            <div class="d-flex align-items-center">
+                                <div class="stats-icon bg-primary">
+                                    <i class="fas fa-ticket-alt"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h5>@ViewBag.TodayTickets</h5>
+                                    <p>Vé bán hôm nay</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="dashboard-card stats-card">
+                            <div class="d-flex align-items-center">
+                                <div class="stats-icon bg-success">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h5>@ViewBag.TotalCustomers</h5>
+                                    <p>Khách hàng đã phục vụ</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="dashboard-card stats-card">
+                            <div class="d-flex align-items-center">
+                                <div class="stats-icon bg-warning">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h5>@ViewBag.WorkingHours</h5>
+                                    <p>Giờ làm việc hôm nay</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <div class="dashboard-card">
+                            <h5 class="card-title">
+                                <i class="fas fa-bolt me-2"></i>Truy cập nhanh
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <a href="#" class="btn btn-outline-primary w-100">
+                                        <i class="fas fa-ticket-alt me-2"></i>
+                                        Bán vé mới
+                                    </a>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <a href="#" class="btn btn-outline-success w-100">
+                                        <i class="fas fa-search me-2"></i>
+                                        Tra cứu vé
+                                    </a>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <a href="#" class="btn btn-outline-info w-100">
+                                        <i class="fas fa-calendar me-2"></i>
+                                        Lịch chiếu hôm nay
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Today's Tasks and Shift Info -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="dashboard-card">
+                            <h5 class="card-title">
+                                <i class="fas fa-clipboard-list me-2"></i>Nhiệm vụ hôm nay
+                            </h5>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Ca làm việc: 08:00 - 17:00
+                            </div>
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Đã hoàn thành: Kiểm tra máy bán vé
+                            </div>
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Cần làm: Cập nhật lịch chiếu mới
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <div class="dashboard-card">
+                            <h5 class="card-title">
+                                <i class="fas fa-film me-2"></i>Phim chiếu hôm nay
+                            </h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    <strong>09:00</strong> - Avatar 2 (Phòng 1)
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    <strong>12:00</strong> - Spider-Man (Phòng 2)
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    <strong>15:00</strong> - The Batman (Phòng 3)
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    <strong>18:00</strong> - Top Gun (Phòng 1)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
-    <!-- Today's Tasks -->
-    <div class="col-md-6 mb-4">
-        <div class="dashboard-card">
-            <div class="card-body">
-                <h5 class="card-title">
-                    <i class="fas fa-clipboard-list me-2"></i>Nhiệm vụ hôm nay
-                </h5>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    Ca làm việc: 08:00 - 17:00
-                </div>
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle me-2"></i>
-                    Đã hoàn thành: Kiểm tra máy bán vé
-                </div>
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    Cần làm: Cập nhật lịch chiếu mới
-                </div>
+    <!-- Footer -->
+    <footer class="cinema-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <p>&copy; @DateTime.Now.Year Cinema City. Tất cả quyền được bảo lưu.</p>
             </div>
         </div>
-    </div>
-</div> 
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const layout = document.querySelector('.dashboard-layout');
+            layout.classList.toggle('sidebar-open');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.querySelector('.dashboard-sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            const layout = document.querySelector('.dashboard-layout');
+            
+            if (window.innerWidth <= 991 && 
+                !sidebar.contains(event.target) && 
+                !toggle.contains(event.target) &&
+                layout.classList.contains('sidebar-open')) {
+                layout.classList.remove('sidebar-open');
+            }
+        });
+
+        // Highlight active menu item based on current page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') === currentPath) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

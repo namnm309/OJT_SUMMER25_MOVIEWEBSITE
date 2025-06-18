@@ -14,6 +14,15 @@ namespace ApplicationLayer.DTO.MovieManagement
         public string? ProductionCompany { get; set; }
         public int RunningTime { get; set; }
         public string Version { get; set; } = string.Empty;
+        public string? Director { get; set; }
+        public string? Actors { get; set; }
+        public string? Content { get; set; }
+        public string? TrailerUrl { get; set; }
+        public int Status { get; set; }
+        
+        // Thêm các properties mới
+        public string? PrimaryImageUrl { get; set; }
+        public List<MovieImageDto> Images { get; set; } = new List<MovieImageDto>();
+        public List<string> Genres { get; set; } = new List<string>();
     }
-
 }

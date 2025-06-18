@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace UI.Models
+namespace UI.Areas.BookingManagement.Models
 {
     public class TicketSaleConfirmViewModel
     {

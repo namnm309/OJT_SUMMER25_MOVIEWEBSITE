@@ -2,6 +2,10 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using UI.Models;
 using UI.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace UI.Controllers
 {
@@ -16,15 +20,14 @@ namespace UI.Controllers
             _logger = logger;
         }
 
-        // Thêm hàm mới để xử lý lấy danh sách phim
-        public async Task<IActionResult> MovieManagement()
+        public async Task<IActionResult> Index()
         {
-            ViewData["Title"] = "Quản lý phim";
-
+            ViewData["Title"] = "Phim";
+            
             try
             {
                 var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/View");
-
+                
                 if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
                     if (result.Data.TryGetProperty("data", out var dataProp))
@@ -33,46 +36,58 @@ namespace UI.Controllers
                         {
                             PropertyNameCaseInsensitive = true
                         };
-
+                        
                         var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), options);
-
-                        // Log để debug
-                        _logger.LogInformation("Received {Count} movies", movies?.Count);
-                        foreach (var movie in movies ?? new List<MovieViewModel>())
-                        {
-                            _logger.LogInformation("Movie: {Title} - {Date}", movie.Title, movie.ReleaseDate);
-                        }
-
-                        return View("MovieManagement", movies);
+                        return View(movies);
                     }
                 }
-
-                _logger.LogError("Failed to get movies: {Message}", result.Message);
-                TempData["ErrorMessage"] = result.Message;
+                
+                _logger.LogError("Không thể lấy danh sách phim: {Message}", result.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting movies");
-                TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tải danh sách phim";
+                _logger.LogError(ex, "Lỗi khi lấy danh sách phim");
             }
-
-            return View("MovieManagement", new List<MovieViewModel>());
+            
+            return View(new List<MovieViewModel>());
         }
 
-        public IActionResult Index()
-        {
-            ViewData["Title"] = "Phim";
-            return View();
-        }
-
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(Guid id)
         {
             ViewData["Title"] = "Chi tiết phim";
             ViewData["MovieId"] = id;
-            return View();
+            
+            try
+            {
+                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/movie/GetById?movieId={id}");
+                
+                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    if (result.Data.TryGetProperty("data", out var dataProp))
+                    {
+                        var options = new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
+                        
+                        var movie = JsonSerializer.Deserialize<MovieViewModel>(dataProp.GetRawText(), options);
+                        return View(movie);
+                    }
+                }
+                
+                _logger.LogError("Không thể lấy chi tiết phim: {Message}", result.Message);
+                TempData["ErrorMessage"] = "Không thể lấy thông tin chi tiết phim";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy chi tiết phim");
+                TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tải thông tin chi tiết phim";
+            }
+            
+            return View(new MovieViewModel());
         }
 
-        public IActionResult Showtimes(int id)
+        public IActionResult Showtimes(Guid id)
         {
             ViewData["Title"] = "Lịch chiếu";
             ViewData["MovieId"] = id;

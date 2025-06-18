@@ -139,11 +139,12 @@ namespace ControllerLayer.Controllers
         }
 
         [HttpGet("members")]
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllMembers()
         {
             var members = await _userService.GetAllMembersAsync();
-            return Ok(members);
+            return Ok(new { success = true, data = members });
         }
 
         private string GetRedirectUrl(UserRole role)

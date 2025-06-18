@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace UI.Models
+namespace UI.Areas.UserManagement.Models
 {
     public class EditProfileViewModel
     {
@@ -39,13 +39,12 @@ namespace UI.Models
         [DataType(DataType.Date)]
         public DateTime? BirthDate { get; set; }
 
-        [StringLength(10, ErrorMessage = "Gender cannot exceed 10 characters")]
         [Display(Name = "Gender")]
-        public string? Gender { get; set; }
+        public int Gender { get; set; }
 
         [StringLength(500, ErrorMessage = "Avatar URL cannot exceed 500 characters")]
         [Display(Name = "Avatar URL")]
-        public string? Avatar { get; set; }
+        public string Avatar { get; set; } = string.Empty;
 
         // Password change section
         [StringLength(255, MinimumLength = 6, ErrorMessage = "New password must be between 6 and 255 characters")]
@@ -62,4 +61,4 @@ namespace UI.Models
         public double Score { get; set; }
         public string Role { get; set; } = string.Empty;
     }
-} 
+}

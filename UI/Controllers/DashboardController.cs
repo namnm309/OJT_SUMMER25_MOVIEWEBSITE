@@ -64,35 +64,13 @@ namespace UI.Controllers
             return userRole switch
             {
                 "2" => View("AdminDashboard"),
-                "Staff" => View("StaffDashboard"), 
+                "3" => View("StaffDashboard"), 
+                "1" => View("MemberDashboard"),
                 "Member" => View("MemberDashboard"),
+                "Admin" => View("AdminDashboard"),
+                "Staff" => View("StaffDashboard"),
                 _ => View("MemberDashboard")
             };
-        }
-
-        [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> Members()
-        {
-            try
-            {
-                var result = await _apiService.GetAsync<JsonElement[]>("/api/user/members");
-                
-                if (result.Success && result.Data != null)
-                {
-                    ViewBag.Members = result.Data;
-                    return View();
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = result.Message;
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Error loading members: {ex.Message}";
-            }
-
-            return View();
         }
 
         [Authorize(Roles = "Admin")]
@@ -107,4 +85,4 @@ namespace UI.Controllers
             return View();
         }
     }
-} 
+}

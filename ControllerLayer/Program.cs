@@ -1,4 +1,3 @@
-﻿
 using ApplicationLayer.Services.UserManagement;
 using ApplicationLayer.Services.MovieManagement;
 using InfrastructureLayer.Data;
@@ -19,17 +18,31 @@ namespace ControllerLayer
 
             //===================================================================================================================================================
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+                    options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                });
             
             // Cấu hình CORS để cho phép UI share credentials
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowUI", policy =>
                 {
-                    policy.WithOrigins("https://localhost:7069", "http://localhost:7069")
+                    policy.WithOrigins("https://localhost:7069", "http://localhost:7069", "http://localhost:5073", "https://localhost:5073", "http://localhost:5000", "https://localhost:5001")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials(); // Quan trọng: cho phép share cookies
+                });
+                
+                // Policy cho public APIs - không cần credentials
+                options.AddPolicy("PublicAPI", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
                 });
             });
             

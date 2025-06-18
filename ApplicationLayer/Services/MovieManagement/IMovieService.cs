@@ -13,11 +13,15 @@ namespace ApplicationLayer.Services.MovieManagement
     public interface IMovieService
     {
         Task<List<MovieListDto>> GetAllAsync();
-        Task<MovieListDto?> GetByIdAsync(Guid movieId);
+        Task<MovieResponseDto?> GetByIdAsync(Guid movieId);
         Task<IActionResult> CreateMovie(MovieCreateDto Dto);
         Task<IActionResult> ViewMovie(PaginationReq query);
         Task<IActionResult> UpdateMovie(MovieUpdateDto Dto);
         Task<IActionResult> DeleteMovie(Guid Id);
         Task<IActionResult> ChangeStatus(Guid Id, MovieStatus status);
+        
+        // New methods for getting genres and cinema rooms
+        Task<IActionResult> GetAllGenres();
+        Task<IActionResult> GetAllCinemaRooms();
     }
 }
