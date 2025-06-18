@@ -27,10 +27,17 @@ namespace ControllerLayer.Controllers
         }
 
         [HttpGet("View")]
+        public async Task<IActionResult> ViewListMovie()
+        {
+            _logger.LogInformation("View List Movie");
+            return await _movieService.ViewMovie();
+        }
+
+        [HttpGet("ViewPagination")]
         public async Task<IActionResult> ViewListMovie([FromQuery] PaginationReq query)
         {
             _logger.LogInformation("View List Movie");
-            return await _movieService.ViewMovie(query);
+            return await _movieService.ViewMoviePagination(query);
         }
 
         [HttpPatch("Update")]
@@ -53,5 +60,35 @@ namespace ControllerLayer.Controllers
             _logger.LogInformation("Update Movie");
             return await _movieService.ChangeStatus(Id, Status);
         }
+
+        [HttpGet("Search")]
+        public async Task<IActionResult> SearchMovie([FromQuery] string? keyword)
+        {
+            _logger.LogInformation("Search Movie");
+            return await _movieService.SearchMovie(keyword);
+        }
+
+        [HttpGet("ViewGenre")]
+        public async Task<IActionResult> ViewGenre()
+        {
+            _logger.LogInformation("View Genre");
+            return await _movieService.GetAllGenre();
+        }
+
+        [HttpPost("CreateGenre")]
+        public async Task<IActionResult> CreateGenre([FromBody] GenreCreateDto Dto)
+        {
+            _logger.LogInformation("Create Genre");
+            return await _movieService.CreateGenre(Dto);
+        }
+
+        [HttpPatch("ChangeStatusGenre")]
+        public async Task<IActionResult> ChangeStatusGenre(Guid Id)
+        {
+            _logger.LogInformation("Change Genre");
+            return await _movieService.ChangeStatusGenre(Id);
+        }
+
+
     }
 }

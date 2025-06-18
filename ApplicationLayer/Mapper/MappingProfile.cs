@@ -1,4 +1,5 @@
-﻿using ApplicationLayer.DTO.MovieManagement;
+﻿using ApplicationLayer.DTO.CinemaRoomManagement;
+using ApplicationLayer.DTO.MovieManagement;
 using AutoMapper;
 using DomainLayer.Entities;
 using System;
@@ -31,6 +32,16 @@ namespace ApplicationLayer.Mapper
                 .ForMember(dest => dest.MovieGenres, opt => opt.Ignore())
                 .ForMember(dest => dest.ShowTimes, opt => opt.Ignore())
                 .ForMember(dest => dest.MovieImages, opt => opt.Ignore());
+
+            //Search Movie
+            CreateMap<Movie, MovieListDto>();
+
+            //Genre
+            CreateMap<Genre, GenreListDto>();
+            CreateMap<GenreCreateDto, Genre>();
+
+            //Cinema Room
+            CreateMap<CinemaRoom, CinemaRoomListDto>();
         }
     }
 }

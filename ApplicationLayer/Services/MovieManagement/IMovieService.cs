@@ -15,9 +15,14 @@ namespace ApplicationLayer.Services.MovieManagement
         Task<List<MovieListDto>> GetAllAsync();
         Task<MovieListDto?> GetByIdAsync(Guid movieId);
         Task<IActionResult> CreateMovie(MovieCreateDto Dto);
-        Task<IActionResult> ViewMovie(PaginationReq query);
+        Task<IActionResult> ViewMovie();
+        Task<IActionResult> ViewMoviePagination(PaginationReq query);
         Task<IActionResult> UpdateMovie(MovieUpdateDto Dto);
         Task<IActionResult> DeleteMovie(Guid Id);
         Task<IActionResult> ChangeStatus(Guid Id, MovieStatus status);
+        Task<IActionResult> SearchMovie(string? keyword);
+        Task<IActionResult> GetAllGenre();
+        Task<IActionResult> CreateGenre(GenreCreateDto Dto);
+        Task<IActionResult> ChangeStatusGenre(Guid Id);
     }
 }
