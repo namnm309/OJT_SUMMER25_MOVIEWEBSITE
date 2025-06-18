@@ -3,6 +3,7 @@ using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.Services.MovieManagement;
 using DomainLayer.Enum;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 
 namespace ControllerLayer.Controllers
 {
@@ -28,6 +29,7 @@ namespace ControllerLayer.Controllers
 
         [HttpGet("View")]
         public async Task<IActionResult> ViewListMovie()
+<<<<<<< HEAD
         {
             _logger.LogInformation("View List Movie");
             return await _movieService.ViewMovie();
@@ -38,6 +40,28 @@ namespace ControllerLayer.Controllers
         {
             _logger.LogInformation("View List Movie");
             return await _movieService.ViewMoviePagination(query);
+=======
+        {
+            _logger.LogInformation("View List Movie");
+            return await _movieService.ViewMovie();
+        }
+
+        [HttpGet("ViewWithPagination")]
+        public async Task<IActionResult> ViewListMovies([FromQuery] PaginationReq query)
+        {
+            _logger.LogInformation("View List Movie");
+            return await _movieService.ViewMoviesWithPagination(query);
+        }
+
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetById(Guid movieId)
+        {
+            _logger.LogInformation("Get Movie By Id: {MovieId}", movieId);
+            var movie = await _movieService.GetByIdAsync(movieId);
+            if (movie == null)
+                return NotFound("Movie not found");
+            return Ok(new { data = movie });
+>>>>>>> origin/dev
         }
 
         [HttpPatch("Update")]
@@ -61,6 +85,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.ChangeStatus(Id, Status);
         }
 
+<<<<<<< HEAD
         [HttpGet("Search")]
         public async Task<IActionResult> SearchMovie([FromQuery] string? keyword)
         {
@@ -90,5 +115,22 @@ namespace ControllerLayer.Controllers
         }
 
 
+=======
+        [HttpGet("genres")]
+        [EnableCors("PublicAPI")]
+        public async Task<IActionResult> GetAllGenres()
+        {
+            _logger.LogInformation("Get All Genres");
+            return await _movieService.GetAllGenres();
+        }
+
+        [HttpGet("cinemarooms")]
+        [EnableCors("PublicAPI")]
+        public async Task<IActionResult> GetAllCinemaRooms()
+        {
+            _logger.LogInformation("Get All Cinema Rooms");
+            return await _movieService.GetAllCinemaRooms();
+        }
+>>>>>>> origin/dev
     }
 }

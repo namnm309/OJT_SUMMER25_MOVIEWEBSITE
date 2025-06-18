@@ -2,35 +2,25 @@ using System.ComponentModel.DataAnnotations;
 
 namespace UI.Models
 {
-    public class PromotionCreateViewModel
+    public class PromotionViewModel
     {
-        [Required]
-        [MaxLength(100)]
-        public string Title { get; set; } = string.Empty;
-        
-        [Required]
-        public DateTime StartDate { get; set; }
-        
-        [Required]
-        public DateTime EndDate { get; set; }
-        
-        [Required]
-        [Range(0, 999999.99)]
-        public decimal PromotionValue { get; set; }
-        
-        [Required]
-        public string PromotionType { get; set; } = "Percentage"; // Percentage or FixedAmount
-        
-        [Required]
-        [MaxLength(2000)]
-        public string Description { get; set; } = string.Empty;
-        
-        [MaxLength(500)]
-        public string? ImageUrl { get; set; }
-    }
+        public string Id { get; set; }
 
-    public class PromotionUpdateViewModel : PromotionCreateViewModel
-    {
-        // Inherits all fields from Create
+        [Required(ErrorMessage = "Vui l?ng nh?p tÍn khuy?n m?i")]
+        public string Title { get; set; }
+
+        [Required(ErrorMessage = "Vui l?ng ch?n ng‡y b?t ÅEu")]
+        public DateTime StartDate { get; set; }
+
+        [Required(ErrorMessage = "Vui l?ng ch?n ng‡y k?t th˙c")]
+        public DateTime EndDate { get; set; }
+
+        [Required(ErrorMessage = "Vui l?ng nh?p ph?n tr„m gi?m giÅE")]
+        [Range(1, 100, ErrorMessage = "Ph?n tr„m gi?m giÅEph?i t? 1 ÅEn 100")]
+        public int DiscountPercent { get; set; }
+
+        public string Description { get; set; }
+
+        public string ImageUrl { get; set; }
     }
-} 
+}

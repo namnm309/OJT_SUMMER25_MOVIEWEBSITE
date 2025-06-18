@@ -11,7 +11,6 @@ using DomainLayer.Entities;
 using DomainLayer.Enum;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ApplicationLayer.Services.MovieManagement
 {
@@ -24,8 +23,13 @@ namespace ApplicationLayer.Services.MovieManagement
         private readonly IGenericRepository<MovieImage> _imageRepo;
         private readonly IGenericRepository<ShowTime> _showtimeRepo;
         private readonly IGenericRepository<CinemaRoom> _roomRepo;
+        private readonly IGenericRepository<Genre> _genreEntityRepo;
 
+<<<<<<< HEAD
         public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreMovieRepo, IGenericRepository<Genre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IMapper mapper)
+=======
+        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IGenericRepository<Genre> genreEntityRepo, IMapper mapper)
+>>>>>>> origin/dev
         {
             _movieRepo = movieRepo;
             _mapper = mapper;
@@ -34,6 +38,7 @@ namespace ApplicationLayer.Services.MovieManagement
             _imageRepo = imageRepo;
             _showtimeRepo = showtimeRepo;
             _roomRepo = roomRepo;
+            _genreEntityRepo = genreEntityRepo;
         }
 
         public async Task<List<MovieListDto>> GetAllAsync()
@@ -42,10 +47,46 @@ namespace ApplicationLayer.Services.MovieManagement
             return _mapper.Map<List<MovieListDto>>(movies);
         }
 
-        public async Task<MovieListDto?> GetByIdAsync(Guid movieId)
+        public async Task<MovieResponseDto?> GetByIdAsync(Guid movieId)
         {
-            var movie = await _movieRepo.FindByIdAsync(movieId);
-            return movie == null ? null : _mapper.Map<MovieListDto>(movie);
+            var movie = await _movieRepo.FirstOrDefaultAsync(
+                m => m.Id == movieId,
+                "MovieImages", "MovieGenres.Genre"
+            );
+            
+            if (movie == null) return null;
+            
+            return new MovieResponseDto
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                ReleaseDate = movie.ReleaseDate ?? DateTime.Now,
+                ProductionCompany = movie.ProductionCompany,
+                RunningTime = movie.RunningTime,
+                Version = movie.Version?.ToString() ?? "TwoD",
+                Director = movie.Director,
+                Actors = movie.Actors,
+                Content = movie.Content,
+                TrailerUrl = movie.TrailerUrl,
+                Status = (int)movie.Status,
+                // Lấy hình ảnh primary
+                PrimaryImageUrl = movie.MovieImages?
+                    .FirstOrDefault(img => img.IsPrimary)?.ImageUrl,
+                // Lấy tất cả hình ảnh
+                Images = movie.MovieImages?
+                    .Select(img => new MovieImageDto
+                    {
+                        ImageUrl = img.ImageUrl,
+                        Description = img.Description ?? "",
+                        DisplayOrder = img.DisplayOrder,
+                        IsPrimary = img.IsPrimary
+                    }).ToList() ?? new List<MovieImageDto>(),
+                // Lấy danh sách thể loại
+                Genres = movie.MovieGenres?
+                    .Select(mg => mg.Genre?.GenreName ?? "")
+                    .Where(g => !string.IsNullOrEmpty(g))
+                    .ToList() ?? new List<string>()
+            };
         }
 
         public async Task<IActionResult> CreateMovie(MovieCreateDto Dto)
@@ -69,6 +110,10 @@ namespace ApplicationLayer.Services.MovieManagement
             if (Dto.Images.Count(i => i.IsPrimary) != 1)
                 return ErrorResp.BadRequest("Exactly one image must be marked as primary");
 
+            var movie = _mapper.Map<Movie>(Dto);
+            movie.Status = MovieStatus.NotAvailable;
+
+            await _movieRepo.CreateAsync(movie);
 
             foreach (var genreId in Dto.GenreIds)
             {
@@ -83,11 +128,6 @@ namespace ApplicationLayer.Services.MovieManagement
                 if (room == null)
                     return ErrorResp.NotFound($"Cinema room with ID {st.RoomId} not found");
             }
-
-            var movie = _mapper.Map<Movie>(Dto);
-            movie.Status = MovieStatus.NotAvailable;
-
-            await _movieRepo.CreateAsync(movie);
 
             // Map danh sách thể loại (GenreIds -> MovieGenres)
             var movieGenres = Dto.GenreIds.Select(id => new MovieGenre
@@ -121,6 +161,7 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> ViewMovie()
         {
+<<<<<<< HEAD
             var movie = await _movieRepo.ListAsync();
 
             var result = _mapper.Map<List<MovieResponseDto>>(movie);
@@ -129,6 +170,49 @@ namespace ApplicationLayer.Services.MovieManagement
         }
 
         public async Task<IActionResult> ViewMoviePagination(PaginationReq query)
+=======
+            var movies = await _movieRepo.ListAsync(
+                "MovieImages", "MovieGenres.Genre"
+            );
+            
+            var result = movies.Select(movie => new MovieResponseDto
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                ReleaseDate = movie.ReleaseDate ?? DateTime.Now,
+                ProductionCompany = movie.ProductionCompany,
+                RunningTime = movie.RunningTime,
+                Version = movie.Version?.ToString() ?? "TwoD",
+                Director = movie.Director,
+                Actors = movie.Actors,
+                Content = movie.Content,
+                TrailerUrl = movie.TrailerUrl,
+                Status = (int)movie.Status,
+                // Lấy hình ảnh primary
+                PrimaryImageUrl = movie.MovieImages?
+                    .FirstOrDefault(img => img.IsPrimary)?.ImageUrl,
+                // Lấy tất cả hình ảnh
+                Images = movie.MovieImages?
+                    .Select(img => new MovieImageDto
+                    {
+                        ImageUrl = img.ImageUrl,
+                        Description = img.Description ?? "",
+                        DisplayOrder = img.DisplayOrder,
+                        IsPrimary = img.IsPrimary
+                    }).ToList() ?? new List<MovieImageDto>(),
+                // Lấy danh sách thể loại
+                Genres = movie.MovieGenres?
+                    .Select(mg => mg.Genre?.GenreName ?? "")
+                    .Where(g => !string.IsNullOrEmpty(g))
+                    .ToList() ?? new List<string>()
+            }).ToList();
+            
+            return SuccessResp.Ok(result);
+        }
+
+        //Code movie with pagination 
+        public async Task<IActionResult> ViewMoviesWithPagination(PaginationReq query)
+>>>>>>> origin/dev
         {
             int page = query.Page <= 0 ? 1 : query.Page;
             int pageSize = query.PageSize <= 0 ? 10 : query.PageSize;
@@ -137,7 +221,7 @@ namespace ApplicationLayer.Services.MovieManagement
 
             var pagedMovies = movies
                 .Skip((page - 1) * pageSize)
-                .Take(pageSize) 
+                .Take(pageSize)
                 .ToList();
 
             var response = new
@@ -175,6 +259,8 @@ namespace ApplicationLayer.Services.MovieManagement
             if (Dto.Images.Count(i => i.IsPrimary) != 1)
                 return ErrorResp.BadRequest("Exactly one image must be marked as primary");
 
+            _mapper.Map(Dto, movie);
+
             foreach (var genreId in Dto.GenreIds)
             {
                 var genre = await _genreRepo.FindByIdAsync(genreId);
@@ -189,9 +275,13 @@ namespace ApplicationLayer.Services.MovieManagement
                     return ErrorResp.NotFound($"Cinema room with ID {st.RoomId} not found");
             }
 
+<<<<<<< HEAD
             _mapper.Map(Dto, movie);
 
             // Cập nhật GenresMovie
+=======
+            // Cập nhật Genres
+>>>>>>> origin/dev
             movie.MovieGenres.Clear();
             movie.MovieGenres = Dto.GenreIds.Select(gid => new MovieGenre
             {
@@ -247,6 +337,7 @@ namespace ApplicationLayer.Services.MovieManagement
             return SuccessResp.Ok("Changed Status Successfully");
         }
 
+<<<<<<< HEAD
         public async Task<IActionResult> SearchMovie(string? keyword)
         {
             var movie = string.IsNullOrWhiteSpace(keyword)
@@ -296,6 +387,33 @@ namespace ApplicationLayer.Services.MovieManagement
 
             string status = genre.IsActive ? "Activated" : "De-Activated";
             return SuccessResp.Ok($"Genre has been {status} successfully");
+=======
+        public async Task<IActionResult> GetAllGenres()
+        {
+            var genres = await _genreEntityRepo.ListAsync();
+            var genreDtos = genres.Select(g => new GenreDto
+            {
+                Id = g.Id,
+                Name = g.GenreName,
+                Description = g.Description
+            }).ToList();
+
+            return SuccessResp.Ok(genreDtos);
+        }
+
+        public async Task<IActionResult> GetAllCinemaRooms()
+        {
+            var rooms = await _roomRepo.ListAsync();
+            var roomDtos = rooms.Select(r => new CinemaRoomDto
+            {
+                Id = r.Id,
+                RoomName = r.RoomName,
+                TotalSeats = r.TotalSeats,
+                IsActive = r.IsActive
+            }).ToList();
+
+            return SuccessResp.Ok(roomDtos);
+>>>>>>> origin/dev
         }
     }
 }

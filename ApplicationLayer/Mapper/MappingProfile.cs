@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 ﻿using ApplicationLayer.DTO.CinemaRoomManagement;
 using ApplicationLayer.DTO.MovieManagement;
+=======
+﻿using ApplicationLayer.DTO.MovieManagement;
+using ApplicationLayer.DTO.PromotionManagement;
+>>>>>>> origin/dev
 using AutoMapper;
 using DomainLayer.Entities;
 using System;
@@ -33,6 +38,7 @@ namespace ApplicationLayer.Mapper
                 .ForMember(dest => dest.ShowTimes, opt => opt.Ignore())
                 .ForMember(dest => dest.MovieImages, opt => opt.Ignore());
 
+<<<<<<< HEAD
             //Search Movie
             CreateMap<Movie, MovieListDto>();
 
@@ -42,6 +48,12 @@ namespace ApplicationLayer.Mapper
 
             //Cinema Room
             CreateMap<CinemaRoom, CinemaRoomListDto>();
+=======
+            // Add these to your existing MappingProfile class
+            CreateMap<PromotionCreateDto, Promotion>();
+            CreateMap<PromotionUpdateDto, Promotion>();
+            CreateMap<Promotion, PromotionResponseDto>();
+>>>>>>> origin/dev
         }
     }
 }

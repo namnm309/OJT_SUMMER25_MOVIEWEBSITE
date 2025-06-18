@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using UI.Models;
+using UI.Areas.UserManagement.Models;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
@@ -18,32 +19,19 @@ namespace UI.Controllers
             _apiService = apiService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Login(string? returnUrl = null, bool forceLogout = false)
-        {
-            // Option để force logout trước khi show login page
-            if (forceLogout && User.Identity?.IsAuthenticated == true)
-            {
-                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                return RedirectToAction("Login", new { returnUrl });
-            }
-            
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
-
-            ViewData["ReturnUrl"] = returnUrl;
-            return View(new LoginViewModel { ReturnUrl = returnUrl });
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                // Nếu là AJAX request, trả về JSON
+                if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                {
+                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                    return Json(new { success = false, message = string.Join(", ", errors) });
+                }
+                return Json(new { success = false, message = "Invalid model state" });
             }
 
             try
@@ -60,53 +48,115 @@ namespace UI.Controllers
                 if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
                     var userElement = result.Data;
+                    
+                    // Kiểm tra xem có thuộc tính user không (dựa trên phản hồi API thực tế)
+                    if (!userElement.TryGetProperty("user", out var userData))
+                    {
+                        if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                        {
+                            return Json(new { success = false, message = "Invalid response format: missing user data" });
+                        }
+                        ModelState.AddModelError("", "Invalid response format: missing user data");
+                        return Json(new { success = false, message = "Invalid response format: missing user data" });
+                    }
+                    
+                    // Kiểm tra các thuộc tính cần thiết trong user object
+                    if (!userData.TryGetProperty("userId", out var userIdProp))
+                    {
+                        if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                        {
+                            return Json(new { success = false, message = "Invalid response format: missing userId" });
+                        }
+                        ModelState.AddModelError("", "Invalid response format: missing userId");
+                        return Json(new { success = false, message = "Invalid response format: missing userId" });
+                    }
+                    
+                    if (!userData.TryGetProperty("username", out var usernameProp))
+                    {
+                        if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                        {
+                            return Json(new { success = false, message = "Invalid response format: missing username" });
+                        }
+                        ModelState.AddModelError("", "Invalid response format: missing username");
+                        return Json(new { success = false, message = "Invalid response format: missing username" });
+                    }
+                    
+                    if (!userData.TryGetProperty("role", out var roleProp))
+                    {
+                        if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                        {
+                            return Json(new { success = false, message = "Invalid response format: missing role" });
+                        }
+                        ModelState.AddModelError("", "Invalid response format: missing role");
+                        return Json(new { success = false, message = "Invalid response format: missing role" });
+                    }
+                    
+                    // Kiểm tra fullName, sử dụng giá trị mặc định nếu không có
+                    string fullName = userData.TryGetProperty("fullName", out var fullNameProp) 
+                        ? fullNameProp.GetString() ?? model.Username 
+                        : model.Username;
+                    
                     var claims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.NameIdentifier, userElement.GetProperty("userId").ToString()),
-                        new Claim(ClaimTypes.Name, userElement.GetProperty("username").GetString()!),
-                        new Claim(ClaimTypes.Role, userElement.GetProperty("role").ToString()),
-                        new Claim("FullName", userElement.GetProperty("fullName").GetString()!)
+                        new Claim(ClaimTypes.NameIdentifier, userIdProp.ToString()),
+                        new Claim(ClaimTypes.Name, usernameProp.GetString()!),
+                        new Claim(ClaimTypes.Role, roleProp.ToString()),
+                        new Claim("FullName", fullName)
                     };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var authProperties = new AuthenticationProperties
                     {
-                        IsPersistent = false,  // Disable persistence for debugging
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)  // Short session for testing
+                        IsPersistent = model.RememberMe,
+                        ExpiresUtc = model.RememberMe 
+                            ? DateTimeOffset.UtcNow.AddDays(7)  // 7 days for "Remember me"
+                            : DateTimeOffset.UtcNow.AddMinutes(30)  // 30 minutes for regular session
                     };
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
                     
-                    // Redirect based on return URL or role
+                    // Xử lý chuyển hướng dựa trên vai trò người dùng
+                    string role = roleProp.ToString().ToLower();
+                    
+                    // Nếu là AJAX request
+                    if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                    {
+                        return Json(new { success = true, role = role });
+                    }
+                    
+                    // Redirect dựa trên returnUrl hoặc vai trò
                     if (!string.IsNullOrEmpty(model.ReturnUrl))
                     {
                         return Redirect(model.ReturnUrl);
                     }
-
-                    return RedirectToAction("Index", "Dashboard");
+                    else if (role == "admin")
+                    {
+                        return RedirectToAction("Index", "Dashboard");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
                 else
                 {
+                    if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                    {
+                        return Json(new { success = false, message = result.Message });
+                    }
                     ModelState.AddModelError("", result.Message);
                 }
             }
             catch (Exception ex)
             {
+                if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                {
+                    return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
+                }
                 ModelState.AddModelError("", $"An error occurred: {ex.Message}");
             }
 
-            return View(model);
-        }
-
-        [HttpGet]
-        public IActionResult Register()
-        {
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
-
-            return View(new RegisterViewModel());
+            return Json(new { success = false, message = "Login failed" });
         }
 
         [HttpPost]
@@ -115,11 +165,27 @@ namespace UI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                // Nếu là AJAX request, trả về JSON
+                if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                {
+                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                    return Json(new { success = false, message = string.Join(", ", errors) });
+                }
+                return Json(new { success = false, message = "Invalid model state" });
             }
 
             try
             {
+                // Chuyển đổi gender từ string sang enum UserGender
+                int genderValue = 1; // Mặc định là Male (1)
+                if (!string.IsNullOrEmpty(model.Gender))
+                {
+                    if (model.Gender.Equals("Nữ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        genderValue = 2; // Female
+                    }
+                }
+
                 var registerData = new
                 {
                     username = model.Username,
@@ -131,27 +197,41 @@ namespace UI.Controllers
                     identityCard = model.IdentityCard,
                     address = model.Address,
                     birthDate = model.BirthDate,
-                    gender = model.Gender
+                    gender = genderValue // Sử dụng giá trị số của enum
                 };
 
                 var result = await _apiService.PostAsync<JsonElement>("/api/user/register", registerData);
 
                 if (result.Success)
                 {
+                    // Nếu là AJAX request
+                    if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                    {
+                        return Json(new { success = true, message = "Registration successful! Please login to continue." });
+                    }
+                    
                     TempData["SuccessMessage"] = "Registration successful! Please login to continue.";
-                    return RedirectToAction("Login");
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
+                    if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                    {
+                        return Json(new { success = false, message = result.Message });
+                    }
                     ModelState.AddModelError("", result.Message);
                 }
             }
             catch (Exception ex)
             {
+                if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                {
+                    return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
+                }
                 ModelState.AddModelError("", $"An error occurred: {ex.Message}");
             }
 
-            return View(model);
+            return Json(new { success = false, message = "Registration failed" });
         }
 
         [HttpPost]
@@ -171,98 +251,7 @@ namespace UI.Controllers
             // Sign out từ UI authentication
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return RedirectToAction("Login");
-        }
-
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Profile()
-        {
-            try
-            {
-                var result = await _apiService.GetAsync<JsonElement>("/api/user/profile");
-                
-                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
-                {
-                    var userProfile = result.Data;
-                    var model = new EditProfileViewModel
-                    {
-                        UserId = Guid.Parse(userProfile.GetProperty("userId").ToString()),
-                        Username = userProfile.GetProperty("username").GetString()!,
-                        Email = userProfile.GetProperty("email").GetString()!,
-                        FullName = userProfile.GetProperty("fullName").GetString()!,
-                        Phone = userProfile.GetProperty("phone").GetString()!,
-                        IdentityCard = userProfile.GetProperty("identityCard").GetString()!,
-                        Address = userProfile.GetProperty("address").GetString()!,
-                        Score = userProfile.GetProperty("score").GetDouble(),
-                        Role = userProfile.GetProperty("role").ToString(),
-                        BirthDate = userProfile.TryGetProperty("birthDate", out var bd) && !bd.ValueKind.Equals(JsonValueKind.Null) 
-                            ? DateTime.Parse(bd.GetString()!) : null,
-                        Gender = userProfile.TryGetProperty("gender", out var g) && !g.ValueKind.Equals(JsonValueKind.Null) 
-                            ? g.GetString() : null,
-                        Avatar = userProfile.TryGetProperty("avatar", out var a) && !a.ValueKind.Equals(JsonValueKind.Null) 
-                            ? a.GetString() : null
-                    };
-
-                    return View(model);
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = result.Message;
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Error loading profile: {ex.Message}";
-            }
-
-            return RedirectToAction("Index", "Dashboard");
-        }
-
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Profile(EditProfileViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            try
-            {
-                var editData = new
-                {
-                    email = model.Email,
-                    fullName = model.FullName,
-                    phone = model.Phone,
-                    identityCard = model.IdentityCard,
-                    address = model.Address,
-                    birthDate = model.BirthDate,
-                    gender = model.Gender,
-                    avatar = model.Avatar,
-                    newPassword = model.NewPassword,
-                    confirmNewPassword = model.ConfirmNewPassword
-                };
-
-                var result = await _apiService.PutAsync<JsonElement>("/api/user/profile", editData);
-
-                if (result.Success)
-                {
-                    TempData["SuccessMessage"] = "Profile updated successfully!";
-                    return RedirectToAction("Profile");
-                }
-                else
-                {
-                    ModelState.AddModelError("", result.Message);
-                }
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", $"An error occurred: {ex.Message}");
-            }
-
-            return View(model);
+            return RedirectToAction("Index", "Home");
         }
     }
-} 
+}

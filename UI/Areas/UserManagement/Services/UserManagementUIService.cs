@@ -1,4 +1,5 @@
 using UI.Models;
+using UI.Areas.UserManagement.Models;
 using UI.Services;
 
 namespace UI.Areas.UserManagement.Services

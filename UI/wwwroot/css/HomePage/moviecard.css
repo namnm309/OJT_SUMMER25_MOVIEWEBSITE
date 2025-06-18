@@ -1,0 +1,600 @@
+﻿/* Movie Cards Hover Effect Styles */
+.movie-card {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+}
+
+/* Movie Poster */
+.movie-poster {
+    position: relative;
+    aspect-ratio: 2/3;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .movie-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity 0.3s ease;
+    }
+
+/* Hover Overlay - Initially Hidden */
+.movie-card .movie-poster-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.90) 0%, rgba(0, 0, 0, 0.3) 100%);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+/* Show overlay on hover */
+.movie-card:hover .movie-poster-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Hide original image on hover */
+.movie-card:hover .movie-poster img {
+    opacity: 0.3;
+}
+
+/* Featured card always shows overlay */
+.movie-card.featured .movie-poster-overlay {
+    opacity: 1;
+    visibility: visible;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.80) 0%, transparent 100%), url('https://image.tmdb.org/t/p/w500/NNxYkU70HPurnNCSiCjYAmacwm.jpg') lightgray 50% / cover no-repeat;
+}
+
+.movie-card.featured .movie-poster img {
+    display: none;
+}
+
+.movie-card.featured .movie-meta,
+.movie-card.featured .movie-name {
+    opacity: 1;
+}
+
+/* Overlay Content */
+.overlay-content {
+    color: white;
+    text-align: center;
+    padding: 0 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    height: 100%;
+    position: relative;
+}
+
+    .overlay-content h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0;
+        color: white;
+    }
+
+    .overlay-content p {
+        font-size: 11px;
+        line-height: 1.4;
+        margin: 0;
+        text-align: justify;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+.overlay-cursor {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: white;
+    font-size: 20px;
+    opacity: 0.7;
+}
+
+.overlay-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+    gap: 10px;
+}
+
+.detail-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+    flex: 1;
+}
+
+.detail-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.detail-value {
+    font-size: 10px;
+    font-weight: 400;
+    color: white;
+}
+
+/* Hide meta and name on hover for non-featured cards */
+.movie-card:not(.featured):hover .movie-meta,
+.movie-card:not(.featured):hover .movie-name {
+    opacity: 0;
+}
+
+/* Styles cho nút profile */
+.user-profile {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+    position: relative;
+}
+
+.btn-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .btn-profile:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .btn-profile i {
+        font-size: 18px;
+    }
+
+/* Dropdown styles */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    position: relative;
+}
+
+    .dropdown-toggle::after {
+        display: none;
+    }
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    min-width: 200px;
+    padding: 8px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+    .dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+}
+
+    .dropdown-item:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
+        padding-left: 24px;
+    }
+
+    .dropdown-item i {
+        width: 20px;
+        margin-right: 8px;
+        text-align: center;
+    }
+
+.dropdown-divider {
+    margin: 8px 0;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-item.text-danger {
+    color: #df2144;
+}
+
+    .dropdown-item.text-danger:hover {
+        background-color: rgba(223, 33, 68, 0.1);
+        color: #ff3355;
+    }
+
+/* User info in dropdown */
+.dropdown-header {
+    text-align: center;
+    padding: 15px 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px 12px 0 0;
+}
+
+.user-info {
+    color: white;
+}
+
+    .user-info i {
+        color: #df2144;
+        margin-bottom: 10px;
+    }
+
+.user-name {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.user-email {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .d-none.d-md-inline {
+        display: none !important;
+    }
+
+    .btn-profile {
+        padding: 8px 12px;
+    }
+
+    .dropdown-menu {
+        min-width: 180px;
+    }
+}
+
+/* Auth buttons styles */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 0;
+}
+
+.btn-register,
+.btn-login {
+    padding: 8px 20px !important;
+    border-radius: 20px !important;
+    text-decoration: none;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: auto !important;
+}
+
+.btn-register {
+    background-color: transparent !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+    .btn-register:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(255, 255, 255, 0.5) !important;
+        color: white;
+    }
+
+.btn-login {
+    background-color: #df2144 !important;
+    color: white !important;
+    border: 1px solid #df2144 !important;
+}
+
+    .btn-login:hover {
+        background-color: #c01b3a !important;
+        border-color: #c01b3a !important;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(223, 33, 68, 0.3);
+    }
+
+/* Ensure nav layout stays consistent */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+
+.nav-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+}
+
+/* Loading styles */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    color: white;
+    text-align: center;
+}
+
+.loading-spinner {
+    color: #df2144;
+    margin-bottom: 20px;
+}
+
+.loading-text {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.loading-subtext {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.loading-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    width: 100%;
+}
+
+.loading-card {
+    text-align: center;
+    color: white;
+}
+
+    .loading-card .loading-spinner {
+        margin-bottom: 15px;
+    }
+
+    .loading-card .loading-text {
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+/* Auth Modal Styles */
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.auth-modal {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+    .auth-modal .modal-header {
+        background: linear-gradient(135deg, #df2144 0%, #c01b3a 100%);
+        border-bottom: none;
+        padding: 20px 30px;
+    }
+
+    .auth-modal .modal-title {
+        color: white;
+        font-weight: 700;
+        font-size: 24px;
+        margin: 0;
+    }
+
+    .auth-modal .btn-close-white {
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+    }
+
+        .auth-modal .btn-close-white:hover {
+            opacity: 1;
+        }
+
+    .auth-modal .modal-body {
+        padding: 30px;
+        color: white;
+    }
+
+.auth-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Form Styles */
+.auth-modal .form-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.auth-modal .form-control {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 12px 16px;
+    font-size: 15px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+    .auth-modal .form-control:focus {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: #df2144;
+        box-shadow: 0 0 0 3px rgba(223, 33, 68, 0.2);
+        color: white;
+    }
+
+    .auth-modal .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+.auth-modal .input-group .btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+    .auth-modal .input-group .btn:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+.auth-modal .form-check-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+    .auth-modal .form-check-input:checked {
+        background-color: #df2144;
+        border-color: #df2144;
+    }
+
+.auth-modal .form-check-label {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Button Styles */
+.auth-btn {
+    padding: 14px 28px;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 10px;
+    border: none;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.auth-modal .btn-primary {
+    background: linear-gradient(135deg, #df2144 0%, #c01b3a 100%);
+    box-shadow: 0 4px 15px rgba(223, 33, 68, 0.3);
+}
+
+    .auth-modal .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(223, 33, 68, 0.4);
+    }
+
+.auth-modal .btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+    .auth-modal .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+/* Footer Links */
+.auth-footer {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auth-link {
+    color: #df2144;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+    .auth-link:hover {
+        color: #ff3355;
+        text-decoration: underline;
+    }
+
+/* Select dropdown */
+.auth-modal select.form-control {
+    cursor: pointer;
+}
+
+    .auth-modal select.form-control option {
+        background-color: #2d2d2d;
+        color: white;
+    }
+
+/* Date input */
+.auth-modal input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.8);
+    cursor: pointer;
+}
+
+/* Textarea */
+.auth-modal textarea.form-control {
+    resize: vertical;
+    min-height: 60px;
+}
+
+/* Animation */
+.modal.fade .modal-dialog {
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+    opacity: 1;
+}

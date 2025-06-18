@@ -1,4 +1,5 @@
 using UI.Models;
+using UI.Areas.BookingManagement.Models;
 using UI.Services;
 
 namespace UI.Areas.BookingManagement.Services

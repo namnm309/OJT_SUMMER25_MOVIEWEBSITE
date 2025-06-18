@@ -39,7 +39,7 @@ namespace ApplicationLayer.Mappings
                 .ForMember(dest => dest.IdentityCard, opt => opt.MapFrom(src => src.IdentityCard))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
                 .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
-                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender)) // Map gender trực tiếp từ enum sang enum
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => DomainLayer.Enum.UserRole.Member)) // Default role
                 .ForMember(dest => dest.Score, opt => opt.MapFrom(src => 0.0)) // Default score
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true)) // Default active

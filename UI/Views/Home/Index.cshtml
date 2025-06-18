@@ -1,3 +1,6 @@
+@using System.Security.Claims
+@using System.Text.Json
+@model UI.Models.HomeViewModel
 @{
     ViewData["Title"] = "Trang Chủ - Cinema City";
 }
@@ -11,152 +14,7 @@
     <link rel="stylesheet" href="~/css/HomePage/responsive.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/HomePage/banner.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" asp-append-version="true" />
-    <style>
-        /* Movie Cards Hover Effect Styles */
-        .movie-card {
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .movie-card:hover {
-            transform: scale(1.05);
-        }
-
-        /* Movie Poster */
-        .movie-poster {
-            position: relative;
-            aspect-ratio: 2/3;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .movie-poster img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: opacity 0.3s ease;
-        }
-
-        /* Hover Overlay - Initially Hidden */
-        .movie-card .movie-poster-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(0deg, rgba(0, 0, 0, 0.90) 0%, rgba(0, 0, 0, 0.3) 100%);
-            border-radius: 8px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        /* Show overlay on hover */
-        .movie-card:hover .movie-poster-overlay {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Hide original image on hover */
-        .movie-card:hover .movie-poster img {
-            opacity: 0.3;
-        }
-
-        /* Featured card always shows overlay */
-        .movie-card.featured .movie-poster-overlay {
-            opacity: 1;
-            visibility: visible;
-            background: linear-gradient(0deg, rgba(0, 0, 0, 0.80) 0%, transparent 100%), url('https://image.tmdb.org/t/p/w500/NNxYkU70HPurnNCSiCjYAmacwm.jpg') lightgray 50% / cover no-repeat;
-        }
-
-        .movie-card.featured .movie-poster img {
-            display: none;
-        }
-
-        .movie-card.featured .movie-meta,
-        .movie-card.featured .movie-name {
-            opacity: 1;
-        }
-
-        /* Overlay Content */
-        .overlay-content {
-            color: white;
-            text-align: center;
-            padding: 0 8px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 12px;
-            height: 100%;
-            position: relative;
-        }
-
-        .overlay-content h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin: 0;
-            color: white;
-        }
-
-        .overlay-content p {
-            font-size: 11px;
-            line-height: 1.4;
-            margin: 0;
-            text-align: justify;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .overlay-cursor {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            color: white;
-            font-size: 20px;
-            opacity: 0.7;
-        }
-
-        .overlay-details {
-            display: flex;
-            justify-content: space-between;
-            margin-top: auto;
-            gap: 10px;
-        }
-
-        .detail-col {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            text-align: center;
-            flex: 1;
-        }
-
-        .detail-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .detail-value {
-            font-size: 10px;
-            font-weight: 400;
-            color: white;
-        }
-
-        /* Hide meta and name on hover for non-featured cards */
-        .movie-card:not(.featured):hover .movie-meta,
-        .movie-card:not(.featured):hover .movie-name {
-            opacity: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="~/css/HomePage/moviecard.css" asp-append-version="true" />
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -168,9 +26,14 @@
         <div class="hero-nav">
             <div class="nav-content">
                 <div class="nav-left">
-                    <div class="auth-buttons">
-                        <a href="@Url.Action("Register", "Account")" class="btn-register">Đăng ký</a>
-                        <a href="@Url.Action("Login", "Account")" class="btn-login">Đăng nhập</a>
+                    <div class="brand">
+                        <div class="brand-content">
+                            <div class="brand-header">
+                                <span class="brand-name">Cinema City</span>
+                                <div class="brand-logo"></div>
+                            </div>
+                            <div class="brand-subtitle">Rạp chiếu phim hiện đại</div>
+                        </div>
                     </div>
                     <div class="search-box">
                         <input type="text" placeholder="Tìm kiếm phim..." class="search-input">
@@ -196,59 +59,122 @@
                 </div>
                 <div class="nav-right">
                     <div class="divider"></div>
-                    <div class="brand">
-                        <div class="brand-content">
-                            <div class="brand-header">
-                                <span class="brand-name">Cinema City</span>
-                                <div class="brand-logo"></div>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="user-profile">
+                            <div class="dropdown">
+                                <button class="btn-profile dropdown-toggle" type="button" id="userDropdown">
+                                    <i class="fas fa-user-circle"></i>
+                                    @if (ViewContext.HttpContext.User.Identity?.Name?.Length > 10)
+                                    {
+                                        <span class="d-none d-md-inline">@ViewContext.HttpContext.User.Identity.Name.Substring(0, 10)...</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="d-none d-md-inline">@ViewContext.HttpContext.User.Identity?.Name</span>
+                                    }
+                                    <i class="fas fa-chevron-down ms-2"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li class="dropdown-header">
+                                        <div class="user-info">
+                                            <i class="fas fa-user-circle fa-2x mb-2"></i>
+                                            <div class="user-name">@ViewContext.HttpContext.User.Identity?.Name</div>
+                                            <div class="user-email">@ViewContext.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value</div>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("Profile", "Account", new { area = "UserManagement" })">
+                                            <i class="fas fa-user-edit"></i>
+                                            Chỉnh sửa thông tin
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Dashboard")">
+                                            <i class="fas fa-tachometer-alt"></i>
+                                            Dashboard
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-action="Logout" asp-controller="Account" method="post" class="m-0">
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="fas fa-sign-out-alt"></i>
+                                                Đăng xuất
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="brand-subtitle">Rạp chiếu phim hiện đại</div>
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <div class="auth-buttons">
+                            <a href="#" class="btn-register" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a>
+                            <a href="#" class="btn-login" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
 
         <!-- Movie Content -->
         <div class="movie-content" id="movieContent">
-            <div class="movie-info">
-                <div class="movie-header">
-                    <h1 class="movie-title" id="movieTitle">Oppenheimer 2023</h1>
-                    <p class="movie-title-vn" id="movieTitleVn">Cha đẻ bom nguyên tử</p>
-                </div>
-                
-                <div class="movie-details">
-                    <div class="plot-section">
-                        <h3>Tóm tắt nội dung</h3>
-                        <p id="moviePlot">
-                            Phim Oppenheimer kể về cuộc đời của J. Robert Oppenheimer, nhà vật lý lý thuyết người Mỹ được mệnh danh là "cha đẻ của bom nguyên tử" vì vai trò của ông trong Dự án Manhattan - chương trình nghiên cứu và phát triển vũ khí hạt nhân đầu tiên của thế giới trong Thế chiến II.
-                        </p>
+            @if (Model?.FeaturedMovie != null)
+            {
+                <div class="movie-info">
+                    <div class="movie-header">
+                        <h1 class="movie-title" id="movieTitle">@Model.FeaturedMovie.Title</h1>
+                        <p class="movie-title-vn" id="movieTitleVn">@(Model.FeaturedMovie.Director ?? "Đạo diễn")</p>
                     </div>
+                    
+                    <div class="movie-details">
+                        <div class="plot-section">
+                            <h3>Tóm tắt nội dung</h3>
+                            <p id="moviePlot">
+                                @(Model.FeaturedMovie.Content ?? "Chưa có thông tin nội dung.")
+                            </p>
+                        </div>
 
-                    <div class="genre-section">
-                        <h3>Thể loại</h3>
-                        <p id="movieGenre">Lịch sử, Tiểu sử, Chính kịch</p>
-                    </div>
+                        <div class="genre-section">
+                            <h3>Thể loại</h3>
+                            <p id="movieGenre">@(Model.FeaturedMovie.Genres != null && Model.FeaturedMovie.Genres.Any() ? string.Join(", ", Model.FeaturedMovie.Genres) : "Chưa phân loại")</p>
+                        </div>
 
-                    <div class="ratings-section">
-                        <div class="rating-item">
-                            <i class="fas fa-clock"></i>
-                            <span id="duration">3 Giờ</span>
+                        <div class="ratings-section">
+                            <div class="rating-item">
+                                <i class="fas fa-clock"></i>
+                                <span id="duration">@Model.FeaturedMovie.RunningTime phút</span>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn-primary" onclick="bookTickets()">
+                                <i class="fas fa-ticket-alt"></i>
+                                Đặt vé ngay
+                            </button>
+                            <button class="btn-secondary" onclick="showMovieInfo()">
+                                <i class="fas fa-info-circle"></i>
+                                Thông tin phim
+                            </button>
                         </div>
                     </div>
-
-                    <div class="action-buttons">
-                        <button class="btn-primary" onclick="bookTickets()">
-                            <i class="fas fa-ticket-alt"></i>
-                            Đặt vé ngay
-                        </button>
-                        <button class="btn-secondary" onclick="showMovieInfo()">
-                            <i class="fas fa-info-circle"></i>
-                            Thông tin phim
-                        </button>
+                </div>
+            }
+            else
+            {
+                <div class="movie-info">
+                    <div class="loading-container">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin fa-3x"></i>
+                        </div>
+                        <h2 class="loading-text">Đang tải dữ liệu phim...</h2>
+                        <p class="loading-subtext">Vui lòng đợi trong giây lát</p>
                     </div>
                 </div>
-            </div>
+            }
 
             <div class="movie-controls">
                 <div class="control-left">
@@ -258,13 +184,17 @@
                 </div>
                 
                 <div class="pagination-dots" id="paginationDots">
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot active"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
+                    @if (Model?.HeroMovies != null && Model.HeroMovies.Any())
+                    {
+                        for (int i = 0; i < Model.HeroMovies.Count; i++)
+                        {
+                            <span class="dot @(i == 0 ? "active" : "")"></span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="dot active"></span>
+                    }
                 </div>
 
                 <div class="control-right">
@@ -414,111 +344,498 @@
         </div>
 
         <div class="movies-grid" id="moviesGrid">
-            <!-- Card 1: Tick Tick... Boom! with hover overlay -->
-            <div class="movie-card">
-                <div class="movie-poster">
-                    <img src="https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg" alt="Tick Tick... Boom!" loading="lazy">
-                    <div class="movie-poster-overlay">
-                        <div class="overlay-content">
-                            <h3>Tóm tắt nội dung</h3>
-                            <p>Một nhạc sĩ trẻ đầy tham vọng đang cố gắng viết vở nhạc kịch tuyệt vời tiếp theo trong khi đối mặt với áp lực về tuổi tác và tình yêu...</p>
-                            <div class="overlay-details">
-                                <div class="detail-col">
-                                    <span class="detail-label">Thể loại</span>
-                                    <span class="detail-value">Nhạc kịch, Tiểu sử</span>
-                                </div>
-                                <div class="detail-col">
-                                    <span class="detail-label">Độ tuổi</span>
-                                    <span class="detail-value">T13</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-clock"></i>
-                        <span>1h 55m</span>
-                    </div>
-                </div>
-                <h3 class="movie-name">Tick Tick... Boom 2021</h3>
-            </div>
-
-            <!-- Card 3: Killers of the Flower Moon with hover overlay -->
-            <div class="movie-card">
-                <div class="movie-poster">
-                    <img src="https://image.tmdb.org/t/p/w500/dKqa850uvbNSCaQCV4Im1XlzEtQ.jpg" alt="Killers of the Flower Moon" loading="lazy">
-                    <div class="movie-poster-overlay">
-                        <div class="overlay-content">
-                            <h3>Tóm tắt nội dung</h3>
-                            <p>Dựa trên câu chuyện có thật về vụ sát hại hàng loạt người dân bộ lạc Osage ở Oklahoma những năm 1920 sau khi họ trở nên giàu có từ dầu mỏ...</p>
-                            <div class="overlay-details">
-                                <div class="detail-col">
-                                    <span class="detail-label">Thể loại</span>
-                                    <span class="detail-value">Tội phạm, Chính kịch</span>
-                                </div>
-                                <div class="detail-col">
-                                    <span class="detail-label">Độ tuổi</span>
-                                    <span class="detail-value">R</span>
+            @if (Model?.RecommendedMovies != null && Model.RecommendedMovies.Any())
+            {
+                foreach (var movie in Model.RecommendedMovies)
+                {
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            @if (!string.IsNullOrEmpty(movie.PrimaryImageUrl))
+                            {
+                                <img src="@movie.PrimaryImageUrl" alt="@movie.Title" loading="lazy">
+                            }
+                            else if (!string.IsNullOrEmpty(movie.ImageUrl))
+                            {
+                                <img src="@movie.ImageUrl" alt="@movie.Title" loading="lazy">
+                            }
+                            else if (movie.Images != null && movie.Images.Any())
+                            {
+                                var primaryImage = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
+                                <img src="@primaryImage.ImageUrl" alt="@movie.Title" loading="lazy">
+                            }
+                            else
+                            {
+                                <img src="https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image" alt="@movie.Title" loading="lazy">
+                            }
+                            <div class="movie-poster-overlay">
+                                <div class="overlay-content">
+                                    <h3>Tóm tắt nội dung</h3>
+                                    <p>@(string.IsNullOrEmpty(movie.Content) ? "Chưa có thông tin nội dung." : (movie.Content.Length > 150 ? movie.Content.Substring(0, 150) + "..." : movie.Content))</p>
+                                    <div class="overlay-details">
+                                        <div class="detail-col">
+                                            <span class="detail-label">Thể loại</span>
+                                            <span class="detail-value">@(movie.Genres != null && movie.Genres.Any() ? string.Join(", ", movie.Genres) : "Chưa phân loại")</span>
+                                        </div>
+                                        <div class="detail-col">
+                                            <span class="detail-label">Phiên bản</span>
+                                            <span class="detail-value">@movie.Version</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="movie-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span>@movie.RunningTime phút</span>
+                            </div>
+                        </div>
+                        <h3 class="movie-name">@movie.Title</h3>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="loading-grid">
+                    <div class="loading-card">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        </div>
+                        <p class="loading-text">Đang tải danh sách phim...</p>
                     </div>
                 </div>
-                <div class="movie-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-clock"></i>
-                        <span>3h 26m</span>
-                    </div>
-                </div>
-                <h3 class="movie-name">Killers Of The Flower...</h3>
-            </div>
+            }
         </div>
 
-        <button class="view-all-btn">
+        <button class="view-all-btn" onclick="location.href='@Url.Action("Index", "Movies")'">
             <i class="fas fa-chevron-left"></i>
             <span>Xem tất cả</span>
         </button>
     </div>
 
     <!-- Featured Banner Section -->
-    <div class="featured-banner">
-        <div class="banner-content">
-            <div class="banner-info">
-                <div class="banner-header">
-                    <h2 class="banner-title">Peaky Blinders</h2>
-                    <p class="banner-title-vn">Băng đảng Peaky Blinders</p>
-                </div>
-                
-                <div class="banner-plot">
-                    <h3>Tóm tắt nội dung</h3>
-                    <p>Trong thập niên 20, khi các băng đảng ở thành phố Birmingham, Anh ngày càng nhiều, một băng đảng cố gắng đưa mình lên vị trí quyền lực trong thập kỷ này...</p>
-                </div>
+    <div class="container">
+        @if (Model?.FeaturedMovie != null)
+        {
+            <div class="featured-banner" @(Model.FeaturedMovie.PrimaryImageUrl != null ? $"style=\"background-image: url('{Model.FeaturedMovie.PrimaryImageUrl}');\"" : Model.FeaturedMovie.Images != null && Model.FeaturedMovie.Images.Any() ? $"style=\"background-image: url('{Model.FeaturedMovie.Images.FirstOrDefault(img => img.IsPrimary)?.ImageUrl ?? Model.FeaturedMovie.Images.First().ImageUrl}');\"" : "")>
+                <div class="banner-content">
+                    <div class="banner-info">
+                        <div class="banner-header">
+                            <h2 class="banner-title">@Model.FeaturedMovie.Title</h2>
+                            <p class="banner-title-vn">@(Model.FeaturedMovie.ProductionCompany ?? "Nhà sản xuất")</p>
+                        </div>
+                        
+                        <div class="banner-plot">
+                            <h3>Tóm tắt nội dung</h3>
+                            <p>@(string.IsNullOrEmpty(Model.FeaturedMovie.Content) ? "Chưa có thông tin nội dung." : Model.FeaturedMovie.Content)</p>
+                        </div>
 
-                <div class="banner-genre">
-                    <h3>Thể loại</h3>
-                    <p>Hành động, Chính kịch, Tội phạm</p>
-                </div>
+                        <div class="banner-genre">
+                            <h3>Thể loại</h3>
+                            <p>@(Model.FeaturedMovie.Genres != null && Model.FeaturedMovie.Genres.Any() ? string.Join(", ", Model.FeaturedMovie.Genres) : "Chưa phân loại")</p>
+                        </div>
 
-                <div class="banner-ratings">
-                    <div class="rating-item">
-                        <i class="fas fa-clock"></i>
-                        <span>60 phút</span>
+                        <div class="banner-ratings">
+                            <div class="rating-item">
+                                <i class="fas fa-clock"></i>
+                                <span>@Model.FeaturedMovie.RunningTime phút</span>
+                            </div>
+                        </div>
+
+                        <a href="@Url.Action("Details", "Movies", new { id = Model.FeaturedMovie.Id })" class="btn-banner">
+                            Xem chi tiết phim
+                        </a>
                     </div>
                 </div>
+            </div>
+        }
+        else
+        {
+            <div class="featured-banner">
+                <div class="banner-content">
+                    <div class="loading-container">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin fa-3x"></i>
+                        </div>
+                        <h2 class="loading-text">Đang tải thông tin phim nổi bật...</h2>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
 
-                <button class="btn-banner">
-                    Xem và tải về với tất cả chất lượng
-                </button>
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content auth-modal">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">
+                    <i class="fas fa-film me-2"></i>Chào mừng trở lại
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="auth-subtitle">Đăng nhập vào tài khoản rạp phim của bạn</p>
+                
+                <form id="loginForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-user me-1"></i>Tên đăng nhập
+                        </label>
+                        <input type="text" name="username" class="form-control form-control-lg" placeholder="Nhập tên đăng nhập của bạn" required />
+                        <span class="text-danger small" id="loginUsernameError"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-lock me-1"></i>Mật khẩu
+                        </label>
+                        <div class="input-group">
+                            <input type="password" name="password" class="form-control form-control-lg" placeholder="Nhập mật khẩu của bạn" required />
+                            <button type="button" class="btn btn-outline-secondary toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="text-danger small" id="loginPasswordError"></span>
+                    </div>
+
+                    <div class="text-danger mb-3" id="loginError"></div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 auth-btn">
+                        <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                    </button>
+
+                    <div class="auth-footer mt-3">
+                        <p class="text-center mb-2">
+                            Chưa có tài khoản? 
+                            <a href="#" class="auth-link" onclick="switchToRegister()">Tạo tài khoản ngay</a>
+                        </p>
+                        <p class="text-center">
+                            <a href="#" class="auth-link small">Quên mật khẩu?</a>
+                        </p>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    window.movieUrls = {
-        moviesIndex: '@Url.Action("Index", "Movies")',
-        movieDetails: '@Url.Action("Details", "Movies")'
-    };
-</script>
-<script src="~/js/homepage.js"></script>
+<!-- Register Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content auth-modal">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">
+                    <i class="fas fa-user-plus me-2"></i>Tạo tài khoản
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="auth-subtitle">Tham gia cộng đồng điện ảnh ngay hôm nay</p>
+                
+                <form id="registerForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-user me-1"></i>Tên đăng nhập
+                                </label>
+                                <input type="text" name="username" class="form-control" placeholder="Chọn tên đăng nhập" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-envelope me-1"></i>Email
+                                </label>
+                                <input type="email" name="email" class="form-control" placeholder="Địa chỉ email của bạn" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-lock me-1"></i>Mật khẩu
+                                </label>
+                                <input type="password" name="password" class="form-control" placeholder="Tạo mật khẩu" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-lock me-1"></i>Xác nhận mật khẩu
+                                </label>
+                                <input type="password" name="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-id-card me-1"></i>Họ và tên
+                        </label>
+                        <input type="text" name="fullName" class="form-control" placeholder="Họ và tên của bạn" required />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-phone me-1"></i>Số điện thoại
+                                </label>
+                                <input type="tel" name="phone" class="form-control" placeholder="Số điện thoại" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-id-badge me-1"></i>CMND/CCCD
+                                </label>
+                                <input type="text" name="identityCard" class="form-control" placeholder="Số CMND/CCCD" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-map-marker-alt me-1"></i>Địa chỉ
+                        </label>
+                        <textarea name="address" class="form-control" rows="2" placeholder="Địa chỉ của bạn"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>Ngày sinh
+                                </label>
+                                <input type="date" name="birthDate" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-venus-mars me-1"></i>Giới tính
+                                </label>
+                                <select name="gender" class="form-control">
+                                    <option value="">Chọn giới tính</option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-danger mb-3" id="registerError"></div>
+
+                    <button type="submit" class="btn btn-success btn-lg w-100 auth-btn">
+                        <i class="fas fa-user-plus me-2"></i>Tạo tài khoản
+                    </button>
+
+                    <div class="auth-footer mt-3">
+                        <p class="text-center">
+                            Đã có tài khoản? 
+                            <a href="#" class="auth-link" onclick="switchToLogin()">Đăng nhập tại đây</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Truyền dữ liệu phim từ server sang JavaScript
+        window.heroMovies = @Html.Raw(Json.Serialize(Model?.HeroMovies?.Select(m => new {
+            id = m.Id,
+            title = m.Title,
+            titleVn = m.ProductionCompany ?? "Nhà sản xuất",
+            plot = m.Content ?? "Chưa có thông tin nội dung.",
+            genre = m.Genres != null && m.Genres.Any() ? string.Join(", ", m.Genres) : "Chưa phân loại",
+            duration = m.RunningTime > 0 ? $"{m.RunningTime} phút" : "Chưa có thông tin",
+            background = m.PrimaryImageUrl ?? (m.Images != null && m.Images.Any() ? m.Images.FirstOrDefault(img => img.IsPrimary)?.ImageUrl ?? m.Images.First().ImageUrl : "https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=No+Image")
+        }) ?? new[] { new {
+            id = "",
+            title = "Oppenheimer 2023",
+            titleVn = "Cha đẻ bom nguyên tử",
+            plot = "Phim Oppenheimer kể về cuộc đời của J. Robert Oppenheimer, nhà vật lý lý thuyết người Mỹ được mệnh danh là 'cha đẻ của bom nguyên tử' vì vai trò của ông trong Dự án Manhattan.",
+            genre = "Lịch sử, Tiểu sử, Chính kịch",
+            duration = "3 Giờ",
+            background = "https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"
+        }}));
+        
+        window.movieUrls = {
+            moviesIndex: '@Url.Action("Index", "Movies")',
+            movieDetails: '@Url.Action("Details", "Movies")'
+        };
+        
+        // Auth Modal Functions
+        function switchToLogin() {
+            $('#registerModal').modal('hide');
+            setTimeout(() => {
+                $('#loginModal').modal('show');
+            }, 300);
+        }
+        
+        function switchToRegister() {
+            $('#loginModal').modal('hide');
+            setTimeout(() => {
+                $('#registerModal').modal('show');
+            }, 300);
+        }
+        
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('input');
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+        
+        // Login form submission
+        document.getElementById('loginForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            // Clear previous errors
+            document.getElementById('loginError').textContent = '';
+            
+            // Basic validation
+            if (!formData.get('username') || !formData.get('password')) {
+                document.getElementById('loginError').textContent = 'Vui lòng nhập đầy đủ thông tin';
+                return;
+            }
+            
+            try {
+                // Prepare form data for model binding
+                const formBody = new URLSearchParams();
+                formBody.append('Username', formData.get('username'));
+                formBody.append('Password', formData.get('password'));
+                formBody.append('RememberMe', 'false');
+                
+                const response = await fetch('@Url.Action("Login", "Account")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: formBody.toString()
+                });
+                
+                // Check if response is JSON
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Reload page after successful login
+                        window.location.reload();
+                    } else {
+                        document.getElementById('loginError').textContent = result.message || 'Đăng nhập thất bại';
+                    }
+                } else {
+                    // If not JSON, it might be a redirect or HTML response
+                    if (response.ok || response.redirected) {
+                        window.location.reload();
+                    } else {
+                        document.getElementById('loginError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
+                    }
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('loginError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
+            }
+        });
+        
+        // Register form submission
+        document.getElementById('registerForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            // Clear previous errors
+            document.getElementById('registerError').textContent = '';
+            
+            // Basic validation
+            if (!formData.get('username') || !formData.get('email') || !formData.get('password') || 
+                !formData.get('confirmPassword') || !formData.get('fullName')) {
+                document.getElementById('registerError').textContent = 'Vui lòng nhập đầy đủ thông tin bắt buộc';
+                return;
+            }
+            
+            if (formData.get('password') !== formData.get('confirmPassword')) {
+                document.getElementById('registerError').textContent = 'Mật khẩu xác nhận không khớp';
+                return;
+            }
+            
+            try {
+                // Prepare form data for model binding
+                const formBody = new URLSearchParams();
+                formBody.append('Username', formData.get('username'));
+                formBody.append('Email', formData.get('email'));
+                formBody.append('Password', formData.get('password'));
+                formBody.append('ConfirmPassword', formData.get('confirmPassword'));
+                formBody.append('FullName', formData.get('fullName'));
+                formBody.append('Phone', formData.get('phone') || '');
+                formBody.append('IdentityCard', formData.get('identityCard') || '');
+                formBody.append('Address', formData.get('address') || '');
+                formBody.append('BirthDate', formData.get('birthDate') || '');
+                formBody.append('Gender', formData.get('gender') || '');
+                
+                const response = await fetch('@Url.Action("Register", "Account")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('#registerForm input[name="__RequestVerificationToken"]').value
+                    },
+                    body: formBody.toString()
+                });
+                
+                // Check if response is JSON
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Switch to login modal
+                        switchToLogin();
+                        // Show success message
+                        document.getElementById('loginError').innerHTML = '<div class="alert alert-success">Đăng ký thành công! Vui lòng đăng nhập.</div>';
+                    } else {
+                        document.getElementById('registerError').textContent = result.message || 'Đăng ký thất bại';
+                    }
+                } else {
+                    // If not JSON, check if it's a redirect
+                    if (response.ok || response.redirected) {
+                        switchToLogin();
+                        document.getElementById('loginError').innerHTML = '<div class="alert alert-success">Đăng ký thành công! Vui lòng đăng nhập.</div>';
+                    } else {
+                        document.getElementById('registerError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
+                    }
+                }
+            } catch (error) {
+                console.error('Register error:', error);
+                document.getElementById('registerError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
+            }
+        });
+    </script>
+    <script src="~/js/homepage.js"></script>
+}

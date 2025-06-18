@@ -11,10 +11,14 @@ namespace UI
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             
+            // Add HttpContextAccessor for accessing current HTTP context
+            builder.Services.AddHttpContextAccessor();
+            
             // Add HttpClient for API calls với credential sharing
             builder.Services.AddHttpClient("ApiClient", client =>
             {
-                client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7049");
+                var baseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5274";
+                client.BaseAddress = new Uri(baseUrl);
             }).ConfigurePrimaryHttpMessageHandler(() =>
             {
                 return new HttpClientHandler()
@@ -41,6 +45,9 @@ namespace UI
 
             // Đăng ký ApiService
             builder.Services.AddScoped<UI.Services.IApiService, UI.Services.ApiService>();
+            
+            // Đăng ký AuthUIService
+            builder.Services.AddScoped<UI.Services.IAuthUIService, UI.Services.AuthUIService>();
 
             var app = builder.Build();
 
@@ -59,6 +66,11 @@ namespace UI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // Thêm routing cho Areas
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",
