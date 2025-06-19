@@ -1,4 +1,5 @@
-﻿using ApplicationLayer.DTO.CinemaRoomManagement;
+﻿using ApplicationLayer.DTO.BookingTicketManagement;
+using ApplicationLayer.DTO.CinemaRoomManagement;
 using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.DTO.PromotionManagement;
 using AutoMapper;
@@ -26,7 +27,27 @@ namespace ApplicationLayer.Mapper
 
             //View Movie
             CreateMap<Movie, MovieResponseDto>()
-    .           ForMember(dest => dest.Version, opt => opt.MapFrom(src => src.Version.ToString()));
+                .ForMember(dest => dest.Images,
+                    opt => opt.MapFrom(src => src.MovieImages.Select(img => new MovieImageDto
+                    {
+                        ImageUrl = img.ImageUrl,
+                        Description = img.Description,
+                        DisplayOrder = img.DisplayOrder,
+                        IsPrimary = img.IsPrimary
+                    }).ToList()))
+                .ForMember(dest => dest.Genres,
+                    opt => opt.MapFrom(src => src.MovieGenres.Select(mg => new GenreDto
+                    {
+                        Id = mg.Genre.Id,
+                        Name = mg.Genre.GenreName,
+                        Description = mg.Genre.Description
+                    }).ToList()))
+                .AfterMap((src, dest) =>
+                {
+                    var primary = src.MovieImages.FirstOrDefault(i => i.IsPrimary);
+                    dest.PrimaryImageUrl = primary != null ? primary.ImageUrl : null;
+                });
+
 
             //Update Movie
             CreateMap<MovieUpdateDto, Movie>()
@@ -48,6 +69,12 @@ namespace ApplicationLayer.Mapper
 
             //Cinema Room
             CreateMap<CinemaRoom, CinemaRoomListDto>();
+
+            //Seat
+            CreateMap<Seat, SeatViewDto>();
+
+            //Booking
+            CreateMap<Movie, MovieDropdownDto>();
         }
     }
 }

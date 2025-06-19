@@ -22,7 +22,7 @@ namespace ApplicationLayer.DTO.MovieManagement
         
         // Thêm các properties mới
         public string? PrimaryImageUrl { get; set; }
-        public List<MovieImageDto> Images { get; set; } = new List<MovieImageDto>();
-        public List<string> Genres { get; set; } = new List<string>();
+        public List<MovieImageDto> Images { get; set; } = new();
+        public List<GenreDto> Genres { get; set; } = new();
     }
 }

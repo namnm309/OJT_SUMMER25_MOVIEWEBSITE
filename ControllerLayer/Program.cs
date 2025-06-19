@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using ApplicationLayer.Services.PromotionManagement;
 using ApplicationLayer.Services.CinemaRoomManagement;
+using ApplicationLayer.Services.BookingTicketManagement;
 
 namespace ControllerLayer
 {
@@ -71,6 +72,10 @@ namespace ControllerLayer
             builder.Services.AddScoped<IPromotionService, PromotionService>();
 
             builder.Services.AddScoped<ICinemaRoomService, CinemaRoomService>();
+
+            builder.Services.AddScoped<IPointHistoryService, PointHistoryService>();
+
+            builder.Services.AddScoped<IBookingTicketService, BookingTicketService>();
 
             // Cấu hình Authentication với Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
