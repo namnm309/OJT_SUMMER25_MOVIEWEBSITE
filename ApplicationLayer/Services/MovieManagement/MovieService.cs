@@ -41,47 +41,47 @@ namespace ApplicationLayer.Services.MovieManagement
             return _mapper.Map<List<MovieListDto>>(movies);
         }
 
-        public async Task<MovieResponseDto?> GetByIdAsync(Guid movieId)
-        {
-            var movie = await _movieRepo.FirstOrDefaultAsync(
-                m => m.Id == movieId,
-                "MovieImages", "MovieGenres.Genre"
-            );
+        //public async Task<MovieResponseDto?> GetByIdAsync(Guid movieId)
+        //{
+        //    var movie = await _movieRepo.FirstOrDefaultAsync(
+        //        m => m.Id == movieId,
+        //        "MovieImages", "MovieGenres.Genre"
+        //    );
             
-            if (movie == null) return null;
+        //    if (movie == null) return null;
             
-            return new MovieResponseDto
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                ReleaseDate = movie.ReleaseDate ?? DateTime.Now,
-                ProductionCompany = movie.ProductionCompany,
-                RunningTime = movie.RunningTime,
-                Version = movie.Version?.ToString() ?? "TwoD",
-                Director = movie.Director,
-                Actors = movie.Actors,
-                Content = movie.Content,
-                TrailerUrl = movie.TrailerUrl,
-                Status = (int)movie.Status,
-                // Lấy hình ảnh primary
-                PrimaryImageUrl = movie.MovieImages?
-                    .FirstOrDefault(img => img.IsPrimary)?.ImageUrl,
-                // Lấy tất cả hình ảnh
-                Images = movie.MovieImages?
-                    .Select(img => new MovieImageDto
-                    {
-                        ImageUrl = img.ImageUrl,
-                        Description = img.Description ?? "",
-                        DisplayOrder = img.DisplayOrder,
-                        IsPrimary = img.IsPrimary
-                    }).ToList() ?? new List<MovieImageDto>(),
-                // Lấy danh sách thể loại
-                Genres = movie.MovieGenres?
-                    .Select(mg => mg.Genre?.GenreName ?? "")
-                    .Where(g => !string.IsNullOrEmpty(g))
-                    .ToList() ?? new List<string>()
-            };
-        }
+        //    return new MovieResponseDto
+        //    {
+        //        Id = movie.Id,
+        //        Title = movie.Title,
+        //        ReleaseDate = movie.ReleaseDate ?? DateTime.Now,
+        //        ProductionCompany = movie.ProductionCompany,
+        //        RunningTime = movie.RunningTime,
+        //        Version = movie.Version?.ToString() ?? "TwoD",
+        //        Director = movie.Director,
+        //        Actors = movie.Actors,
+        //        Content = movie.Content,
+        //        TrailerUrl = movie.TrailerUrl,
+        //        Status = (int)movie.Status,
+        //        // Lấy hình ảnh primary
+        //        PrimaryImageUrl = movie.MovieImages?
+        //            .FirstOrDefault(img => img.IsPrimary)?.ImageUrl,
+        //        // Lấy tất cả hình ảnh
+        //        Images = movie.MovieImages?
+        //            .Select(img => new MovieImageDto
+        //            {
+        //                ImageUrl = img.ImageUrl,
+        //                Description = img.Description ?? "",
+        //                DisplayOrder = img.DisplayOrder,
+        //                IsPrimary = img.IsPrimary
+        //            }).ToList() ?? new List<MovieImageDto>(),
+        //        // Lấy danh sách thể loại
+        //        Genres = movie.MovieGenres?
+        //            .Select(mg => mg.Genre?.GenreName ?? "")
+        //            .Where(g => !string.IsNullOrEmpty(g))
+        //            .ToList() ?? new List<string>()
+        //    };
+        //}
 
         public async Task<IActionResult> CreateMovie(MovieCreateDto Dto)
         {
@@ -156,9 +156,12 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> ViewMovie()
         {
-            var movie = await _movieRepo.ListAsync();
+            var movies = await _movieRepo.ListAsync(
+                nameof(Movie.MovieImages),
+                nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
+            );
 
-            var result = _mapper.Map<List<MovieResponseDto>>(movie);
+            var result = _mapper.Map<List<MovieResponseDto>>(movies);
 
             return SuccessResp.Ok(result);
         }
@@ -168,19 +171,27 @@ namespace ApplicationLayer.Services.MovieManagement
             int page = query.Page <= 0 ? 1 : query.Page;
             int pageSize = query.PageSize <= 0 ? 10 : query.PageSize;
 
-            var movies = await _movieRepo.ListAsync();
+            var movies = await _movieRepo.WhereAsync(
+                filter: null,
+                orderBy: q => q.OrderByDescending(m => m.CreatedAt),
+                page: page - 1,
+                pageSize: pageSize,
+                navigationProperties: new[]
+                {
+                    nameof(Movie.MovieImages),
+                    nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
+                });
 
-            var pagedMovies = movies
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            var totalCount = await _movieRepo.CountAsync(); // tổng số phim
+
+            var result = _mapper.Map<List<MovieResponseDto>>(movies);
 
             var response = new
             {
-                Data = pagedMovies,
-                Total = movies.Count,
-                Page = query.Page,
-                PageSize = query.PageSize,
+                Data = result,
+                Total = totalCount,
+                Page = page,
+                PageSize = pageSize
             };
 
             return SuccessResp.Ok(response);
