@@ -1,0 +1,376 @@
+﻿/* Reset và base styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Rubik', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    color: #fff;
+    overflow: hidden;
+}
+
+/* Main container - layout chính */
+.main-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+
+/* Left side - Background image (30%) */
+.loki-background {
+    flex: 0 0 40%; /* Cố định 30% */
+    position: relative;
+    background: url('../Image/Login.png') no-repeat center center / cover;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 50px;
+}
+
+/* Text overlay trên ảnh */
+.overlay-text {
+    position: absolute;
+    bottom: 60px;
+    left: 40px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    font-weight: bold;
+    color: #e50914;
+    letter-spacing: 6px;
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+    z-index: 2;
+}
+
+/* Right side - Login form (70%) */
+.login-side {
+    flex: 0 0 60%; /* Cố định 70% */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+    /* Ảnh nền cho bên phải */
+    .login-side::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url('../Image/loginright.png') no-repeat center center / cover;
+        z-index: 0;
+    }
+
+    /* Lớp nền đen mờ + blur */
+    .login-side::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1;
+    }
+
+/* Netflix logo */
+.netflix-logo-center {
+    position: absolute;
+    top: 30px;
+    left: 40px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #e50914;
+    z-index: 10;
+}
+
+/* Top bar */
+.top-bar {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+}
+
+.signup-prompt {
+    margin-right: 15px;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.signup-btn {
+    border: 1px solid #e50914;
+    color: #e50914;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+    .signup-btn:hover {
+        background-color: #e50914;
+        color: white;
+    }
+
+/* Login container */
+.login-container {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2; /* Để nằm trên lớp blur */
+}
+
+/* Auth card */
+.auth-card {
+    background: rgba(17, 17, 17, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Auth header */
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.auth-subtitle {
+    font-size: 14px;
+    color: #aaa;
+    margin: 0;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    z-index: 5;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 15px;
+    backdrop-filter: blur(6px);
+    box-shadow: inset 0 0 5px rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+}
+
+    .form-control.with-icon {
+        padding-left: 45px;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #e50914;
+        box-shadow: 0 0 8px rgba(229, 9, 20, 0.7);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+
+    .form-control::placeholder {
+        color: #bbb;
+        font-size: 13px;
+    }
+
+/* Input group for password */
+.input-group {
+    display: flex;
+    position: relative;
+}
+
+    .input-group .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .input-group .btn {
+        background: #333;
+        border: 1px solid #555;
+        border-left: none;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        color: #ccc;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+    }
+
+        .input-group .btn:hover {
+            background: #444;
+            color: #fff;
+        }
+
+/* Form check */
+.form-check {
+    margin-bottom: 20px;
+}
+
+.form-check-input {
+    background-color: #333;
+    border-color: #555;
+}
+
+    .form-check-input:checked {
+        background-color: #e50914;
+        border-color: #e50914;
+    }
+
+.form-check-label {
+    color: #ccc;
+    font-size: 14px;
+}
+
+/* Auth button */
+.auth-btn {
+    background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 14px 0;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .auth-btn:hover {
+        background: linear-gradient(135deg, #b81d24 0%, #a01820 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+    }
+
+/* Auth footer */
+.auth-footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 14px;
+}
+
+    .auth-footer p {
+        margin: 8px 0;
+    }
+
+.auth-link {
+    color: #e50914;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+    .auth-link:hover {
+        color: #fff;
+        text-decoration: underline;
+    }
+
+/* Alert styles */
+.alert {
+    margin-bottom: 20px;
+    border-radius: 6px;
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    color: #28a745;
+}
+
+/* Validation styles */
+.text-danger {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .loki-background {
+        display: none;
+    }
+
+    .login-side {
+        flex: none;
+        height: 100vh;
+        padding: 20px;
+    }
+
+    .auth-card {
+        padding: 30px 20px;
+        margin: 0;
+    }
+
+    .netflix-logo-center {
+        position: static;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 2rem;
+    }
+
+    .top-bar {
+        position: static;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .overlay-text {
+        font-size: 2.5rem;
+        bottom: 30px;
+        left: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 20px 15px;
+    }
+
+    .auth-title {
+        font-size: 24px;
+    }
+
+    .overlay-text {
+        font-size: 2rem;
+    }
+}

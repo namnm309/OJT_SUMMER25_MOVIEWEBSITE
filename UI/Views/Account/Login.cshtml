@@ -1,0 +1,210 @@
+﻿@model UI.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/LoginPage/auth.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+}
+
+<div class="main-container">
+    <!-- Bên trái: ảnh background -->
+    <div class="loki-background d-none d-lg-block">
+        <div class="overlay-text">CINEMA CITY</div>
+    </div>
+
+    <!-- Bên phải: nội dung form login -->
+    <div class="login-side">
+        <!-- Logo Netflix ở góc trên trái -->
+        <div class="netflix-logo-center d-none d-lg-block">C</div>
+
+        <!-- Top bar ở góc trên phải -->
+        <div class="top-bar d-none d-lg-block">
+            <span class="signup-prompt">Chưa có tài khoản?</span>
+            <a asp-action="Register" class="signup-btn">Đăng ký</a>
+        </div>
+
+        <div class="login-container">
+            <!-- Logo và top bar cho mobile -->
+            <div class="d-lg-none text-center mb-4">
+                <!-- <div class="netflix-logo-center mb-3">C</div> -->
+                <div class="top-bar">
+                    <span class="signup-prompt">Chưa có tài khoản?</span>
+                    <a asp-action="Register" class="signup-btn">Đăng ký</a>
+                </div>
+            </div>
+
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h2 class="auth-title">
+                        <i class="fas fa-film me-2"></i>Chào mừng trở lại
+                    </h2>
+                    <p class="auth-subtitle">Đăng nhập vào tài khoản rạp phim của bạn</p>
+                </div>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <!-- Error message container -->
+                <div class="text-danger mb-3" id="loginError"></div>
+
+                <form id="loginForm" asp-action="Login" method="post" class="auth-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="ReturnUrl" />
+
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label asp-for="Username" class="form-label">
+                            <i class="fas fa-user me-1"></i>@Html.DisplayNameFor(m => m.Username)
+                        </label>
+                        <div class="position-relative">
+                            <i class="fas fa-user input-icon"></i>
+                            <input asp-for="Username" name="username" class="form-control with-icon" placeholder="Tên đăng nhập hoặc email" />
+                        </div>
+                        <span asp-validation-for="Username" class="text-danger" id="loginUsernameError"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label asp-for="Password" class="form-label">
+                            <i class="fas fa-lock me-1"></i>@Html.DisplayNameFor(m => m.Password)
+                        </label>
+                        <div class="input-group">
+                            <div class="position-relative flex-grow-1">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input asp-for="Password" name="password" class="form-control with-icon" placeholder="Mật khẩu" id="Password" type="password" />
+                            </div>
+                            <button type="button" class="btn toggle-password" id="togglePassword">
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger" id="loginPasswordError"></span>
+                    </div>
+
+                    <!-- Remember me -->
+                    <div class="form-check">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label">
+                            @Html.DisplayNameFor(m => m.RememberMe)
+                        </label>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary btn-lg w-100 auth-btn">
+                        <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                    </button>
+
+                    <!-- Footer -->
+                    <div class="auth-footer">
+                        <p>Chưa có tài khoản? <a asp-action="Register" class="auth-link">Tạo tài khoản ngay</a></p>
+                        <p><a href="#" class="auth-link">Quên mật khẩu?</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordField = document.getElementById('Password');
+            const icon = this.querySelector('i');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        });
+
+        // Focus vào username khi trang load
+        document.addEventListener('DOMContentLoaded', function() {
+            const usernameField = document.getElementById('Username');
+            if (usernameField) {
+                usernameField.focus();
+            }
+        });
+
+        // Login form submission with AJAX
+        document.getElementById('loginForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            // Clear previous errors
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('loginUsernameError').textContent = '';
+            document.getElementById('loginPasswordError').textContent = '';
+
+            // Basic validation
+            if (!formData.get('username') || !formData.get('password')) {
+                document.getElementById('loginError').textContent = 'Vui lòng nhập đầy đủ thông tin';
+                return;
+            }
+
+            try {
+                // Prepare form data for model binding
+                const formBody = new URLSearchParams();
+                formBody.append('Username', formData.get('username'));
+                formBody.append('Password', formData.get('password'));
+                formBody.append('RememberMe', formData.get('RememberMe') ? 'true' : 'false');
+                formBody.append('ReturnUrl', formData.get('ReturnUrl') || '');
+
+                const response = await fetch('@Url.Action("Login", "Account")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: formBody.toString()
+                });
+
+                // Check if response is JSON
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Redirect to return URL or home page
+                        const returnUrl = formData.get('ReturnUrl') || '@Url.Action("Index", "Home")';
+                        window.location.href = returnUrl;
+                    } else {
+                        document.getElementById('loginError').textContent = result.message || 'Đăng nhập thất bại';
+                    }
+                } else {
+                    // If not JSON, it might be a redirect or HTML response
+                    if (response.ok || response.redirected) {
+                        // Redirect to return URL or home page
+                        const returnUrl = formData.get('ReturnUrl') || '@Url.Action("Index", "Home")';
+                        window.location.href = returnUrl;
+                    } else {
+                        document.getElementById('loginError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
+                    }
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('loginError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
+            }
+        });
+    </script>
+}
