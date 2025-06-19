@@ -1,0 +1,320 @@
+﻿@model UI.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng ký";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/RegisterPage/register.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+}
+
+<div class="main-container">
+    <div class="loki-background d-none d-lg-block">
+        <div class="overlay-text">CINEMA CITY</div>
+    </div>
+
+    <div class="login-side">
+        <div class="netflix-logo-center d-none d-lg-block">C</div>
+
+        <div class="top-bar d-none d-lg-block">
+            <span class="signup-prompt">Đã có tài khoản?</span>
+            <a asp-action="Login" class="signup-btn">Đăng nhập</a>
+        </div>
+
+        <div class="login-container">
+            <div class="d-lg-none text-center mb-4">
+                <div class="top-bar">
+                    <span class="signup-prompt">Đã có tài khoản?</span>
+                    <a asp-action="Login" class="signup-btn">Đăng nhập</a>
+                </div>
+            </div>
+
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h2 class="auth-title">
+                        <i class="fas fa-user-plus me-2"></i>Tạo tài khoản mới
+                    </h2>
+                    <p class="auth-subtitle">Vui lòng điền thông tin để đăng ký tài khoản</p>
+                </div>
+
+                <!-- Error message container -->
+                <div class="text-danger mb-3" id="registerError"></div>
+
+                <form id="registerForm" method="post" class="auth-form">
+                    @Html.AntiForgeryToken()
+                    <div class="form-grid">
+                        <!-- Cột trái -->
+                        <div class="form-column">
+                            @* Username *@
+                            <div class="form-group">
+                                <label asp-for="Username" class="form-label">
+                                    <i class="fas fa-user me-1"></i>@Html.DisplayNameFor(m => m.Username)
+                                </label>
+                                <div class="position-relative">
+                                    <i class="fas fa-user input-icon"></i>
+                                    <input asp-for="Username" name="username" class="form-control with-icon" placeholder="Tên đăng nhập" id="Username" />
+                                </div>
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+
+                            @* Email *@
+                            <div class="form-group">
+                                <label asp-for="Email" class="form-label">
+                                    <i class="fas fa-envelope me-1"></i>@Html.DisplayNameFor(m => m.Email)
+                                </label>
+                                <div class="position-relative">
+                                    <i class="fas fa-envelope input-icon"></i>
+                                    <input asp-for="Email" name="email" class="form-control with-icon" placeholder="Email" />
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            @* Password *@
+                            <div class="form-group">
+                                <label asp-for="Password" class="form-label">
+                                    <i class="fas fa-lock me-1"></i>@Html.DisplayNameFor(m => m.Password)
+                                </label>
+                                <div class="input-group">
+                                    <div class="position-relative flex-grow-1">
+                                        <i class="fas fa-lock input-icon"></i>
+                                        <input asp-for="Password" name="password" class="form-control with-icon" placeholder="Mật khẩu" id="Password" type="password" />
+                                    </div>
+                                    <button type="button" class="btn toggle-password" id="togglePassword">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </button>
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+                            @* ConfirmPassword *@
+                            <div class="form-group">
+                                <label asp-for="ConfirmPassword" class="form-label">
+                                    <i class="fas fa-lock me-1"></i>@Html.DisplayNameFor(m => m.ConfirmPassword)
+                                </label>
+                                <div class="input-group">
+                                    <div class="position-relative flex-grow-1">
+                                        <i class="fas fa-lock input-icon"></i>
+                                        <input asp-for="ConfirmPassword" name="confirmPassword" class="form-control with-icon" placeholder="Nhập lại mật khẩu" id="ConfirmPassword" type="password" />
+                                    </div>
+                                    <button type="button" class="btn toggle-password" id="toggleConfirmPassword">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </button>
+                                </div>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+
+                            @* FullName *@
+                            <div class="form-group">
+                                <label asp-for="FullName" class="form-label">
+                                    <i class="fas fa-id-card me-1"></i>@Html.DisplayNameFor(m => m.FullName)
+                                </label>
+                                <div class="position-relative">
+                                    <i class="fas fa-id-card input-icon"></i>
+                                    <input asp-for="FullName" name="fullName" class="form-control with-icon" placeholder="Họ và tên" />
+                                </div>
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Cột phải -->
+                        <div class="form-column">
+                            @* Phone *@
+                            <div class="form-group">
+                                <label asp-for="Phone" class="form-label">
+                                    <i class="fas fa-phone me-1"></i>@Html.DisplayNameFor(m => m.Phone)
+                                </label>
+                                <div class="position-relative">
+                                    <i class="fas fa-phone input-icon"></i>
+                                    <input asp-for="Phone" name="phone" class="form-control with-icon" placeholder="Số điện thoại" />
+                                </div>
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+
+                            @* CCCD *@
+                            <div class="form-group">
+                                <label asp-for="IdentityCard" class="form-label">
+                                    <i class="fas fa-id-badge me-1"></i>@Html.DisplayNameFor(m => m.IdentityCard)
+                                </label>
+                                <div class="position-relative">
+                                    <i class="fas fa-id-badge input-icon"></i>
+                                    <input asp-for="IdentityCard" name="identityCard" class="form-control with-icon" placeholder="Số CCCD/CMND" />
+                                </div>
+                                <span asp-validation-for="IdentityCard" class="text-danger"></span>
+                            </div>
+
+                            @* Address *@
+                            <div class="form-group">
+                                <label asp-for="Address" class="form-label">
+                                    <i class="fas fa-map-marker-alt me-1"></i>@Html.DisplayNameFor(m => m.Address)
+                                </label>
+                                <div class="position-relative">
+                                    <i class="fas fa-map-marker-alt input-icon"></i>
+                                    <textarea asp-for="Address" name="address" class="form-control with-icon" rows="2" placeholder="Địa chỉ thường trú"></textarea>
+                                </div>
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+
+                            @* BirthDate *@
+                            <div class="form-group">
+                                <label asp-for="BirthDate" class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>@Html.DisplayNameFor(m => m.BirthDate)
+                                </label>
+                                <div class="position-relative">
+                                    <i class="fas fa-calendar input-icon"></i>
+                                    <input asp-for="BirthDate" name="birthDate" class="form-control with-icon" type="date" />
+                                </div>
+                                <span asp-validation-for="BirthDate" class="text-danger"></span>
+                            </div>
+
+                            @* Gender *@
+                            <div class="form-group">
+                                <label asp-for="Gender" class="form-label">
+                                    <i class="fas fa-venus-mars me-1"></i>@Html.DisplayNameFor(m => m.Gender)
+                                </label>
+                                <div class="position-relative">
+                                    <i class="fas fa-venus-mars input-icon"></i>
+                                    <select asp-for="Gender" name="gender" class="form-control with-icon">
+                                        <option value="">Chọn giới tính</option>
+                                        <option value="Nam">Nam</option>
+                                        <option value="Nữ">Nữ</option>
+                                        <option value="Khác">Khác</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 auth-btn">
+                        <i class="fas fa-user-plus me-2"></i>Đăng ký
+                    </button>
+
+                    <div class="auth-footer">
+                        <p>Đã có tài khoản? <a asp-action="Login" class="auth-link">Đăng nhập ngay</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordField = document.getElementById('Password');
+            const icon = this.querySelector('i');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        });
+
+        document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+            const passwordField = document.getElementById('ConfirmPassword');
+            const icon = this.querySelector('i');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        });
+
+        // Focus vào username khi trang load
+        document.addEventListener('DOMContentLoaded', function () {
+            const usernameField = document.getElementById('Username');
+            if (usernameField) {
+                usernameField.focus();
+            }
+        });
+
+        // Register form submission with AJAX
+        document.getElementById('registerForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            // Clear previous errors
+            document.getElementById('registerError').textContent = '';
+
+            // Basic validation
+            if (!formData.get('username') || !formData.get('email') || !formData.get('password') ||
+                !formData.get('confirmPassword') || !formData.get('fullName')) {
+                document.getElementById('registerError').textContent = 'Vui lòng nhập đầy đủ thông tin bắt buộc';
+                return;
+            }
+
+            if (formData.get('password') !== formData.get('confirmPassword')) {
+                document.getElementById('registerError').textContent = 'Mật khẩu xác nhận không khớp';
+                return;
+            }
+
+            try {
+                // Prepare form data for model binding
+                const formBody = new URLSearchParams();
+                formBody.append('Username', formData.get('username'));
+                formBody.append('Email', formData.get('email'));
+                formBody.append('Password', formData.get('password'));
+                formBody.append('ConfirmPassword', formData.get('confirmPassword'));
+                formBody.append('FullName', formData.get('fullName'));
+                formBody.append('Phone', formData.get('phone') || '');
+                formBody.append('IdentityCard', formData.get('identityCard') || '');
+                formBody.append('Address', formData.get('address') || '');
+                formBody.append('BirthDate', formData.get('birthDate') || '');
+                formBody.append('Gender', formData.get('gender') || '');
+
+                const response = await fetch('@Url.Action("Register", "Account")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('#registerForm input[name="__RequestVerificationToken"]').value
+                    },
+                    body: formBody.toString()
+                });
+
+                // Check if response is JSON
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Redirect to login page with success message
+                        window.location.href = '@Url.Action("Login", "Account")' + '?message=Đăng ký thành công! Vui lòng đăng nhập.';
+                    } else {
+                        document.getElementById('registerError').textContent = result.message || 'Đăng ký thất bại';
+                    }
+                } else {
+                    // If not JSON, check if it's a redirect
+                    if (response.ok || response.redirected) {
+                        // Redirect to login page with success message
+                        window.location.href = '@Url.Action("Login", "Account")' + '?message=Đăng ký thành công! Vui lòng đăng nhập.';
+                    } else {
+                        document.getElementById('registerError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
+                    }
+                }
+            } catch (error) {
+                console.error('Register error:', error);
+                document.getElementById('registerError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
+            }
+        });
+    </script>
+}
