@@ -24,7 +24,7 @@ namespace ApplicationLayer.Services.MovieManagement
         private readonly IGenericRepository<ShowTime> _showtimeRepo;
         private readonly IGenericRepository<CinemaRoom> _roomRepo;
 
-        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IMapper mapper)
+        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreMovieRepo, IGenericRepository<Genre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IMapper mapper)
         {
             _movieRepo = movieRepo;
             _mapper = mapper;
@@ -32,8 +32,7 @@ namespace ApplicationLayer.Services.MovieManagement
             _genreRepo = genreRepo;
             _imageRepo = imageRepo;
             _showtimeRepo = showtimeRepo;
-            _roomRepo = roomRepo;
-            _genreEntityRepo = genreEntityRepo;
+            _roomRepo = roomRepo;   
         }
 
         public async Task<List<MovieListDto>> GetAllAsync()
