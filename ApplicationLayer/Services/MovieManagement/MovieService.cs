@@ -18,21 +18,21 @@ namespace ApplicationLayer.Services.MovieManagement
     {
         private readonly IGenericRepository<Movie> _movieRepo;
         private readonly IMapper _mapper;
-        private readonly IGenericRepository<MovieGenre> _genreRepo;
+        private readonly IGenericRepository<MovieGenre> _genreMovieRepo;
+        private readonly IGenericRepository<Genre> _genreRepo;
         private readonly IGenericRepository<MovieImage> _imageRepo;
         private readonly IGenericRepository<ShowTime> _showtimeRepo;
         private readonly IGenericRepository<CinemaRoom> _roomRepo;
-        private readonly IGenericRepository<Genre> _genreEntityRepo;
 
-        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IGenericRepository<Genre> genreEntityRepo, IMapper mapper)
+        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreMovieRepo, IGenericRepository<Genre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IMapper mapper)
         {
             _movieRepo = movieRepo;
             _mapper = mapper;
+            _genreMovieRepo = genreMovieRepo;
             _genreRepo = genreRepo;
             _imageRepo = imageRepo;
             _showtimeRepo = showtimeRepo;
-            _roomRepo = roomRepo;
-            _genreEntityRepo = genreEntityRepo;
+            _roomRepo = roomRepo;   
         }
 
         public async Task<List<MovieListDto>> GetAllAsync()
@@ -104,10 +104,6 @@ namespace ApplicationLayer.Services.MovieManagement
             if (Dto.Images.Count(i => i.IsPrimary) != 1)
                 return ErrorResp.BadRequest("Exactly one image must be marked as primary");
 
-            var movie = _mapper.Map<Movie>(Dto);
-            movie.Status = MovieStatus.NotAvailable;
-
-            await _movieRepo.CreateAsync(movie);
 
             foreach (var genreId in Dto.GenreIds)
             {
@@ -122,6 +118,11 @@ namespace ApplicationLayer.Services.MovieManagement
                 if (room == null)
                     return ErrorResp.NotFound($"Cinema room with ID {st.RoomId} not found");
             }
+
+            var movie = _mapper.Map<Movie>(Dto);
+            movie.Status = MovieStatus.NotAvailable;
+
+            await _movieRepo.CreateAsync(movie);
 
             // Map danh sách thể loại (GenreIds -> MovieGenres)
             var movieGenres = Dto.GenreIds.Select(id => new MovieGenre
@@ -146,7 +147,7 @@ namespace ApplicationLayer.Services.MovieManagement
                 ShowDate = show.ShowDate
             }).ToList();
 
-            await _genreRepo.CreateRangeAsync(movieGenres);
+            await _genreMovieRepo.CreateRangeAsync(movieGenres);
             await _imageRepo.CreateRangeAsync(movieImages);
             await _showtimeRepo.CreateRangeAsync(showtimes);
 
@@ -155,47 +156,14 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> ViewMovie()
         {
-            var movies = await _movieRepo.ListAsync(
-                "MovieImages", "MovieGenres.Genre"
-            );
-            
-            var result = movies.Select(movie => new MovieResponseDto
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                ReleaseDate = movie.ReleaseDate ?? DateTime.Now,
-                ProductionCompany = movie.ProductionCompany,
-                RunningTime = movie.RunningTime,
-                Version = movie.Version?.ToString() ?? "TwoD",
-                Director = movie.Director,
-                Actors = movie.Actors,
-                Content = movie.Content,
-                TrailerUrl = movie.TrailerUrl,
-                Status = (int)movie.Status,
-                // Lấy hình ảnh primary
-                PrimaryImageUrl = movie.MovieImages?
-                    .FirstOrDefault(img => img.IsPrimary)?.ImageUrl,
-                // Lấy tất cả hình ảnh
-                Images = movie.MovieImages?
-                    .Select(img => new MovieImageDto
-                    {
-                        ImageUrl = img.ImageUrl,
-                        Description = img.Description ?? "",
-                        DisplayOrder = img.DisplayOrder,
-                        IsPrimary = img.IsPrimary
-                    }).ToList() ?? new List<MovieImageDto>(),
-                // Lấy danh sách thể loại
-                Genres = movie.MovieGenres?
-                    .Select(mg => mg.Genre?.GenreName ?? "")
-                    .Where(g => !string.IsNullOrEmpty(g))
-                    .ToList() ?? new List<string>()
-            }).ToList();
-            
+            var movie = await _movieRepo.ListAsync();
+
+            var result = _mapper.Map<List<MovieResponseDto>>(movie);
+
             return SuccessResp.Ok(result);
         }
 
-        //Code movie with pagination 
-        public async Task<IActionResult> ViewMoviesWithPagination(PaginationReq query)
+        public async Task<IActionResult> ViewMoviePagination(PaginationReq query)
         {
             int page = query.Page <= 0 ? 1 : query.Page;
             int pageSize = query.PageSize <= 0 ? 10 : query.PageSize;
@@ -258,7 +226,9 @@ namespace ApplicationLayer.Services.MovieManagement
                     return ErrorResp.NotFound($"Cinema room with ID {st.RoomId} not found");
             }
 
-            // Cập nhật Genres
+            _mapper.Map(Dto, movie);
+
+            // Cập nhật GenresMovie
             movie.MovieGenres.Clear();
             movie.MovieGenres = Dto.GenreIds.Select(gid => new MovieGenre
             {
@@ -314,31 +284,55 @@ namespace ApplicationLayer.Services.MovieManagement
             return SuccessResp.Ok("Changed Status Successfully");
         }
 
-        public async Task<IActionResult> GetAllGenres()
+        public async Task<IActionResult> SearchMovie(string? keyword)
         {
-            var genres = await _genreEntityRepo.ListAsync();
-            var genreDtos = genres.Select(g => new GenreDto
-            {
-                Id = g.Id,
-                Name = g.GenreName,
-                Description = g.Description
-            }).ToList();
+            var movie = string.IsNullOrWhiteSpace(keyword)
+                ? await _movieRepo.ListAsync()
+                : await _movieRepo.WhereAsync(m => m.Title.Contains(keyword));
 
-            return SuccessResp.Ok(genreDtos);
+            var result = _mapper.Map<List<MovieListDto>>(movie);
+
+            return SuccessResp.Ok(result);
         }
 
-        public async Task<IActionResult> GetAllCinemaRooms()
+        public async Task<IActionResult> GetAllGenre()
         {
-            var rooms = await _roomRepo.ListAsync();
-            var roomDtos = rooms.Select(r => new CinemaRoomDto
-            {
-                Id = r.Id,
-                RoomName = r.RoomName,
-                TotalSeats = r.TotalSeats,
-                IsActive = r.IsActive
-            }).ToList();
+            var genre = await _genreRepo.ListAsync();
 
-            return SuccessResp.Ok(roomDtos);
+            var result = _mapper.Map<List<GenreListDto>>(genre);
+
+            return SuccessResp.Ok(result);
+        }
+
+        public async Task<IActionResult> CreateGenre(GenreCreateDto Dto)
+        {
+            var genre = await _genreRepo.FirstOrDefaultAsync(g => g.GenreName == Dto.GenreName);
+
+            if (genre != null)
+                return ErrorResp.BadRequest("The genre already exists");
+
+            var result = _mapper.Map<Genre>(Dto);
+            result.IsActive = true;
+
+            await _genreRepo.CreateAsync(result);
+
+            return SuccessResp.Ok("Create genre successfully");
+        }
+
+        public async Task<IActionResult> ChangeStatusGenre(Guid Id)
+        {
+            var genre = await _genreRepo.FindByIdAsync(Id);
+
+            if (genre == null)
+                return ErrorResp.NotFound("Genre Not Found");
+
+            genre.IsActive = !genre.IsActive;
+            genre.UpdatedAt = DateTime.UtcNow;
+
+            await _genreRepo.UpdateAsync(genre);
+
+            string status = genre.IsActive ? "Activated" : "De-Activated";
+            return SuccessResp.Ok($"Genre has been {status} successfully");
         }
     }
 }

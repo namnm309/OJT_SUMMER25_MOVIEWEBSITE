@@ -20,13 +20,11 @@
   <ItemGroup>
     <Folder Include="DTO\AccoutManagement\" />
     <Folder Include="DTO\BookingTicketManagement\" />
-    <Folder Include="DTO\CinemaRoomManagement\" />
     <Folder Include="DTO\EmployeeManagement\" />
     <Folder Include="DTO\TicketSellingManagement\" />
     <Folder Include="DTO\UserManagement\" />
     <Folder Include="Services\AccoutManagement\" />
     <Folder Include="Services\BookingTicketManagement\" />
-    <Folder Include="Services\CinemaRoomManagement\" />
     <Folder Include="Services\EmployeeManagement\" />
     <Folder Include="Services\TicketSellingManagement\" />
     <Folder Include="Services\UserManagement\" />

@@ -34,21 +34,11 @@ namespace ControllerLayer.Controllers
             return await _movieService.ViewMovie();
         }
 
-        [HttpGet("ViewWithPagination")]
-        public async Task<IActionResult> ViewListMovies([FromQuery] PaginationReq query)
+        [HttpGet("ViewPagination")]
+        public async Task<IActionResult> ViewListMovie([FromQuery] PaginationReq query)
         {
             _logger.LogInformation("View List Movie");
-            return await _movieService.ViewMoviesWithPagination(query);
-        }
-
-        [HttpGet("GetById")]
-        public async Task<IActionResult> GetById(Guid movieId)
-        {
-            _logger.LogInformation("Get Movie By Id: {MovieId}", movieId);
-            var movie = await _movieService.GetByIdAsync(movieId);
-            if (movie == null)
-                return NotFound("Movie not found");
-            return Ok(new { data = movie });
+            return await _movieService.ViewMoviePagination(query);
         }
 
         [HttpPatch("Update")]
@@ -72,20 +62,34 @@ namespace ControllerLayer.Controllers
             return await _movieService.ChangeStatus(Id, Status);
         }
 
-        [HttpGet("genres")]
-        [EnableCors("PublicAPI")]
-        public async Task<IActionResult> GetAllGenres()
+        [HttpGet("Search")]
+        public async Task<IActionResult> SearchMovie([FromQuery] string? keyword)
         {
-            _logger.LogInformation("Get All Genres");
-            return await _movieService.GetAllGenres();
+            _logger.LogInformation("Search Movie");
+            return await _movieService.SearchMovie(keyword);
         }
 
-        [HttpGet("cinemarooms")]
-        [EnableCors("PublicAPI")]
-        public async Task<IActionResult> GetAllCinemaRooms()
+        [HttpGet("ViewGenre")]
+        public async Task<IActionResult> ViewGenre()
         {
-            _logger.LogInformation("Get All Cinema Rooms");
-            return await _movieService.GetAllCinemaRooms();
+            _logger.LogInformation("View Genre");
+            return await _movieService.GetAllGenre();
         }
+
+        [HttpPost("CreateGenre")]
+        public async Task<IActionResult> CreateGenre([FromBody] GenreCreateDto Dto)
+        {
+            _logger.LogInformation("Create Genre");
+            return await _movieService.CreateGenre(Dto);
+        }
+
+        [HttpPatch("ChangeStatusGenre")]
+        public async Task<IActionResult> ChangeStatusGenre(Guid Id)
+        {
+            _logger.LogInformation("Change Genre");
+            return await _movieService.ChangeStatusGenre(Id);
+        }
+
+
     }
 }

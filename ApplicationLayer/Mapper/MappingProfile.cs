@@ -1,4 +1,5 @@
-﻿using ApplicationLayer.DTO.MovieManagement;
+﻿using ApplicationLayer.DTO.CinemaRoomManagement;
+using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.DTO.PromotionManagement;
 using AutoMapper;
 using DomainLayer.Entities;
@@ -37,6 +38,16 @@ namespace ApplicationLayer.Mapper
             CreateMap<PromotionCreateDto, Promotion>();
             CreateMap<PromotionUpdateDto, Promotion>();
             CreateMap<Promotion, PromotionResponseDto>();
+
+            //Search Movie
+            CreateMap<Movie, MovieListDto>();
+
+            //Genre
+            CreateMap<Genre, GenreListDto>();
+            CreateMap<GenreCreateDto, Genre>();
+
+            //Cinema Room
+            CreateMap<CinemaRoom, CinemaRoomListDto>();
         }
     }
 }
