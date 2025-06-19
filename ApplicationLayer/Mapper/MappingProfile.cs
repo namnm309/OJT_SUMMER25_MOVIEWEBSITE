@@ -48,6 +48,9 @@ namespace ApplicationLayer.Mapper
 
             //Cinema Room
             CreateMap<CinemaRoom, CinemaRoomListDto>();
+
+            //Seat
+            CreateMap<Seat, SeatViewDto>();
         }
     }
 }
