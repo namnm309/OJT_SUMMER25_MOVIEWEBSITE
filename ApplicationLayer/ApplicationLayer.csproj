@@ -27,7 +27,6 @@
     <Folder Include="Services\BookingTicketManagement\" />
     <Folder Include="Services\EmployeeManagement\" />
     <Folder Include="Services\TicketSellingManagement\" />
-    <Folder Include="Services\UserManagement\" />
   </ItemGroup>
 
 </Project>

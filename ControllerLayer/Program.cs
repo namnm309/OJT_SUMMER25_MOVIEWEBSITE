@@ -72,6 +72,8 @@ namespace ControllerLayer
 
             builder.Services.AddScoped<ICinemaRoomService, CinemaRoomService>();
 
+            builder.Services.AddScoped<IPointHistoryService, PointHistoryService>();
+
             // Cấu hình Authentication với Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
