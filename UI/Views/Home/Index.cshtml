@@ -112,8 +112,8 @@
                     else
                     {
                         <div class="auth-buttons">
-                            <a href="#" class="btn-register" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a>
-                            <a href="#" class="btn-login" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a>
+                            <a href="@Url.Action("Register", "Account")" class="btn-register">Đăng ký</a>
+                            <a href="@Url.Action("Login", "Account")" class="btn-login">Đăng nhập</a>
                         </div>
                     }
                 </div>
@@ -350,23 +350,17 @@
                 {
                     <div class="movie-card">
                         <div class="movie-poster">
-                            @if (!string.IsNullOrEmpty(movie.PrimaryImageUrl))
-                            {
-                                <img src="@movie.PrimaryImageUrl" alt="@movie.Title" loading="lazy">
+                            @{
+                                string imageUrl = movie.PrimaryImageUrl ?? movie.ImageUrl;
+                                if (string.IsNullOrEmpty(imageUrl) && movie.Images != null && movie.Images.Any())
+                                {
+                                    var primaryImage = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
+                                    imageUrl = primaryImage?.ImageUrl;
+                                }
+                                imageUrl = imageUrl ?? "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
                             }
-                            else if (!string.IsNullOrEmpty(movie.ImageUrl))
-                            {
-                                <img src="@movie.ImageUrl" alt="@movie.Title" loading="lazy">
-                            }
-                            else if (movie.Images != null && movie.Images.Any())
-                            {
-                                var primaryImage = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
-                                <img src="@primaryImage.ImageUrl" alt="@movie.Title" loading="lazy">
-                            }
-                            else
-                            {
-                                <img src="https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image" alt="@movie.Title" loading="lazy">
-                            }
+                            <img src="@imageUrl" alt="@movie.Title" loading="lazy" 
+                                 onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
                             <div class="movie-poster-overlay">
                                 <div class="overlay-content">
                                     <h3>Tóm tắt nội dung</h3>
@@ -417,7 +411,13 @@
     <div class="container">
         @if (Model?.FeaturedMovie != null)
         {
-            <div class="featured-banner" @(Model.FeaturedMovie.PrimaryImageUrl != null ? $"style=\"background-image: url('{Model.FeaturedMovie.PrimaryImageUrl}');\"" : Model.FeaturedMovie.Images != null && Model.FeaturedMovie.Images.Any() ? $"style=\"background-image: url('{Model.FeaturedMovie.Images.FirstOrDefault(img => img.IsPrimary)?.ImageUrl ?? Model.FeaturedMovie.Images.First().ImageUrl}');\"" : "")>
+            string featuredBg = Model.FeaturedMovie.PrimaryImageUrl ?? Model.FeaturedMovie.ImageUrl;
+            if (string.IsNullOrEmpty(featuredBg) && Model.FeaturedMovie.Images != null && Model.FeaturedMovie.Images.Any())
+            {
+                var primaryImg = Model.FeaturedMovie.Images.FirstOrDefault(img => img.IsPrimary) ?? Model.FeaturedMovie.Images.First();
+                featuredBg = primaryImg?.ImageUrl;
+            }
+            <div class="featured-banner" @(!string.IsNullOrEmpty(featuredBg) ? $"style=\"background-image: url('{featuredBg}');\"" : "")>
                 <div class="banner-content">
                     <div class="banner-info">
                         <div class="banner-header">
@@ -465,190 +465,190 @@
     </div>
 </div>
 
-<!-- Login Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content auth-modal">
-            <div class="modal-header">
-                <h5 class="modal-title" id="loginModalLabel">
-                    <i class="fas fa-film me-2"></i>Chào mừng trở lại
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p class="auth-subtitle">Đăng nhập vào tài khoản rạp phim của bạn</p>
+   <!-- Login Modal 
+   <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+       <div class="modal-dialog modal-dialog-centered">
+           <div class="modal-content auth-modal">
+               <div class="modal-header">
+                   <h5 class="modal-title" id="loginModalLabel">
+                       <i class="fas fa-film me-2"></i>Chào mừng trở lại
+                   </h5>
+                   <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                   <p class="auth-subtitle">Đăng nhập vào tài khoản rạp phim của bạn</p>
                 
-                <form id="loginForm" method="post">
-                    @Html.AntiForgeryToken()
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-user me-1"></i>Tên đăng nhập
-                        </label>
-                        <input type="text" name="username" class="form-control form-control-lg" placeholder="Nhập tên đăng nhập của bạn" required />
-                        <span class="text-danger small" id="loginUsernameError"></span>
-                    </div>
+                   <form id="loginForm" method="post">
+                       @Html.AntiForgeryToken()
+                       <div class="form-group mb-3">
+                           <label class="form-label">
+                               <i class="fas fa-user me-1"></i>Tên đăng nhập
+                           </label>
+                           <input type="text" name="username" class="form-control form-control-lg" placeholder="Nhập tên đăng nhập của bạn" required />
+                           <span class="text-danger small" id="loginUsernameError"></span>
+                       </div>
 
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-lock me-1"></i>Mật khẩu
-                        </label>
-                        <div class="input-group">
-                            <input type="password" name="password" class="form-control form-control-lg" placeholder="Nhập mật khẩu của bạn" required />
-                            <button type="button" class="btn btn-outline-secondary toggle-password">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        <span class="text-danger small" id="loginPasswordError"></span>
-                    </div>
+                       <div class="form-group mb-3">
+                           <label class="form-label">
+                               <i class="fas fa-lock me-1"></i>Mật khẩu
+                           </label>
+                           <div class="input-group">
+                               <input type="password" name="password" class="form-control form-control-lg" placeholder="Nhập mật khẩu của bạn" required />
+                               <button type="button" class="btn btn-outline-secondary toggle-password">
+                                   <i class="fas fa-eye"></i>
+                               </button>
+                           </div>
+                           <span class="text-danger small" id="loginPasswordError"></span>
+                       </div>
 
-                    <div class="text-danger mb-3" id="loginError"></div>
+                       <div class="text-danger mb-3" id="loginError"></div>
 
-                    <button type="submit" class="btn btn-primary btn-lg w-100 auth-btn">
-                        <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
-                    </button>
+                       <button type="submit" class="btn btn-primary btn-lg w-100 auth-btn">
+                           <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                       </button>
 
-                    <div class="auth-footer mt-3">
-                        <p class="text-center mb-2">
-                            Chưa có tài khoản? 
-                            <a href="#" class="auth-link" onclick="switchToRegister()">Tạo tài khoản ngay</a>
-                        </p>
-                        <p class="text-center">
-                            <a href="#" class="auth-link small">Quên mật khẩu?</a>
-                        </p>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Register Modal -->
-<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content auth-modal">
-            <div class="modal-header">
-                <h5 class="modal-title" id="registerModalLabel">
-                    <i class="fas fa-user-plus me-2"></i>Tạo tài khoản
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p class="auth-subtitle">Tham gia cộng đồng điện ảnh ngay hôm nay</p>
+                       <div class="auth-footer mt-3">
+                           <p class="text-center mb-2">
+                               Chưa có tài khoản? 
+                               <a href="#" class="auth-link" onclick="switchToRegister()">Tạo tài khoản ngay</a>
+                           </p>
+                           <p class="text-center">
+                               <a href="#" class="auth-link small">Quên mật khẩu?</a>
+                           </p>
+                       </div>
+                   </form>
+               </div>
+           </div>
+       </div>
+   </div>
+-->
+   <!-- Register Modal
+   <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+       <div class="modal-dialog modal-dialog-centered modal-lg">
+           <div class="modal-content auth-modal">
+               <div class="modal-header">
+                   <h5 class="modal-title" id="registerModalLabel">
+                       <i class="fas fa-user-plus me-2"></i>Tạo tài khoản
+                   </h5>
+                   <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                   <p class="auth-subtitle">Tham gia cộng đồng điện ảnh ngay hôm nay</p>
                 
-                <form id="registerForm" method="post">
-                    @Html.AntiForgeryToken()
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">
-                                    <i class="fas fa-user me-1"></i>Tên đăng nhập
-                                </label>
-                                <input type="text" name="username" class="form-control" placeholder="Chọn tên đăng nhập" required />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">
-                                    <i class="fas fa-envelope me-1"></i>Email
-                                </label>
-                                <input type="email" name="email" class="form-control" placeholder="Địa chỉ email của bạn" required />
-                            </div>
-                        </div>
-                    </div>
+                   <form id="registerForm" method="post">
+                       @Html.AntiForgeryToken()
+                       <div class="row">
+                           <div class="col-md-6">
+                               <div class="form-group mb-3">
+                                   <label class="form-label">
+                                       <i class="fas fa-user me-1"></i>Tên đăng nhập
+                                   </label>
+                                   <input type="text" name="username" class="form-control" placeholder="Chọn tên đăng nhập" required />
+                               </div>
+                           </div>
+                           <div class="col-md-6">
+                               <div class="form-group mb-3">
+                                   <label class="form-label">
+                                       <i class="fas fa-envelope me-1"></i>Email
+                                   </label>
+                                   <input type="email" name="email" class="form-control" placeholder="Địa chỉ email của bạn" required />
+                               </div>
+                           </div>
+                       </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">
-                                    <i class="fas fa-lock me-1"></i>Mật khẩu
-                                </label>
-                                <input type="password" name="password" class="form-control" placeholder="Tạo mật khẩu" required />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">
-                                    <i class="fas fa-lock me-1"></i>Xác nhận mật khẩu
-                                </label>
-                                <input type="password" name="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu" required />
-                            </div>
-                        </div>
-                    </div>
+                       <div class="row">
+                           <div class="col-md-6">
+                               <div class="form-group mb-3">
+                                   <label class="form-label">
+                                       <i class="fas fa-lock me-1"></i>Mật khẩu
+                                   </label>
+                                   <input type="password" name="password" class="form-control" placeholder="Tạo mật khẩu" required />
+                               </div>
+                           </div>
+                           <div class="col-md-6">
+                               <div class="form-group mb-3">
+                                   <label class="form-label">
+                                       <i class="fas fa-lock me-1"></i>Xác nhận mật khẩu
+                                   </label>
+                                   <input type="password" name="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu" required />
+                               </div>
+                           </div>
+                       </div>
 
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-id-card me-1"></i>Họ và tên
-                        </label>
-                        <input type="text" name="fullName" class="form-control" placeholder="Họ và tên của bạn" required />
-                    </div>
+                       <div class="form-group mb-3">
+                           <label class="form-label">
+                               <i class="fas fa-id-card me-1"></i>Họ và tên
+                           </label>
+                           <input type="text" name="fullName" class="form-control" placeholder="Họ và tên của bạn" required />
+                       </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">
-                                    <i class="fas fa-phone me-1"></i>Số điện thoại
-                                </label>
-                                <input type="tel" name="phone" class="form-control" placeholder="Số điện thoại" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">
-                                    <i class="fas fa-id-badge me-1"></i>CMND/CCCD
-                                </label>
-                                <input type="text" name="identityCard" class="form-control" placeholder="Số CMND/CCCD" />
-                            </div>
-                        </div>
-                    </div>
+                       <div class="row">
+                           <div class="col-md-6">
+                               <div class="form-group mb-3">
+                                   <label class="form-label">
+                                       <i class="fas fa-phone me-1"></i>Số điện thoại
+                                   </label>
+                                   <input type="tel" name="phone" class="form-control" placeholder="Số điện thoại" />
+                               </div>
+                           </div>
+                           <div class="col-md-6">
+                               <div class="form-group mb-3">
+                                   <label class="form-label">
+                                       <i class="fas fa-id-badge me-1"></i>CMND/CCCD
+                                   </label>
+                                   <input type="text" name="identityCard" class="form-control" placeholder="Số CMND/CCCD" />
+                               </div>
+                           </div>
+                       </div>
 
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-map-marker-alt me-1"></i>Địa chỉ
-                        </label>
-                        <textarea name="address" class="form-control" rows="2" placeholder="Địa chỉ của bạn"></textarea>
-                    </div>
+                       <div class="form-group mb-3">
+                           <label class="form-label">
+                               <i class="fas fa-map-marker-alt me-1"></i>Địa chỉ
+                           </label>
+                           <textarea name="address" class="form-control" rows="2" placeholder="Địa chỉ của bạn"></textarea>
+                       </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">
-                                    <i class="fas fa-calendar me-1"></i>Ngày sinh
-                                </label>
-                                <input type="date" name="birthDate" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">
-                                    <i class="fas fa-venus-mars me-1"></i>Giới tính
-                                </label>
-                                <select name="gender" class="form-control">
-                                    <option value="">Chọn giới tính</option>
-                                    <option value="Nam">Nam</option>
-                                    <option value="Nữ">Nữ</option>
-                                    <option value="Khác">Khác</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                       <div class="row">
+                           <div class="col-md-6">
+                               <div class="form-group mb-3">
+                                   <label class="form-label">
+                                       <i class="fas fa-calendar me-1"></i>Ngày sinh
+                                   </label>
+                                   <input type="date" name="birthDate" class="form-control" />
+                               </div>
+                           </div>
+                           <div class="col-md-6">
+                               <div class="form-group mb-3">
+                                   <label class="form-label">
+                                       <i class="fas fa-venus-mars me-1"></i>Giới tính
+                                   </label>
+                                   <select name="gender" class="form-control">
+                                       <option value="">Chọn giới tính</option>
+                                       <option value="Nam">Nam</option>
+                                       <option value="Nữ">Nữ</option>
+                                       <option value="Khác">Khác</option>
+                                   </select>
+                               </div>
+                           </div>
+                       </div>
 
-                    <div class="text-danger mb-3" id="registerError"></div>
+                       <div class="text-danger mb-3" id="registerError"></div>
 
-                    <button type="submit" class="btn btn-success btn-lg w-100 auth-btn">
-                        <i class="fas fa-user-plus me-2"></i>Tạo tài khoản
-                    </button>
+                       <button type="submit" class="btn btn-success btn-lg w-100 auth-btn">
+                           <i class="fas fa-user-plus me-2"></i>Tạo tài khoản
+                       </button>
 
-                    <div class="auth-footer mt-3">
-                        <p class="text-center">
-                            Đã có tài khoản? 
-                            <a href="#" class="auth-link" onclick="switchToLogin()">Đăng nhập tại đây</a>
-                        </p>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+                       <div class="auth-footer mt-3">
+                           <p class="text-center">
+                               Đã có tài khoản? 
+                               <a href="#" class="auth-link" onclick="switchToLogin()">Đăng nhập tại đây</a>
+                           </p>
+                       </div>
+                   </form>
+               </div>
+           </div>
+       </div>
+</div> -->
 
 @section Scripts {
     <script>
@@ -660,7 +660,7 @@
             plot = m.Content ?? "Chưa có thông tin nội dung.",
             genre = m.Genres != null && m.Genres.Any() ? string.Join(", ", m.Genres) : "Chưa phân loại",
             duration = m.RunningTime > 0 ? $"{m.RunningTime} phút" : "Chưa có thông tin",
-            background = m.PrimaryImageUrl ?? (m.Images != null && m.Images.Any() ? m.Images.FirstOrDefault(img => img.IsPrimary)?.ImageUrl ?? m.Images.First().ImageUrl : "https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=No+Image")
+            background = m.PrimaryImageUrl ?? m.ImageUrl ?? (m.Images != null && m.Images.Any() ? m.Images.FirstOrDefault(img => img.IsPrimary)?.ImageUrl ?? m.Images.First().ImageUrl : "https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=No+Image")
         }) ?? new[] { new {
             id = "",
             title = "Oppenheimer 2023",

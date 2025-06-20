@@ -19,6 +19,18 @@ namespace UI.Controllers
             _apiService = apiService;
         }
 
+        [HttpGet]
+        public IActionResult Login(string? returnUrl = null)
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            ViewData["ReturnUrl"] = returnUrl;
+            return View(new LoginViewModel { ReturnUrl = returnUrl });
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -157,6 +169,17 @@ namespace UI.Controllers
             }
 
             return Json(new { success = false, message = "Login failed" });
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(new RegisterViewModel());
         }
 
         [HttpPost]

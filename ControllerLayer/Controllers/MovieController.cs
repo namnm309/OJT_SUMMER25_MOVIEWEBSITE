@@ -34,6 +34,13 @@ namespace ControllerLayer.Controllers
             return await _movieService.ViewMovie();
         }
 
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetMovieById([FromQuery] Guid movieId)
+        {
+            _logger.LogInformation("Get Movie By Id: {MovieId}", movieId);
+            return await _movieService.GetByIdAsync(movieId);
+        }
+
         [HttpGet("ViewPagination")]
         public async Task<IActionResult> ViewListMovie([FromQuery] PaginationReq query)
         {

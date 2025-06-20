@@ -1,371 +1,1470 @@
 ﻿@model List<UI.Models.MovieViewModel>
 @{
     ViewData["Title"] = "Quản lý phim";
-    Layout = null;
 }
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Cinema City</title>
+<style>
+    /* Custom CSS for Movie Management */
+    .container-fluid {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .page-title {
+        color: #2c3e50;
+        font-weight: bold;
+        margin-bottom: 0;
+    }
+
+    .page-title i {
+        color: #3498db;
+        margin-right: 10px;
+    }
+
+    /* Statistics Cards */
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .text-lg {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .text-white-75 {
+        color: rgba(255,255,255,0.75) !important;
+    }
+
+    .text-white-50 {
+        color: rgba(255,255,255,0.5) !important;
+    }
+
+    /* Table Styling */
+    .table {
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .table thead th {
+        background-color: #34495e;
+        color: white;
+        border: none;
+        padding: 15px;
+        font-weight: 600;
+    }
+
+    .table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+        border-color: #e9ecef;
+        color: #2c3e50;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    /* Movie Info Styling */
+    .img-thumbnail {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+    }
+
+    .movie-title {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .movie-company {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+
+    /* Badge Styling */
+    .badge {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        border-radius: 20px;
+    }
+
+    .bg-success {
+        background-color: #27ae60 !important;
+    }
+
+    .bg-warning {
+        background-color: #f39c12 !important;
+    }
+
+    .bg-secondary {
+        background-color: #95a5a6 !important;
+    }
+
+    /* Button Styling */
+    .btn-group .btn {
+        margin: 0 2px;
+        border-radius: 6px;
+    }
+
+    .btn-outline-info {
+        color: #17a2b8;
+        border-color: #17a2b8;
+    }
+
+    .btn-outline-info:hover {
+        background-color: #17a2b8;
+        color: white;
+    }
+
+    .btn-outline-warning {
+        color: #ffc107;
+        border-color: #ffc107;
+    }
+
+    .btn-outline-warning:hover {
+        background-color: #ffc107;
+        color: #212529;
+    }
+
+    .btn-outline-danger {
+        color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    /* Search and Filter */
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 10px 15px;
+        color: #2c3e50;
+    }
+
+    .form-control:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #7f8c8d;
+    }
+
+    .empty-state i {
+        color: #bdc3c7;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h5 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+
+    /* Alert Styling */
+    .alert {
+        border: none;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    /* Modal Styling */
+    .modal-content {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+        background-color: #34495e;
+        color: white;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .modal-title {
+        font-weight: 600;
+    }
+
+    .modal-body {
+        padding: 30px;
+        color: #2c3e50;
+    }
+
+    .table-borderless td {
+        border: none;
+        padding: 8px 0;
+    }
+
+    .table-borderless td:first-child {
+        font-weight: 600;
+        color: #34495e;
+        width: 150px;
+    }
+
+    /* DataTables Styling */
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+        color: #2c3e50;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        color: #2c3e50 !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: #3498db !important;
+        border-color: #3498db !important;
+        color: white !important;
+    }
+
+    /* Fix text color in edit modal */
+    #editMovieModal .modal-body,
+    #createMovieModal .modal-body {
+        background-color: #ffffff;
+        color: #212529;
+    }
     
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Dashboard CSS -->
-    <link rel="stylesheet" href="~/css/dashboard.css" />
+    #editMovieModal .form-label,
+    #createMovieModal .form-label {
+        color: #495057;
+        font-weight: 500;
+    }
     
-    <style>
-        body {
-            background-color: #0a0a0a;
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-        }
+    #editMovieModal .form-control,
+    #createMovieModal .form-control {
+        background-color: #ffffff;
+        border: 1px solid #ced4da;
+        color: #495057;
+    }
+    
+    #editMovieModal .form-control:focus,
+    #createMovieModal .form-control:focus {
+        background-color: #ffffff;
+        border-color: #86b7fe;
+        color: #212529;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    #editMovieModal .form-control::placeholder,
+    #createMovieModal .form-control::placeholder {
+        color: #6c757d;
+    }
+</style>
 
-        .page-header {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            padding: 2rem;
-            border-radius: 1rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(223, 33, 68, 0.3);
-        }
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="page-title">
+            <i class="fas fa-film"></i>@ViewData["Title"]
+        </h1>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMovieModal">
+            <i class="fas fa-plus me-2"></i>Thêm phim mới
+        </button>
+    </div>
 
-        .page-title {
-            color: #ffffff;
-            font-weight: 700;
-            margin: 0;
-            display: flex;
-            align-items: center;
-        }
+    <!-- Alert Container -->
+    <div id="alertContainer"></div>
 
-        .page-title i {
-            color: #df2144;
-            margin-right: 1rem;
-        }
-
-        .dashboard-card {
-            background: #1a1a1a;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .dashboard-card:hover {
-            border-color: rgba(223, 33, 68, 0.5);
-            box-shadow: 0 0 20px rgba(223, 33, 68, 0.2);
-        }
-
-        .table {
-            color: #ffffff;
-        }
-
-        .table thead th {
-            background: #2d2d2d;
-            color: #df2144;
-            border-color: rgba(255, 255, 255, 0.1);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            padding: 1rem;
-        }
-
-        .table tbody td {
-            background: #1a1a1a;
-            border-color: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            vertical-align: middle;
-        }
-
-        .table tbody tr:hover td {
-            background: #252525;
-        }
-
-        .btn-outline-secondary {
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-outline-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.5);
-            color: #ffffff;
-        }
-
-        .btn-outline-primary {
-            color: #df2144;
-            border-color: #df2144;
-        }
-
-        .btn-outline-primary:hover {
-            background: #df2144;
-            border-color: #df2144;
-            color: #ffffff;
-        }
-
-        .btn-success {
-            background: #df2144;
-            border-color: #df2144;
-        }
-
-        .btn-success:hover {
-            background: #ff2951;
-            border-color: #ff2951;
-        }
-
-        .badge {
-            font-weight: 500;
-            padding: 0.35em 0.65em;
-        }
-
-        .badge.bg-info {
-            background: #17a2b8 !important;
-        }
-
-        .alert {
-            border: none;
-            border-radius: 0.5rem;
-        }
-
-        .alert-danger {
-            background: rgba(220, 53, 69, 0.2);
-            color: #ff6b6b;
-            border: 1px solid rgba(220, 53, 69, 0.3);
-        }
-
-        .btn-group .btn {
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-outline-info {
-            color: #17a2b8;
-            border-color: #17a2b8;
-        }
-
-        .btn-outline-info:hover {
-            background: #17a2b8;
-            color: #ffffff;
-        }
-
-        .btn-outline-warning {
-            color: #ffc107;
-            border-color: #ffc107;
-        }
-
-        .btn-outline-warning:hover {
-            background: #ffc107;
-            color: #000000;
-        }
-
-        .btn-outline-danger {
-            color: #dc3545;
-            border-color: #dc3545;
-        }
-
-        .btn-outline-danger:hover {
-            background: #dc3545;
-            color: #ffffff;
-        }
-
-        .empty-state {
-            padding: 4rem 2rem;
-            text-align: center;
-        }
-
-        .empty-state i {
-            color: #df2144;
-            opacity: 0.5;
-        }
-
-        .empty-state h5 {
-            color: #999;
-            margin-top: 1rem;
-        }
-
-        .stats-info {
-            color: #999;
-            font-size: 0.875rem;
-        }
-
-        .pagination .page-link {
-            background: #1a1a1a;
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-        }
-
-        .pagination .page-item.active .page-link {
-            background: #df2144;
-            border-color: #df2144;
-        }
-
-        .pagination .page-item.disabled .page-link {
-            background: #1a1a1a;
-            color: #666;
-        }
-    </style>
-</head>
-<body>
-    <div class="container-fluid p-4">
-        <div class="page-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h1 class="page-title">
-                    <i class="fas fa-film"></i>
-                    @ViewData["Title"]
-                </h1>
-                <div>
-                    <a href="@Url.Action("Index", "Dashboard", new { area = "" })" class="btn btn-outline-secondary me-2">
-                        <i class="fas fa-arrow-left me-2"></i>Quay lại Dashboard
-                    </a>
-                    <button id="refreshBtn" class="btn btn-outline-primary me-2">
-                        <i class="fas fa-sync-alt me-2"></i>Tải lại
-                    </button>
-                    <a asp-action="Create" class="btn btn-success">
-                        <i class="fas fa-plus me-2"></i>Thêm phim mới
-                    </a>
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="text-white-75 small">Tổng số phim</div>
+                            <div class="text-lg fw-bold" id="totalMovies">@(Model?.Count ?? 0)</div>
+                        </div>
+                        <i class="fas fa-film fa-2x text-white-50"></i>
+                    </div>
                 </div>
             </div>
         </div>
-
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
-            </div>
-        }
-
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
-            </div>
-        }
-
-        <div class="dashboard-card">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Tên phim</th>
-                            <th>Ngày phát hành</th>
-                            <th>Hãng sản xuất</th>
-                            <th class="text-center">Thời lượng</th>
-                            <th>Phiên bản</th>
-                            <th>Trạng thái</th>
-                            <th class="text-center">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Any())
-                        {
-                            foreach (var movie in Model)
-                            {
-                                <tr>
-                                    <td class="fw-semibold">@movie.Title</td>
-                                    <td>@movie.ReleaseDate.ToString("dd/MM/yyyy")</td>
-                                    <td>@(movie.ProductionCompany ?? "N/A")</td>
-                                    <td class="text-center">@movie.RunningTime phút</td>
-                                    <td>
-                                        <span class="badge bg-info">@movie.Version</span>
-                                    </td>
-                                    <td>
-                                        @{
-                                            var statusClass = movie.Status switch
-                                            {
-                                                0 => "bg-secondary", // NotAvailable
-                                                1 => "bg-success",   // Available
-                                                2 => "bg-warning",   // ComingSoon
-                                                3 => "bg-danger",    // Stopped
-                                                _ => "bg-secondary"
-                                            };
-                                            var statusText = movie.Status switch
-                                            {
-                                                0 => "Chưa có",
-                                                1 => "Đang chiếu",
-                                                2 => "Sắp chiếu",
-                                                3 => "Ngừng chiếu",
-                                                _ => "Không xác định"
-                                            };
-                                        }
-                                        <span class="badge @statusClass">@statusText</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            <a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-outline-info" title="Xem chi tiết">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a asp-action="Edit" asp-route-id="@movie.Id" class="btn btn-outline-warning" title="Chỉnh sửa">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form asp-action="Delete" method="post" class="d-inline">
-                                                <input type="hidden" name="id" value="@movie.Id" />
-                                                <button type="submit" class="btn btn-outline-danger btn-sm" 
-                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa phim này?')" 
-                                                        title="Xóa">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="7" class="text-center">
-                                    <div class="empty-state">
-                                        <i class="fas fa-film fa-4x"></i>
-                                        <h5>Không có dữ liệu phim</h5>
-                                        <p class="text-muted">Nhấn nút "Thêm phim mới" để bắt đầu</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <div class="stats-info">
-                    Hiển thị <span class="fw-bold text-white">@(Model?.Count ?? 0)</span> phim
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="text-white-75 small">Đang chiếu</div>
+                            <div class="text-lg fw-bold" id="activeMovies">@(Model?.Count(m => m.Status == 1) ?? 0)</div>
+                        </div>
+                        <i class="fas fa-play fa-2x text-white-50"></i>
+                    </div>
                 </div>
-                <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-sm mb-0">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1">Trước</a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Tiếp</a>
-                        </li>
-                    </ul>
-                </nav>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="text-white-75 small">Sắp chiếu</div>
+                            <div class="text-lg fw-bold" id="comingMovies">@(Model?.Count(m => m.Status == 2) ?? 0)</div>
+                        </div>
+                        <i class="fas fa-clock fa-2x text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-info text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="text-white-75 small">Doanh thu tháng</div>
+                            <div class="text-lg fw-bold" id="totalRevenue">N/A</div>
+                        </div>
+                        <i class="fas fa-chart-line fa-2x text-white-50"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Movies Table -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Danh sách phim
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <input type="text" id="movieSearch" class="form-control" placeholder="Tìm kiếm phim...">
+                </div>
+                <div class="col-md-3">
+                    <select id="statusFilter" class="form-control">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="1">Đang chiếu</option>
+                        <option value="2">Sắp chiếu</option>
+                        <option value="0">Ngừng chiếu</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-outline-primary" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> Làm mới
+                    </button>
+                </div>
+            </div>
+
+            <table id="moviesTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Poster</th>
+                        <th>Tên phim</th>
+                        <th>Thể loại</th>
+                        <th>Ngày phát hành</th>
+                        <th>Thời lượng</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var movie in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@(movie.ImageUrl ?? "/images/default-movie.jpg")" 
+                                         alt="@movie.Title" 
+                                         class="img-thumbnail"
+                                         style="width: 60px; height: 80px; object-fit: cover;"
+                                         onerror="this.src='/images/default-movie.jpg'">
+                                </td>
+                                <td>
+                                    <div class="movie-title">@movie.Title</div>
+                                    <small class="movie-company">@(movie.ProductionCompany ?? "N/A")</small>
+                                </td>
+                                <td>
+                                    @if (movie.Genres != null && movie.Genres.Any())
+                                    {
+                                        <span style="color: #2c3e50;">@string.Join(", ", movie.Genres)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Chưa phân loại</span>
+                                    }
+                                </td>
+                                <td style="color: #2c3e50;">@movie.ReleaseDate.ToString("dd/MM/yyyy")</td>
+                                <td style="color: #2c3e50;">@movie.RunningTime phút</td>
+                                <td>
+                                    @{
+                                        var statusClass = movie.Status switch {
+                                            2 => "warning",    // Sắp chiếu
+                                            1 => "success",    // Đang chiếu
+                                            _ => "secondary"   // Ngừng chiếu
+                                        };
+                                        var statusText = movie.Status switch {
+                                            0 => "Chưa có",
+                                            1 => "Đang chiếu",
+                                            2 => "Sắp chiếu",
+                                            3 => "Ngừng chiếu",
+                                            _ => "Không xác định"
+                                        };
+                                    }
+                                    <span class="badge bg-@statusClass">@statusText</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-sm btn-outline-info" onclick="confirmViewMovie('@movie.Id', '@movie.Title')" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning" onclick="confirmEditMovie('@movie.Id', '@movie.Title')" title="Chỉnh sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="confirmDeleteMovie('@movie.Id', '@movie.Title')" title="Xóa">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <i class="fas fa-film fa-3x"></i>
+                                <h5>Chưa có phim nào</h5>
+                                <p class="text-muted">Bắt đầu bằng cách thêm phim mới vào hệ thống</p>
+                                <a asp-action="Create" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Thêm phim đầu tiên
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Movie Modal -->
+<div class="modal fade" id="editMovieModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit"></i>
+                    Chỉnh sửa phim
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
+            </div>
+            <form id="editMovieForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label class="form-label">Tên phim</label>
+                                <input type="text" id="editTitle" name="title" class="form-control" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Ngày phát hành</label>
+                                    <input type="date" id="editReleaseDate" name="releaseDate" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Ngày kết thúc</label>
+                                    <input type="date" id="editEndDate" name="endDate" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Hãng sản xuất</label>
+                                    <input type="text" id="editProductionCompany" name="productionCompany" class="form-control">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Đạo diễn</label>
+                                    <input type="text" id="editDirector" name="director" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Thời lượng (phút)</label>
+                                    <input type="number" id="editRunningTime" name="runningTime" class="form-control" min="1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Phiên bản</label>
+                                    <select id="editVersion" name="version" class="form-control" required>
+                                        <option value="">-- Chọn phiên bản --</option>
+                                        <option value="2D">2D</option>
+                                        <option value="3D">3D</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Diễn viên</label>
+                                <textarea id="editActors" name="actors" class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">URL Trailer</label>
+                                <input type="url" id="editTrailerUrl" name="trailerUrl" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nội dung phim</label>
+                                <textarea id="editContent" name="content" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Thể loại</label>
+                                <select id="editGenres" name="genres" class="form-control" multiple required>
+                                    <!-- Options will be populated by JavaScript -->
+                                </select>
+                                <small class="form-text text-muted">Giữ Ctrl để chọn nhiều thể loại</small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Lịch chiếu</label>
+                                <div id="editShowTimes">
+                                    <div class="showtime-item mb-2">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input type="datetime-local" class="form-control showtime-date" placeholder="Ngày giờ chiếu">
+                                            </div>
+                                            <div class="col-md-5">
+                                                <select class="form-control showtime-room">
+                                                    <option value="">-- Chọn phòng chiếu --</option>
+                                                    <!-- Options will be populated by JavaScript -->
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button type="button" class="btn btn-sm btn-danger remove-showtime" onclick="removeShowtime(this)">×</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="addShowtime()">+ Thêm lịch chiếu</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">URL Hình ảnh</label>
+                                <input type="url" id="editImageUrl" name="imageUrl" class="form-control" required>
+                            </div>
+                            <div class="text-center">
+                                <img id="editPosterPreview" src="/images/default-movie.jpg" 
+                                     class="img-fluid rounded shadow" 
+                                     style="max-width: 200px; max-height: 300px;"
+                                     alt="Preview">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i>
+                        Hủy
+                    </button>
+                    <button type="submit" class="btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                        <i class="fas fa-save"></i>
+                        Cập nhật
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Create Movie Modal -->
+<div class="modal fade" id="createMovieModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #28a745; color: white;">
+                <h5 class="modal-title">
+                    <i class="fas fa-plus"></i>
+                    Thêm phim mới
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
+            </div>
+            <form id="createMovieForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label class="form-label">Tên phim</label>
+                                <input type="text" id="createTitle" name="title" class="form-control" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Ngày phát hành</label>
+                                    <input type="date" id="createReleaseDate" name="releaseDate" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Ngày kết thúc</label>
+                                    <input type="date" id="createEndDate" name="endDate" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Hãng sản xuất</label>
+                                    <input type="text" id="createProductionCompany" name="productionCompany" class="form-control">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Đạo diễn</label>
+                                    <input type="text" id="createDirector" name="director" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Thời lượng (phút)</label>
+                                    <input type="number" id="createRunningTime" name="runningTime" class="form-control" min="1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Phiên bản</label>
+                                    <select id="createVersion" name="version" class="form-control" required>
+                                        <option value="">-- Chọn phiên bản --</option>
+                                        <option value="2D">2D</option>
+                                        <option value="3D">3D</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Diễn viên</label>
+                                <textarea id="createActors" name="actors" class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">URL Trailer</label>
+                                <input type="url" id="createTrailerUrl" name="trailerUrl" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nội dung phim</label>
+                                <textarea id="createContent" name="content" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">URL Hình ảnh</label>
+                                <input type="url" id="createImageUrl" name="imageUrl" class="form-control" required>
+                            </div>
+                            <div class="text-center">
+                                <img id="createPosterPreview" src="/images/default-movie.jpg" 
+                                     class="img-fluid rounded shadow" 
+                                     style="max-width: 200px; max-height: 300px;"
+                                     alt="Preview">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i>
+                        Hủy
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i>
+                        Thêm phim
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- View Movie Details Modal -->
+<div class="modal fade" id="viewMovieModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-film"></i>
+                    Chi tiết phim
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
+            </div>
+            <div class="modal-body" id="movieDetailsContent">
+                <!-- Movie details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     
     <script>
+
+
+        // Global variables for current action
+        let currentMovieId = null;
+
+        // Action functions - direct modal opening
+        function confirmViewMovie(movieId, movieName) {
+            viewMovie(movieId);
+        }
+
+        function confirmEditMovie(movieId, movieName) {
+            editMovie(movieId);
+        }
+
+        function confirmDeleteMovie(movieId, movieName) {
+            if (confirm('Bạn có chắc chắn muốn xóa phim "' + movieName + '"?')) {
+                deleteMovie(movieId);
+            }
+        }
+
+        // View movie details
+        function viewMovie(movieId) {
+            $.get('/MovieManagement/Movies/GetMovie?id=' + movieId)
+                .done(function(response) {
+                    console.log('API Response:', response); // Debug log
+                    if (response.success) {
+                        console.log('Movie data:', response.data); // Debug log
+                        showMovieDetails(response.data);
+                    } else {
+                        showAlert('Không thể tải thông tin phim', 'danger');
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('API Error:', xhr.responseText); // Debug log
+                    showAlert('Có lỗi xảy ra khi tải thông tin phim', 'danger');
+                });
+        }
+
+        // Edit movie - load data and show modal
+        function editMovie(movieId) {
+            console.log('Edit movie called with ID:', movieId);
+            currentMovieId = movieId;
+            
+            $.get('/MovieManagement/Movies/GetMovie?id=' + movieId)
+                .done(function(response) {
+                    console.log('Get movie response:', response);
+                    if (response.success) {
+                        currentMovieData = response.data; // Lưu data để dùng cho update
+                        console.log('About to populate edit form');
+                        populateEditForm(response.data);
+                        console.log('About to show modal');
+                        // Force show modal with delay
+                        setTimeout(() => {
+                            $('#editMovieModal').modal('show');
+                            console.log('Modal show command executed');
+                            
+                            // Populate options after modal is shown
+                            setTimeout(() => {
+                                populateGenreOptions();
+                                populateRoomOptions();
+                            }, 100);
+                        }, 200);
+                    } else {
+                        console.error('API error:', response.message);
+                        showAlert('Không thể tải thông tin phim', 'danger');
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('AJAX failed:', xhr.responseText);
+                    showAlert('Có lỗi xảy ra khi tải thông tin phim', 'danger');
+                });
+        }
+
+        // Delete movie - change status to "Stopped" (status = 3)
+        function deleteMovie(movieId) {
+            $.post('/MovieManagement/Movies/ChangeStatus', {
+                id: movieId,
+                status: 3, // MovieStatus.Stopped
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+            })
+            .done(function(response) {
+                if (response.success) {
+                    showAlert('Đã ngừng chiếu phim thành công!', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showAlert(response.message || 'Có lỗi xảy ra khi ngừng chiếu phim', 'danger');
+                }
+            })
+            .fail(function() {
+                showAlert('Có lỗi xảy ra khi ngừng chiếu phim', 'danger');
+            });
+        }
+
+        // Populate edit form with movie data
+        function populateEditForm(movie) {
+            console.log('Populating edit form with:', movie); // Debug log
+            
+            // Basic info
+            $('#editTitle').val(movie.title || '');
+            
+            // Format dates properly for input[type="date"]
+            if (movie.releaseDate) {
+                const releaseDate = new Date(movie.releaseDate);
+                $('#editReleaseDate').val(releaseDate.toISOString().split('T')[0]);
+            }
+            
+            if (movie.endDate) {
+                const endDate = new Date(movie.endDate);
+                $('#editEndDate').val(endDate.toISOString().split('T')[0]);
+            }
+            
+            $('#editProductionCompany').val(movie.productionCompany || '');
+            $('#editDirector').val(movie.director || '');
+            $('#editRunningTime').val(movie.runningTime || '');
+            
+            // Map version: "TwoD" -> "2D", "ThreeD" -> "3D"
+            const versionMap = {
+                'TwoD': '2D',
+                'ThreeD': '3D',
+                '2D': '2D',
+                '3D': '3D'
+            };
+            $('#editVersion').val(versionMap[movie.version] || '2D');
+            
+            $('#editActors').val(movie.actors || '');
+            $('#editTrailerUrl').val(movie.trailerUrl || '');
+            $('#editContent').val(movie.content || '');
+            
+            // Get image URL from primaryImageUrl or images array
+            let imageUrl = '';
+            if (movie.primaryImageUrl) {
+                imageUrl = movie.primaryImageUrl;
+            } else if (movie.images && movie.images.length > 0) {
+                const primaryImage = movie.images.find(img => img.isPrimary === true);
+                if (primaryImage) {
+                    imageUrl = primaryImage.imageUrl;
+                } else {
+                    imageUrl = movie.images[0].imageUrl;
+                }
+            }
+            
+            $('#editImageUrl').val(imageUrl || '');
+            
+            // Update image preview
+            if (imageUrl) {
+                $('#editPosterPreview').attr('src', imageUrl);
+                console.log('Set preview image:', imageUrl);
+            } else {
+                $('#editPosterPreview').attr('src', 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjY2NjY2NjIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NjY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4K');
+                console.log('No image found, using placeholder');
+            }
+            
+            // Populate genres
+            if (movie.movieGenres && movie.movieGenres.length > 0) {
+                const selectedGenres = movie.movieGenres.map(mg => mg.genreId || mg.GenreId);
+                $('#editGenres').val(selectedGenres);
+            } else if (movie.genres && movie.genres.length > 0) {
+                const selectedGenres = movie.genres.map(g => g.id || g.Id);
+                $('#editGenres').val(selectedGenres);
+            }
+            
+            // Populate showtimes
+            $('#editShowTimes').empty();
+            if (movie.showTimes && movie.showTimes.length > 0) {
+                movie.showTimes.forEach(showtime => {
+                    const showDate = new Date(showtime.showDate || showtime.ShowDate);
+                    const formattedDate = showDate.toISOString().slice(0, 16); // Format for datetime-local
+                    const roomId = showtime.roomId || showtime.RoomId;
+                    
+                    const showtimeHtml = `
+                        <div class="showtime-item mb-2">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="datetime-local" class="form-control showtime-date" value="${formattedDate}">
+                                </div>
+                                <div class="col-md-5">
+                                    <select class="form-control showtime-room">
+                                        <option value="">-- Chọn phòng chiếu --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-sm btn-danger remove-showtime" onclick="removeShowtime(this)">×</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    $('#editShowTimes').append(showtimeHtml);
+                    
+                    // Set selected room
+                    $('#editShowTimes .showtime-item:last .showtime-room').val(roomId);
+                });
+                populateRoomOptions(); // Populate room options after adding showtimes
+                         } else {
+                 // Add default showtime if none exists
+                 setTimeout(() => {
+                     addShowtime();
+                 }, 100);
+             }
+        }
+
+        // Form submit handlers
+        $('#createMovieForm').on('submit', function(e) {
+            e.preventDefault();
+            createMovie();
+        });
+
+        $('#editMovieForm').on('submit', function(e) {
+            e.preventDefault();
+            updateMovie();
+        });
+
+        // Create movie function
+        function createMovie() {
+            const formData = getFormData('#createMovieForm');
+            
+            // Prepare data for API
+            const movieData = {
+                Title: formData.title,
+                ReleaseDate: formData.releaseDate,
+                EndDate: formData.endDate,
+                ProductionCompany: formData.productionCompany,
+                Director: formData.director,
+                RunningTime: parseInt(formData.runningTime),
+                Version: formData.version === '2D' ? 0 : 1, // 0 = TwoD, 1 = ThreeD
+                Actors: formData.actors,
+                TrailerUrl: formData.trailerUrl,
+                Content: formData.content,
+                GenreIds: [generateGuid()], // Temporary - should get from form
+                ShowTimes: [{
+                    RoomId: generateGuid(), // Temporary - should get from form
+                    ShowDate: new Date().toISOString()
+                }],
+                Images: [{
+                    ImageUrl: formData.imageUrl,
+                    IsPrimary: true,
+                    Description: formData.title,
+                    DisplayOrder: 1
+                }]
+            };
+            
+            $.ajax({
+                url: '/MovieManagement/Movies/Create',
+                method: 'POST',
+                data: JSON.stringify(movieData),
+                contentType: 'application/json',
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                }
+            })
+            .done(function(response) {
+                if (response.success) {
+                    showAlert('Thêm phim mới thành công!', 'success');
+                    $('#createMovieModal').modal('hide');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showAlert(response.message || 'Có lỗi xảy ra khi thêm phim', 'danger');
+                }
+            })
+            .fail(function() {
+                showAlert('Có lỗi xảy ra khi thêm phim', 'danger');
+            });
+        }
+
+        // Global variables to store data
+        let currentMovieData = null;
+        let availableGenres = [];
+        let availableRooms = [];
+
+        // Load genres and rooms data on page load
         $(document).ready(function() {
-            // Xử lý nút tải lại
-            $('#refreshBtn').click(function() {
+            // Load available genres
+            $.get('/MovieManagement/Movies/GetGenres')
+                .done(function(response) {
+                    if (response.success && response.data) {
+                        availableGenres = response.data;
+                        console.log('Loaded genres:', availableGenres);
+                        populateGenreOptions();
+                    }
+                })
+                .fail(function() {
+                    console.error('Failed to load genres');
+                });
+
+            // Load available cinema rooms
+            $.get('/MovieManagement/Movies/GetCinemaRooms')
+                .done(function(response) {
+                    if (response.success && response.data) {
+                        availableRooms = response.data;
+                        console.log('Loaded rooms:', availableRooms);
+                        populateRoomOptions();
+                    }
+                })
+                .fail(function() {
+                    console.error('Failed to load cinema rooms');
+                });
+
+            // Existing DataTable initialization code...
+            var table = $('#moviesTable').DataTable({
+                responsive: true,
+                pageLength: 10,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/vi.json'
+                },
+                order: [[1, 'asc']]
+            });
+
+            // Search functionality
+            $('#movieSearch').on('keyup', function() {
+                table.search(this.value).draw();
+            });
+
+            // Status filter
+            $('#statusFilter').on('change', function() {
+                var status = this.value;
+                if (status === '') {
+                    table.column(5).search('').draw();
+                } else {
+                    var statusText = status == '1' ? 'Đang chiếu' : 
+                                   status == '2' ? 'Sắp chiếu' : 'Ngừng chiếu';
+                    table.column(5).search(statusText).draw();
+                }
+            });
+
+            // Refresh button
+            $('#refreshBtn').on('click', function() {
                 location.reload();
             });
         });
+
+        // Update movie function
+        function updateMovie() {
+            const formData = getFormData('#editMovieForm');
+            console.log('Form data:', formData); // Debug log
+            console.log('Current movie data:', currentMovieData); // Debug log
+            
+            // Lấy genreIds và showTimes từ form hoặc fallback
+            let genreIds = formData.genres && formData.genres.length > 0 ? formData.genres : [];
+            let showTimes = formData.showTimes && formData.showTimes.length > 0 ? formData.showTimes : [];
+            
+            // Nếu form không có data, lấy từ existing movie data
+            if (genreIds.length === 0 && currentMovieData) {
+                if (currentMovieData.movieGenres && currentMovieData.movieGenres.length > 0) {
+                    genreIds = currentMovieData.movieGenres.map(mg => mg.genreId || mg.GenreId);
+                } else if (currentMovieData.genres && currentMovieData.genres.length > 0) {
+                    genreIds = currentMovieData.genres.map(g => g.id || g.Id);
+                }
+            }
+            
+            if (showTimes.length === 0 && currentMovieData) {
+                if (currentMovieData.showTimes && currentMovieData.showTimes.length > 0) {
+                    showTimes = currentMovieData.showTimes.map(st => ({
+                        showDate: st.showDate || st.ShowDate || new Date().toISOString(),
+                        roomId: st.roomId || st.RoomId
+                    }));
+                }
+            }
+            
+            // Fallback: sử dụng first available genre/room từ API
+            if (genreIds.length === 0 && availableGenres.length > 0) {
+                genreIds = [availableGenres[0].id || availableGenres[0].Id];
+                console.log('Using fallback genre:', genreIds[0]);
+            }
+            if (showTimes.length === 0 && availableRooms.length > 0) {
+                showTimes = [{
+                    showDate: new Date().toISOString(),
+                    roomId: availableRooms[0].id || availableRooms[0].Id
+                }];
+                console.log('Using fallback room:', showTimes[0].roomId);
+            }
+            
+            // Last resort: random GUID (should not happen)
+            if (genreIds.length === 0) {
+                genreIds = [generateGuid()];
+                console.warn('Using random genre GUID - this may fail');
+            }
+            if (showTimes.length === 0) {
+                showTimes = [{
+                    showDate: new Date().toISOString(),
+                    roomId: generateGuid()
+                }];
+                console.warn('Using random room GUID - this may fail');
+            }
+            
+            // Prepare data for API theo đúng format BE yêu cầu
+            const movieData = {
+                id: currentMovieId,
+                title: formData.title,
+                releaseDate: formData.releaseDate ? new Date(formData.releaseDate).toISOString() : null,
+                endDate: formData.endDate ? new Date(formData.endDate).toISOString() : null,
+                actors: formData.actors || "",
+                productionCompany: formData.productionCompany || "",
+                director: formData.director || "",
+                runningTime: parseInt(formData.runningTime) || 0,
+                version: formData.version === '2D' ? 'TwoD' : 'ThreeD', // BE cần TwoD/ThreeD
+                trailerUrl: formData.trailerUrl || "",
+                content: formData.content || "",
+                genreIds: genreIds, // Sử dụng genreIds từ existing data
+                showTimes: showTimes, // Sử dụng showTimes từ existing data
+                images: [{
+                    imageUrl: formData.imageUrl || "",
+                    description: formData.title || "Movie poster",
+                    displayOrder: 1,
+                    isPrimary: true
+                }]
+            };
+            
+            console.log('Sending movie data:', movieData); // Debug log
+            
+            $.ajax({
+                url: '/MovieManagement/Movies/UpdateMovie',
+                method: 'POST',
+                data: JSON.stringify(movieData), // Gửi JSON như BE yêu cầu
+                contentType: 'application/json',
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                }
+            })
+            .done(function(response) {
+                console.log('Update response:', response); // Debug log
+                if (response.success) {
+                    showAlert('Cập nhật phim thành công!', 'success');
+                    $('#editMovieModal').modal('hide');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showAlert(response.message || 'Có lỗi xảy ra khi cập nhật phim', 'danger');
+                }
+            })
+            .fail(function(xhr, status, error) {
+                console.error('Update failed:', xhr.responseText); // Debug log
+                showAlert('Có lỗi xảy ra khi cập nhật phim', 'danger');
+            });
+        }
+
+        // Helper function to generate GUID (temporary)
+        function generateGuid() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        // Helper function to get form data
+        function getFormData(formSelector) {
+            const form = $(formSelector);
+            return {
+                title: form.find('[name="title"]').val(),
+                releaseDate: form.find('[name="releaseDate"]').val(),
+                endDate: form.find('[name="endDate"]').val(),
+                productionCompany: form.find('[name="productionCompany"]').val(),
+                director: form.find('[name="director"]').val(),
+                runningTime: form.find('[name="runningTime"]').val(),
+                version: form.find('[name="version"]').val(),
+                actors: form.find('[name="actors"]').val(),
+                trailerUrl: form.find('[name="trailerUrl"]').val(),
+                content: form.find('[name="content"]').val(),
+                imageUrl: form.find('[name="imageUrl"]').val(),
+                genres: form.find('[name="genres"]').val() || [],
+                showTimes: getShowTimesFromForm(formSelector)
+            };
+        }
+
+        // Populate genre options
+        function populateGenreOptions() {
+            const genreSelects = $('#editGenres, #createGenres');
+            if (genreSelects.length === 0) {
+                console.warn('Genre select elements not found yet');
+                return;
+            }
+            
+            genreSelects.empty();
+            
+            if (availableGenres.length === 0) {
+                console.warn('No genres available');
+                return;
+            }
+            
+            availableGenres.forEach(genre => {
+                const option = `<option value="${genre.id || genre.Id}">${genre.genreName || genre.GenreName}</option>`;
+                genreSelects.append(option);
+            });
+            
+            console.log('Populated genre options:', availableGenres.length);
+        }
+
+        // Populate room options
+        function populateRoomOptions() {
+            const roomSelects = $('.showtime-room');
+            if (roomSelects.length === 0) {
+                console.warn('No room select elements found');
+                return;
+            }
+            
+            if (availableRooms.length === 0) {
+                console.warn('No rooms available');
+                return;
+            }
+            
+            roomSelects.each(function() {
+                const select = $(this);
+                select.find('option:not(:first)').remove(); // Keep placeholder
+                
+                availableRooms.forEach(room => {
+                    const option = `<option value="${room.id || room.Id}">${room.roomName || room.RoomName}</option>`;
+                    select.append(option);
+                });
+            });
+            
+            console.log('Populated room options for', roomSelects.length, 'selects');
+        }
+
+        // Get showtimes from form
+        function getShowTimesFromForm(formSelector) {
+            const showtimes = [];
+            $(formSelector + ' .showtime-item').each(function() {
+                const date = $(this).find('.showtime-date').val();
+                const roomId = $(this).find('.showtime-room').val();
+                
+                if (date && roomId) {
+                    showtimes.push({
+                        showDate: new Date(date).toISOString(),
+                        roomId: roomId
+                    });
+                }
+            });
+            return showtimes;
+        }
+
+        // Add new showtime row
+        function addShowtime() {
+            const container = $('#editShowTimes');
+            if (container.length === 0) {
+                console.error('ShowTimes container not found');
+                return;
+            }
+            
+            const newItem = `
+                <div class="showtime-item mb-2">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="datetime-local" class="form-control showtime-date" placeholder="Ngày giờ chiếu">
+                        </div>
+                        <div class="col-md-5">
+                            <select class="form-control showtime-room">
+                                <option value="">-- Chọn phòng chiếu --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-sm btn-danger remove-showtime" onclick="removeShowtime(this)">×</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.append(newItem);
+            
+            // Populate room options for new row
+            populateRoomOptions();
+        }
+
+        // Remove showtime row
+        function removeShowtime(button) {
+            $(button).closest('.showtime-item').remove();
+        }
+
+        // Image preview functionality
+        $('#createImageUrl, #editImageUrl').on('input', function() {
+            const url = $(this).val();
+            const previewId = this.id === 'createImageUrl' ? '#createPosterPreview' : '#editPosterPreview';
+            
+            if (url) {
+                $(previewId).attr('src', url);
+            } else {
+                $(previewId).attr('src', '/images/default-movie.jpg');
+            }
+        });
+
+        // Reset forms when modals are hidden
+        $('#createMovieModal').on('hidden.bs.modal', function() {
+            $('#createMovieForm')[0].reset();
+            $('#createPosterPreview').attr('src', '/images/default-movie.jpg');
+        });
+
+        $('#editMovieModal').on('hidden.bs.modal', function() {
+            $('#editMovieForm')[0].reset();
+            $('#editPosterPreview').attr('src', '/images/default-movie.jpg');
+            currentMovieId = null;
+        });
+
+        // Show movie details in modal
+        function showMovieDetails(movie) {
+            console.log('Showing movie details:', movie); // Debug log
+            console.log('Images array:', movie.Images || movie.images); // Debug images
+            console.log('PrimaryImageUrl:', movie.PrimaryImageUrl || movie.primaryImageUrl); // Debug primary
+            
+            // Get primary image with better logic
+            let primaryImageUrl = '';
+            
+            // First try to find from images array (since PrimaryImageUrl is null)
+            const images = movie.Images || movie.images;
+            if (images && images.length > 0) {
+                console.log('Processing images array:', images);
+                
+                // Find image with isPrimary = true
+                const primaryImage = images.find(img => {
+                    console.log('Checking image:', img);
+                    return (img.IsPrimary === true || img.isPrimary === true);
+                });
+                
+                if (primaryImage) {
+                    primaryImageUrl = primaryImage.ImageUrl || primaryImage.imageUrl;
+                    console.log('Found primary image from array:', primaryImageUrl);
+                } else {
+                    // Fallback to first image
+                    primaryImageUrl = images[0].ImageUrl || images[0].imageUrl;
+                    console.log('Using first image as fallback:', primaryImageUrl);
+                }
+            }
+            // Then try direct primaryImageUrl property
+            else if (movie.PrimaryImageUrl || movie.primaryImageUrl) {
+                primaryImageUrl = movie.PrimaryImageUrl || movie.primaryImageUrl;
+                console.log('Using PrimaryImageUrl:', primaryImageUrl);
+            }
+            
+            // Final fallback to a simple data URL placeholder
+            if (!primaryImageUrl) {
+                primaryImageUrl = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjY2NjY2NjIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NjY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4K';
+                console.log('Using data URL placeholder');
+            }
+            
+            console.log('Final image URL:', primaryImageUrl); // Debug final URL
+            
+            var content = `
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <img src="${primaryImageUrl}" 
+                                 alt="${movie.Title || movie.title}" 
+                                 class="img-fluid rounded shadow"
+                                 style="max-width: 100%; height: auto; max-height: 400px; object-fit: cover; background-color: #f8f9fa;"
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjY2NjY2NjIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NjY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4K'; console.log('Image failed to load, using SVG fallback');"
+                                 onload="console.log('Image loaded successfully:', this.src);">
+                            ${primaryImageUrl && !primaryImageUrl.startsWith('data:') ? `
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    <a href="${primaryImageUrl}" target="_blank" class="text-decoration-none">
+                                        <i class="fas fa-external-link-alt"></i> Xem ảnh gốc
+                                    </a>
+                                </small>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <h3 class="text-primary mb-3">${movie.Title || movie.title}</h3>
+                        
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>Ngày phát hành:</strong></td>
+                                <td>${movie.ReleaseDate || movie.releaseDate ? new Date(movie.ReleaseDate || movie.releaseDate).toLocaleDateString('vi-VN') : 'Invalid Date'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ngày kết thúc:</strong></td>
+                                <td>${movie.EndDate || movie.endDate ? new Date(movie.EndDate || movie.endDate).toLocaleDateString('vi-VN') : 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Thời lượng:</strong></td>
+                                <td>${movie.RunningTime || movie.runningTime || 'N/A'} phút</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hãng sản xuất:</strong></td>
+                                <td>${movie.ProductionCompany || movie.productionCompany || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Đạo diễn:</strong></td>
+                                <td>${movie.Director || movie.director || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Diễn viên:</strong></td>
+                                <td>${movie.Actors || movie.actors || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phiên bản:</strong></td>
+                                <td>${movie.Version || movie.version || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Thể loại:</strong></td>
+                                <td>${getGenresText(movie)}</td>
+                            </tr>
+                        </table>
+                        
+                        ${movie.TrailerUrl || movie.trailerUrl ? `
+                        <div class="mb-3">
+                            <a href="${movie.TrailerUrl || movie.trailerUrl}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-play"></i> Xem trailer
+                            </a>
+                        </div>
+                        ` : ''}
+                        
+                        ${movie.Content || movie.content ? `
+                        <div class="mt-3">
+                            <strong>Nội dung:</strong>
+                            <p class="mt-2">${movie.Content || movie.content}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            $('#movieDetailsContent').html(content);
+            $('#viewMovieModal').modal('show');
+        }
+
+        // Helper function to get genres text
+        function getGenresText(movie) {
+            const genres = movie.Genres || movie.genres;
+            if (genres && genres.length > 0) {
+                // If genres is array of objects with name property
+                if (typeof genres[0] === 'object' && genres[0].name) {
+                    return genres.map(g => g.name).join(', ');
+                }
+                // If genres is array of objects with Name property  
+                else if (typeof genres[0] === 'object' && genres[0].Name) {
+                    return genres.map(g => g.Name).join(', ');
+                }
+                // If genres is array of strings
+                else if (typeof genres[0] === 'string') {
+                    return genres.join(', ');
+                }
+            }
+            return 'Chưa phân loại';
+        }
+
+        // Show alert messages
+        function showAlert(message, type = 'info') {
+            var alertClass = 'alert-' + type;
+            var iconMap = {
+                success: 'check-circle',
+                danger: 'exclamation-circle',
+                warning: 'exclamation-triangle',
+                info: 'info-circle'
+            };
+            
+            var alert = `
+                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-${iconMap[type]} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            $('#alertContainer').html(alert);
+            
+            // Auto dismiss after 5 seconds
+            setTimeout(() => {
+                $('.alert').alert('close');
+            }, 5000);
+        }
     </script>
-</body>
-</html>
+}
