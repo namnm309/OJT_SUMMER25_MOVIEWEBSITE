@@ -75,6 +75,8 @@ namespace UI.Controllers
 
             try
             {
+
+
                 var result = await _apiService.PostAsync<PromotionViewModel>("/api/v1/promotions", model);
 
                 if (result.Success || result.StatusCode == HttpStatusCode.Created)

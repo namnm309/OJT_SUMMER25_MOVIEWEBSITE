@@ -16,6 +16,9 @@ namespace DomainLayer.Entities
         [MaxLength(255)]
         public string? Description { get; set; }
 
+        [Required]
+        public bool IsUsed { get; set; } // true = use point, false = plus point
+
         // Foreign keys
         [Required]
         public Guid UserId { get; set; }

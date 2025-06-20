@@ -11,6 +11,7 @@ namespace ApplicationLayer.DTO.MovieManagement
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string? ProductionCompany { get; set; }
         public int RunningTime { get; set; }
         public string Version { get; set; } = string.Empty;
@@ -22,7 +23,7 @@ namespace ApplicationLayer.DTO.MovieManagement
         
         // Thêm các properties mới
         public string? PrimaryImageUrl { get; set; }
-        public List<MovieImageDto> Images { get; set; } = new List<MovieImageDto>();
-        public List<string> Genres { get; set; } = new List<string>();
+        public List<MovieImageDto> Images { get; set; } = new();
+        public List<GenreDto> Genres { get; set; } = new();
     }
 }

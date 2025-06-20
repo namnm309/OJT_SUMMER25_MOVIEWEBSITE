@@ -37,7 +37,42 @@ namespace UI.Controllers
                             PropertyNameCaseInsensitive = true
                         };
                         
-                        var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), options);
+                        // Parse thành dynamic object trước để xử lý mapping
+                        var moviesJson = JsonSerializer.Deserialize<JsonElement[]>(dataProp.GetRawText(), options);
+                        var movies = new List<MovieViewModel>();
+                        
+                        if (moviesJson != null)
+                        {
+                            foreach (var movieJson in moviesJson)
+                            {
+                                var movie = new MovieViewModel
+                                {
+                                    Id = movieJson.TryGetProperty("id", out var idProp) ? idProp.GetGuid().ToString() : string.Empty,
+                                    Title = movieJson.TryGetProperty("title", out var titleProp) ? titleProp.GetString() ?? string.Empty : string.Empty,
+                                    ReleaseDate = movieJson.TryGetProperty("releaseDate", out var releaseProp) ? releaseProp.GetDateTime() : DateTime.Now,
+                                    ProductionCompany = movieJson.TryGetProperty("productionCompany", out var prodProp) ? prodProp.GetString() : null,
+                                    RunningTime = movieJson.TryGetProperty("runningTime", out var timeProp) ? timeProp.GetInt32() : 0,
+                                    Version = movieJson.TryGetProperty("version", out var versionProp) ? versionProp.GetString() ?? string.Empty : string.Empty,
+                                    Director = movieJson.TryGetProperty("director", out var directorProp) ? directorProp.GetString() : null,
+                                    Actors = movieJson.TryGetProperty("actors", out var actorsProp) ? actorsProp.GetString() : null,
+                                    Content = movieJson.TryGetProperty("content", out var contentProp) ? contentProp.GetString() : null,
+                                    TrailerUrl = movieJson.TryGetProperty("trailerUrl", out var trailerProp) ? trailerProp.GetString() : null,
+                                    Status = movieJson.TryGetProperty("status", out var statusProp) ? statusProp.GetInt32() : 0,
+                                    
+                                    // Map PrimaryImageUrl và ImageUrl
+                                    PrimaryImageUrl = movieJson.TryGetProperty("primaryImageUrl", out var primaryImgProp) ? primaryImgProp.GetString() : null,
+                                    ImageUrl = movieJson.TryGetProperty("primaryImageUrl", out var imgProp) ? imgProp.GetString() : null, // Fallback cho ImageUrl
+                                    
+                                    // Map Genres từ List<GenreDto> sang List<string>
+                                    Genres = MapGenres(movieJson),
+                                    
+                                    // Map Images từ List<MovieImageDto> sang List<MovieImageViewModel>
+                                    Images = MapImages(movieJson)
+                                };
+                                
+                                movies.Add(movie);
+                            }
+                        }
                         
                         if (movies != null && movies.Any())
                         {
@@ -55,6 +90,52 @@ namespace UI.Controllers
             }
             
             return View(viewModel);
+        }
+
+        private List<string> MapGenres(JsonElement movieJson)
+        {
+            var genres = new List<string>();
+            
+            if (movieJson.TryGetProperty("genres", out var genresProp) && genresProp.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var genreElement in genresProp.EnumerateArray())
+                {
+                    if (genreElement.TryGetProperty("name", out var nameProp))
+                    {
+                        var genreName = nameProp.GetString();
+                        if (!string.IsNullOrEmpty(genreName))
+                        {
+                            genres.Add(genreName);
+                        }
+                    }
+                }
+            }
+            
+            return genres;
+        }
+
+        private List<MovieImageViewModel> MapImages(JsonElement movieJson)
+        {
+            var images = new List<MovieImageViewModel>();
+            
+            if (movieJson.TryGetProperty("images", out var imagesProp) && imagesProp.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var imageElement in imagesProp.EnumerateArray())
+                {
+                    var image = new MovieImageViewModel
+                    {
+                        Id = Guid.NewGuid().ToString(), // Generate ID vì BE không có
+                        ImageUrl = imageElement.TryGetProperty("imageUrl", out var urlProp) ? urlProp.GetString() ?? string.Empty : string.Empty,
+                        Description = imageElement.TryGetProperty("description", out var descProp) ? descProp.GetString() ?? string.Empty : string.Empty,
+                        IsPrimary = imageElement.TryGetProperty("isPrimary", out var primaryProp) ? primaryProp.GetBoolean() : false,
+                        DisplayOrder = imageElement.TryGetProperty("displayOrder", out var orderProp) ? orderProp.GetInt32() : 1
+                    };
+                    
+                    images.Add(image);
+                }
+            }
+            
+            return images;
         }
 
         public IActionResult Privacy()

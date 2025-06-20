@@ -20,17 +20,21 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
         public Task<IActionResult> GetSeatDetail(Guid Id);
         public Task<IActionResult> AddCinemaRoom(CinemaRoomCreateDto Dto);
         public Task<IActionResult> SearchCinemaRoom(string? keyword);
+        public Task<IActionResult> ViewSeat(Guid roomId);
+        public Task<IActionResult> UpdateSeatTypes(UpdateSeatTypesRequest request);
 
     }
     
     public class CinemaRoomService : ICinemaRoomService
     {
         private readonly IGenericRepository<CinemaRoom> _cinemaRoomRepo;
+        private readonly IGenericRepository<Seat> _seatRepo;
         private readonly IMapper _mapper;
 
-        public CinemaRoomService(IGenericRepository<CinemaRoom> cinemaRoomRepo, IMapper mapper)
+        public CinemaRoomService(IGenericRepository<CinemaRoom> cinemaRoomRepo, IGenericRepository<Seat> seatRepo, IMapper mapper)
         {
             _cinemaRoomRepo = cinemaRoomRepo;
+            _seatRepo = seatRepo;
             _mapper = mapper;
         }
 
@@ -98,6 +102,44 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
             var result = _mapper.Map<List<CinemaRoomListDto>>(room);
 
             return SuccessResp.Ok(result);
+        }
+
+        public async Task<IActionResult> ViewSeat(Guid roomId)
+        {
+            var room = await _cinemaRoomRepo.FindByIdAsync(roomId);
+            if (room == null)
+                return ErrorResp.NotFound("Cinema room not found");
+
+            var seat = await _seatRepo.WhereAsync(s => s.RoomId == roomId && s.IsActive);
+
+            var result = _mapper.Map<List<SeatViewDto>>(seat);
+
+            return SuccessResp.Ok(new
+            {
+                RoomName = room.RoomName,
+                Seat = result
+            });
+        }
+
+        public async Task<IActionResult> UpdateSeatTypes(UpdateSeatTypesRequest request)
+        {
+            var room = await _cinemaRoomRepo.FindByIdAsync(request.RoomId);
+            if (room == null)
+                return ErrorResp.NotFound("Cinema room not found");
+
+            foreach (var update in request.Updates)
+            {
+                var seat = await _seatRepo.FindByIdAsync(update.SeatId);
+                if (seat == null || seat.RoomId != request.RoomId)
+                    continue;
+
+                seat.SeatType = update.NewSeatType;
+                seat.UpdatedAt = DateTime.UtcNow;
+
+                await _seatRepo.UpdateAsync(seat);
+            }
+
+            return SuccessResp.Ok("Seat types updated successfully");
         }
     }
 }

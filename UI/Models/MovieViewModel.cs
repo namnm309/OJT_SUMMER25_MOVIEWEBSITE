@@ -7,6 +7,7 @@ namespace UI.Models
         public string Id { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string? ProductionCompany { get; set; }
         
         // Sửa để xử lý string từ API

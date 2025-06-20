@@ -100,6 +100,28 @@ namespace UI.Services
             }
         }
 
+        public async Task<ApiResponse<T>> PatchAsync<T>(string endpoint, object? data = null)
+        {
+            try
+            {
+                _logger.LogInformation("PATCH Request: {Endpoint}", endpoint);
+                
+                var content = CreateJsonContent(data);
+                var request = new HttpRequestMessage(HttpMethod.Patch, endpoint)
+                {
+                    Content = content
+                };
+                
+                var response = await _httpClient.SendAsync(request);
+                return await ProcessResponse<T>(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "PATCH Request failed: {Endpoint}", endpoint);
+                return ApiResponse<T>.ErrorResult($"Request failed: {ex.Message}", HttpStatusCode.InternalServerError);
+            }
+        }
+
         public async Task<ApiResponse<bool>> DeleteAsync(string endpoint)
         {
             try

@@ -16,7 +16,6 @@ namespace ApplicationLayer.Services.PromotionManagement
     {
         private readonly IGenericRepository<Promotion> _promotionRepo;
         private readonly IMapper _mapper;
-
         public PromotionService(IGenericRepository<Promotion> promotionRepo, IMapper mapper)
         {
             _promotionRepo = promotionRepo;

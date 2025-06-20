@@ -52,5 +52,23 @@ namespace ControllerLayer.Controllers
             _logger.LogInformation("Search CinemaRoom");
             return await _cinemaRoomService.SearchCinemaRoom(keyword);
         }
+
+        //admin
+        [HttpGet("rooms/{roomId}/seats")]
+        public async Task<IActionResult> ViewSeats(Guid roomId)
+        {
+            _logger.LogInformation("View Seats");
+            return await _cinemaRoomService.ViewSeat(roomId);
+        }
+
+        //admin
+        [HttpPut("rooms/seats/update")]
+        public async Task<IActionResult> UpdateSeats([FromBody] UpdateSeatTypesRequest request)
+        {
+            _logger.LogInformation("Update seats");
+            return await _cinemaRoomService.UpdateSeatTypes(request);
+        }
+
+
     }
 }
