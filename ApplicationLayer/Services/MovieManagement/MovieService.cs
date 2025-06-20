@@ -299,7 +299,7 @@ namespace ApplicationLayer.Services.MovieManagement
         {
             var movie = string.IsNullOrWhiteSpace(keyword)
                 ? await _movieRepo.ListAsync()
-                : await _movieRepo.WhereAsync(m => m.Title.Contains(keyword));
+                : await _movieRepo.WhereAsync(m => m.Title.ToLower().Contains(keyword.ToLower()));
 
             var result = _mapper.Map<List<MovieListDto>>(movie);
 

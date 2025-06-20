@@ -10,6 +10,6 @@ namespace ApplicationLayer.DTO.CinemaRoomManagement
     {
         public Guid Id { get; set; }
         public string RoomName { get; set; }
-        public int TotalSeat { get; set; }
+        public int TotalSeats { get; set; }
     }
 }
