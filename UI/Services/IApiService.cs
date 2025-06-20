@@ -13,6 +13,9 @@ namespace UI.Services
         // PUT request với data và response type T
         Task<ApiResponse<T>> PutAsync<T>(string endpoint, object? data = null);
 
+        // PATCH request với data và response type T
+        Task<ApiResponse<T>> PatchAsync<T>(string endpoint, object? data = null);
+
         // DELETE request
         Task<ApiResponse<bool>> DeleteAsync(string endpoint);
 

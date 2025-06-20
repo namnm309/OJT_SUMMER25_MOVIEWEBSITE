@@ -41,6 +41,22 @@ namespace ApplicationLayer.Services.MovieManagement
             return _mapper.Map<List<MovieListDto>>(movies);
         }
 
+        public async Task<IActionResult> GetByIdAsync(Guid movieId)
+        {
+            var movie = await _movieRepo.FirstOrDefaultAsync(
+                m => m.Id == movieId,
+                nameof(Movie.MovieImages),
+                nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre),
+                nameof(Movie.ShowTimes) + "." + nameof(ShowTime.Room)
+            );
+            
+            if (movie == null) 
+                return ErrorResp.NotFound("Movie not found");
+            
+            var result = _mapper.Map<MovieResponseDto>(movie);
+            return SuccessResp.Ok(result);
+        }
+
         //public async Task<MovieResponseDto?> GetByIdAsync(Guid movieId)
         //{
         //    var movie = await _movieRepo.FirstOrDefaultAsync(

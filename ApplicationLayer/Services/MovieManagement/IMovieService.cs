@@ -13,7 +13,7 @@ namespace ApplicationLayer.Services.MovieManagement
     public interface IMovieService
     {
         Task<List<MovieListDto>> GetAllAsync();
-        //Task<MovieResponseDto?> GetByIdAsync(Guid movieId);
+        Task<IActionResult> GetByIdAsync(Guid movieId);
         Task<IActionResult> CreateMovie(MovieCreateDto Dto);
         Task<IActionResult> ViewMovie();
         Task<IActionResult> ViewMoviePagination(PaginationReq query);

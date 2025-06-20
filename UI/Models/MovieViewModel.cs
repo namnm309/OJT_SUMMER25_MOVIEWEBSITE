@@ -5,6 +5,7 @@
         public string Id { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string? ProductionCompany { get; set; }
         public int RunningTime { get; set; }
         public string Version { get; set; } = string.Empty;
