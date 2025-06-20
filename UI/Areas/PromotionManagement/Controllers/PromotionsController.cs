@@ -13,13 +13,20 @@ namespace UI.Areas.PromotionManagement.Controllers
     {
         private readonly IApiService _apiService;
         private readonly ILogger<PromotionsController> _logger;
+        //Khai báo service rồi mới sài được
+        private readonly IImageService _imageService;
 
+
+        // Thêm vào constructor
         public PromotionsController(
             IApiService apiService,
-            ILogger<PromotionsController> logger)
+            ILogger<PromotionsController> logger,
+            // thêm vào constructor
+            IImageService imageService)
         {
             _apiService = apiService;
             _logger = logger;
+            _imageService = imageService;
         }
 
         public async Task<IActionResult> Index()
@@ -66,28 +73,39 @@ namespace UI.Areas.PromotionManagement.Controllers
             return View();
         }
 
+        // Sửa action Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PromotionViewModel model)
+        public async Task<IActionResult> Create(PromotionViewModel model, IFormFile imageFile) // khai báo biến để sài 
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            
 
             try
             {
-                var promotionsData = new {
-                  title = model.Title,
-                  startDate = model.StartDate,
-                  endDate = model.EndDate,
-                  discountPercent = model.DiscountPercent,
-                  description = model.Description,
-                  imageUrl = model.ImageUrl,
-                };
-                var result = await _apiService.PostAsync<PromotionViewModel>("/api/v1/promotions",  promotionsData);
+                // Xử lý upload ảnh nếu có
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    model.ImageUrl = await _imageService.UploadImageAsync(imageFile);
+                }
 
-                if (result.Success )
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                var promotionsData = new
+                {
+                    title = model.Title,
+                    startDate = model.StartDate,
+                    endDate = model.EndDate,
+                    discountPercent = model.DiscountPercent,
+                    description = model.Description,
+                    imageUrl = model.ImageUrl,
+                };
+
+                var result = await _apiService.PostAsync<PromotionViewModel>("/api/v1/promotions", promotionsData);
+
+                if (result.Success)
                 {
                     TempData["SuccessMessage"] = "Thêm khuyến mãi thành công!";
                     return RedirectToAction(nameof(Index));
@@ -103,6 +121,7 @@ namespace UI.Areas.PromotionManagement.Controllers
 
             return View(model);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
@@ -140,18 +159,36 @@ namespace UI.Areas.PromotionManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(PromotionViewModel model)
+        public async Task<IActionResult> Edit(PromotionViewModel model, IFormFile imageFile)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            
 
             try
             {
-                _logger.LogInformation("Received model: {@Model}", model);
-                var result = await _apiService.PutAsync<JsonElement>("/api/v1/promotions", model);
-                _logger.LogInformation("Service returned: {@Result}", result);
+                // Xử lý upload ảnh nếu có
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    model.ImageUrl = await _imageService.UploadImageAsync(imageFile);
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                var promotionsData = new
+                {
+                    id = model.Id,
+                    title = model.Title,
+                    startDate = model.StartDate,
+                    endDate = model.EndDate,
+                    discountPercent = model.DiscountPercent,
+                    description = model.Description,
+                    imageUrl = model.ImageUrl,
+                };
+               
+                var result = await _apiService.PutAsync<JsonElement>("/api/v1/promotions", promotionsData);
+                
 
                 if (result.Success)
                 {
