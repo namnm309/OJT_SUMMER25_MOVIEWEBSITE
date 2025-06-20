@@ -24,5 +24,9 @@ namespace ApplicationLayer.Services.MovieManagement
         // New methods for getting genres and cinema rooms
         Task<IActionResult> GetAllGenres();
         Task<IActionResult> GetAllCinemaRooms();
+
+        // Search method (movie title)
+        Task<List<MovieListDto>> SearchAsync(string? keyword);
+
     }
 }

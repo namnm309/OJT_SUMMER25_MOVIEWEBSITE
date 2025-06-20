@@ -23,5 +23,24 @@ namespace InfrastructureLayer.Repository
         {
             return await dbSet.FindAsync(id);
         }
+
+        public async Task<List<Movie>> SearchMoviesByNameAsync(string? keyword)
+        {
+            // start with the full set
+            IQueryable<Movie> q = dbSet;
+
+            // if keyword provided, filter on Title
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                var k = keyword.Trim();
+                q = q.Where(m => EF.Functions.ILike(m.Title, $"%{k}%"));
+            }
+
+            // sort A→Z
+            q = q.OrderBy(m => m.Title);
+
+            return await q.ToListAsync();
+        }
+
     }
 }

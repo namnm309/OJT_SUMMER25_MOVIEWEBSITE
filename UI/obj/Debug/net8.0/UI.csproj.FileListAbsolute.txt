@@ -484,3 +484,7 @@ E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\UI\obj\Debug\net8.0\r
 E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\UI\obj\Debug\net8.0\rjimswa.dswa.cache.json
 E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\UI\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\UI\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\UI\bin\Debug\net8.0\Microsoft.AspNetCore.Components.QuickGrid.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\UI\bin\Debug\net8.0\Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\UI\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+E:\Code\Coderries\dotnet\Nhi_Dev\ojt_summer25_group2_movie\UI\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll

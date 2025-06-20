@@ -9,5 +9,7 @@ namespace InfrastructureLayer.Repository
         Task<List<Movie>> GetAllMoviesAsync();  // retrieve all movies from the database
 
         Task<Movie?> GetMovieByIdAsync(Guid id); // retrieve a movie by its ID
+
+        Task<List<Movie>> GetMovieByKeywordAsync(string keyword);        // retrieve a movie by its keyword for the title
     }
 }

@@ -23,6 +23,8 @@ namespace ApplicationLayer.Services.MovieManagement
         private readonly IGenericRepository<ShowTime> _showtimeRepo;
         private readonly IGenericRepository<CinemaRoom> _roomRepo;
         private readonly IGenericRepository<Genre> _genreEntityRepo;
+        //added new repo for search functionality
+        private readonly IMovieRepository _movieRepository;
 
         public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IGenericRepository<Genre> genreEntityRepo, IMapper mapper)
         {
@@ -81,6 +83,24 @@ namespace ApplicationLayer.Services.MovieManagement
                     .Where(g => !string.IsNullOrEmpty(g))
                     .ToList() ?? new List<string>()
             };
+        }
+
+        // Search method (movie title)
+        public async Task<List<MovieListDto>> SearchAsync(string? keyword)
+        {
+            var movies = await _movieRepository.GetMovieByKeywordAsync(keyword);
+            // map to DTO
+            return movies
+                .Select(m => new MovieListDto
+                {
+                    Id = m.Id,
+                    Title = m.Title,
+                    ReleaseDate = m.ReleaseDate,
+                    ProductionCompany = m.ProductionCompany,
+                    RunningTime = m.RunningTime.ToString(),
+                    Version =  m.Version
+                })
+                .ToList();
         }
 
         public async Task<IActionResult> CreateMovie(MovieCreateDto Dto)
@@ -340,5 +360,7 @@ namespace ApplicationLayer.Services.MovieManagement
 
             return SuccessResp.Ok(roomDtos);
         }
+
+
     }
 }

@@ -69,6 +69,7 @@ namespace ControllerLayer
 
             builder.Services.AddScoped<IPromotionService, PromotionService>();
 
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
             // Cấu hình Authentication với Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

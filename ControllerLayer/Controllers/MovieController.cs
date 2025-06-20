@@ -51,6 +51,20 @@ namespace ControllerLayer.Controllers
             return Ok(new { data = movie });
         }
 
+        [HttpGet("Search")]
+        public async Task<ActionResult<List<MovieListDto>>> Search([FromQuery] string? keyword)
+        {
+            var movies = await _movieService.SearchAsync(keyword);
+
+            if (!movies.Any())
+            {
+                // AC-03: no matches → return 404 with our message
+                return NotFound(new { message = "No movies found" });
+            }
+
+            return Ok(movies);
+        }
+
         [HttpPatch("Update")]
         public async Task<IActionResult> UpdateMovie([FromBody] MovieUpdateDto Dto)
         {

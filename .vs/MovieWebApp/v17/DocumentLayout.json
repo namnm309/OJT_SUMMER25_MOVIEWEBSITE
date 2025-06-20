@@ -3,36 +3,180 @@
   "WorkspaceRootPath": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\data\\dataseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\data\\dataseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\controllerlayer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\data\\moviecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\data\\moviecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\controllerlayer\\controllers\\promotioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\controllers\\promotioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\controllerlayer\\controllers\\moviecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\controllers\\moviecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\dto\\moviemanagement\\movielistdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\dto\\moviemanagement\\movielistdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\services\\moviemanagement\\movieservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\services\\moviemanagement\\movieservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\repository\\movierepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\repository\\movierepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\repository\\imovierepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\repository\\imovierepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\services\\bookingticketmanagement\\ibookingticketservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\services\\bookingticketmanagement\\ibookingticketservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\services\\bookingticketmanagement\\bookingticketservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\services\\bookingticketmanagement\\bookingticketservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\repository\\bookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\repository\\bookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\showtime.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\showtime.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\repository\\ibookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\repository\\ibookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\repository\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\repository\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\repository\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\repository\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\repository\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\repository\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\repository\\icinemaroomrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\repository\\icinemaroomrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\booking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\booking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\movie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\movie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\cinemaroom.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\cinemaroom.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\services\\cinemaroommanagement\\icinemaroomservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\services\\cinemaroommanagement\\icinemaroomservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\services\\moviemanagement\\imovieservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\services\\moviemanagement\\imovieservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\services\\cinemaroommanagement\\cinemaroomservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\services\\cinemaroommanagement\\cinemaroomservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\controllerlayer\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\dto\\pagination.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\dto\\pagination.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\controllerlayer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\dto\\moviemanagement\\movieimagedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\dto\\moviemanagement\\movieimagedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\dto\\moviemanagement\\moviecreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\dto\\moviemanagement\\moviecreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\dto\\moviemanagement\\movieresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\dto\\moviemanagement\\movieresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\dto\\moviemanagement\\movieupdatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\dto\\moviemanagement\\movieupdatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\dto\\moviemanagement\\genredto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\dto\\moviemanagement\\genredto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\pointhistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\pointhistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\promotion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\promotion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\moviegenre.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\moviegenre.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\movieimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\movieimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\bookingdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\bookingdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\dto\\moviemanagement\\showtimedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\dto\\moviemanagement\\showtimedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\dto\\cinemaroommanagement\\cinemaroomdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\dto\\cinemaroommanagement\\cinemaroomdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\dto\\moviemanagement\\cinemaroomdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\dto\\moviemanagement\\cinemaroomdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\baseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\baseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\movie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\movie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\controllerlayer\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\controllerlayer\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\controllerlayer\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\data\\dataseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\data\\dataseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\data\\moviecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\data\\moviecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -51,44 +195,16 @@
       "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\ticket.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\repository\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\repository\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\controllerlayer\\controllers\\cinemaroomcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5F4F4CAA-46FB-4E5F-88E6-2D3AFCD1D755}|ControllerLayer\\ControllerLayer.csproj|solutionrelative:controllerlayer\\controllers\\cinemaroomcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\cinemaroom.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\cinemaroom.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\dto\\cinemaroommanagement\\cinemaroomdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\dto\\cinemaroommanagement\\cinemaroomdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\services\\usermanagement\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\services\\usermanagement\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\services\\cinemaroommanagement\\icinemaroomservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|solutionrelative:applicationlayer\\services\\cinemaroommanagement\\icinemaroomservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\seat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\seat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\showtime.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\showtime.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\bookingdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\bookingdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2D90350A-C498-4087-A4CC-27909DF6784B}|ApplicationLayer\\ApplicationLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\applicationlayer\\dto\\usermanagement\\userresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -101,10 +217,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\infrastructurelayer\\infrastructurelayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{2A65FB73-EA10-4B5E-B90C-2C8FC1E97338}|InfrastructureLayer\\InfrastructureLayer.csproj|solutionrelative:infrastructurelayer\\infrastructurelayer.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\moviegenre.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\moviegenre.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\genre.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -121,10 +233,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{81D9EF50-B81A-490B-B62B-D4F2C435945A}|UI\\UI.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\ui\\models\\editprofileviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{81D9EF50-B81A-490B-B62B-D4F2C435945A}|UI\\UI.csproj|solutionrelative:ui\\models\\editprofileviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\domainlayer\\entities\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{521E25BE-0B56-4E05-97CC-4317A28621DD}|DomainLayer\\DomainLayer.csproj|solutionrelative:domainlayer\\entities\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{81D9EF50-B81A-490B-B62B-D4F2C435945A}|UI\\UI.csproj|e:\\code\\coderries\\dotnet\\nhi_dev\\ojt_summer25_group2_movie\\ui\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -182,206 +290,122 @@
       "DocumentGroups": [
         {
           "DockedWidth": 195,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
+              "Title": "PromotionController.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\PromotionController.cs",
+              "RelativeDocumentMoniker": "ControllerLayer\\Controllers\\PromotionController.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\PromotionController.cs",
+              "RelativeToolTip": "ControllerLayer\\Controllers\\PromotionController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-20T01:55:33.459Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "BookingRepository.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\BookingRepository.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Repository\\BookingRepository.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\BookingRepository.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Repository\\BookingRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-19T14:07:15.833Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "BookingTicketService.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\BookingTicketManagement\\BookingTicketService.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\Services\\BookingTicketManagement\\BookingTicketService.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\BookingTicketManagement\\BookingTicketService.cs",
+              "RelativeToolTip": "ApplicationLayer\\Services\\BookingTicketManagement\\BookingTicketService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-19T08:36:23.128Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MovieController.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\MovieController.cs",
+              "RelativeDocumentMoniker": "ControllerLayer\\Controllers\\MovieController.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\MovieController.cs",
+              "RelativeToolTip": "ControllerLayer\\Controllers\\MovieController.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAwD0AAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-18T07:31:59.825Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Program.cs",
               "RelativeDocumentMoniker": "ControllerLayer\\Program.cs",
               "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Program.cs",
               "RelativeToolTip": "ControllerLayer\\Program.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAAAWwDgAAABBAAAAAAAAAA==",
+              "ViewState": "AgIAACgAAAAAAAAAAAAQwEUAAABOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-12T08:03:22.059Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\appsettings.json",
-              "RelativeDocumentMoniker": "ControllerLayer\\appsettings.json",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\appsettings.json",
-              "RelativeToolTip": "ControllerLayer\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAABTAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-06-10T15:33:57.803Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "DataSeeder.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Data\\DataSeeder.cs",
-              "RelativeDocumentMoniker": "InfrastructureLayer\\Data\\DataSeeder.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Data\\DataSeeder.cs",
-              "RelativeToolTip": "InfrastructureLayer\\Data\\DataSeeder.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T05:23:42.781Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ShowTimeStatus.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Enum\\ShowTimeStatus.cs",
-              "RelativeDocumentMoniker": "DomainLayer\\Enum\\ShowTimeStatus.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Enum\\ShowTimeStatus.cs",
-              "RelativeToolTip": "DomainLayer\\Enum\\ShowTimeStatus.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-13T03:38:29.354Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Users.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Users.cs",
-              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Users.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Users.cs",
-              "RelativeToolTip": "DomainLayer\\Entities\\Users.cs",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAtwC8AAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-10T15:19:02.423Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "UserController.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\UserController.cs",
-              "RelativeDocumentMoniker": "ControllerLayer\\Controllers\\UserController.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\UserController.cs",
-              "RelativeToolTip": "ControllerLayer\\Controllers\\UserController.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAWwDUAAAB6AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T03:57:55.706Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "CinemaRoomService.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\CinemaRoomManagement\\CinemaRoomService.cs",
-              "RelativeDocumentMoniker": "ApplicationLayer\\Services\\CinemaRoomManagement\\CinemaRoomService.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\CinemaRoomManagement\\CinemaRoomService.cs",
-              "RelativeToolTip": "ApplicationLayer\\Services\\CinemaRoomManagement\\CinemaRoomService.cs",
-              "ViewState": "AgIAACMAAAAAAAAAAAAMwDYAAABAAAAAAAAAAA==",
+              "Title": "MovieService.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\MovieManagement\\MovieService.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\Services\\MovieManagement\\MovieService.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\MovieManagement\\MovieService.cs",
+              "RelativeToolTip": "ApplicationLayer\\Services\\MovieManagement\\MovieService.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAjwBoAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T08:35:55.701Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-18T07:52:50.893Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MovieRepository.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\MovieRepository.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Repository\\MovieRepository.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\MovieRepository.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Repository\\MovieRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-18T07:34:07.876Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IMovieRepository.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\IMovieRepository.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Repository\\IMovieRepository.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\IMovieRepository.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Repository\\IMovieRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-18T07:35:57.219Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Movie.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Movie.cs",
-              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Movie.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Movie.cs",
-              "RelativeToolTip": "DomainLayer\\Entities\\Movie.cs",
-              "ViewState": "AgIAAB0AAAAAAAAAAAApwCwAAAAUAAAAAAAAAA==",
+              "Title": "MovieListDto.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\MovieListDto.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\DTO\\MovieManagement\\MovieListDto.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\MovieListDto.cs",
+              "RelativeToolTip": "ApplicationLayer\\DTO\\MovieManagement\\MovieListDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T06:51:45.201Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-18T07:57:13.638Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Booking.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Booking.cs",
-              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Booking.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Booking.cs",
-              "RelativeToolTip": "DomainLayer\\Entities\\Booking.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAAAA4AAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T06:48:05.816Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MovieContext.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Data\\MovieContext.cs",
-              "RelativeDocumentMoniker": "InfrastructureLayer\\Data\\MovieContext.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Data\\MovieContext.cs",
-              "RelativeToolTip": "InfrastructureLayer\\Data\\MovieContext.cs",
-              "ViewState": "AgIAAEMAAAAAAAAAAAAAAE8AAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-10T15:20:58.195Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "UserRole.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Enum\\UserRole.cs",
-              "RelativeDocumentMoniker": "DomainLayer\\Enum\\UserRole.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Enum\\UserRole.cs",
-              "RelativeToolTip": "DomainLayer\\Enum\\UserRole.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-10T15:19:29.922Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Ticket.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Ticket.cs",
-              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Ticket.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Ticket.cs",
-              "RelativeToolTip": "DomainLayer\\Entities\\Ticket.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T07:07:01.097Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "UserRepository.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\UserRepository.cs",
-              "RelativeDocumentMoniker": "InfrastructureLayer\\Repository\\UserRepository.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\UserRepository.cs",
-              "RelativeToolTip": "InfrastructureLayer\\Repository\\UserRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T08:48:04.096Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "IUserRepository.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\IUserRepository.cs",
-              "RelativeDocumentMoniker": "InfrastructureLayer\\Repository\\IUserRepository.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\IUserRepository.cs",
-              "RelativeToolTip": "InfrastructureLayer\\Repository\\IUserRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-13T03:37:37.135Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "CinemaRoomController.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\CinemaRoomController.cs",
-              "RelativeDocumentMoniker": "ControllerLayer\\Controllers\\CinemaRoomController.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\CinemaRoomController.cs",
-              "RelativeToolTip": "ControllerLayer\\Controllers\\CinemaRoomController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-12T06:48:28.987Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "CinemaRoom.cs",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\CinemaRoom.cs",
               "RelativeDocumentMoniker": "DomainLayer\\Entities\\CinemaRoom.cs",
@@ -393,19 +417,163 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "CinemaRoomDto.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\CinemaRoomManagement\\CinemaRoomDto.cs",
-              "RelativeDocumentMoniker": "ApplicationLayer\\DTO\\CinemaRoomManagement\\CinemaRoomDto.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\CinemaRoomManagement\\CinemaRoomDto.cs",
-              "RelativeToolTip": "ApplicationLayer\\DTO\\CinemaRoomManagement\\CinemaRoomDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 15,
+              "Title": "ICinemaRoomRepository.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\ICinemaRoomRepository.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Repository\\ICinemaRoomRepository.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\ICinemaRoomRepository.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Repository\\ICinemaRoomRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-12T06:44:13.806Z"
+              "WhenOpened": "2025-06-18T07:34:03.361Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 14,
+              "Title": "IGenericRepository.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\IGenericRepository.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Repository\\IGenericRepository.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\IGenericRepository.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Repository\\IGenericRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-18T07:49:14.186Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "IUserRepository.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\IUserRepository.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Repository\\IUserRepository.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\IUserRepository.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Repository\\IUserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-13T03:37:37.135Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "GenericRepository.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\GenericRepository.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Repository\\GenericRepository.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\GenericRepository.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Repository\\GenericRepository.cs",
+              "ViewState": "AgIAALwAAAAAAAAAAAAqwNsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-19T08:37:05.58Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "IBookingTicketService.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\BookingTicketManagement\\IBookingTicketService.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\Services\\BookingTicketManagement\\IBookingTicketService.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\BookingTicketManagement\\IBookingTicketService.cs",
+              "RelativeToolTip": "ApplicationLayer\\Services\\BookingTicketManagement\\IBookingTicketService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-19T08:36:12.703Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "IBookingRepository.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\IBookingRepository.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Repository\\IBookingRepository.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\IBookingRepository.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Repository\\IBookingRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-19T14:07:27.305Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ShowTime.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\ShowTime.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\ShowTime.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\ShowTime.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\ShowTime.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T06:47:40.473Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "Employee.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Employee.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Employee.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Employee.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\Employee.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T06:48:11.566Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Booking.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Booking.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Booking.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Booking.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\Booking.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T06:48:05.816Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "Pagination.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\Pagination.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\DTO\\Pagination.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\Pagination.cs",
+              "RelativeToolTip": "ApplicationLayer\\DTO\\Pagination.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-19T08:34:32.345Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "MovieCreateDto.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\MovieCreateDto.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\DTO\\MovieManagement\\MovieCreateDto.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\MovieCreateDto.cs",
+              "RelativeToolTip": "ApplicationLayer\\DTO\\MovieManagement\\MovieCreateDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-18T08:03:14.237Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "MovieImageDto.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\MovieImageDto.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\DTO\\MovieManagement\\MovieImageDto.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\MovieImageDto.cs",
+              "RelativeToolTip": "ApplicationLayer\\DTO\\MovieManagement\\MovieImageDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-18T08:05:53.623Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "CinemaRoomService.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\CinemaRoomManagement\\CinemaRoomService.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\Services\\CinemaRoomManagement\\CinemaRoomService.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\CinemaRoomManagement\\CinemaRoomService.cs",
+              "RelativeToolTip": "ApplicationLayer\\Services\\CinemaRoomManagement\\CinemaRoomService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T08:35:55.701Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
               "Title": "ICinemaRoomService.cs",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\CinemaRoomManagement\\ICinemaRoomService.cs",
               "RelativeDocumentMoniker": "ApplicationLayer\\Services\\CinemaRoomManagement\\ICinemaRoomService.cs",
@@ -417,43 +585,103 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "Seat.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Seat.cs",
-              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Seat.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Seat.cs",
-              "RelativeToolTip": "DomainLayer\\Entities\\Seat.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAsAAAAAAAAAA==",
+              "DocumentIndex": 25,
+              "Title": "MovieResponseDto.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\MovieResponseDto.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\DTO\\MovieManagement\\MovieResponseDto.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\MovieResponseDto.cs",
+              "RelativeToolTip": "ApplicationLayer\\DTO\\MovieManagement\\MovieResponseDto.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T08:16:38.025Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "IUserService.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\UserManagement\\IUserService.cs",
-              "RelativeDocumentMoniker": "ApplicationLayer\\Services\\UserManagement\\IUserService.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\UserManagement\\IUserService.cs",
-              "RelativeToolTip": "ApplicationLayer\\Services\\UserManagement\\IUserService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T09:12:59.905Z"
+              "WhenOpened": "2025-06-18T08:05:57.464Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 20,
-              "Title": "ShowTime.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\ShowTime.cs",
-              "RelativeDocumentMoniker": "DomainLayer\\Entities\\ShowTime.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\ShowTime.cs",
-              "RelativeToolTip": "DomainLayer\\Entities\\ShowTime.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "IMovieService.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\MovieManagement\\IMovieService.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\Services\\MovieManagement\\IMovieService.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\MovieManagement\\IMovieService.cs",
+              "RelativeToolTip": "ApplicationLayer\\Services\\MovieManagement\\IMovieService.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABwAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T06:47:40.473Z"
+              "WhenOpened": "2025-06-18T07:50:02.857Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 27,
+              "Title": "GenreDto.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\GenreDto.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\DTO\\MovieManagement\\GenreDto.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\GenreDto.cs",
+              "RelativeToolTip": "ApplicationLayer\\DTO\\MovieManagement\\GenreDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-18T08:03:10.763Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "MovieUpdateDto.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\MovieUpdateDto.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\DTO\\MovieManagement\\MovieUpdateDto.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\MovieUpdateDto.cs",
+              "RelativeToolTip": "ApplicationLayer\\DTO\\MovieManagement\\MovieUpdateDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-18T08:05:58.155Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "MovieImage.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\MovieImage.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\MovieImage.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\MovieImage.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\MovieImage.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-19T07:42:50.662Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "Promotion.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Promotion.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Promotion.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Promotion.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\Promotion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-19T07:42:53.242Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "PointHistory.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\PointHistory.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\PointHistory.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\PointHistory.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\PointHistory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-19T07:42:54.154Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "ShowTimeDto.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\ShowTimeDto.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\DTO\\MovieManagement\\ShowTimeDto.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\ShowTimeDto.cs",
+              "RelativeToolTip": "ApplicationLayer\\DTO\\MovieManagement\\ShowTimeDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-19T07:42:23.031Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
               "Title": "BookingDetail.cs",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\BookingDetail.cs",
               "RelativeDocumentMoniker": "DomainLayer\\Entities\\BookingDetail.cs",
@@ -465,19 +693,235 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 30,
+              "Title": "MovieGenre.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\MovieGenre.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\MovieGenre.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\MovieGenre.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\MovieGenre.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T06:51:56.36Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "CinemaRoomDto.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\CinemaRoomManagement\\CinemaRoomDto.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\DTO\\CinemaRoomManagement\\CinemaRoomDto.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\CinemaRoomManagement\\CinemaRoomDto.cs",
+              "RelativeToolTip": "ApplicationLayer\\DTO\\CinemaRoomManagement\\CinemaRoomDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-12T06:44:13.806Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "CinemaRoomDto.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\CinemaRoomDto.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\DTO\\MovieManagement\\CinemaRoomDto.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\MovieManagement\\CinemaRoomDto.cs",
+              "RelativeToolTip": "ApplicationLayer\\DTO\\MovieManagement\\CinemaRoomDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-18T08:03:10.047Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "BaseEntity.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\BaseEntity.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\BaseEntity.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\BaseEntity.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\BaseEntity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-18T08:03:07.289Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "WeatherForecastController.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\WeatherForecastController.cs",
+              "RelativeDocumentMoniker": "ControllerLayer\\Controllers\\WeatherForecastController.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\WeatherForecastController.cs",
+              "RelativeToolTip": "ControllerLayer\\Controllers\\WeatherForecastController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-18T07:55:10.585Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "ControllerLayer\\Controllers\\UserController.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\UserController.cs",
+              "RelativeToolTip": "ControllerLayer\\Controllers\\UserController.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAWwDUAAAB6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T03:57:55.706Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "Movie.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Movie.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Movie.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Movie.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\Movie.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T06:51:45.201Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\appsettings.json",
+              "RelativeDocumentMoniker": "ControllerLayer\\appsettings.json",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\appsettings.json",
+              "RelativeToolTip": "ControllerLayer\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-06-10T15:33:57.803Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\UserRepository.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Repository\\UserRepository.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Repository\\UserRepository.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Repository\\UserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T08:48:04.096Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "DataSeeder.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Data\\DataSeeder.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Data\\DataSeeder.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Data\\DataSeeder.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Data\\DataSeeder.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBUAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T05:23:42.781Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "Users.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Users.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Users.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Users.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\Users.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAtwC8AAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T15:19:02.423Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "ShowTimeStatus.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Enum\\ShowTimeStatus.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Enum\\ShowTimeStatus.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Enum\\ShowTimeStatus.cs",
+              "RelativeToolTip": "DomainLayer\\Enum\\ShowTimeStatus.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-13T03:38:29.354Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "MovieContext.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Data\\MovieContext.cs",
+              "RelativeDocumentMoniker": "InfrastructureLayer\\Data\\MovieContext.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\Data\\MovieContext.cs",
+              "RelativeToolTip": "InfrastructureLayer\\Data\\MovieContext.cs",
+              "ViewState": "AgIAAEMAAAAAAAAAAAAAAE8AAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T15:20:58.195Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 46,
+              "Title": "UserRole.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Enum\\UserRole.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Enum\\UserRole.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Enum\\UserRole.cs",
+              "RelativeToolTip": "DomainLayer\\Enum\\UserRole.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T15:19:29.922Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 47,
+              "Title": "Ticket.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Ticket.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Ticket.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Ticket.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\Ticket.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T07:07:01.097Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 48,
+              "Title": "CinemaRoomController.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\CinemaRoomController.cs",
+              "RelativeDocumentMoniker": "ControllerLayer\\Controllers\\CinemaRoomController.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Controllers\\CinemaRoomController.cs",
+              "RelativeToolTip": "ControllerLayer\\Controllers\\CinemaRoomController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-12T06:48:28.987Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 50,
+              "Title": "Seat.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Seat.cs",
+              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Seat.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Seat.cs",
+              "RelativeToolTip": "DomainLayer\\Entities\\Seat.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T08:16:38.025Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 49,
+              "Title": "IUserService.cs",
+              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\UserManagement\\IUserService.cs",
+              "RelativeDocumentMoniker": "ApplicationLayer\\Services\\UserManagement\\IUserService.cs",
+              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\Services\\UserManagement\\IUserService.cs",
+              "RelativeToolTip": "ApplicationLayer\\Services\\UserManagement\\IUserService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T09:12:59.905Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 53,
               "Title": "InfrastructureLayer.csproj",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\InfrastructureLayer.csproj",
               "RelativeDocumentMoniker": "InfrastructureLayer\\InfrastructureLayer.csproj",
               "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\InfrastructureLayer.csproj",
               "RelativeToolTip": "InfrastructureLayer\\InfrastructureLayer.csproj",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
               "WhenOpened": "2025-06-10T15:17:38.044Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 51,
               "Title": "UserResponseDto.cs",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\DTO\\UserManagement\\UserResponseDto.cs",
               "RelativeDocumentMoniker": "ApplicationLayer\\DTO\\UserManagement\\UserResponseDto.cs",
@@ -489,7 +933,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 52,
               "Title": "ApplicationLayer.csproj",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ApplicationLayer\\ApplicationLayer.csproj",
               "RelativeDocumentMoniker": "ApplicationLayer\\ApplicationLayer.csproj",
@@ -501,19 +945,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "MovieGenre.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\MovieGenre.cs",
-              "RelativeDocumentMoniker": "DomainLayer\\Entities\\MovieGenre.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\MovieGenre.cs",
-              "RelativeToolTip": "DomainLayer\\Entities\\MovieGenre.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAARAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T06:51:56.36Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 54,
               "Title": "Genre.cs",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Genre.cs",
               "RelativeDocumentMoniker": "DomainLayer\\Entities\\Genre.cs",
@@ -525,7 +957,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 56,
               "Title": "HomeController.cs",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "UI\\Controllers\\HomeController.cs",
@@ -537,19 +969,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
-              "Title": "Employee.cs",
-              "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Employee.cs",
-              "RelativeDocumentMoniker": "DomainLayer\\Entities\\Employee.cs",
-              "ToolTip": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\DomainLayer\\Entities\\Employee.cs",
-              "RelativeToolTip": "DomainLayer\\Entities\\Employee.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-11T06:48:11.566Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 55,
               "Title": "AccountController.cs",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "UI\\Controllers\\AccountController.cs",
@@ -561,7 +981,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 57,
               "Title": "EditProfileViewModel.cs",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\Models\\EditProfileViewModel.cs",
               "RelativeDocumentMoniker": "UI\\Models\\EditProfileViewModel.cs",
@@ -573,7 +993,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 58,
               "Title": "ErrorViewModel.cs",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\Models\\ErrorViewModel.cs",
               "RelativeDocumentMoniker": "UI\\Models\\ErrorViewModel.cs",
@@ -585,7 +1005,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 64,
               "Title": "launchSettings.json",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\Properties\\launchSettings.json",
               "RelativeDocumentMoniker": "UI\\Properties\\launchSettings.json",
@@ -597,7 +1017,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 65,
               "Title": "launchSettings.json",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\ControllerLayer\\Properties\\launchSettings.json",
               "RelativeDocumentMoniker": "ControllerLayer\\Properties\\launchSettings.json",
@@ -609,7 +1029,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 62,
               "Title": "Login.cshtml",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "UI\\Views\\Account\\Login.cshtml",
@@ -621,7 +1041,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 61,
               "Title": "Register.cshtml",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\Views\\Account\\Register.cshtml",
               "RelativeDocumentMoniker": "UI\\Views\\Account\\Register.cshtml",
@@ -633,7 +1053,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 60,
               "Title": "MemberDashboard.cshtml",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\Views\\Dashboard\\MemberDashboard.cshtml",
               "RelativeDocumentMoniker": "UI\\Views\\Dashboard\\MemberDashboard.cshtml",
@@ -645,7 +1065,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 59,
               "Title": "LoginViewModel.cs",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\Models\\LoginViewModel.cs",
               "RelativeDocumentMoniker": "UI\\Models\\LoginViewModel.cs",
@@ -657,7 +1077,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 63,
               "Title": "appsettings.json",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\appsettings.json",
               "RelativeDocumentMoniker": "UI\\appsettings.json",
@@ -669,7 +1089,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 66,
               "Title": "ScaffoldingReadMe.txt",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\ScaffoldingReadMe.txt",
               "RelativeDocumentMoniker": "UI\\ScaffoldingReadMe.txt",
@@ -681,7 +1101,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 68,
               "Title": "DashboardController.cs",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\Controllers\\DashboardController.cs",
               "RelativeDocumentMoniker": "UI\\Controllers\\DashboardController.cs",
@@ -693,7 +1113,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 67,
               "Title": "UI.csproj",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\UI\\UI.csproj",
               "RelativeDocumentMoniker": "UI\\UI.csproj",
@@ -705,7 +1125,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 69,
               "Title": "README.md",
               "DocumentMoniker": "E:\\Code\\Coderries\\dotnet\\Nhi_Dev\\ojt_summer25_group2_movie\\InfrastructureLayer\\README.md",
               "RelativeDocumentMoniker": "InfrastructureLayer\\README.md",

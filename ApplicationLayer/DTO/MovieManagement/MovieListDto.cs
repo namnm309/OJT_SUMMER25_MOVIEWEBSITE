@@ -5,7 +5,7 @@ namespace ApplicationLayer.DTO.MovieManagement
 {
     public class MovieListDto
     {
-            public Guid MovieId { get; set; }
+            public Guid Id { get; set; }
             public string Title { get; set; } = string.Empty;
             public DateTime? ReleaseDate { get; set; }
             public string? ProductionCompany { get; set; }
