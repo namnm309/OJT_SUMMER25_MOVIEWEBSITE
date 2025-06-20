@@ -77,9 +77,17 @@ namespace UI.Areas.PromotionManagement.Controllers
 
             try
             {
-                var result = await _apiService.PostAsync<PromotionViewModel>("/api/v1/promotions", model);
+                var promotionsData = new {
+                  title = model.Title,
+                  startDate = model.StartDate,
+                  endDate = model.EndDate,
+                  discountPercent = model.DiscountPercent,
+                  description = model.Description,
+                  imageUrl = model.ImageUrl,
+                };
+                var result = await _apiService.PostAsync<PromotionViewModel>("/api/v1/promotions",  promotionsData);
 
-                if (result.Success || result.StatusCode == HttpStatusCode.Created)
+                if (result.Success )
                 {
                     TempData["SuccessMessage"] = "Thêm khuyến mãi thành công!";
                     return RedirectToAction(nameof(Index));
