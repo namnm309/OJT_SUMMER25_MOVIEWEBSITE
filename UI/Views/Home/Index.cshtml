@@ -36,8 +36,8 @@
                         </div>
                     </div>
                     <div class="search-box">
-                        <input type="text" placeholder="Tìm kiếm phim..." class="search-input">
-                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" placeholder="Tìm kiếm phim..." class="search-input" id="movieSearchInput">
+                        <i class="fas fa-search search-icon" id="searchButton"></i>
                     </div>
                 </div>
                 <div class="nav-center">
@@ -465,191 +465,6 @@
     </div>
 </div>
 
-   <!-- Login Modal 
-   <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-       <div class="modal-dialog modal-dialog-centered">
-           <div class="modal-content auth-modal">
-               <div class="modal-header">
-                   <h5 class="modal-title" id="loginModalLabel">
-                       <i class="fas fa-film me-2"></i>Chào mừng trở lại
-                   </h5>
-                   <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-               </div>
-               <div class="modal-body">
-                   <p class="auth-subtitle">Đăng nhập vào tài khoản rạp phim của bạn</p>
-                
-                   <form id="loginForm" method="post">
-                       @Html.AntiForgeryToken()
-                       <div class="form-group mb-3">
-                           <label class="form-label">
-                               <i class="fas fa-user me-1"></i>Tên đăng nhập
-                           </label>
-                           <input type="text" name="username" class="form-control form-control-lg" placeholder="Nhập tên đăng nhập của bạn" required />
-                           <span class="text-danger small" id="loginUsernameError"></span>
-                       </div>
-
-                       <div class="form-group mb-3">
-                           <label class="form-label">
-                               <i class="fas fa-lock me-1"></i>Mật khẩu
-                           </label>
-                           <div class="input-group">
-                               <input type="password" name="password" class="form-control form-control-lg" placeholder="Nhập mật khẩu của bạn" required />
-                               <button type="button" class="btn btn-outline-secondary toggle-password">
-                                   <i class="fas fa-eye"></i>
-                               </button>
-                           </div>
-                           <span class="text-danger small" id="loginPasswordError"></span>
-                       </div>
-
-                       <div class="text-danger mb-3" id="loginError"></div>
-
-                       <button type="submit" class="btn btn-primary btn-lg w-100 auth-btn">
-                           <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
-                       </button>
-
-                       <div class="auth-footer mt-3">
-                           <p class="text-center mb-2">
-                               Chưa có tài khoản? 
-                               <a href="#" class="auth-link" onclick="switchToRegister()">Tạo tài khoản ngay</a>
-                           </p>
-                           <p class="text-center">
-                               <a href="#" class="auth-link small">Quên mật khẩu?</a>
-                           </p>
-                       </div>
-                   </form>
-               </div>
-           </div>
-       </div>
-   </div>
--->
-   <!-- Register Modal
-   <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-       <div class="modal-dialog modal-dialog-centered modal-lg">
-           <div class="modal-content auth-modal">
-               <div class="modal-header">
-                   <h5 class="modal-title" id="registerModalLabel">
-                       <i class="fas fa-user-plus me-2"></i>Tạo tài khoản
-                   </h5>
-                   <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-               </div>
-               <div class="modal-body">
-                   <p class="auth-subtitle">Tham gia cộng đồng điện ảnh ngay hôm nay</p>
-                
-                   <form id="registerForm" method="post">
-                       @Html.AntiForgeryToken()
-                       <div class="row">
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-user me-1"></i>Tên đăng nhập
-                                   </label>
-                                   <input type="text" name="username" class="form-control" placeholder="Chọn tên đăng nhập" required />
-                               </div>
-                           </div>
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-envelope me-1"></i>Email
-                                   </label>
-                                   <input type="email" name="email" class="form-control" placeholder="Địa chỉ email của bạn" required />
-                               </div>
-                           </div>
-                       </div>
-
-                       <div class="row">
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-lock me-1"></i>Mật khẩu
-                                   </label>
-                                   <input type="password" name="password" class="form-control" placeholder="Tạo mật khẩu" required />
-                               </div>
-                           </div>
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-lock me-1"></i>Xác nhận mật khẩu
-                                   </label>
-                                   <input type="password" name="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu" required />
-                               </div>
-                           </div>
-                       </div>
-
-                       <div class="form-group mb-3">
-                           <label class="form-label">
-                               <i class="fas fa-id-card me-1"></i>Họ và tên
-                           </label>
-                           <input type="text" name="fullName" class="form-control" placeholder="Họ và tên của bạn" required />
-                       </div>
-
-                       <div class="row">
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-phone me-1"></i>Số điện thoại
-                                   </label>
-                                   <input type="tel" name="phone" class="form-control" placeholder="Số điện thoại" />
-                               </div>
-                           </div>
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-id-badge me-1"></i>CMND/CCCD
-                                   </label>
-                                   <input type="text" name="identityCard" class="form-control" placeholder="Số CMND/CCCD" />
-                               </div>
-                           </div>
-                       </div>
-
-                       <div class="form-group mb-3">
-                           <label class="form-label">
-                               <i class="fas fa-map-marker-alt me-1"></i>Địa chỉ
-                           </label>
-                           <textarea name="address" class="form-control" rows="2" placeholder="Địa chỉ của bạn"></textarea>
-                       </div>
-
-                       <div class="row">
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-calendar me-1"></i>Ngày sinh
-                                   </label>
-                                   <input type="date" name="birthDate" class="form-control" />
-                               </div>
-                           </div>
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-venus-mars me-1"></i>Giới tính
-                                   </label>
-                                   <select name="gender" class="form-control">
-                                       <option value="">Chọn giới tính</option>
-                                       <option value="Nam">Nam</option>
-                                       <option value="Nữ">Nữ</option>
-                                       <option value="Khác">Khác</option>
-                                   </select>
-                               </div>
-                           </div>
-                       </div>
-
-                       <div class="text-danger mb-3" id="registerError"></div>
-
-                       <button type="submit" class="btn btn-success btn-lg w-100 auth-btn">
-                           <i class="fas fa-user-plus me-2"></i>Tạo tài khoản
-                       </button>
-
-                       <div class="auth-footer mt-3">
-                           <p class="text-center">
-                               Đã có tài khoản? 
-                               <a href="#" class="auth-link" onclick="switchToLogin()">Đăng nhập tại đây</a>
-                           </p>
-                       </div>
-                   </form>
-               </div>
-           </div>
-       </div>
-</div> -->
-
 @section Scripts {
     <script>
         // Truyền dữ liệu phim từ server sang JavaScript
@@ -675,165 +490,32 @@
             moviesIndex: '@Url.Action("Index", "Movies")',
             movieDetails: '@Url.Action("Details", "Movies")'
         };
-        
-        // Auth Modal Functions
-        function switchToLogin() {
-            $('#registerModal').modal('hide');
-            setTimeout(() => {
-                $('#loginModal').modal('show');
-            }, 300);
-        }
-        
-        function switchToRegister() {
-            $('#loginModal').modal('hide');
-            setTimeout(() => {
-                $('#registerModal').modal('show');
-            }, 300);
-        }
-        
-        // Toggle password visibility
-        document.querySelectorAll('.toggle-password').forEach(button => {
-            button.addEventListener('click', function() {
-                const input = this.parentElement.querySelector('input');
-                const icon = this.querySelector('i');
-                
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
+
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('movieSearchInput');
+            const searchButton = document.getElementById('searchButton');
+
+            // Search on button click
+            searchButton?.addEventListener('click', function () {
+                performSearch();
+            });
+
+            // Search on Enter key press
+            searchInput?.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    performSearch();
                 }
             });
-        });
-        
-        // Login form submission
-        document.getElementById('loginForm')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            
-            // Clear previous errors
-            document.getElementById('loginError').textContent = '';
-            
-            // Basic validation
-            if (!formData.get('username') || !formData.get('password')) {
-                document.getElementById('loginError').textContent = 'Vui lòng nhập đầy đủ thông tin';
-                return;
-            }
-            
-            try {
-                // Prepare form data for model binding
-                const formBody = new URLSearchParams();
-                formBody.append('Username', formData.get('username'));
-                formBody.append('Password', formData.get('password'));
-                formBody.append('RememberMe', 'false');
-                
-                const response = await fetch('@Url.Action("Login", "Account")', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    },
-                    body: formBody.toString()
-                });
-                
-                // Check if response is JSON
-                const contentType = response.headers.get("content-type");
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        // Reload page after successful login
-                        window.location.reload();
-                    } else {
-                        document.getElementById('loginError').textContent = result.message || 'Đăng nhập thất bại';
-                    }
-                } else {
-                    // If not JSON, it might be a redirect or HTML response
-                    if (response.ok || response.redirected) {
-                        window.location.reload();
-                    } else {
-                        document.getElementById('loginError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
-                    }
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                document.getElementById('loginError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
-            }
-        });
-        
-        // Register form submission
-        document.getElementById('registerForm')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            
-            // Clear previous errors
-            document.getElementById('registerError').textContent = '';
-            
-            // Basic validation
-            if (!formData.get('username') || !formData.get('email') || !formData.get('password') || 
-                !formData.get('confirmPassword') || !formData.get('fullName')) {
-                document.getElementById('registerError').textContent = 'Vui lòng nhập đầy đủ thông tin bắt buộc';
-                return;
-            }
-            
-            if (formData.get('password') !== formData.get('confirmPassword')) {
-                document.getElementById('registerError').textContent = 'Mật khẩu xác nhận không khớp';
-                return;
-            }
-            
-            try {
-                // Prepare form data for model binding
-                const formBody = new URLSearchParams();
-                formBody.append('Username', formData.get('username'));
-                formBody.append('Email', formData.get('email'));
-                formBody.append('Password', formData.get('password'));
-                formBody.append('ConfirmPassword', formData.get('confirmPassword'));
-                formBody.append('FullName', formData.get('fullName'));
-                formBody.append('Phone', formData.get('phone') || '');
-                formBody.append('IdentityCard', formData.get('identityCard') || '');
-                formBody.append('Address', formData.get('address') || '');
-                formBody.append('BirthDate', formData.get('birthDate') || '');
-                formBody.append('Gender', formData.get('gender') || '');
-                
-                const response = await fetch('@Url.Action("Register", "Account")', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'RequestVerificationToken': document.querySelector('#registerForm input[name="__RequestVerificationToken"]').value
-                    },
-                    body: formBody.toString()
-                });
-                
-                // Check if response is JSON
-                const contentType = response.headers.get("content-type");
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        // Switch to login modal
-                        switchToLogin();
-                        // Show success message
-                        document.getElementById('loginError').innerHTML = '<div class="alert alert-success">Đăng ký thành công! Vui lòng đăng nhập.</div>';
-                    } else {
-                        document.getElementById('registerError').textContent = result.message || 'Đăng ký thất bại';
-                    }
-                } else {
-                    // If not JSON, check if it's a redirect
-                    if (response.ok || response.redirected) {
-                        switchToLogin();
-                        document.getElementById('loginError').innerHTML = '<div class="alert alert-success">Đăng ký thành công! Vui lòng đăng nhập.</div>';
-                    } else {
-                        document.getElementById('registerError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
-                    }
-                }
-            } catch (error) {
-                console.error('Register error:', error);
-                document.getElementById('registerError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
+
+            async function performSearch() {
+                const keyword = searchInput.value.trim();
+                console.log('Search keyword:', keyword); // Thêm dòng này
+
+                // Redirect to search results page
+                const searchUrl = '@Url.Action("Search", "Movies")' + (keyword ? `?keyword=${encodeURIComponent(keyword)}` : '');
+                console.log('Search URL:', searchUrl); // Thêm dòng này
+                window.location.href = searchUrl;
             }
         });
     </script>

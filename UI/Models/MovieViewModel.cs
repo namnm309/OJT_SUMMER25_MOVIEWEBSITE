@@ -1,4 +1,6 @@
-﻿namespace UI.Models
+﻿using System.Text.Json.Serialization;
+
+namespace UI.Models
 {
     public class MovieViewModel
     {
@@ -6,7 +8,22 @@
         public string Title { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; }
         public string? ProductionCompany { get; set; }
-        public int RunningTime { get; set; }
+        
+        // Sửa để xử lý string từ API
+        [JsonPropertyName("runningTime")]
+        public string RunningTimeString { get; set; } = "0";
+        
+        [JsonIgnore]
+        public int RunningTime 
+        { 
+            get 
+            { 
+                if (int.TryParse(RunningTimeString, out int result))
+                    return result;
+                return 0;
+            }
+        }
+        
         public string Version { get; set; } = string.Empty;
         
         // Bổ sung thêm các thuộc tính

@@ -411,3 +411,22 @@ function handleSwipe() {
         }
     }
 }
+
+
+// Thêm vào cuối file homepage.js
+async function testApiConnection() {
+    try {
+        const response = await fetch('/api/v1/movie/View');
+        const data = await response.json();
+        console.log('API Response:', data);
+        return response.status;
+    } catch (error) {
+        console.error('API Error:', error);
+        return 'Error';
+    }
+}
+
+// Gọi function này khi trang load
+document.addEventListener('DOMContentLoaded', function () {
+    testApiConnection();
+});
