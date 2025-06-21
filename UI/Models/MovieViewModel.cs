@@ -10,7 +10,7 @@ namespace UI.Models
         public DateTime? EndDate { get; set; }
         public string? ProductionCompany { get; set; }
         
-        // Sửa để xử lý string từ API
+        // Sửa để xử lý cả string và int từ API
         [JsonPropertyName("runningTime")]
         public string RunningTimeString { get; set; } = "0";
         
@@ -22,6 +22,10 @@ namespace UI.Models
                 if (int.TryParse(RunningTimeString, out int result))
                     return result;
                 return 0;
+            }
+            set
+            {
+                RunningTimeString = value.ToString();
             }
         }
         

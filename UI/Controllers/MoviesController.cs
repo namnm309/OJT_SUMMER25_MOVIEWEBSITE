@@ -37,19 +37,7 @@ namespace UI.Controllers
                             PropertyNameCaseInsensitive = true
                         };
                         
-                        // Parse thành dynamic object trước để xử lý mapping
-                        var moviesJson = JsonSerializer.Deserialize<JsonElement[]>(dataProp.GetRawText(), options);
-                        var movies = new List<MovieViewModel>();
-                        
-                        if (moviesJson != null)
-                        {
-                            foreach (var movieJson in moviesJson)
-                            {
-                                var movie = MapJsonToMovieViewModel(movieJson);
-                                movies.Add(movie);
-                            }
-                        }
-                        
+                        var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), options);
                         return View(movies);
                     }
                 }
@@ -77,7 +65,12 @@ namespace UI.Controllers
                 {
                     if (result.Data.TryGetProperty("data", out var dataProp))
                     {
-                        var movie = MapJsonToMovieViewModel(dataProp);
+                        var options = new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
+                        
+                        var movie = JsonSerializer.Deserialize<MovieViewModel>(dataProp.GetRawText(), options);
                         return View(movie);
                     }
                 }
@@ -99,6 +92,46 @@ namespace UI.Controllers
             ViewData["Title"] = "Lịch chiếu";
             ViewData["MovieId"] = id;
             return View();
+        }
+
+        public async Task<IActionResult> Search(string keyword)
+        {
+            ViewData["Title"] = string.IsNullOrEmpty(keyword) ? "Tất cả phim" : $"Kết quả tìm kiếm: {keyword}";
+            ViewData["SearchKeyword"] = keyword;
+
+            try
+            {
+                // Gọi API search - nếu không có keyword thì hiển thị tất cả
+                var apiUrl = string.IsNullOrEmpty(keyword)
+                    ? "/api/v1/movie/View"
+                    : $"/api/v1/movie/Search?keyword={Uri.EscapeDataString(keyword)}";
+
+                var result = await _apiService.GetAsync<JsonElement>(apiUrl);
+
+                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    if (result.Data.TryGetProperty("data", out var dataProp))
+                    {
+                        var options = new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
+
+                        var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), options);
+                        return View("SearchResults", movies);
+                    }
+                }
+
+                _logger.LogError("Không thể tìm kiếm phim: {Message}", result.Message);
+                TempData["ErrorMessage"] = "Không thể tìm kiếm phim";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi tìm kiếm phim");
+                TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tìm kiếm";
+            }
+
+            return View("SearchResults", new List<MovieViewModel>());
         }
     }
 }
