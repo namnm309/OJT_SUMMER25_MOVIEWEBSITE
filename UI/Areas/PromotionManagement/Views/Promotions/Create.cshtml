@@ -177,7 +177,7 @@
             </div>
         </div>
 
-        <form asp-action="Create" method="post" id="createPromotionForm">
+        <form asp-action="Create" method="post" id="createPromotionForm" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger validation-summary-errors"></div>
 
             <div class="row">
@@ -232,34 +232,40 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4">
-                    <!-- Hình ảnh khuyến mãi -->
-                    <div class="form-card">
-                        <div class="form-section">
-                            <h5 class="form-section-title">
-                                <i class="fas fa-image"></i>
-                                Hình ảnh khuyến mãi
-                            </h5>
+                
+                    <!-- Phần thông tin cơ bản giữ nguyên -->
 
-                            <div class="poster-preview mb-3">
-                                <img id="promotionPreview" src="https://via.placeholder.com/300x450/1a1a1a/666666?text=Khuy%E1%BA%BFn+m%C3%A3i" alt="Promotion preview" />
-                            </div>
+                    <div class="col-lg-4">
+                        <!-- Hình ảnh khuyến mãi -->
+                        <div class="form-card">
+                            <div class="form-section">
+                                <h5 class="form-section-title">
+                                    <i class="fas fa-image"></i>
+                                    Hình ảnh khuyến mãi
+                                </h5>
 
-                            <div class="mb-3">
-                                <label asp-for="ImageUrl" class="form-label">URL hình ảnh</label>
-                                <input asp-for="ImageUrl" class="form-control" placeholder="https://example.com/promotion.jpg" />
-                                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                            </div>
+                                <!-- Sửa phần này: Bỏ 1 trong 2 div poster-preview bị trùng lặp -->
+                                <div class="poster-preview mb-3">
+                                    <img id="promotionPreview" src="@(string.IsNullOrEmpty(Model?.ImageUrl) ? "https://via.placeholder.com/300x450/1a1a1a/666666?text=Khuy%E1%BA%BFn+m%C3%A3i" : Model.ImageUrl)" alt="Promotion preview" />
+                                </div>
 
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" id="termsCheck" required>
-                                <label class="form-check-label" for="termsCheck">
-                                    Tôi xác nhận thông tin khuyến mãi là chính xác
-                                </label>
+                                <div class="mb-3">
+                                    <label class="form-label">Ảnh khuyến mãi</label>
+                                    <input type="file" id="imageUpload" name="imageFile" class="form-control" accept="image/*" />
+                                    <small class="text-muted">Chỉ chấp nhận file ảnh (JPEG, PNG, JPG) - Tối đa 5MB</small>
+                                    <input type="hidden" asp-for="ImageUrl" id="imageUrl" />
+                                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                    <label class="form-check-label" for="termsCheck">
+                                        Tôi xác nhận thông tin khuyến mãi là chính xác
+                                    </label>
+                                </div>
                             </div>
-                        </div>
+                       
                     </div>
-                </div>
             </div>
 
             <!-- Nút hành động -->
@@ -302,6 +308,34 @@
                     $('#promotionPreview').attr('src', 'https://via.placeholder.com/300x450/1a1a1a/666666?text=Khuy%E1%BA%BFn+m%C3%A3i');
                 }
             });
+
+             // Xử lý khi chọn file ảnh
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (file) {
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File ảnh không được vượt quá 5MB');
+                    e.target.value = '';
+                    return;
+                }
+
+                // Validate file type
+                var validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Chỉ chấp nhận file ảnh (JPEG, PNG, JPG)');
+                    e.target.value = '';
+                    return;
+                }
+
+                // Hiển thị preview
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('promotionPreview').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
             // Form validation
             $('#createPromotionForm').on('submit', function(e) {

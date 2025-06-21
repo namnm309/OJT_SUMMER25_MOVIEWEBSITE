@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using UI.Services;
 
 namespace UI
 {
@@ -48,6 +49,9 @@ namespace UI
             
             // Đăng ký AuthUIService
             builder.Services.AddScoped<UI.Services.IAuthUIService, UI.Services.AuthUIService>();
+
+            //đăng ký cloudinary
+            builder.Services.AddTransient<IImageService, CloudinaryImageService>();
 
             var app = builder.Build();
 
