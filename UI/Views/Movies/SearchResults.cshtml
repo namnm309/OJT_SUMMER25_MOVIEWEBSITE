@@ -1,4 +1,4 @@
-﻿@model List<UI.Models.MovieViewModel>
+@model List<UI.Models.MovieViewModel>
 @{
     ViewData["Title"] = ViewData["Title"] ?? "Kết quả tìm kiếm";
     var searchKeyword = ViewData["SearchKeyword"] as string;
@@ -113,9 +113,7 @@
 <script>
     function searchMovies() {
         const keyword = document.getElementById('searchInput').value.trim();
-        alert('Keyword: ' + keyword); // Thêm dòng này để debug
         const searchUrl = '@Url.Action("Search", "Movies")' + (keyword ? `?keyword=${encodeURIComponent(keyword)}` : '');
-        alert('URL: ' + searchUrl); // Thêm dòng này để debug
         window.location.href = searchUrl;
     }
 

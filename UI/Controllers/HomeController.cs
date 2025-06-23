@@ -1,10 +1,12 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using UI.Models;
 using UI.Services;
 using System.Text.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System;
+using System.Linq;
 
 namespace UI.Controllers
 {
@@ -22,12 +24,12 @@ namespace UI.Controllers
         public async Task<IActionResult> Index()
         {
             var viewModel = new HomeViewModel();
-            
+
             try
             {
                 // Lấy danh sách phim từ API
                 var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/View");
-                
+
                 if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
                     if (result.Data.TryGetProperty("data", out var dataProp))
@@ -36,11 +38,11 @@ namespace UI.Controllers
                         {
                             PropertyNameCaseInsensitive = true
                         };
-                        
+
                         // Parse thành dynamic object trước để xử lý mapping
                         var moviesJson = JsonSerializer.Deserialize<JsonElement[]>(dataProp.GetRawText(), options);
                         var movies = new List<MovieViewModel>();
-                        
+
                         if (moviesJson != null)
                         {
                             foreach (var movieJson in moviesJson)
@@ -58,27 +60,39 @@ namespace UI.Controllers
                                     Content = movieJson.TryGetProperty("content", out var contentProp) ? contentProp.GetString() : null,
                                     TrailerUrl = movieJson.TryGetProperty("trailerUrl", out var trailerProp) ? trailerProp.GetString() : null,
                                     Status = movieJson.TryGetProperty("status", out var statusProp) ? statusProp.GetInt32() : 0,
-                                    
+
                                     // Map PrimaryImageUrl và ImageUrl
                                     PrimaryImageUrl = movieJson.TryGetProperty("primaryImageUrl", out var primaryImgProp) ? primaryImgProp.GetString() : null,
                                     ImageUrl = movieJson.TryGetProperty("primaryImageUrl", out var imgProp) ? imgProp.GetString() : null, // Fallback cho ImageUrl
-                                    
+
                                     // Map Genres từ List<GenreDto> sang List<string>
                                     Genres = MapGenres(movieJson),
-                                    
+
                                     // Map Images từ List<MovieImageDto> sang List<MovieImageViewModel>
                                     Images = MapImages(movieJson)
                                 };
-                                
+
                                 movies.Add(movie);
                             }
                         }
-                        
+
                         if (movies != null && movies.Any())
                         {
                             // Lấy tối đa 5 phim cho hero slider
                             viewModel.HeroMovies = movies.Take(5).ToList();
                             viewModel.FeaturedMovie = viewModel.HeroMovies.FirstOrDefault();
+
+                            // Sửa logic cho FeaturedMovies - bắt đầu từ phim số 1
+                            viewModel.FeaturedMovies = movies.Take(5).ToList();
+
+                            // Đảm bảo FeaturedMovies có ít nhất 3 phim bằng cách duplicate nếu cần
+                            while (viewModel.FeaturedMovies.Count < 3 && movies.Any())
+                            {
+                                var remainingSlots = 3 - viewModel.FeaturedMovies.Count;
+                                var moviesToAdd = movies.Take(remainingSlots).ToList();
+                                viewModel.FeaturedMovies.AddRange(moviesToAdd);
+                            }
+
                             viewModel.RecommendedMovies = movies.Take(6).ToList();
                         }
                     }
@@ -88,14 +102,14 @@ namespace UI.Controllers
             {
                 _logger.LogError(ex, "Lỗi khi lấy dữ liệu phim cho trang chủ");
             }
-            
+
             return View(viewModel);
         }
 
         private List<string> MapGenres(JsonElement movieJson)
         {
             var genres = new List<string>();
-            
+
             if (movieJson.TryGetProperty("genres", out var genresProp) && genresProp.ValueKind == JsonValueKind.Array)
             {
                 foreach (var genreElement in genresProp.EnumerateArray())
@@ -110,14 +124,14 @@ namespace UI.Controllers
                     }
                 }
             }
-            
+
             return genres;
         }
 
         private List<MovieImageViewModel> MapImages(JsonElement movieJson)
         {
             var images = new List<MovieImageViewModel>();
-            
+
             if (movieJson.TryGetProperty("images", out var imagesProp) && imagesProp.ValueKind == JsonValueKind.Array)
             {
                 foreach (var imageElement in imagesProp.EnumerateArray())
@@ -130,11 +144,11 @@ namespace UI.Controllers
                         IsPrimary = imageElement.TryGetProperty("isPrimary", out var primaryProp) ? primaryProp.GetBoolean() : false,
                         DisplayOrder = imageElement.TryGetProperty("displayOrder", out var orderProp) ? orderProp.GetInt32() : 1
                     };
-                    
+
                     images.Add(image);
                 }
             }
-            
+
             return images;
         }
 
@@ -150,3 +164,4 @@ namespace UI.Controllers
         }
     }
 }
+

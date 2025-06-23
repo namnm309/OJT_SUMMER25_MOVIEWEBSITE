@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -314,11 +314,10 @@ namespace ApplicationLayer.Services.MovieManagement
         public async Task<IActionResult> SearchMovie(string? keyword)
         {
             var movie = string.IsNullOrWhiteSpace(keyword)
-                ? await _movieRepo.ListAsync()
-                : await _movieRepo.WhereAsync(m => m.Title.Contains(keyword));
+                ? await _movieRepo.ListAsync(nameof(Movie.MovieImages))
+                : await _movieRepo.WhereAsync(m => m.Title.Contains(keyword), nameof(Movie.MovieImages));
 
             var result = _mapper.Map<List<MovieListDto>>(movie);
-
             return SuccessResp.Ok(result);
         }
 

@@ -1,8 +1,8 @@
 /* Featured Banner Section */
 .featured-banner {
     width: 100%;
-    min-height: 500px;
-    padding: 40px 0;
+    min-height: 600px;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -13,12 +13,11 @@
     max-width: 1400px;
     border-radius: 16px;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-    background-image: url('https://image.tmdb.org/t/p/original/wiE9doxiLwq3WCGamDIOb2PqBqc.jpg');
     background-size: cover;
     background-position: center;
+    transition: all 0.8s ease;
 }
 
-/* Banner background với hiệu ứng overlay */
 .featured-banner::before {
     content: '';
     position: absolute;
@@ -26,11 +25,10 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.9) 100%);
+    background: linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.3) 100%);
     z-index: 1;
 }
 
-/* Banner Content */
 .banner-content {
     display: flex;
     align-items: center;
@@ -38,47 +36,292 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 60px 40px;
     position: relative;
     z-index: 10;
-    justify-content: center;
+    justify-content: space-between;
+    transition: all 0.5s ease;
 }
 
-/* Banner Info */
 .banner-info {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    max-width: 500px;
+    gap: 25px;
+    max-width: 600px;
     flex: 1;
-}
-
-/* Banner Header */
-.banner-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.5s ease;
 }
 
 .banner-title {
-    font-size: 36px;
+    font-size: 52px;
     font-weight: 700;
     color: white;
-    text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
-    margin: 0;
-    line-height: 1.2;
+    text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.7);
+    margin: 0 0 8px 0;
+    line-height: 1.1;
+    transition: all 0.5s ease;
+    letter-spacing: -1px;
 }
 
 .banner-title-vn {
-    font-size: 14px;
-    color: #a8a8a8;
-    text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
-    margin: 0;
+    font-size: 18px;
+    color: #b8b8b8;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+    margin: 0 0 20px 0;
     font-style: italic;
+    transition: all 0.5s ease;
 }
 
-/* Banner Plot Section */
+.banner-plot h3 {
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 15px 0;
+    position: relative;
+}
+
+.banner-plot h3::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: #df2144;
+    border-radius: 2px;
+}
+
+.banner-plot p {
+    color: #d0d0d0;
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+    text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.banner-genre h3 {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+}
+
+.banner-genre p {
+    color: #ffd700;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.banner-ratings {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 10px 0;
+}
+
+.rating-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffd700;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.rating-item i {
+    font-size: 18px;
+}
+
+.btn-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #df2144 0%, #c41e3a 100%);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(223, 33, 68, 0.3);
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 10px;
+    width: fit-content;
+}
+
+.btn-banner:hover {
+    background: linear-gradient(135deg, #c41e3a 0%, #a01729 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(223, 33, 68, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+/* Banner Poster - Tăng kích thước để giống hình */
+.banner-poster {
+    flex: 0 0 400px;
+    height: 550px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    position: relative;
+    transform: perspective(1000px) rotateY(-8deg) scale(1.02);
+    transition: all 0.5s ease;
+}
+
+.banner-poster:hover {
+    transform: perspective(1000px) rotateY(-2deg) scale(1.05);
+}
+
+.banner-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+/* Banner Controls */
+.banner-controls {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    z-index: 15;
+}
+
+.banner-controls .nav-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(15px);
+    font-size: 18px;
+}
+
+.banner-controls .nav-btn:hover {
+    background: rgba(223, 33, 68, 0.9);
+    border-color: #df2144;
+    transform: scale(1.15);
+    box-shadow: 0 5px 15px rgba(223, 33, 68, 0.4);
+}
+
+.banner-controls .pagination-dots {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.banner-controls .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.banner-controls .dot.active {
+    background: #df2144;
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.3);
+    box-shadow: 0 0 10px rgba(223, 33, 68, 0.5);
+}
+
+.banner-controls .dot:hover {
+    background: rgba(223, 33, 68, 0.8);
+    transform: scale(1.2);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .featured-banner {
+        min-height: 500px;
+    }
+    
+    .banner-content {
+        gap: 40px;
+        padding: 40px 30px;
+    }
+    
+    .banner-poster {
+        flex: 0 0 320px;
+        height: 450px;
+    }
+    
+    .banner-title {
+        font-size: 42px;
+    }
+}
+
+@media (max-width: 768px) {
+    .banner-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 30px;
+        padding: 30px 20px;
+    }
+    
+    .banner-poster {
+        flex: 0 0 280px;
+        height: 400px;
+        transform: none;
+    }
+    
+    .banner-info {
+        max-width: 100%;
+    }
+    
+    .banner-title {
+        font-size: 36px;
+    }
+    
+    .banner-controls {
+        bottom: 20px;
+        gap: 30px;
+    }
+}
+
+.banner-header {
+    margin-bottom: 20px;
+}
+
+.banner-title {
+    font-size: 48px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+    margin: 0 0 8px 0;
+    line-height: 1.1;
+    transition: all 0.5s ease;
+}
+
+.banner-title-vn {
+    font-size: 16px;
+    color: #a8a8a8;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+    margin: 0;
+    font-style: italic;
+    transition: all 0.5s ease;
+}
+
 .banner-plot {
     margin-bottom: 20px;
 }
@@ -87,8 +330,7 @@
     color: white;
     font-size: 20px;
     font-weight: 700;
-    margin: 0 0 10px 0;
-    text-align: left;
+    margin: 0 0 12px 0;
     position: relative;
 }
 
@@ -105,13 +347,17 @@
 
 .banner-plot p {
     color: #e0e0e0;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.6;
     margin: 0;
     text-align: justify;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: all 0.5s ease;
 }
 
-/* Banner Genre Section */
 .banner-genre {
     margin-bottom: 20px;
 }
@@ -120,8 +366,7 @@
     color: white;
     font-size: 20px;
     font-weight: 700;
-    margin: 0 0 10px 0;
-    text-align: left;
+    margin: 0 0 12px 0;
     position: relative;
 }
 
@@ -138,13 +383,13 @@
 
 .banner-genre p {
     color: #e0e0e0;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.6;
     margin: 0;
     font-weight: 500;
+    transition: all 0.5s ease;
 }
 
-/* Banner Ratings */
 .banner-ratings {
     display: flex;
     align-items: center;
@@ -174,9 +419,9 @@
 
 .rating-item span {
     color: #e0e0e0;
+    transition: all 0.5s ease;
 }
 
-/* Banner Button */
 .btn-banner {
     background: linear-gradient(135deg, #df2144 0%, #c01d3a 100%);
     border: none;
@@ -194,6 +439,8 @@
     overflow: hidden;
     min-width: 280px;
     text-align: center;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .btn-banner::before {
@@ -211,6 +458,8 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(223, 33, 68, 0.4);
     background: linear-gradient(135deg, #e8244a 0%, #d0203f 100%);
+    text-decoration: none;
+    color: white;
 }
 
 .btn-banner:hover::before {
@@ -222,16 +471,16 @@
     transition: transform 0.1s ease;
 }
 
-/* Banner Image/Poster (nếu có) */
+/* Banner Poster */
 .banner-poster {
     flex: 0 0 300px;
-    height: 400px;
+    height: 450px;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     position: relative;
     transform: perspective(1000px) rotateY(-5deg);
-    transition: transform 0.3s ease;
+    transition: all 0.5s ease;
 }
 
 .banner-poster:hover {
@@ -242,6 +491,356 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+/* Banner Controls */
+.banner-controls {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    z-index: 15;
+}
+
+.banner-controls .nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.banner-controls .nav-btn:hover {
+    background: rgba(223, 33, 68, 0.8);
+    border-color: #df2144;
+    transform: scale(1.1);
+}
+
+.banner-controls .pagination-dots {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.banner-controls .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.banner-controls .dot.active {
+    background: #df2144;
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.2);
+}
+
+.banner-controls .dot:hover {
+    background: rgba(223, 33, 68, 0.7);
+    transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .featured-banner {
+        padding: 30px 20px;
+    }
+    
+    .banner-content {
+        gap: 30px;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .banner-poster {
+        flex: 0 0 300px;
+        height: 450px;
+        transform: none;
+    }
+    
+    .banner-info {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .banner-poster {
+        flex: 0 0 250px;
+        height: 375px;
+    }
+    
+    .banner-title {
+        font-size: 36px;
+    }
+}
+
+.banner-header {
+    margin-bottom: 20px;
+}
+
+.banner-title {
+    font-size: 48px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+    margin: 0 0 8px 0;
+    line-height: 1.1;
+    transition: all 0.5s ease;
+}
+
+.banner-title-vn {
+    font-size: 16px;
+    color: #a8a8a8;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+    margin: 0;
+    font-style: italic;
+    transition: all 0.5s ease;
+}
+
+.banner-plot {
+    margin-bottom: 20px;
+}
+
+.banner-plot h3 {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    position: relative;
+}
+
+.banner-plot h3::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: #df2144;
+    border-radius: 1px;
+}
+
+.banner-plot p {
+    color: #e0e0e0;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0;
+    text-align: justify;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: all 0.5s ease;
+}
+
+.banner-genre {
+    margin-bottom: 20px;
+}
+
+.banner-genre h3 {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    position: relative;
+}
+
+.banner-genre h3::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: #df2144;
+    border-radius: 1px;
+}
+
+.banner-genre p {
+    color: #e0e0e0;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0;
+    font-weight: 500;
+    transition: all 0.5s ease;
+}
+
+.banner-ratings {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rating-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.rating-item i {
+    color: #df2144;
+    font-size: 16px;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.rating-item span {
+    color: #e0e0e0;
+    transition: all 0.5s ease;
+}
+
+.btn-banner {
+    background: linear-gradient(135deg, #df2144 0%, #c01d3a 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 16px 32px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(223, 33, 68, 0.3);
+    position: relative;
+    overflow: hidden;
+    min-width: 280px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-banner:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(223, 33, 68, 0.4);
+    background: linear-gradient(135deg, #e8244a 0%, #d0203f 100%);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-banner:hover::before {
+    left: 100%;
+}
+
+.btn-banner:active {
+    transform: translateY(0);
+    transition: transform 0.1s ease;
+}
+
+/* Banner Poster */
+.banner-poster {
+    flex: 0 0 300px;
+    height: 450px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    position: relative;
+    transform: perspective(1000px) rotateY(-5deg);
+    transition: all 0.5s ease;
+}
+
+.banner-poster:hover {
+    transform: perspective(1000px) rotateY(0deg) scale(1.02);
+}
+
+.banner-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+/* Banner Controls */
+.banner-controls {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    z-index: 15;
+}
+
+.banner-controls .nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.banner-controls .nav-btn:hover {
+    background: rgba(223, 33, 68, 0.8);
+    border-color: #df2144;
+    transform: scale(1.1);
+}
+
+.banner-controls .pagination-dots {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.banner-controls .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.banner-controls .dot.active {
+    background: #df2144;
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.2);
+}
+
+.banner-controls .dot:hover {
+    background: rgba(223, 33, 68, 0.7);
+    transform: scale(1.1);
 }
 
 /* Responsive Design */

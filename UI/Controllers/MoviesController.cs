@@ -23,11 +23,11 @@ namespace UI.Controllers
         public async Task<IActionResult> Index()
         {
             ViewData["Title"] = "Phim";
-            
+
             try
             {
                 var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/View");
-                
+
                 if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
                     if (result.Data.TryGetProperty("data", out var dataProp))
@@ -36,19 +36,19 @@ namespace UI.Controllers
                         {
                             PropertyNameCaseInsensitive = true
                         };
-                        
+
                         var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), options);
                         return View(movies);
                     }
                 }
-                
+
                 _logger.LogError("Không thể lấy danh sách phim: {Message}", result.Message);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Lỗi khi lấy danh sách phim");
             }
-            
+
             return View(new List<MovieViewModel>());
         }
 
@@ -56,11 +56,11 @@ namespace UI.Controllers
         {
             ViewData["Title"] = "Chi tiết phim";
             ViewData["MovieId"] = id;
-            
+
             try
             {
                 var result = await _apiService.GetAsync<JsonElement>($"/api/v1/movie/GetById?movieId={id}");
-                
+
                 if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
                     if (result.Data.TryGetProperty("data", out var dataProp))
@@ -69,12 +69,12 @@ namespace UI.Controllers
                         {
                             PropertyNameCaseInsensitive = true
                         };
-                        
+
                         var movie = JsonSerializer.Deserialize<MovieViewModel>(dataProp.GetRawText(), options);
                         return View(movie);
                     }
                 }
-                
+
                 _logger.LogError("Không thể lấy chi tiết phim: {Message}", result.Message);
                 TempData["ErrorMessage"] = "Không thể lấy thông tin chi tiết phim";
             }
@@ -83,7 +83,7 @@ namespace UI.Controllers
                 _logger.LogError(ex, "Lỗi khi lấy chi tiết phim");
                 TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tải thông tin chi tiết phim";
             }
-            
+
             return View(new MovieViewModel());
         }
 
@@ -101,9 +101,9 @@ namespace UI.Controllers
 
             try
             {
-                // Gọi API search - nếu không có keyword thì hiển thị tất cả
+                // Chỉ sử dụng API search duy nhất
                 var apiUrl = string.IsNullOrEmpty(keyword)
-                    ? "/api/v1/movie/View"
+                    ? "/api/v1/movie/Search"  // Không truyền keyword = hiển thị tất cả
                     : $"/api/v1/movie/Search?keyword={Uri.EscapeDataString(keyword)}";
 
                 var result = await _apiService.GetAsync<JsonElement>(apiUrl);

@@ -155,6 +155,13 @@
                                 <i class="fas fa-ticket-alt"></i>
                                 Đặt vé ngay
                             </button>
+                            <!-- Xóa phần này -->
+                            <!-- @if (!string.IsNullOrEmpty(Model.FeaturedMovie.TrailerUrl))
+                            {
+                                <button type="button" class="btn btn-trailer" onclick="openTrailerModal()">
+                                    <i class="fas fa-play"></i> Xem Trailer
+                                </button>
+                            } -->
                             <button class="btn-secondary" onclick="showMovieInfo()">
                                 <i class="fas fa-info-circle"></i>
                                 Thông tin phim
@@ -409,42 +416,72 @@
 
     <!-- Featured Banner Section -->
     <div class="container">
-        @if (Model?.FeaturedMovie != null)
+        @if (Model?.FeaturedMovies != null && Model.FeaturedMovies.Any())
         {
-            string featuredBg = Model.FeaturedMovie.PrimaryImageUrl ?? Model.FeaturedMovie.ImageUrl;
-            if (string.IsNullOrEmpty(featuredBg) && Model.FeaturedMovie.Images != null && Model.FeaturedMovie.Images.Any())
-            {
-                var primaryImg = Model.FeaturedMovie.Images.FirstOrDefault(img => img.IsPrimary) ?? Model.FeaturedMovie.Images.First();
-                featuredBg = primaryImg?.ImageUrl;
-            }
-            <div class="featured-banner" @(!string.IsNullOrEmpty(featuredBg) ? $"style=\"background-image: url('{featuredBg}');\"" : "")>
+            <div class="featured-banner" id="featuredBanner">
                 <div class="banner-content">
                     <div class="banner-info">
                         <div class="banner-header">
-                            <h2 class="banner-title">@Model.FeaturedMovie.Title</h2>
-                            <p class="banner-title-vn">@(Model.FeaturedMovie.ProductionCompany ?? "Nhà sản xuất")</p>
+                            <h2 class="banner-title" id="bannerTitle">@Model.FeaturedMovies.First().Title</h2>
+                            <p class="banner-title-vn" id="bannerTitleVn">@(Model.FeaturedMovies.First().ProductionCompany ?? "Nhà sản xuất")</p>
                         </div>
                         
                         <div class="banner-plot">
                             <h3>Tóm tắt nội dung</h3>
-                            <p>@(string.IsNullOrEmpty(Model.FeaturedMovie.Content) ? "Chưa có thông tin nội dung." : Model.FeaturedMovie.Content)</p>
+                            <p id="bannerPlot">@(string.IsNullOrEmpty(Model.FeaturedMovies.First().Content) ? "Chưa có thông tin nội dung." : Model.FeaturedMovies.First().Content)</p>
                         </div>
 
                         <div class="banner-genre">
                             <h3>Thể loại</h3>
-                            <p>@(Model.FeaturedMovie.Genres != null && Model.FeaturedMovie.Genres.Any() ? string.Join(", ", Model.FeaturedMovie.Genres) : "Chưa phân loại")</p>
+                            <p id="bannerGenre">@(Model.FeaturedMovies.First().Genres != null && Model.FeaturedMovies.First().Genres.Any() ? string.Join(", ", Model.FeaturedMovies.First().Genres) : "Chưa phân loại")</p>
                         </div>
 
                         <div class="banner-ratings">
                             <div class="rating-item">
                                 <i class="fas fa-clock"></i>
-                                <span>@Model.FeaturedMovie.RunningTime phút</span>
+                                <span id="bannerDuration">@Model.FeaturedMovies.First().RunningTime phút</span>
                             </div>
                         </div>
 
-                        <a href="@Url.Action("Details", "Movies", new { id = Model.FeaturedMovie.Id })" class="btn-banner">
+                        <a href="@Url.Action("Details", "Movies", new { id = Model.FeaturedMovies.First().Id })" class="btn-banner" id="bannerDetailsBtn">
                             Xem chi tiết phim
                         </a>
+                    </div>
+                    
+                    <!-- Movie Poster -->
+                    <div class="banner-poster">
+                        @{
+                            var firstMovie = Model.FeaturedMovies.First();
+                            string posterUrl = firstMovie.PrimaryImageUrl ?? firstMovie.ImageUrl;
+                            if (string.IsNullOrEmpty(posterUrl) && firstMovie.Images != null && firstMovie.Images.Any())
+                            {
+                                var primaryImg = firstMovie.Images.FirstOrDefault(img => img.IsPrimary) ?? firstMovie.Images.First();
+                                posterUrl = primaryImg?.ImageUrl;
+                            }
+                        }
+                        <img src="@(posterUrl ?? "/images/default-movie.jpg")" alt="@firstMovie.Title" id="bannerPosterImg" />
+                    </div>
+                </div>
+                
+                <!-- Banner Controls -->
+                <div class="banner-controls">
+                    <div class="control-left">
+                        <button class="nav-btn" onclick="previousBannerMovie()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="pagination-dots" id="bannerPaginationDots">
+                        @for (int i = 0; i < Model.FeaturedMovies.Count; i++)
+                        {
+                            <span class="dot @(i == 0 ? "active" : "")"></span>
+                        }
+                    </div>
+
+                    <div class="control-right">
+                        <button class="nav-btn" onclick="nextBannerMovie()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -475,7 +512,8 @@
             plot = m.Content ?? "Chưa có thông tin nội dung.",
             genre = m.Genres != null && m.Genres.Any() ? string.Join(", ", m.Genres) : "Chưa phân loại",
             duration = m.RunningTime > 0 ? $"{m.RunningTime} phút" : "Chưa có thông tin",
-            background = m.PrimaryImageUrl ?? m.ImageUrl ?? (m.Images != null && m.Images.Any() ? m.Images.FirstOrDefault(img => img.IsPrimary)?.ImageUrl ?? m.Images.First().ImageUrl : "https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=No+Image")
+            background = m.PrimaryImageUrl ?? m.ImageUrl ?? (m.Images != null && m.Images.Any() ? m.Images.FirstOrDefault(img => img.IsPrimary)?.ImageUrl ?? m.Images.First().ImageUrl : "https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=No+Image"),
+            trailerUrl = m.TrailerUrl
         }) ?? new[] { new {
             id = "",
             title = "Oppenheimer 2023",
@@ -483,7 +521,8 @@
             plot = "Phim Oppenheimer kể về cuộc đời của J. Robert Oppenheimer, nhà vật lý lý thuyết người Mỹ được mệnh danh là 'cha đẻ của bom nguyên tử' vì vai trò của ông trong Dự án Manhattan.",
             genre = "Lịch sử, Tiểu sử, Chính kịch",
             duration = "3 Giờ",
-            background = "https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"
+            background = "https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+            trailerUrl = "https://www.youtube.com/watch?v=uYPbbksJxIg"
         }}));
         
         window.movieUrls = {

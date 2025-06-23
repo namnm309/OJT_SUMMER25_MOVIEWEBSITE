@@ -9,16 +9,16 @@ namespace UI.Models
         public DateTime ReleaseDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string? ProductionCompany { get; set; }
-        
+
         // Sửa để xử lý cả string và int từ API
         [JsonPropertyName("runningTime")]
         public string RunningTimeString { get; set; } = "0";
-        
+
         [JsonIgnore]
-        public int RunningTime 
-        { 
-            get 
-            { 
+        public int RunningTime
+        {
+            get
+            {
                 if (int.TryParse(RunningTimeString, out int result))
                     return result;
                 return 0;
@@ -28,22 +28,23 @@ namespace UI.Models
                 RunningTimeString = value.ToString();
             }
         }
-        
+
         public string Version { get; set; } = string.Empty;
-        
+
         // Bổ sung thêm các thuộc tính
         public string? Director { get; set; }
         public string? Actors { get; set; }
         public string? Content { get; set; }
         public string? TrailerUrl { get; set; }
         public string? ImageUrl { get; set; }
+        // Đã có sẵn các trường này:
         public string? PrimaryImageUrl { get; set; }
+        public List<MovieImageViewModel> Images { get; set; } = new List<MovieImageViewModel>();
         public int Status { get; set; } // 0 = NotAvailable, 1 = Available, 2 = ComingSoon, 3 = Stopped
         public List<string> Genres { get; set; } = new List<string>();
         public List<MovieShowTimeViewModel> ShowTimes { get; set; } = new List<MovieShowTimeViewModel>();
-        public List<MovieImageViewModel> Images { get; set; } = new List<MovieImageViewModel>();
     }
-    
+
     public class MovieShowTimeViewModel
     {
         public string Id { get; set; } = string.Empty;
@@ -53,7 +54,7 @@ namespace UI.Models
         public string RoomName { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
     }
-    
+
     public class MovieImageViewModel
     {
         public string Id { get; set; } = string.Empty;

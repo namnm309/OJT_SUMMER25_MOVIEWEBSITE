@@ -63,61 +63,158 @@
     color: #df2144;
 }
 
-/* Search Box */
+/* Search Box - Modern Clean Style */
+/* Search Box - Perfect Round Style */
 .search-box {
-    background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%); /* Gradient background */
-    border: 0.5px solid rgba(255, 255, 255, 0.1); /* Border nhẹ */
-    border-radius: 12px; /* Bo góc đẹp hơn */
-    padding: 12px 16px; /* Tăng padding */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px; /* Tròn hoàn toàn */
+    padding: 15px 25px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 15px;
     flex: 1;
-    max-width: 380px; /* Tăng max-width */
-    min-width: 280px; /* Tăng min-width */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Thêm shadow */
-    backdrop-filter: blur(10px); /* Hiệu ứng blur */
-    transition: all 0.3s ease; /* Thêm transition */
+    width: 60px;
+    max-width: 60px;
+    height: 60px; /* Tăng chiều cao */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .search-box:hover {
-    border-color: rgba(223, 33, 68, 0.3); /* Border màu brand khi hover */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); /* Shadow đậm hơn */
-    transform: translateY(-1px); /* Nâng lên nhẹ */
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(223, 33, 68, 0.4);
+    box-shadow: 0 4px 15px rgba(223, 33, 68, 0.2);
+    width: 100px; /* Giảm xuống 100px */
+    max-width: 100px;
+    justify-content: flex-start;
+    padding-left: 12px;
+    padding-right: 8px;
 }
 
 .search-box:focus-within {
-    border-color: #df2144; /* Border màu brand khi focus */
-    box-shadow: 0 0 0 3px rgba(223, 33, 68, 0.1); /* Glow effect */
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #df2144;
+    box-shadow: 0 0 0 4px rgba(223, 33, 68, 0.15), 0 8px 30px rgba(0, 0, 0, 0.2);
+    width: 200px; /* Giảm xuống 200px cho focus */
+    max-width: 200px;
+    transform: scale(1.02); /* Giảm scale để không ảnh hưởng logo */
 }
 
 .search-input {
     background: none;
     border: none;
-    color: #ffffff; /* Màu text trắng hơn */
-    font-size: 16px;
+    color: #ffffff;
+    font-size: 16px; /* Tăng font size */
     flex: 1;
     outline: none;
-    padding: 6px 0; /* Tăng padding */
+    padding: 0;
     font-weight: 400;
-    height: 15px;
+    height: auto;
+    transition: all 0.3s ease;
+    opacity: 0;
+    width: 0;
+    pointer-events: none;
+    min-width: 0; /* Đảm bảo input có thể co giãn */
+}
+
+.search-box:hover .search-input {
+    opacity: 1;
+    width: 60px; /* Giảm width input để phù hợp với 100px */
+    pointer-events: auto;
+    padding-left: 8px;
+}
+
+.search-box:focus-within .search-input {
+    opacity: 1;
+    width: 140px; /* Width input cho focus state */
+    pointer-events: auto;
+    padding-left: 8px;
 }
 
 .search-input::placeholder {
-    color: #bbb; /* Placeholder sáng hơn */
-    opacity: 0.8;
-    font-style: italic; /* Thêm italic cho placeholder */
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 15px;
+    font-weight: 300;
 }
 
 .search-icon {
-    color: #df2144; /* Màu icon theo brand */
-    width: 22px;
-    height: 21px;
+    color: #df2144;
+    width: 25.5px; /* Theo giá trị trong developer tools */
+    height: 15px; /* Theo giá trị trong developer tools */
     transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    opacity: 0.9;
+    position: relative;
+    transform: translate(-8px, 0px); /* Thêm transform để xích icon qua trái */
 }
 
 .search-box:hover .search-icon {
-    transform: scale(1.1); /* Phóng to icon khi hover */
+    opacity: 1;
+    transform: scale(1.1);
+    color: #ff4757;
+}
+
+.search-box:focus-within .search-icon {
+    opacity: 1;
+    transform: scale(1.15);
+    color: #df2144;
+}
+
+/* Hiệu ứng glow */
+.search-box::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg, transparent, rgba(223, 33, 68, 0.2), transparent);
+    border-radius: 53px; /* Tương ứng với border-radius chính + 3px */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.search-box:focus-within::before {
+    opacity: 1;
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+    .search-box {
+        width: 50px;
+        max-width: 50px;
+        height: 50px;
+        padding: 12px 20px;
+    }
+    
+    .search-box:hover {
+        width: 220px;
+        max-width: 220px;
+    }
+    
+    .search-box:focus-within {
+        width: 300px;
+        max-width: 300px;
+    }
+    
+    .search-input {
+        font-size: 14px;
+    }
+    
+    .search-icon {
+        width: 18px;
+        height: 18px;
+    }
 }
 
 /* Navigation Center - Chỉnh sang trái một chút */
@@ -222,33 +319,77 @@
 .brand {
     text-align: left;
     margin-right: 20px;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .brand-header {
     display: flex;
     align-items: center;
-    gap: 12px; /* Tăng gap */
+    gap: 12px;
     justify-content: flex-start;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .brand-name {
-    font-size: 18px; /* Tăng font size */
+    font-size: 18px;
     font-weight: 700;
     color: white;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    opacity: 1;
+    transform: translateX(0);
+    white-space: nowrap;
 }
 
 .brand-logo {
-    width: 44px; /* Tăng size logo */
-    height: 36px; /* Tăng size logo */
+    width: 44px;
+    height: 36px;
     background: #df2144;
     border-radius: 4px;
-    order: -1; /* Đặt logo trước tên */
+    order: -1;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    flex-shrink: 0; /* Đảm bảo logo không bị co lại */
 }
 
 .brand-subtitle {
-    font-size: 14px; /* Tăng font size */
+    font-size: 14px;
     color: white;
     margin-top: 4px;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    opacity: 1;
+    transform: translateX(0);
+    white-space: nowrap;
+}
+
+/* Hiệu ứng ẩn text khi search box được hover hoặc focus */
+.search-box:hover ~ .brand .brand-name,
+.search-box:focus-within ~ .brand .brand-name {
+    opacity: 0;
+    transform: translateX(-20px);
+    pointer-events: none;
+}
+
+.search-box:hover ~ .brand .brand-subtitle,
+.search-box:focus-within ~ .brand .brand-subtitle {
+    opacity: 0;
+    transform: translateX(-20px);
+    pointer-events: none;
+}
+
+/* Nếu cấu trúc HTML không cho phép sử dụng ~ selector, 
+   thì cần thêm class vào nav-left khi search được kích hoạt */
+.nav-left.search-active .brand-name,
+.nav-left.search-active .brand-subtitle {
+    opacity: 0;
+    transform: translateX(-20px);
+    pointer-events: none;
+}
+
+/* Logo vẫn hiển thị và có thể thêm hiệu ứng nhẹ */
+.search-box:hover ~ .brand .brand-logo,
+.search-box:focus-within ~ .brand .brand-logo,
+.nav-left.search-active .brand-logo {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(223, 33, 68, 0.3);
 }
 
 /* Search Toggle */
@@ -276,4 +417,168 @@
     height: 50px;
     background: white;
     border-radius: 1px;
+}
+
+/* Search Box - Compact Round Style */
+/* Search Box - Fine-tuned Style */
+.search-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex: 1;
+    width: 45px;
+    max-width: 45px;
+    height: 45px;
+    width: 45px;
+    max-width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: visible; /* Thay đổi từ hidden thành visible */
+    cursor: pointer;
+}
+
+.search-box:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(223, 33, 68, 0.4);
+    box-shadow: 0 4px 15px rgba(223, 33, 68, 0.2);
+    width: 200px;
+    max-width: 200px;
+    justify-content: flex-start;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.search-box:focus-within {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #df2144;
+    box-shadow: 0 0 0 4px rgba(223, 33, 68, 0.15), 0 8px 30px rgba(0, 0, 0, 0.2);
+    width: 200px;
+    max-width: 400px;
+    transform: scale(1.05);
+}
+
+.search-input {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    flex: 1;
+    outline: none;
+    padding: 0;
+    font-weight: 400;
+    height: auto;
+    transition: all 0.3s ease;
+    opacity: 0;
+    width: 0;
+    pointer-events: none;
+    min-width: 0;
+}
+
+.search-box:hover .search-input {
+    opacity: 1; /* Tăng từ 0.8 lên 1 để rõ hơn */
+    width: 140px; /* Đặt width cố định thay vì calc */
+    pointer-events: auto;
+    padding-left: 10px;
+}
+
+.search-box:focus-within .search-input {
+    opacity: 1;
+    width: 300px; /* Đặt width cố định cho focus */
+    pointer-events: auto;
+    padding-left: 10px;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    font-weight: 300;
+}
+
+.search-icon {
+    color: #df2144;
+    width: 18px;
+    height: 18px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    opacity: 0.8;
+    margin-left: 4px; /* Xịch icon qua trái 1px để căn giữa */
+}
+
+.search-box:hover .search-icon {
+    opacity: 1;
+    transform: scale(1.05);
+    margin-left: 0; /* Reset margin khi hover */
+}
+
+.search-box:focus-within .search-icon {
+    opacity: 1;
+    transform: scale(1.1);
+    color: #ff4757;
+    margin-left: 0; /* Reset margin khi focus */
+}
+
+/* Hiệu ứng glow nhẹ */
+.search-box::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, transparent, rgba(223, 33, 68, 0.1), transparent);
+    border-radius: 27px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.search-box:focus-within::before {
+    opacity: 1;
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+    .search-box {
+        width: 40px;
+        max-width: 40px;
+        height: 40px;
+        padding: 8px 12px;
+    }
+    
+    .search-box:hover {
+        width: 200px;
+        max-width: 200px;
+        padding-left: 15px;
+    }
+    
+    .search-box:focus-within {
+        width: 280px;
+        max-width: 280px;
+        padding-left: 15px;
+    }
+    
+    .search-input {
+        font-size: 13px;
+    }
+    
+    .search-icon {
+        width: 16px;
+        height: 16px;
+    }
 }

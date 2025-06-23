@@ -1,4 +1,4 @@
-﻿using ApplicationLayer.DTO.BookingTicketManagement;
+using ApplicationLayer.DTO.BookingTicketManagement;
 using ApplicationLayer.DTO.CinemaRoomManagement;
 using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.DTO.PromotionManagement;
@@ -61,7 +61,21 @@ namespace ApplicationLayer.Mapper
             CreateMap<Promotion, PromotionResponseDto>();
 
             //Search Movie
-            CreateMap<Movie, MovieListDto>();
+            CreateMap<Movie, MovieListDto>()
+                .ForMember(dest => dest.Images,
+                    opt => opt.MapFrom(src => src.MovieImages.Select(img => new MovieImageDto
+                    {
+                        ImageUrl = img.ImageUrl,
+                        Description = img.Description,
+                        DisplayOrder = img.DisplayOrder,
+                        IsPrimary = img.IsPrimary
+                    }).ToList()))
+                .AfterMap((src, dest) =>
+                {
+                    var primary = src.MovieImages.FirstOrDefault(i => i.IsPrimary);
+                    dest.PrimaryImageUrl = primary != null ? primary.ImageUrl : null;
+                });
+
 
             //Genre
             CreateMap<Genre, GenreListDto>();

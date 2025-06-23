@@ -1,46 +1,6 @@
 ﻿// Movie data for carousel - lấy từ server hoặc dùng dữ liệu mặc định
-const movies = window.heroMovies || [
-    {
-        title: "Oppenheimer 2023",
-        titleVn: "Cha đẻ bom nguyên tử",
-        plot: "Phim Oppenheimer kể về cuộc đời của J. Robert Oppenheimer, nhà vật lý lý thuyết người Mỹ được mệnh danh là 'cha đẻ của bom nguyên tử' vì vai trò của ông trong Dự án Manhattan - chương trình nghiên cứu và phát triển vũ khí hạt nhân đầu tiên của thế giới trong Thế chiến II.",
-        genre: "Lịch sử, Tiểu sử, Chính kịch",
-        duration: "3 Giờ",
-        background: "https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"
-    },
-    {
-        title: "Avatar: The Way of Water",
-        titleVn: "Avatar: Dòng Chảy Của Nước",
-        plot: "Jake Sully sống cùng gia đình mới của mình trên hành tinh Pandora. Khi một mối đe dọa quen thuộc trở lại để hoàn thành những gì đã bắt đầu trước đây, Jake phải làm việc với Neytiri và quân đội của chủng tộc Na'vi để bảo vệ hành tinh của họ.",
-        genre: "Hành động, Phiêu lưu, Khoa học viễn tưởng",
-        duration: "3 Giờ 12 phút",
-        background: "https://image.tmdb.org/t/p/original/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg"
-    },
-    {
-        title: "Top Gun: Maverick",
-        titleVn: "Phi Công Siêu Đẳng: Maverick",
-        plot: "Sau hơn ba thập kỷ phục vụ với tư cách là một trong những phi công hàng đầu của Hải quân, Pete 'Maverick' Mitchell đang ở nơi anh thuộc về, thúc đẩy ranh giới với tư cách là một phi công thử nghiệm dũng cảm và né tránh thăng chức trong cấp bậc sẽ khiến anh ta không được bay.",
-        genre: "Hành động, Chính kịch",
-        duration: "2 Giờ 11 phút",
-        background: "https://image.tmdb.org/t/p/original/62HCnUTziyWcpDaBO2i1DX17ljH.jpg"
-    },
-    {
-        title: "Killers of the Flower Moon",
-        titleVn: "Kẻ Giết Người Dưới Trăng Hoa",
-        plot: "Dựa trên cuốn sách bán chạy nhất của David Grann, câu chuyện về vụ giết người hàng loạt các thành viên bộ lạc Osage giàu có ở Oklahoma vào những năm 1920 và cuộc điều tra FBI sau đó dẫn đến việc thành lập FBI.",
-        genre: "Tội phạm, Chính kịch, Lịch sử",
-        duration: "3 Giờ 26 phút",
-        background: "https://image.tmdb.org/t/p/original/dKqa850uvbNSCaQCV4Im1XlzEtQ.jpg"
-    },
-    {
-        title: "Mission: Impossible - Dead Reckoning",
-        titleVn: "Nhiệm Vụ Bất Khả Thi: Nghiệp Báo Phần Một",
-        plot: "Ethan Hunt và đội IMF phải đuổi theo một vũ khí cực kỳ nguy hiểm trước khi nó rơi vào tay kẻ xấu. Với số phận của thế giới treo trên một sợi chỉ, cuộc đua sinh tử đưa Ethan và đội của anh ta vòng quanh thế giới.",
-        genre: "Hành động, Phiêu lưu, Ly kỳ",
-        duration: "2 Giờ 43 phút",
-        background: "https://image.tmdb.org/t/p/original/NNxYkU70HPurnNCSiCjYAmacwm.jpg"
-    }
-];
+// Bỏ hardcoded array, chỉ sử dụng data từ API
+const movies = window.heroMovies || [];
 
 let currentMovieIndex = 0;
 let movieInterval;
@@ -48,6 +8,12 @@ let isTransitioning = false;
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
+    // Kiểm tra nếu có data từ server
+    if (!movies || movies.length === 0) {
+        console.warn('Không có dữ liệu movies từ server');
+        return;
+    }
+    
     initializeCarousel();
     updateMovieDisplay();
     startMovieCarousel();
@@ -429,4 +395,312 @@ async function testApiConnection() {
 // Gọi function này khi trang load
 document.addEventListener('DOMContentLoaded', function () {
     testApiConnection();
+});
+
+// Tạo video layers thay vì background layers
+function createVideoLayers() {
+    const heroSection = document.getElementById('heroSection');
+    
+    // Remove existing layers
+    const existingLayers = heroSection.querySelectorAll('.video-layer, .bg-layer');
+    existingLayers.forEach(layer => layer.remove());
+    
+    // Create two video layers for crossfade
+    const videoLayer1 = document.createElement('div');
+    const videoLayer2 = document.createElement('div');
+    
+    videoLayer1.className = 'video-layer video-layer-1';
+    videoLayer2.className = 'video-layer video-layer-2';
+    
+    // Create overlay gradients
+    const overlay1 = document.createElement('div');
+    const overlay2 = document.createElement('div');
+    overlay1.className = 'video-overlay';
+    overlay2.className = 'video-overlay';
+    
+    videoLayer1.appendChild(overlay1);
+    videoLayer2.appendChild(overlay2);
+    
+    // Set initial state
+    videoLayer1.style.opacity = '1';
+    videoLayer2.style.opacity = '0';
+    
+    // Load initial video
+    const initialMovie = movies[currentMovieIndex];
+    if (initialMovie && initialMovie.trailerUrl) {
+        loadVideoInLayer(videoLayer1, initialMovie.trailerUrl);
+    }
+    
+    // Insert layers
+    heroSection.insertBefore(videoLayer1, heroSection.firstChild);
+    heroSection.insertBefore(videoLayer2, heroSection.firstChild);
+}
+
+// Convert YouTube URL to embed format với autoplay
+function getYouTubeEmbedUrl(url) {
+    const videoId = extractYouTubeVideoId(url);
+    if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&start=0&end=30`;
+    }
+    return null;
+}
+
+// Extract YouTube video ID
+function extractYouTubeVideoId(url) {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+}
+
+// Load video into layer
+function loadVideoInLayer(layer, trailerUrl) {
+    // Remove existing video/iframe
+    const existingMedia = layer.querySelector('video, iframe');
+    if (existingMedia) {
+        existingMedia.remove();
+    }
+    
+    if (trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be')) {
+        // Create YouTube iframe
+        const iframe = document.createElement('iframe');
+        const videoId = extractYouTubeVideoId(trailerUrl);
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`;
+        iframe.allow = 'autoplay; encrypted-media';
+        iframe.style.position = 'absolute';
+        iframe.style.top = '0';
+        iframe.style.left = '0';
+        
+        // Insert before overlay
+        const overlay = layer.querySelector('.video-overlay');
+        layer.insertBefore(iframe, overlay);
+    } else {
+        // Create video element for direct URLs
+        const video = document.createElement('video');
+        video.src = trailerUrl;
+        video.muted = true;
+        video.loop = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.preload = 'metadata';
+        
+        // Insert before overlay
+        const overlay = layer.querySelector('.video-overlay');
+        layer.insertBefore(video, overlay);
+        
+        // Handle video load
+        video.addEventListener('loadeddata', () => {
+            video.currentTime = 0; // Start from beginning
+        });
+    }
+}
+
+// Enhanced movie display with video transitions
+function updateMovieDisplay(direction = 'next') {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    
+    const movie = movies[currentMovieIndex];
+    const heroSection = document.getElementById('heroSection');
+    const movieContent = document.getElementById('movieContent');
+    const videoLayer1 = heroSection.querySelector('.video-layer-1');
+    const videoLayer2 = heroSection.querySelector('.video-layer-2');
+    
+    if (!videoLayer1 || !videoLayer2) {
+        createVideoLayers();
+        return;
+    }
+    
+    // Start content fade out
+    movieContent.style.opacity = '0';
+    movieContent.style.transform = direction === 'next' ? 'translateX(-30px)' : 'translateX(30px)';
+    
+    // Determine active and inactive layers
+    const activeLayer = videoLayer1.style.opacity === '1' ? videoLayer1 : videoLayer2;
+    const inactiveLayer = videoLayer1.style.opacity === '1' ? videoLayer2 : videoLayer1;
+    
+    // Load new video on inactive layer
+    if (movie && movie.trailerUrl) {
+        loadVideoInLayer(inactiveLayer, movie.trailerUrl);
+    }
+    
+    // Start crossfade after short delay
+    setTimeout(() => {
+        activeLayer.style.opacity = '0';
+        inactiveLayer.style.opacity = '1';
+    }, 100);
+    
+    // Update movie content
+    setTimeout(() => {
+        updateMovieContent(movie);
+        
+        // Fade content back in
+        setTimeout(() => {
+            movieContent.style.opacity = '1';
+            movieContent.style.transform = 'translateX(0)';
+            isTransitioning = false;
+        }, 100);
+    }, 300);
+}
+
+// Update movie content function
+function updateMovieContent(movie) {
+    if (!movie) return;
+    
+    document.getElementById('movieTitle').textContent = movie.title || '';
+    document.getElementById('movieTitleVn').textContent = movie.titleVn || '';
+    document.getElementById('moviePlot').textContent = movie.plot || '';
+    document.getElementById('movieGenre').textContent = movie.genre || '';
+    document.getElementById('duration').textContent = movie.duration || '';
+}
+
+// Update initialization
+function initializeCarousel() {
+    const heroSection = document.getElementById('heroSection');
+    const movieContent = document.getElementById('movieContent');
+    
+    // Create video layers instead of background layers
+    createVideoLayers();
+    
+    // Add transition styles
+    if (!movieContent.style.transition) {
+        movieContent.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
+    }
+}
+
+// Banner movie variables
+let bannerMovies = [];
+let currentBannerIndex = 0;
+let bannerInterval;
+let isBannerTransitioning = false;
+
+// Initialize banner movies
+function initializeBannerMovies() {
+    // Get featured movies data from the model
+    if (typeof featuredMoviesData !== 'undefined' && featuredMoviesData.length > 0) {
+        bannerMovies = featuredMoviesData;
+        startBannerCarousel();
+        
+        // Add click handlers for banner dots
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('#bannerPaginationDots .dot')) {
+                if (isBannerTransitioning) return;
+                
+                const dots = Array.from(document.querySelectorAll('#bannerPaginationDots .dot'));
+                const newIndex = dots.indexOf(e.target);
+                
+                if (newIndex !== currentBannerIndex && newIndex !== -1) {
+                    const direction = newIndex > currentBannerIndex ? 'next' : 'prev';
+                    currentBannerIndex = newIndex;
+                    updateBannerDisplay(direction);
+                    updateBannerPaginationDots();
+                    resetBannerCarouselTimer();
+                }
+            }
+        });
+    }
+}
+
+function nextBannerMovie() {
+    if (isBannerTransitioning || bannerMovies.length === 0) return;
+    currentBannerIndex = (currentBannerIndex + 1) % bannerMovies.length;
+    updateBannerDisplay('next');
+    updateBannerPaginationDots();
+    resetBannerCarouselTimer();
+}
+
+function previousBannerMovie() {
+    if (isBannerTransitioning || bannerMovies.length === 0) return;
+    currentBannerIndex = (currentBannerIndex - 1 + bannerMovies.length) % bannerMovies.length;
+    updateBannerDisplay('prev');
+    updateBannerPaginationDots();
+    resetBannerCarouselTimer();
+}
+
+function updateBannerDisplay(direction = 'next') {
+    if (isBannerTransitioning || bannerMovies.length === 0) return;
+    isBannerTransitioning = true;
+    
+    const movie = bannerMovies[currentBannerIndex];
+    const bannerSection = document.getElementById('featuredBanner');
+    const bannerInfo = document.querySelector('.banner-info');
+    
+    if (!bannerSection || !bannerInfo) {
+        isBannerTransitioning = false;
+        return;
+    }
+    
+    // Start content fade out animation
+    bannerInfo.style.opacity = '0';
+    bannerInfo.style.transform = direction === 'next' ? 'translateX(-30px)' : 'translateX(30px)';
+    
+    // Update background
+    const backgroundUrl = movie.primaryImageUrl || movie.imageUrl || (movie.images && movie.images.length > 0 ? movie.images[0].imageUrl : '');
+    if (backgroundUrl) {
+        bannerSection.style.backgroundImage = `url('${backgroundUrl}')`;
+    }
+    
+    // Update content after fade out
+    setTimeout(() => {
+        // Update text content
+        const titleElement = document.getElementById('bannerTitle');
+        const titleVnElement = document.getElementById('bannerTitleVn');
+        const plotElement = document.getElementById('bannerPlot');
+        const genreElement = document.getElementById('bannerGenre');
+        const durationElement = document.getElementById('bannerDuration');
+        const detailsBtnElement = document.getElementById('bannerDetailsBtn');
+        const posterImgElement = document.getElementById('bannerPosterImg');
+        
+        if (titleElement) titleElement.textContent = movie.title || '';
+        if (titleVnElement) titleVnElement.textContent = movie.productionCompany || 'Nhà sản xuất';
+        if (plotElement) plotElement.textContent = movie.content || 'Chưa có thông tin nội dung.';
+        if (genreElement) genreElement.textContent = movie.genres && movie.genres.length > 0 ? movie.genres.join(', ') : 'Chưa phân loại';
+        if (durationElement) durationElement.textContent = `${movie.runningTime || 0} phút`;
+        if (detailsBtnElement) detailsBtnElement.href = `/Movies/Details/${movie.id}`;
+        
+        // Update poster image
+        if (posterImgElement && backgroundUrl) {
+            posterImgElement.src = backgroundUrl;
+            posterImgElement.alt = movie.title || '';
+        }
+        
+        // Fade in with slide animation
+        bannerInfo.style.transform = direction === 'next' ? 'translateX(30px)' : 'translateX(-30px)';
+        
+        // Trigger reflow
+        bannerInfo.offsetHeight;
+        
+        // Fade in
+        bannerInfo.style.opacity = '1';
+        bannerInfo.style.transform = 'translateX(0)';
+        
+        // Reset transition flag
+        setTimeout(() => {
+            isBannerTransitioning = false;
+        }, 500);
+        
+    }, 250);
+}
+
+function updateBannerPaginationDots() {
+    const dots = document.querySelectorAll('#bannerPaginationDots .dot');
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentBannerIndex);
+    });
+}
+
+function startBannerCarousel() {
+    if (bannerMovies.length > 1) {
+        bannerInterval = setInterval(nextBannerMovie, 8000); // 8 seconds for banner
+    }
+}
+
+function resetBannerCarouselTimer() {
+    clearInterval(bannerInterval);
+    startBannerCarousel();
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    testApiConnection();
+    initializeBannerMovies();
 });
