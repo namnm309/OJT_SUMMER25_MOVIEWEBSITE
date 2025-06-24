@@ -65,7 +65,7 @@ namespace UI.Controllers
                                     PrimaryImageUrl = movieJson.TryGetProperty("primaryImageUrl", out var primaryImgProp) ? primaryImgProp.GetString() : null,
                                     ImageUrl = movieJson.TryGetProperty("primaryImageUrl", out var imgProp) ? imgProp.GetString() : null, // Fallback cho ImageUrl
 
-                                    // Map Genres từ List<GenreDto> sang List<string>
+                                    // Map Genres từ List<GenreDto> sang List<MovieGenreViewModel>
                                     Genres = MapGenres(movieJson),
 
                                     // Map Images từ List<MovieImageDto> sang List<MovieImageViewModel>
@@ -106,21 +106,24 @@ namespace UI.Controllers
             return View(viewModel);
         }
 
-        private List<string> MapGenres(JsonElement movieJson)
+        private List<MovieGenreViewModel> MapGenres(JsonElement movieJson)
         {
-            var genres = new List<string>();
+            var genres = new List<MovieGenreViewModel>();
 
             if (movieJson.TryGetProperty("genres", out var genresProp) && genresProp.ValueKind == JsonValueKind.Array)
             {
                 foreach (var genreElement in genresProp.EnumerateArray())
                 {
-                    if (genreElement.TryGetProperty("name", out var nameProp))
+                    var genre = new MovieGenreViewModel
                     {
-                        var genreName = nameProp.GetString();
-                        if (!string.IsNullOrEmpty(genreName))
-                        {
-                            genres.Add(genreName);
-                        }
+                        Id = genreElement.TryGetProperty("id", out var idProp) ? idProp.GetString() ?? string.Empty : string.Empty,
+                        Name = genreElement.TryGetProperty("name", out var nameProp) ? nameProp.GetString() ?? string.Empty : string.Empty,
+                        Description = genreElement.TryGetProperty("description", out var descProp) ? descProp.GetString() ?? string.Empty : string.Empty
+                    };
+                    
+                    if (!string.IsNullOrEmpty(genre.Name))
+                    {
+                        genres.Add(genre);
                     }
                 }
             }

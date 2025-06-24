@@ -60,19 +60,50 @@ namespace UI.Controllers
             try
             {
                 var result = await _apiService.GetAsync<JsonElement>($"/api/v1/movie/GetById?movieId={id}");
+                
+                // Log toàn bộ response
+                _logger.LogInformation("Full API Response: {Response}", result.Data.ToString());
 
                 if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
                     if (result.Data.TryGetProperty("data", out var dataProp))
                     {
+                        _logger.LogInformation("API Response Data: {Data}", dataProp.GetRawText());
+                        
                         var options = new JsonSerializerOptions
                         {
-                            PropertyNameCaseInsensitive = true
+                            PropertyNameCaseInsensitive = true,
+                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                         };
 
-                        var movie = JsonSerializer.Deserialize<MovieViewModel>(dataProp.GetRawText(), options);
-                        return View(movie);
+                        try
+                        {
+                            var movie = JsonSerializer.Deserialize<MovieViewModel>(dataProp.GetRawText(), options);
+                            if (movie != null)
+                            {
+                                _logger.LogInformation("Deserialized Movie: Title={Title}, Director={Director}, Genres={GenreCount}", 
+                                    movie.Title, movie.Director, movie.Genres?.Count ?? 0);
+                                return View(movie);
+                            }
+                            else
+                            {
+                                _logger.LogWarning("Movie deserialization returned null");
+                            }
+                        }
+                        catch (JsonException jsonEx)
+                        {
+                            _logger.LogError(jsonEx, "JSON Deserialization error: {Message}", jsonEx.Message);
+                        }
                     }
+                    else
+                    {
+                        _logger.LogWarning("No 'data' property found in API response");
+                    }
+                }
+                else
+                {
+                    _logger.LogWarning("API call failed or returned undefined data. Success: {Success}, Message: {Message}", 
+                        result.Success, result.Message);
                 }
 
                 _logger.LogError("Không thể lấy chi tiết phim: {Message}", result.Message);

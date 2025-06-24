@@ -562,9 +562,9 @@ namespace UI.Areas.MovieManagement.Controllers
             }
         }
 
-        private List<string> MapGenres(JsonElement genresElement)
+        private List<MovieGenreViewModel> MapGenres(JsonElement genresElement)
         {
-            var genres = new List<string>();
+            var genres = new List<MovieGenreViewModel>();
             
             if (genresElement.ValueKind == JsonValueKind.Array)
             {
@@ -572,32 +572,41 @@ namespace UI.Areas.MovieManagement.Controllers
                 {
                     if (genre.ValueKind == JsonValueKind.String)
                     {
-                        // If it's already a string
+                        // If it's already a string, create a MovieGenreViewModel with just the name
                         var genreName = genre.GetString();
                         if (!string.IsNullOrEmpty(genreName))
                         {
-                            genres.Add(genreName);
+                            genres.Add(new MovieGenreViewModel
+                            {
+                                Id = string.Empty,
+                                Name = genreName,
+                                Description = string.Empty
+                            });
                         }
                     }
                     else if (genre.ValueKind == JsonValueKind.Object)
                     {
-                        // If it's an object with name property
+                        // If it's an object, map all properties
+                        var genreViewModel = new MovieGenreViewModel
+                        {
+                            Id = genre.TryGetProperty("id", out var idProp) ? idProp.GetString() ?? string.Empty : string.Empty,
+                            Name = string.Empty,
+                            Description = genre.TryGetProperty("description", out var descProp) ? descProp.GetString() ?? string.Empty : string.Empty
+                        };
+                        
+                        // Try different property names for the genre name
                         if (genre.TryGetProperty("name", out var nameProp))
                         {
-                            var genreName = nameProp.GetString();
-                            if (!string.IsNullOrEmpty(genreName))
-                            {
-                                genres.Add(genreName);
-                            }
+                            genreViewModel.Name = nameProp.GetString() ?? string.Empty;
                         }
-                        // Try other possible property names
                         else if (genre.TryGetProperty("genreName", out var genreNameProp))
                         {
-                            var genreName = genreNameProp.GetString();
-                            if (!string.IsNullOrEmpty(genreName))
-                            {
-                                genres.Add(genreName);
-                            }
+                            genreViewModel.Name = genreNameProp.GetString() ?? string.Empty;
+                        }
+                        
+                        if (!string.IsNullOrEmpty(genreViewModel.Name))
+                        {
+                            genres.Add(genreViewModel);
                         }
                     }
                 }
@@ -606,4 +615,4 @@ namespace UI.Areas.MovieManagement.Controllers
             return genres;
         }
     }
-} 
+}
