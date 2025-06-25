@@ -1,4 +1,4 @@
-﻿using Application.ResponseCode;
+using Application.ResponseCode;
 using ApplicationLayer.DTO.BookingTicketManagement;
 using AutoMapper;
 using DomainLayer.Entities;
@@ -18,18 +18,22 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<IActionResult> GetAvailableMovies(); //Lấy danh sách phim
         Task<IActionResult> GetShowDatesByMovie(Guid movieId); //Lấy danh sách ngày chiếu cho phim
         Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate); //Lấy các giờ chiếu trong ngày
+        Task<IActionResult> GetBookingDetailsAsync(Guid bookingId, Guid userId);
+
     }
     public class BookingTicketService : IBookingTicketService
     {
         private readonly IGenericRepository<Movie> _movieRepo;
         private readonly IGenericRepository<ShowTime> _showtimeRepo;
         private readonly IMapper _mapper;
+        private readonly IBookingRepository _bookingRepository;
 
-        public BookingTicketService(IGenericRepository<Movie> movieRepo, IGenericRepository<ShowTime> showtimeRepo, IMapper mapper)
+        public BookingTicketService(IGenericRepository<Movie> movieRepo, IGenericRepository<ShowTime> showtimeRepo, IMapper mapper, IBookingRepository bookingRepository)
         {
             _movieRepo = movieRepo;
             _showtimeRepo = showtimeRepo;
             _mapper = mapper;
+            _bookingRepository = bookingRepository;
         }
 
         public async Task<IActionResult> GetAvailableMovies()
@@ -74,6 +78,43 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 }).ToList();
 
             return SuccessResp.Ok(timeList);
+        }
+
+        public async Task<IActionResult> GetBookingDetailsAsync(Guid bookingId, Guid userId)
+        {
+            // Get booking with details
+            var booking = await _bookingRepository.GetBookingWithDetailsAsync(bookingId, userId);
+            if (booking == null)
+            {
+                return ErrorResp.NotFound("Booking not found");
+            }
+
+            // Check if booking has all required data
+            if (booking.ShowTime?.Movie == null || booking.ShowTime?.Room == null ||
+                !booking.BookingDetails.Any() || booking.User == null)
+            {
+                return ErrorResp.BadRequest("Incomplete booking data. Please return and complete seat selection.");
+            }
+
+            // Map booking to DTO
+            var bookingDetailsDto = new BookingDetailsDto
+            {
+                BookingId = booking.Id,
+                BookingCode = booking.BookingCode,
+                MovieName = booking.ShowTime.Movie.Title,
+                RoomName = booking.ShowTime.Room.RoomName,
+                ShowDate = booking.ShowTime.ShowDate ?? DateTime.UtcNow,
+                SeatCodes = booking.BookingDetails.Select(bd => bd.Seat.SeatCode).ToList(),
+                UnitPrice = booking.BookingDetails.FirstOrDefault()?.Price ?? 0,
+                TotalPrice = booking.TotalPrice,
+                TotalSeats = booking.TotalSeats,
+                FullName = booking.User.FullName,
+                Email = booking.User.Email,
+                IdentityCard = booking.User.IdentityCard,
+                Phone = booking.User.Phone
+            };
+
+            return SuccessResp.Ok(bookingDetailsDto);
         }
     }
 }

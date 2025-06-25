@@ -1,5 +1,7 @@
 ﻿using ApplicationLayer.Services.BookingTicketManagement;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ControllerLayer.Controllers
 {
@@ -36,6 +38,20 @@ namespace ControllerLayer.Controllers
             _logger.LogInformation("Get ShowTimes");
             return await _bookingTicketService.GetShowTimesByMovieAndDate(movieId, date);
         }
-            
+
+        [HttpGet("{bookingId}/details")]
+        [Authorize(Roles = "Member")]
+        public async Task<IActionResult> GetBookingDetails(Guid bookingId)
+        {
+            // Get user ID from claims
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+            {
+                return Unauthorized("User not authenticated");
+            }
+
+            return await _bookingTicketService.GetBookingDetailsAsync(bookingId, userId);
+        }
+
     }
 }
