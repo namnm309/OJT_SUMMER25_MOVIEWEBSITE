@@ -14,56 +14,154 @@ namespace UI.Areas.MovieManagement.Controllers
     {
         private readonly IApiService _apiService;
         private readonly ILogger<MoviesController> _logger;
+        private readonly IImageService _imageService;
 
-        public MoviesController(IApiService apiService, ILogger<MoviesController> logger)
+        public MoviesController(IApiService apiService, ILogger<MoviesController> logger, IImageService imageService)
         {
             _apiService = apiService;
             _logger = logger;
+            _imageService = imageService;
         }
 
         // Action để hiển thị trang quản lý phim
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchTerm, Guid? genreId, string? status)
         {
             ViewData["Title"] = "Quản lý phim";
 
             try
             {
-                var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/View");
+                // Get movies data
+                var moviesResult = await _apiService.GetAsync<JsonElement>("/api/v1/movie/View");
+                var genresResult = await _apiService.GetAsync<JsonElement>("/api/v1/movie/ViewGenre");
 
-                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
+                var movieDisplayList = new List<UI.Areas.MovieManagement.Models.MovieDisplayViewModel>();
+                var genresList = new List<UI.Areas.MovieManagement.Models.GenreViewModel>();
+
+                // Map movies data
+                if (moviesResult.Success && moviesResult.Data.ValueKind != JsonValueKind.Undefined)
                 {
-                    if (result.Data.TryGetProperty("data", out var dataProp))
+                    if (moviesResult.Data.TryGetProperty("data", out var dataProp))
                     {
-                        var movies = new List<MovieViewModel>();
-                        
                         if (dataProp.ValueKind == JsonValueKind.Array)
                         {
                             foreach (var movieElement in dataProp.EnumerateArray())
                             {
-                                var movie = MapJsonToMovieViewModel(movieElement);
-                                if (movie != null)
+                                var movieViewModel = MapJsonToMovieViewModel(movieElement);
+                                if (movieViewModel != null)
                                 {
-                                    movies.Add(movie);
+                                    var movieDisplay = new UI.Areas.MovieManagement.Models.MovieDisplayViewModel
+                                    {
+                                        MovieId = Guid.TryParse(movieViewModel.Id, out var id) ? id : Guid.Empty,
+                                        Title = movieViewModel.Title,
+                                        ReleaseDate = movieViewModel.ReleaseDate,
+                                        Duration = movieViewModel.RunningTime,
+                                        PosterUrl = movieViewModel.ImageUrl,
+                                        Rating = movieViewModel.Rating,
+                                        Status = movieViewModel.Status switch
+                                        {
+                                            1 => "Active",
+                                            2 => "ComingSoon", 
+                                            0 => "Stopped",
+                                            _ => "Stopped"
+                                        },
+                                        Genres = movieViewModel.Genres?.Select(g => new UI.Areas.MovieManagement.Models.GenreViewModel 
+                                        { 
+                                            Name = g.Name,
+                                            Id = Guid.TryParse(g.Id, out var parsedId) ? parsedId : Guid.NewGuid(),
+                                            Description = g.Description
+                                        }).ToList() ?? new List<UI.Areas.MovieManagement.Models.GenreViewModel>()
+                                    };
+                                    movieDisplayList.Add(movieDisplay);
                                 }
                             }
                         }
-
-                        _logger.LogInformation("Nhận được {Count} phim", movies.Count);
-                        
-                        return View(movies);
                     }
                 }
 
-                _logger.LogError("Không thể lấy danh sách phim: {Message}", result.Message);
-                TempData["ErrorMessage"] = result.Message;
+                // Map genres data
+                if (genresResult.Success && genresResult.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    if (genresResult.Data.TryGetProperty("data", out var genresDataProp))
+                    {
+                        if (genresDataProp.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var genreElement in genresDataProp.EnumerateArray())
+                            {
+                                var genre = new UI.Areas.MovieManagement.Models.GenreViewModel();
+                                
+                                if (genreElement.TryGetProperty("id", out var idProp) || genreElement.TryGetProperty("Id", out idProp))
+                                {
+                                    if (Guid.TryParse(idProp.GetString(), out var genreId_))
+                                        genre.Id = genreId_;
+                                }
+                                
+                                if (genreElement.TryGetProperty("name", out var nameProp) || genreElement.TryGetProperty("Name", out nameProp))
+                                    genre.Name = nameProp.GetString() ?? "";
+                                
+                                if (genreElement.TryGetProperty("description", out var descProp) || genreElement.TryGetProperty("Description", out descProp))
+                                    genre.Description = descProp.GetString();
+
+                                genresList.Add(genre);
+                            }
+                        }
+                    }
+                }
+
+                // Apply filters
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    movieDisplayList = movieDisplayList
+                        .Where(m => m.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                }
+
+                if (genreId.HasValue && genreId != Guid.Empty)
+                {
+                    movieDisplayList = movieDisplayList
+                        .Where(m => m.Genres.Any(g => g.Id == genreId))
+                        .ToList();
+                }
+
+                if (!string.IsNullOrEmpty(status))
+                {
+                    movieDisplayList = movieDisplayList
+                        .Where(m => m.Status.Equals(status, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                }
+
+                // Create the final view model
+                var viewModel = new UI.Areas.MovieManagement.Models.MovieIndexViewModel
+                {
+                    Movies = movieDisplayList,
+                    Genres = genresList,
+                    SearchTerm = searchTerm,
+                    GenreId = genreId,
+                    Status = status,
+                    TotalMovies = movieDisplayList.Count,
+                    ActiveMovies = movieDisplayList.Count(m => m.Status == "Active"),
+                    ComingSoonMovies = movieDisplayList.Count(m => m.Status == "ComingSoon"),
+                    StoppedMovies = movieDisplayList.Count(m => m.Status == "Stopped")
+                };
+
+                return View(viewModel);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Lỗi khi lấy danh sách phim");
                 TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tải danh sách phim";
+                
+                // Return empty view model on error
+                var emptyViewModel = new UI.Areas.MovieManagement.Models.MovieIndexViewModel
+                {
+                    Movies = new List<UI.Areas.MovieManagement.Models.MovieDisplayViewModel>(),
+                    Genres = new List<UI.Areas.MovieManagement.Models.GenreViewModel>(),
+                    SearchTerm = searchTerm,
+                    GenreId = genreId,
+                    Status = status
+                };
+                
+                return View(emptyViewModel);
             }
-
-            return View(new List<MovieViewModel>());
         }
         
         [HttpGet]
@@ -96,7 +194,13 @@ namespace UI.Areas.MovieManagement.Controllers
                     ProductionCompany = model.ProductionCompany,
                     Director = model.Director,
                     RunningTime = model.RunningTime,
-                    Version = model.Version == "2D" ? 0 : 1, // 0 = TwoD, 1 = ThreeD
+                    Version = model.Version switch 
+                    {
+                        "2D" => 1,    // TwoD = 1
+                        "3D" => 2,    // ThreeD = 2
+                        "4DX" => 3,   // FourDX = 3
+                        _ => 1        // Default to 2D
+                    },
                     TrailerUrl = model.TrailerUrl,
                     Content = model.Content,
                     GenreIds = model.GenreIds, // Sử dụng GenreIds từ form
@@ -131,116 +235,17 @@ namespace UI.Areas.MovieManagement.Controllers
             }
         }
         
-        [HttpGet]
-        public async Task<IActionResult> Edit(Guid id)
-        {
-            ViewData["Title"] = "Chỉnh sửa phim";
-            
-            try
-            {
-                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/movie/GetById?movieId={id}");
-                
-                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
-                {
-                    if (result.Data.TryGetProperty("data", out var dataProp))
-                    {
-                        var options = new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        };
-                        
-                        var movie = JsonSerializer.Deserialize<MovieViewModel>(dataProp.GetRawText(), options);
-                        
-                        if (movie != null)
-                        {
-                            var updateModel = new MovieUpdateViewModel
-                            {
-                                Title = movie.Title,
-                                ReleaseDate = movie.ReleaseDate,
-                                ProductionCompany = movie.ProductionCompany,
-                                RunningTime = movie.RunningTime,
-                                Version = movie.Version
-                                // Các trường khác cần được điền từ movie
-                            };
-                            
-                            return View(updateModel);
-                        }
-                    }
-                }
-                
-                TempData["ErrorMessage"] = "Không thể lấy thông tin phim để chỉnh sửa";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Lỗi khi lấy thông tin phim để chỉnh sửa");
-                TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tải thông tin phim";
-            }
-            
-            return RedirectToAction("Index");
-        }
-        
-        [HttpPost]
-        public async Task<IActionResult> Edit(Guid id, MovieUpdateViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return Json(new { success = false, message = "Dữ liệu không hợp lệ" });
-                
-            try
-            {
-                // Chuyển đổi từ MovieUpdateViewModel sang MovieUpdateDto
-                var movieDto = new
-                {
-                    Id = id,
-                    Title = model.Title,
-                    ReleaseDate = model.ReleaseDate,
-                    EndDate = model.EndDate,
-                    Actors = model.Actors,
-                    ProductionCompany = model.ProductionCompany,
-                    Director = model.Director,
-                    RunningTime = model.RunningTime,
-                    Version = model.Version == "2D" ? 0 : 1, // 0 = TwoD, 1 = ThreeD
-                    TrailerUrl = model.TrailerUrl,
-                    Content = model.Content,
-                    GenreIds = model.Genres?.Select(g => Guid.Parse(g)).ToList() ?? new List<Guid>(),
-                    ShowTimes = new List<object>(), // Cần bổ sung thông tin lịch chiếu
-                    Images = new List<object>() // Cần bổ sung thông tin hình ảnh
-                    {
-                        new {
-                            ImageUrl = model.ImageUrl,
-                            IsPrimary = true,
-                            Description = model.Title,
-                            DisplayOrder = 1
-                        }
-                    }
-                };
-                
-                var result = await _apiService.PostAsync<JsonElement>("/api/v1/movie/Update", movieDto);
-                
-                if (result.Success)
-                {
-                    return Json(new { success = true, message = "Cập nhật phim thành công" });
-                }
-                
-                return Json(new { success = false, message = result.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Lỗi khi cập nhật phim");
-                return Json(new { success = false, message = "Đã xảy ra lỗi khi cập nhật phim" });
-            }
-        }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateMovie([FromBody] JsonElement movieData)
         {
             try
             {
-                _logger.LogInformation("Received movie data: {Data}", movieData.GetRawText());
-                
-                // Parse JSON data
+
                 var movieDto = JsonSerializer.Deserialize<JsonElement>(movieData.GetRawText());
                 
-                // Forward to BE API - BE sử dụng PATCH method
+
                 var result = await _apiService.PatchAsync<JsonElement>("/api/v1/movie/Update", movieDto);
                 
                 if (result.Success)
@@ -285,7 +290,7 @@ namespace UI.Areas.MovieManagement.Controllers
         {
             try
             {
-                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/movie/ChangeStatus?Id={id}&Status={status}");
+                var result = await _apiService.PatchAsync<JsonElement>($"/api/v1/movie/ChangeStatus?Id={id}&Status={status}", null);
                 
                 if (result.Success)
                 {
@@ -293,12 +298,12 @@ namespace UI.Areas.MovieManagement.Controllers
                 }
                 else
                 {
-                    return Json(new { success = false, message = result.Message });
+                    return Json(new { success = false, message = result.Message ?? "Có lỗi xảy ra khi thay đổi trạng thái" });
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi khi thay đổi trạng thái phim");
+                _logger.LogError(ex, "Lỗi khi thay đổi trạng thái phim với ID: {Id}", id);
                 return Json(new { success = false, message = "Đã xảy ra lỗi khi thay đổi trạng thái phim" });
             }
         }
@@ -314,7 +319,7 @@ namespace UI.Areas.MovieManagement.Controllers
                 {
                     if (result.Data.TryGetProperty("data", out var dataProp))
                     {
-                        // Trả về raw JSON data thay vì mapping
+
                         var rawData = JsonSerializer.Deserialize<object>(dataProp.GetRawText());
                         return Json(new { success = true, data = rawData });
                     }
@@ -368,6 +373,224 @@ namespace UI.Areas.MovieManagement.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetMoviesPagination(int page = 1, int pageSize = 100)
+        {
+            try
+            {
+                _logger.LogInformation("Getting movies with pagination - Page: {Page}, PageSize: {PageSize}", page, pageSize);
+                
+                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/movie/ViewPagination?Page={page}&PageSize={pageSize}");
+
+                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    // Parse response - có thể là nested trong data property
+                    JsonElement dataElement = result.Data;
+                    
+                    // Kiểm tra xem có property "data" không
+                    if (result.Data.TryGetProperty("data", out var outerDataProp))
+                    {
+                        dataElement = outerDataProp;
+                    }
+                    
+                    // Kiểm tra xem có property "data" trong level tiếp theo không  
+                    if (dataElement.TryGetProperty("data", out var innerDataProp))
+                    {
+                        var movies = new List<object>();
+                        
+                        if (innerDataProp.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var movieElement in innerDataProp.EnumerateArray())
+                            {
+                                var movie = ExtractMovieData(movieElement);
+                                if (movie != null)
+                                {
+                                    movies.Add(movie);
+                                }
+                            }
+                        }
+
+                        return Json(new { success = true, data = movies });
+                    }
+                    else
+                    {
+                        // Trường hợp data là array trực tiếp
+                        if (dataElement.ValueKind == JsonValueKind.Array)
+                        {
+                            var movies = new List<object>();
+                            
+                            foreach (var movieElement in dataElement.EnumerateArray())
+                            {
+                                var movie = ExtractMovieData(movieElement);
+                                if (movie != null)
+                                {
+                                    movies.Add(movie);
+                                }
+                            }
+
+                            return Json(new { success = true, data = movies });
+                        }
+                    }
+                }
+
+                return Json(new { success = false, message = result.Message ?? "Không thể tải danh sách phim" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy danh sách phim pagination");
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi tải danh sách phim" });
+            }
+        }
+
+        private object? ExtractMovieData(JsonElement movieElement)
+        {
+            try
+            {
+                var movie = new
+                {
+                    id = GetJsonProperty(movieElement, "id"),
+                    title = GetJsonProperty(movieElement, "title"),
+                    releaseDate = GetJsonProperty(movieElement, "releaseDate"),
+                    endDate = GetJsonProperty(movieElement, "endDate"),
+                    productionCompany = GetJsonProperty(movieElement, "productionCompany"),
+                    runningTime = GetJsonPropertyAsInt(movieElement, "runningTime"),
+                    director = GetJsonProperty(movieElement, "director"),
+                    actors = GetJsonProperty(movieElement, "actors"),
+                    content = GetJsonProperty(movieElement, "content"),
+                    status = GetJsonPropertyAsInt(movieElement, "status"),
+                    rating = GetJsonPropertyAsDouble(movieElement, "rating"),
+                    isFeatured = GetJsonPropertyAsBool(movieElement, "isFeatured"),
+                    isRecommended = GetJsonPropertyAsBool(movieElement, "isRecommended"),
+                    posterUrl = GetPosterUrl(movieElement),
+                    genres = GetGenres(movieElement)
+                };
+
+                return movie;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error extracting movie data from JSON");
+                return null;
+            }
+        }
+
+        private string GetJsonProperty(JsonElement element, string propertyName)
+        {
+            // Try lowercase first, then original case
+            if (element.TryGetProperty(propertyName.ToLower(), out var prop) ||
+                element.TryGetProperty(propertyName, out prop) ||
+                element.TryGetProperty(char.ToUpper(propertyName[0]) + propertyName.Substring(1), out prop))
+            {
+                return prop.GetString() ?? "";
+            }
+            return "";
+        }
+
+        private int GetJsonPropertyAsInt(JsonElement element, string propertyName)
+        {
+            if (element.TryGetProperty(propertyName.ToLower(), out var prop) ||
+                element.TryGetProperty(propertyName, out prop) ||
+                element.TryGetProperty(char.ToUpper(propertyName[0]) + propertyName.Substring(1), out prop))
+            {
+                if (prop.ValueKind == JsonValueKind.Number)
+                    return prop.GetInt32();
+                if (prop.ValueKind == JsonValueKind.String && int.TryParse(prop.GetString(), out var intVal))
+                    return intVal;
+            }
+            return 0;
+        }
+
+        private double GetJsonPropertyAsDouble(JsonElement element, string propertyName)
+        {
+            if (element.TryGetProperty(propertyName.ToLower(), out var prop) ||
+                element.TryGetProperty(propertyName, out prop) ||
+                element.TryGetProperty(char.ToUpper(propertyName[0]) + propertyName.Substring(1), out prop))
+            {
+                if (prop.ValueKind == JsonValueKind.Number)
+                    return prop.GetDouble();
+                if (prop.ValueKind == JsonValueKind.String && double.TryParse(prop.GetString(), out var doubleVal))
+                    return doubleVal;
+            }
+            return 0.0;
+        }
+
+        private bool GetJsonPropertyAsBool(JsonElement element, string propertyName)
+        {
+            if (element.TryGetProperty(propertyName.ToLower(), out var prop) ||
+                element.TryGetProperty(propertyName, out prop) ||
+                element.TryGetProperty(char.ToUpper(propertyName[0]) + propertyName.Substring(1), out prop))
+            {
+                if (prop.ValueKind == JsonValueKind.True) return true;
+                if (prop.ValueKind == JsonValueKind.False) return false;
+                if (prop.ValueKind == JsonValueKind.String && bool.TryParse(prop.GetString(), out var boolVal))
+                    return boolVal;
+            }
+            return false;
+        }
+
+        private string GetPosterUrl(JsonElement movieElement)
+        {
+            // Try to get primary image URL
+            if (movieElement.TryGetProperty("primaryImageUrl", out var primaryProp) ||
+                movieElement.TryGetProperty("PrimaryImageUrl", out primaryProp))
+            {
+                var url = primaryProp.GetString();
+                if (!string.IsNullOrEmpty(url)) return url;
+            }
+
+            // Try to get images array and find primary
+            if (movieElement.TryGetProperty("images", out var imagesProp) ||
+                movieElement.TryGetProperty("Images", out imagesProp))
+            {
+                if (imagesProp.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var img in imagesProp.EnumerateArray())
+                    {
+                        if (img.TryGetProperty("isPrimary", out var isPrimaryProp) && isPrimaryProp.GetBoolean())
+                        {
+                            if (img.TryGetProperty("imageUrl", out var urlProp))
+                                return urlProp.GetString() ?? "";
+                        }
+                    }
+                    
+                    // Get first image if no primary found
+                    if (imagesProp.GetArrayLength() > 0)
+                    {
+                        var firstImg = imagesProp.EnumerateArray().First();
+                        if (firstImg.TryGetProperty("imageUrl", out var urlProp))
+                            return urlProp.GetString() ?? "";
+                    }
+                }
+            }
+
+            return "";
+        }
+
+        private List<object> GetGenres(JsonElement movieElement)
+        {
+            var genres = new List<object>();
+            
+            if (movieElement.TryGetProperty("genres", out var genresProp) ||
+                movieElement.TryGetProperty("Genres", out genresProp))
+            {
+                if (genresProp.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var genre in genresProp.EnumerateArray())
+                    {
+                        if (genre.TryGetProperty("name", out var nameProp) ||
+                            genre.TryGetProperty("Name", out nameProp))
+                        {
+                            var name = nameProp.GetString();
+                            if (!string.IsNullOrEmpty(name))
+                                genres.Add(new { name = name });
+                        }
+                    }
+                }
+            }
+            
+            return genres;
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetGenres()
         {
             try
@@ -402,7 +625,7 @@ namespace UI.Areas.MovieManagement.Controllers
         {
             try
             {
-                // Tạm thời return mock data, sau này có thể tạo API riêng cho statistics
+
                 var moviesResult = await _apiService.GetAsync<JsonElement>("/api/v1/movie/View");
                 
                 if (moviesResult.Success && moviesResult.Data.ValueKind != JsonValueKind.Undefined)
@@ -426,9 +649,9 @@ namespace UI.Areas.MovieManagement.Controllers
                         var stats = new
                         {
                             totalMovies = movies.Count,
-                            activeMovies = movies.Count(m => m.Status == 1),  // 1 = Đang chiếu
-                            comingMovies = movies.Count(m => m.Status == 2),  // 2 = Sắp chiếu
-                            totalRevenue = 0 // Mock data
+                            activeMovies = movies.Count(m => m.Status == 1),
+                            comingMovies = movies.Count(m => m.Status == 2),
+                            totalRevenue = 0
                         };
                         
                         return Json(new { success = true, data = stats });
@@ -444,14 +667,164 @@ namespace UI.Areas.MovieManagement.Controllers
             }
         }
 
-        // Helper method to map JSON to MovieViewModel
+
+        [HttpPatch]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetFeatured(Guid movieId, bool isFeatured)
+        {
+            try
+            {
+                var result = await _apiService.PatchAsync<JsonElement>($"/api/v1/movie/SetFeatured?movieId={movieId}&isFeatured={isFeatured}", null);
+                
+                if (result.Success || result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    return Json(new { success = true, message = $"Đã {(isFeatured ? "thêm vào" : "xóa khỏi")} danh sách phim nổi bật" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = result.Message ?? "Có lỗi xảy ra khi cập nhật trạng thái Featured" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi cập nhật trạng thái Featured cho phim {MovieId}", movieId);
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi cập nhật trạng thái Featured" });
+            }
+        }
+
+        [HttpPatch]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetRecommended(Guid movieId, bool isRecommended)
+        {
+            try
+            {
+                var result = await _apiService.PatchAsync<JsonElement>($"/api/v1/movie/SetRecommended?movieId={movieId}&isRecommended={isRecommended}", null);
+                
+                if (result.Success || result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    return Json(new { success = true, message = $"Đã {(isRecommended ? "thêm vào" : "xóa khỏi")} danh sách phim đề xuất" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = result.Message ?? "Có lỗi xảy ra khi cập nhật trạng thái Recommended" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi cập nhật trạng thái Recommended cho phim {MovieId}", movieId);
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi cập nhật trạng thái Recommended" });
+            }
+        }
+
+        [HttpPatch]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeMovieStatus(Guid movieId, int status)
+        {
+            try
+            {
+                var result = await _apiService.PatchAsync<JsonElement>($"/api/v1/movie/ChangeStatus?Id={movieId}&Status={status}", null);
+                
+                if (result.Success || result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    string statusText = status switch
+                    {
+                        1 => "Đang chiếu",
+                        2 => "Sắp chiếu", 
+                        0 => "Ngừng chiếu",
+                        _ => "Không xác định"
+                    };
+                    return Json(new { success = true, message = $"Đã chuyển trạng thái phim thành: {statusText}" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = result.Message ?? "Có lỗi xảy ra khi cập nhật trạng thái phim" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi cập nhật trạng thái cho phim {MovieId}", movieId);
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi cập nhật trạng thái phim" });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMovieById(Guid movieId)
+        {
+            try
+            {
+                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/movie/GetById?movieId={movieId}");
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy thông tin phim {MovieId}", movieId);
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi tải thông tin phim" });
+            }
+        }
+
+        [HttpPatch]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateRating(Guid movieId, double rating)
+        {
+            try
+            {
+                var result = await _apiService.PatchAsync<JsonElement>($"/api/v1/movie/UpdateRating?movieId={movieId}&rating={rating}", null);
+                
+                if (result.Success || result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    return Json(new { success = true, message = $"Đã cập nhật rating thành {rating}/10" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = result.Message ?? "Có lỗi xảy ra khi cập nhật rating" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi cập nhật rating cho phim {MovieId}", movieId);
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi cập nhật rating" });
+            }
+        }
+
+        [HttpPatch]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateMovieData([FromBody] JsonElement movieData)
+        {
+            try
+            {
+                var result = await _apiService.PatchAsync<JsonElement>("/api/v1/movie/Update", movieData);
+                
+                if (result.Success)
+                {
+                    return Json(new { success = true, message = "Cập nhật phim thành công!" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = result.Message ?? "Có lỗi xảy ra khi cập nhật phim" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi cập nhật phim");
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi cập nhật phim" });
+            }
+        }
+
+
         private MovieViewModel? MapJsonToMovieViewModel(JsonElement movieElement)
         {
             try
             {
-                var movie = new MovieViewModel();
+                var movie = new MovieViewModel()
+                {
+                    Version = "2D",
+                    Status = 0,
+                    RunningTime = 0,
+                    ReleaseDate = DateTime.Now,
+                    Genres = new List<UI.Models.GenreViewModel>()
+                };
 
-                // Basic properties - try both camelCase and PascalCase
+
                 if (movieElement.TryGetProperty("id", out var idProp) || movieElement.TryGetProperty("Id", out idProp))
                     movie.Id = idProp.GetString() ?? "";
 
@@ -477,7 +850,9 @@ namespace UI.Areas.MovieManagement.Controllers
                     movie.RunningTime = timeProp.GetInt32();
 
                 if (movieElement.TryGetProperty("version", out var versionProp) || movieElement.TryGetProperty("Version", out versionProp))
-                    movie.Version = versionProp.GetString() ?? "";
+                {
+                    movie.Version = versionProp.GetString() ?? "2D";
+                }
 
                 if (movieElement.TryGetProperty("director", out var directorProp) || movieElement.TryGetProperty("Director", out directorProp))
                     movie.Director = directorProp.GetString();
@@ -494,7 +869,17 @@ namespace UI.Areas.MovieManagement.Controllers
                 if (movieElement.TryGetProperty("status", out var statusProp) || movieElement.TryGetProperty("Status", out statusProp))
                     movie.Status = statusProp.GetInt32();
 
-                // Handle Images - try both property names
+
+                if (movieElement.TryGetProperty("isFeatured", out var featuredProp) || movieElement.TryGetProperty("IsFeatured", out featuredProp))
+                    movie.IsFeatured = featuredProp.GetBoolean();
+
+                if (movieElement.TryGetProperty("isRecommended", out var recommendedProp) || movieElement.TryGetProperty("IsRecommended", out recommendedProp))
+                    movie.IsRecommended = recommendedProp.GetBoolean();
+
+                if (movieElement.TryGetProperty("rating", out var ratingProp) || movieElement.TryGetProperty("Rating", out ratingProp))
+                    movie.Rating = ratingProp.GetDouble();
+
+
                 JsonElement imagesProp;
                 var hasImages = movieElement.TryGetProperty("images", out imagesProp) || 
                                movieElement.TryGetProperty("Images", out imagesProp);
@@ -532,7 +917,7 @@ namespace UI.Areas.MovieManagement.Controllers
                     movie.ImageUrl = primaryImage;
                 }
 
-                // Handle PrimaryImageUrl if available
+
                 if (movieElement.TryGetProperty("primaryImageUrl", out var primaryUrlProp) || 
                     movieElement.TryGetProperty("PrimaryImageUrl", out primaryUrlProp))
                 {
@@ -543,7 +928,7 @@ namespace UI.Areas.MovieManagement.Controllers
                     }
                 }
 
-                // Handle Genres
+
                 JsonElement genresProp;
                 var hasGenres = movieElement.TryGetProperty("genres", out genresProp) || 
                                movieElement.TryGetProperty("Genres", out genresProp);
@@ -562,9 +947,9 @@ namespace UI.Areas.MovieManagement.Controllers
             }
         }
 
-        private List<string> MapGenres(JsonElement genresElement)
+        private List<UI.Models.GenreViewModel> MapGenres(JsonElement genresElement)
         {
-            var genres = new List<string>();
+            var genres = new List<UI.Models.GenreViewModel>();
             
             if (genresElement.ValueKind == JsonValueKind.Array)
             {
@@ -572,38 +957,79 @@ namespace UI.Areas.MovieManagement.Controllers
                 {
                     if (genre.ValueKind == JsonValueKind.String)
                     {
-                        // If it's already a string
                         var genreName = genre.GetString();
                         if (!string.IsNullOrEmpty(genreName))
                         {
-                            genres.Add(genreName);
+                            genres.Add(new UI.Models.GenreViewModel { Id = Guid.NewGuid().ToString(), Name = genreName });
                         }
                     }
                     else if (genre.ValueKind == JsonValueKind.Object)
                     {
-                        // If it's an object with name property
+                        var genreViewModel = new UI.Models.GenreViewModel
+                        {
+                            Id = genre.TryGetProperty("id", out var idProp) ? idProp.GetGuid().ToString() : Guid.NewGuid().ToString(),
+                            Description = genre.TryGetProperty("description", out var descProp) ? descProp.GetString() : null
+                        };
+                        
                         if (genre.TryGetProperty("name", out var nameProp))
                         {
-                            var genreName = nameProp.GetString();
-                            if (!string.IsNullOrEmpty(genreName))
-                            {
-                                genres.Add(genreName);
-                            }
+                            genreViewModel.Name = nameProp.GetString() ?? string.Empty;
                         }
-                        // Try other possible property names
                         else if (genre.TryGetProperty("genreName", out var genreNameProp))
                         {
-                            var genreName = genreNameProp.GetString();
-                            if (!string.IsNullOrEmpty(genreName))
-                            {
-                                genres.Add(genreName);
-                            }
+                            genreViewModel.Name = genreNameProp.GetString() ?? string.Empty;
+                        }
+                        
+                        if (!string.IsNullOrEmpty(genreViewModel.Name))
+                        {
+                            genres.Add(genreViewModel);
                         }
                     }
                 }
             }
             
             return genres;
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    return Json(new { success = false, message = "Không có file được chọn" });
+                }
+
+                var imageUrl = await _imageService.UploadImageAsync(file);
+                return Json(new { success = true, imageUrl = imageUrl });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi upload hình ảnh");
+                return Json(new { success = false, message = "Lỗi khi upload hình ảnh: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadVideo(IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    return Json(new { success = false, message = "Không có file được chọn" });
+                }
+
+                var videoUrl = await _imageService.UploadVideoAsync(file);
+                return Json(new { success = true, videoUrl = videoUrl });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi upload video");
+                return Json(new { success = false, message = "Lỗi khi upload video: " + ex.Message });
+            }
         }
     }
 } 

@@ -6,15 +6,18 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/HomePage/base.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/HomePage/layout.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/HomePage/header.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/HomePage/hero.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/HomePage/button.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/HomePage/responsive.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/HomePage/banner.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/HomePage/moviecard.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/HomePage/base.css" />
+    <link rel="stylesheet" href="~/css/HomePage/header.css" />
+    <link rel="stylesheet" href="~/css/HomePage/hero.css" />
+    <link rel="stylesheet" href="~/css/HomePage/home.css" />
+    <link rel="stylesheet" href="~/css/HomePage/moviecard.css" />
+    <link rel="stylesheet" href="~/css/HomePage/layout.css" />
+    <link rel="stylesheet" href="~/css/HomePage/button.css" />
+    <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" />
+    <link rel="stylesheet" href="~/css/HomePage/banner.css" />
+    <link rel="stylesheet" href="~/css/HomePage/responsive.css" />
+    <link rel="stylesheet" href="~/css/HomePage/custom-fix.css" />
+    <link rel="stylesheet" href="~/css/HomePage/custom-sections.css" />
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -22,6 +25,19 @@
 <div class="cinema-homepage">
     <!-- Hero Section -->
     <div class="hero-section" id="heroSection">
+        <!-- Background Video/Image -->
+        <div class="hero-background" id="heroBackground">
+            @{
+                var initialImage = Model?.FeaturedMovie != null 
+                    ? GetMovieImageUrl(Model.FeaturedMovie)
+                    : "https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=Cinema+City";
+            }
+            <!-- Hero image - hidden by default, only for video backgrounds -->
+            <div class="hero-image" id="heroImage" style="background-image: url('@initialImage'); display: none; opacity: 0;"></div>
+            
+            <!-- Videos will be handled dynamically by JavaScript -->
+        </div>
+        
         <!-- Navigation -->
         <div class="hero-nav">
             <div class="nav-content">
@@ -36,8 +52,8 @@
                         </div>
                     </div>
                     <div class="search-box">
-                        <input type="text" placeholder="Tìm kiếm phim..." class="search-input">
-                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" placeholder="Tìm kiếm phim..." class="search-input" id="movieSearchInput">
+                        <i class="fas fa-search search-icon" id="searchButton"></i>
                     </div>
                 </div>
                 <div class="nav-center">
@@ -45,15 +61,15 @@
                         <a href="#" class="nav-link">Giới thiệu</a>
                         <a href="@Url.Action("Index", "Events")" class="nav-link">
                             <span>Sự kiện</span>
-                            <i class="fas fa-chevron-down"></i>
+                            
                         </a>
                         <a href="@Url.Action("Index", "Products")" class="nav-link">
                             <span>Sản phẩm</span>
-                            <i class="fas fa-chevron-down"></i>
+                            
                         </a>
                         <a href="@Url.Action("Index", "Movies")" class="nav-link">
                             <span>Phim</span>
-                            <i class="fas fa-chevron-down"></i>
+                            
                         </a>
                     </div>
                 </div>
@@ -63,7 +79,7 @@
                     {
                         <div class="user-profile">
                             <div class="dropdown">
-                                <button class="btn-profile dropdown-toggle" type="button" id="userDropdown">
+                                <button class="btn-profile dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-user-circle"></i>
                                     @if (ViewContext.HttpContext.User.Identity?.Name?.Length > 10)
                                     {
@@ -125,41 +141,28 @@
             @if (Model?.FeaturedMovie != null)
             {
                 <div class="movie-info">
-                    <div class="movie-header">
-                        <h1 class="movie-title" id="movieTitle">@Model.FeaturedMovie.Title</h1>
-                        <p class="movie-title-vn" id="movieTitleVn">@(Model.FeaturedMovie.Director ?? "Đạo diễn")</p>
-                    </div>
+                    <h1 class="movie-title" id="movieTitle">@Model.FeaturedMovie.Title</h1>
+                    <p class="movie-subtitle" id="movieTitleVn">@(Model.FeaturedMovie.Director ?? "Đạo diễn")</p>
                     
-                    <div class="movie-details">
-                        <div class="plot-section">
-                            <h3>Tóm tắt nội dung</h3>
-                            <p id="moviePlot">
-                                @(Model.FeaturedMovie.Content ?? "Chưa có thông tin nội dung.")
-                            </p>
-                        </div>
+                    <p class="movie-plot" id="moviePlot">@(Model.FeaturedMovie.Content ?? "Chưa có thông tin nội dung.")</p>
 
-                        <div class="genre-section">
-                            <h3>Thể loại</h3>
-                            <p id="movieGenre">@(Model.FeaturedMovie.Genres != null && Model.FeaturedMovie.Genres.Any() ? string.Join(", ", Model.FeaturedMovie.Genres) : "Chưa phân loại")</p>
-                        </div>
+                    <div class="movie-info-row">
+                        <span class="movie-genre" id="movieGenre">@(Model.FeaturedMovie.Genres != null && Model.FeaturedMovie.Genres.Any() ? string.Join(", ", Model.FeaturedMovie.Genres.Select(g => g.Name)) : "Chưa phân loại")</span>
+                        <span class="movie-duration">
+                            <i class="fas fa-clock"></i>
+                            <span id="duration">@Model.FeaturedMovie.RunningTime phút</span>
+                        </span>
+                    </div>
 
-                        <div class="ratings-section">
-                            <div class="rating-item">
-                                <i class="fas fa-clock"></i>
-                                <span id="duration">@Model.FeaturedMovie.RunningTime phút</span>
-                            </div>
-                        </div>
-
-                        <div class="action-buttons">
-                            <button class="btn-primary" onclick="bookTickets()">
-                                <i class="fas fa-ticket-alt"></i>
-                                Đặt vé ngay
-                            </button>
-                            <button class="btn-secondary" onclick="showMovieInfo()">
-                                <i class="fas fa-info-circle"></i>
-                                Thông tin phim
-                            </button>
-                        </div>
+                    <div class="action-buttons">
+                        <button class="btn-primary" onclick="bookTickets()">
+                            <i class="fas fa-ticket-alt"></i>
+                            Đặt vé ngay
+                        </button>
+                        <button class="btn-secondary" onclick="showMovieInfo()">
+                            <i class="fas fa-info-circle"></i>
+                            Thông tin phim
+                        </button>
                     </div>
                 </div>
             }
@@ -167,41 +170,39 @@
             {
                 <div class="movie-info">
                     <div class="loading-container">
-                        <div class="loading-spinner">
-                            <i class="fas fa-spinner fa-spin fa-3x"></i>
-                        </div>
-                        <h2 class="loading-text">Đang tải dữ liệu phim...</h2>
-                        <p class="loading-subtext">Vui lòng đợi trong giây lát</p>
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <h3>Đang tải dữ liệu phim...</h3>
                     </div>
                 </div>
             }
-
-            <div class="movie-controls">
-                <div class="control-left">
-                    <button class="nav-btn" onclick="previousMovie()">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                </div>
-                
-                <div class="pagination-dots" id="paginationDots">
-                    @if (Model?.HeroMovies != null && Model.HeroMovies.Any())
+        </div>
+        
+        <!-- Movie Controls -->
+        <div class="movie-controls">
+            <div class="control-left">
+                <button class="nav-btn" onclick="previousMovie()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            
+            <div class="pagination-dots" id="paginationDots">
+                @if (Model?.HeroMovies != null && Model.HeroMovies.Any())
+                {
+                    for (int i = 0; i < Model.HeroMovies.Count; i++)
                     {
-                        for (int i = 0; i < Model.HeroMovies.Count; i++)
-                        {
-                            <span class="dot @(i == 0 ? "active" : "")"></span>
-                        }
+                        <span class="dot @(i == 0 ? "active" : "")" data-index="@i"></span>
                     }
-                    else
-                    {
-                        <span class="dot active"></span>
-                    }
-                </div>
+                }
+                else
+                {
+                    <span class="dot active"></span>
+                }
+            </div>
 
-                <div class="control-right">
-                    <button class="nav-btn" onclick="nextMovie()">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
+            <div class="control-right">
+                <button class="nav-btn" onclick="nextMovie()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -329,27 +330,22 @@
         </div>
     </div>
 
-    <!-- Recommended Movies Section -->
-    <div class="recommended-section">
-        <div class="section-header">
-            <div class="nav-controls">
-                <button class="nav-btn" onclick="slideMovies('left')">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button class="nav-btn" onclick="slideMovies('right')">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-            <h2>Phim đề xuất</h2>
+    <!-- Phim đề xuất mới -->
+    <div class="recommended-section-new">
+        <div class="section-title-bar">
+            <h2><i class="fas fa-thumbs-up"></i> Phim đề xuất</h2>
+            <a href="@Url.Action("Index", "Movies")" class="view-all-link">
+                Xem tất cả <i class="fas fa-chevron-right"></i>
+            </a>
         </div>
-
-        <div class="movies-grid" id="moviesGrid">
+        <div class="recommended-content">
+            <div class="recommended-grid">
             @if (Model?.RecommendedMovies != null && Model.RecommendedMovies.Any())
             {
-                foreach (var movie in Model.RecommendedMovies)
+                    foreach (var movie in Model.RecommendedMovies.Take(5))
                 {
-                    <div class="movie-card">
-                        <div class="movie-poster">
+                        <div class="recommended-item">
+                            <div class="recommended-poster">
                             @{
                                 string imageUrl = movie.PrimaryImageUrl ?? movie.ImageUrl;
                                 if (string.IsNullOrEmpty(imageUrl) && movie.Images != null && movie.Images.Any())
@@ -361,481 +357,354 @@
                             }
                             <img src="@imageUrl" alt="@movie.Title" loading="lazy" 
                                  onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
-                            <div class="movie-poster-overlay">
-                                <div class="overlay-content">
-                                    <h3>Tóm tắt nội dung</h3>
-                                    <p>@(string.IsNullOrEmpty(movie.Content) ? "Chưa có thông tin nội dung." : (movie.Content.Length > 150 ? movie.Content.Substring(0, 150) + "..." : movie.Content))</p>
-                                    <div class="overlay-details">
-                                        <div class="detail-col">
-                                            <span class="detail-label">Thể loại</span>
-                                            <span class="detail-value">@(movie.Genres != null && movie.Genres.Any() ? string.Join(", ", movie.Genres) : "Chưa phân loại")</span>
+                                <div class="recommended-overlay">
+                                    <a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="recommended-view-btn">
+                                        <i class="fas fa-info-circle"></i>
+                                        Xem Chi Tiết
+                                    </a>
+                                </div>
+                                <div class="recommended-rating">
+                                    <i class="fas fa-star"></i> @movie.Rating.ToString("F1")
                                         </div>
-                                        <div class="detail-col">
-                                            <span class="detail-label">Phiên bản</span>
-                                            <span class="detail-value">@movie.Version</span>
                                         </div>
+                            <div class="recommended-info">
+                                <span class="recommended-genre">
+                                    @(movie.Genres != null && movie.Genres.Any() ? movie.Genres.First().Name : "Chưa phân loại")
+                                </span>
+                                <h3 class="recommended-title">@movie.Title</h3>
+                                <div class="recommended-meta">
+                                    <div class="recommended-duration">
+                                        <i class="fas fa-clock"></i>
+                                        <span>@movie.RunningTime phút</span>
                                     </div>
+                                    <span>@movie.ReleaseDate.Year</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="movie-meta">
-                            <div class="meta-item">
-                                <i class="fas fa-clock"></i>
-                                <span>@movie.RunningTime phút</span>
-                            </div>
+                    }
+                }
+                else
+                {
+                    <!-- Empty state khi không có phim đề xuất -->
+                    <div class="empty-state">
+                        <div class="empty-state-content">
+                            <i class="fas fa-film fa-3x text-muted mb-3"></i>
+                            <h4>Chưa có phim đề xuất</h4>
+                            <p>Hiện tại chưa có phim nào được đánh dấu là đề xuất.</p>
+                            <a href="@Url.Action("Index", "Movies")" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Xem tất cả phim
+                            </a>
                         </div>
-                        <h3 class="movie-name">@movie.Title</h3>
                     </div>
                 }
-            }
-            else
-            {
-                <div class="loading-grid">
-                    <div class="loading-card">
-                        <div class="loading-spinner">
-                            <i class="fas fa-spinner fa-spin fa-2x"></i>
-                        </div>
-                        <p class="loading-text">Đang tải danh sách phim...</p>
-                    </div>
-                </div>
-            }
+            </div>
         </div>
-
-        <button class="view-all-btn" onclick="location.href='@Url.Action("Index", "Movies")'">
-            <i class="fas fa-chevron-left"></i>
-            <span>Xem tất cả</span>
-        </button>
     </div>
 
-    <!-- Featured Banner Section -->
-    <div class="container">
-        @if (Model?.FeaturedMovie != null)
+    <!-- Phim Sắp Chiếu và Khuyến Mãi -->
+    <div class="dual-sections-container">
+        <!-- Phim Sắp Chiếu -->
+        <div class="custom-section">
+            <div class="section-title-bar">
+                <h2><i class="fas fa-film"></i> Phim Sắp Chiếu</h2>
+                <a href="@Url.Action("Index", "Movies")" class="view-all-link">
+                    Xem tất cả <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+            <div class="coming-soon-content">
+                <div class="coming-soon-list">
+                    @if (Model?.ComingSoonMovies != null && Model.ComingSoonMovies.Any())
         {
-            string featuredBg = Model.FeaturedMovie.PrimaryImageUrl ?? Model.FeaturedMovie.ImageUrl;
-            if (string.IsNullOrEmpty(featuredBg) && Model.FeaturedMovie.Images != null && Model.FeaturedMovie.Images.Any())
+                        foreach (var movie in Model.ComingSoonMovies.Take(4))
+                        {
+                            <div class="coming-soon-item">
+                                <div class="coming-soon-poster">
+                                    @{
+                                        string imageUrl = movie.PrimaryImageUrl ?? movie.ImageUrl;
+                                        if (string.IsNullOrEmpty(imageUrl) && movie.Images != null && movie.Images.Any())
             {
-                var primaryImg = Model.FeaturedMovie.Images.FirstOrDefault(img => img.IsPrimary) ?? Model.FeaturedMovie.Images.First();
-                featuredBg = primaryImg?.ImageUrl;
+                                            var primaryImage = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
+                                            imageUrl = primaryImage?.ImageUrl;
             }
-            <div class="featured-banner" @(!string.IsNullOrEmpty(featuredBg) ? $"style=\"background-image: url('{featuredBg}');\"" : "")>
-                <div class="banner-content">
-                    <div class="banner-info">
-                        <div class="banner-header">
-                            <h2 class="banner-title">@Model.FeaturedMovie.Title</h2>
-                            <p class="banner-title-vn">@(Model.FeaturedMovie.ProductionCompany ?? "Nhà sản xuất")</p>
-                        </div>
-                        
-                        <div class="banner-plot">
-                            <h3>Tóm tắt nội dung</h3>
-                            <p>@(string.IsNullOrEmpty(Model.FeaturedMovie.Content) ? "Chưa có thông tin nội dung." : Model.FeaturedMovie.Content)</p>
-                        </div>
-
-                        <div class="banner-genre">
-                            <h3>Thể loại</h3>
-                            <p>@(Model.FeaturedMovie.Genres != null && Model.FeaturedMovie.Genres.Any() ? string.Join(", ", Model.FeaturedMovie.Genres) : "Chưa phân loại")</p>
-                        </div>
-
-                        <div class="banner-ratings">
-                            <div class="rating-item">
-                                <i class="fas fa-clock"></i>
-                                <span>@Model.FeaturedMovie.RunningTime phút</span>
+                                        imageUrl = imageUrl ?? "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
+                                    }
+                                    <img src="@imageUrl" alt="@movie.Title" loading="lazy"
+                                         onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
+                                    <div class="coming-soon-overlay">
+                                        <a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="coming-soon-view-btn">
+                                            <i class="fas fa-info-circle"></i>
+                                            Xem Chi Tiết
+                                        </a>
+                                    </div>
+                                    <div class="coming-soon-release">@movie.ReleaseDate.ToString("dd/MM/yyyy")</div>
+                                    @if (movie.Rating > 0)
+                                    {
+                                        <div class="coming-soon-rating">
+                                            <i class="fas fa-star"></i> @movie.Rating.ToString("F1")
+                                        </div>
+                                    }
+                                </div>
+                                <div class="coming-soon-info">
+                                    <h3 class="coming-soon-title">@movie.Title</h3>
+                                    <div class="coming-soon-meta">
+                                        <span>@(movie.Genres != null && movie.Genres.Any() ? movie.Genres.First().Name : "Chưa phân loại")</span>
+                                        <span>@movie.RunningTime phút</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <!-- Empty state khi không có phim sắp chiếu -->
+                        <div class="empty-state">
+                            <div class="empty-state-content">
+                                <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
+                                <h4>Chưa có phim sắp chiếu</h4>
+                                <p>Hiện tại chưa có phim nào trong trạng thái sắp chiếu.</p>
+                                <a href="@Url.Action("Index", "Movies")" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> Xem tất cả phim
+                                </a>
                             </div>
                         </div>
-
-                        <a href="@Url.Action("Details", "Movies", new { id = Model.FeaturedMovie.Id })" class="btn-banner">
-                            Xem chi tiết phim
-                        </a>
-                    </div>
+                    }
                 </div>
             </div>
+        </div>
+
+        <!-- Khuyến Mãi -->
+        <div class="custom-section">
+            <div class="section-title-bar">
+                <h2><i class="fas fa-tags"></i> Khuyến Mãi</h2>
+                <a href="@Url.Action("Index", "Promotions")" class="view-all-link">
+                    Xem tất cả <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+            <div class="promotions-content">
+                <div class="promotions-list">
+                    @if (Model?.Promotions != null && Model.Promotions.Any())
+                    {
+                        foreach (var promo in Model.Promotions.Take(4))
+                        {
+                            <div class="promotion-item">
+                                <div class="promotion-image">
+                                    <img src="@promo.ImageUrl" alt="@promo.Title"
+                                         onerror="this.src='https://via.placeholder.com/120/1a1a1a/ffffff?text=Promo'">
+                                </div>
+                                <div class="promotion-info">
+                                    <h3 class="promotion-title">@promo.Title</h3>
+                                    <div class="promotion-period">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        @promo.StartDate.ToString("dd/MM") - @promo.EndDate.ToString("dd/MM/yyyy")
+                                    </div>
+                                    <p class="promotion-desc">@promo.Description</p>
+                                </div>
+                            </div>
+                        }
         }
         else
         {
-            <div class="featured-banner">
-                <div class="banner-content">
-                    <div class="loading-container">
-                        <div class="loading-spinner">
-                            <i class="fas fa-spinner fa-spin fa-3x"></i>
+                        <!-- Dữ liệu mẫu khi không có khuyến mãi -->
+                        <div class="promotion-item">
+                            <div class="promotion-image">
+                                <img src="https://via.placeholder.com/120/df2144/ffffff?text=2+1" alt="Mua 2 tặng 1">
+                            </div>
+                            <div class="promotion-info">
+                                <h3 class="promotion-title">Mua 2 tặng 1 vé xem phim</h3>
+                                <div class="promotion-period">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    01/06 - 30/06/2024
+                                </div>
+                                <p class="promotion-desc">Khi mua 2 vé xem phim bất kỳ, bạn sẽ được tặng thêm 1 vé miễn phí cho suất chiếu cùng ngày.</p>
+                            </div>
                         </div>
-                        <h2 class="loading-text">Đang tải thông tin phim nổi bật...</h2>
+                        <div class="promotion-item">
+                            <div class="promotion-image">
+                                <img src="https://via.placeholder.com/120/df2144/ffffff?text=50%" alt="Giảm giá">
+                            </div>
+                            <div class="promotion-info">
+                                <h3 class="promotion-title">Giảm 50% combo bắp nước</h3>
+                                <div class="promotion-period">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    15/06 - 15/07/2024
+                                </div>
+                                <p class="promotion-desc">Giảm giá 50% cho tất cả các combo bắp nước khi mua vé xem phim vào các ngày thứ 3 và thứ 4.</p>
+                            </div>
+                        </div>
+                        <div class="promotion-item">
+                            <div class="promotion-image">
+                                <img src="https://via.placeholder.com/120/df2144/ffffff?text=VIP" alt="Thành viên">
+                            </div>
+                            <div class="promotion-info">
+                                <h3 class="promotion-title">Ưu đãi thành viên mới</h3>
+                                <div class="promotion-period">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    01/06 - 31/12/2024
+                                </div>
+                                <p class="promotion-desc">Đăng ký thành viên mới, nhận ngay 2 vé xem phim miễn phí và 1 combo bắp nước.</p>
+                            </div>
+                        </div>
+                        <div class="promotion-item">
+                            <div class="promotion-image">
+                                <img src="https://via.placeholder.com/120/df2144/ffffff?text=BDAY" alt="Sinh nhật">
+                            </div>
+                            <div class="promotion-info">
+                                <h3 class="promotion-title">Ưu đãi sinh nhật</h3>
+                                <div class="promotion-period">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Quanh năm
+                                </div>
+                                <p class="promotion-desc">Miễn phí 1 vé xem phim trong tháng sinh nhật cho tất cả các thành viên.</p>
+                            </div>
                     </div>
+                    }
                 </div>
             </div>
-        }
+        </div>
     </div>
 </div>
 
-   <!-- Login Modal 
-   <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-       <div class="modal-dialog modal-dialog-centered">
-           <div class="modal-content auth-modal">
-               <div class="modal-header">
-                   <h5 class="modal-title" id="loginModalLabel">
-                       <i class="fas fa-film me-2"></i>Chào mừng trở lại
-                   </h5>
-                   <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-               </div>
-               <div class="modal-body">
-                   <p class="auth-subtitle">Đăng nhập vào tài khoản rạp phim của bạn</p>
-                
-                   <form id="loginForm" method="post">
-                       @Html.AntiForgeryToken()
-                       <div class="form-group mb-3">
-                           <label class="form-label">
-                               <i class="fas fa-user me-1"></i>Tên đăng nhập
-                           </label>
-                           <input type="text" name="username" class="form-control form-control-lg" placeholder="Nhập tên đăng nhập của bạn" required />
-                           <span class="text-danger small" id="loginUsernameError"></span>
-                       </div>
-
-                       <div class="form-group mb-3">
-                           <label class="form-label">
-                               <i class="fas fa-lock me-1"></i>Mật khẩu
-                           </label>
-                           <div class="input-group">
-                               <input type="password" name="password" class="form-control form-control-lg" placeholder="Nhập mật khẩu của bạn" required />
-                               <button type="button" class="btn btn-outline-secondary toggle-password">
-                                   <i class="fas fa-eye"></i>
-                               </button>
-                           </div>
-                           <span class="text-danger small" id="loginPasswordError"></span>
-                       </div>
-
-                       <div class="text-danger mb-3" id="loginError"></div>
-
-                       <button type="submit" class="btn btn-primary btn-lg w-100 auth-btn">
-                           <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
-                       </button>
-
-                       <div class="auth-footer mt-3">
-                           <p class="text-center mb-2">
-                               Chưa có tài khoản? 
-                               <a href="#" class="auth-link" onclick="switchToRegister()">Tạo tài khoản ngay</a>
-                           </p>
-                           <p class="text-center">
-                               <a href="#" class="auth-link small">Quên mật khẩu?</a>
-                           </p>
-                       </div>
-                   </form>
-               </div>
-           </div>
-       </div>
-   </div>
--->
-   <!-- Register Modal
-   <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-       <div class="modal-dialog modal-dialog-centered modal-lg">
-           <div class="modal-content auth-modal">
-               <div class="modal-header">
-                   <h5 class="modal-title" id="registerModalLabel">
-                       <i class="fas fa-user-plus me-2"></i>Tạo tài khoản
-                   </h5>
-                   <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-               </div>
-               <div class="modal-body">
-                   <p class="auth-subtitle">Tham gia cộng đồng điện ảnh ngay hôm nay</p>
-                
-                   <form id="registerForm" method="post">
-                       @Html.AntiForgeryToken()
-                       <div class="row">
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-user me-1"></i>Tên đăng nhập
-                                   </label>
-                                   <input type="text" name="username" class="form-control" placeholder="Chọn tên đăng nhập" required />
-                               </div>
-                           </div>
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-envelope me-1"></i>Email
-                                   </label>
-                                   <input type="email" name="email" class="form-control" placeholder="Địa chỉ email của bạn" required />
-                               </div>
-                           </div>
-                       </div>
-
-                       <div class="row">
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-lock me-1"></i>Mật khẩu
-                                   </label>
-                                   <input type="password" name="password" class="form-control" placeholder="Tạo mật khẩu" required />
-                               </div>
-                           </div>
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-lock me-1"></i>Xác nhận mật khẩu
-                                   </label>
-                                   <input type="password" name="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu" required />
-                               </div>
-                           </div>
-                       </div>
-
-                       <div class="form-group mb-3">
-                           <label class="form-label">
-                               <i class="fas fa-id-card me-1"></i>Họ và tên
-                           </label>
-                           <input type="text" name="fullName" class="form-control" placeholder="Họ và tên của bạn" required />
-                       </div>
-
-                       <div class="row">
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-phone me-1"></i>Số điện thoại
-                                   </label>
-                                   <input type="tel" name="phone" class="form-control" placeholder="Số điện thoại" />
-                               </div>
-                           </div>
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-id-badge me-1"></i>CMND/CCCD
-                                   </label>
-                                   <input type="text" name="identityCard" class="form-control" placeholder="Số CMND/CCCD" />
-                               </div>
-                           </div>
-                       </div>
-
-                       <div class="form-group mb-3">
-                           <label class="form-label">
-                               <i class="fas fa-map-marker-alt me-1"></i>Địa chỉ
-                           </label>
-                           <textarea name="address" class="form-control" rows="2" placeholder="Địa chỉ của bạn"></textarea>
-                       </div>
-
-                       <div class="row">
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-calendar me-1"></i>Ngày sinh
-                                   </label>
-                                   <input type="date" name="birthDate" class="form-control" />
-                               </div>
-                           </div>
-                           <div class="col-md-6">
-                               <div class="form-group mb-3">
-                                   <label class="form-label">
-                                       <i class="fas fa-venus-mars me-1"></i>Giới tính
-                                   </label>
-                                   <select name="gender" class="form-control">
-                                       <option value="">Chọn giới tính</option>
-                                       <option value="Nam">Nam</option>
-                                       <option value="Nữ">Nữ</option>
-                                       <option value="Khác">Khác</option>
-                                   </select>
-                               </div>
-                           </div>
-                       </div>
-
-                       <div class="text-danger mb-3" id="registerError"></div>
-
-                       <button type="submit" class="btn btn-success btn-lg w-100 auth-btn">
-                           <i class="fas fa-user-plus me-2"></i>Tạo tài khoản
-                       </button>
-
-                       <div class="auth-footer mt-3">
-                           <p class="text-center">
-                               Đã có tài khoản? 
-                               <a href="#" class="auth-link" onclick="switchToLogin()">Đăng nhập tại đây</a>
-                           </p>
-                       </div>
-                   </form>
-               </div>
-           </div>
-       </div>
-</div> -->
-
 @section Scripts {
     <script>
-        // Truyền dữ liệu phim từ server sang JavaScript
-        window.heroMovies = @Html.Raw(Json.Serialize(Model?.HeroMovies?.Select(m => new {
-            id = m.Id,
-            title = m.Title,
-            titleVn = m.ProductionCompany ?? "Nhà sản xuất",
-            plot = m.Content ?? "Chưa có thông tin nội dung.",
-            genre = m.Genres != null && m.Genres.Any() ? string.Join(", ", m.Genres) : "Chưa phân loại",
-            duration = m.RunningTime > 0 ? $"{m.RunningTime} phút" : "Chưa có thông tin",
-            background = m.PrimaryImageUrl ?? m.ImageUrl ?? (m.Images != null && m.Images.Any() ? m.Images.FirstOrDefault(img => img.IsPrimary)?.ImageUrl ?? m.Images.First().ImageUrl : "https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=No+Image")
-        }) ?? new[] { new {
-            id = "",
-            title = "Oppenheimer 2023",
-            titleVn = "Cha đẻ bom nguyên tử",
-            plot = "Phim Oppenheimer kể về cuộc đời của J. Robert Oppenheimer, nhà vật lý lý thuyết người Mỹ được mệnh danh là 'cha đẻ của bom nguyên tử' vì vai trò của ông trong Dự án Manhattan.",
-            genre = "Lịch sử, Tiểu sử, Chính kịch",
-            duration = "3 Giờ",
-            background = "https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"
-        }}));
+        // Truyền dữ liệu phim từ Model vào JavaScript
+        window.heroMoviesData = @Html.Raw(JsonSerializer.Serialize((Model?.HeroMovies ?? new List<MovieViewModel>()).Select(movie => new {
+            id = movie.Id,
+            title = movie.Title,
+            titleVn = movie.Director ?? "Đạo diễn",
+            plot = movie.Content ?? "Chưa có thông tin nội dung.",
+                                    genre = (movie.Genres != null && movie.Genres.Any()) ? string.Join(", ", movie.Genres.Select(g => g.Name)) : "Chưa phân loại",
+            duration = $"{movie.RunningTime} phút",
+            background = GetMovieImageUrl(movie),
+            trailerUrl = movie.TrailerUrl ?? ""
+        })));
+        
+        // 🔍 DEBUG: Kiểm tra data source
+        console.log('📊 MOVIE DATA SOURCE CHECK:');
+        console.log('Total movies:', window.heroMoviesData?.length || 0);
+        
+        if (window.heroMoviesData && window.heroMoviesData.length > 0) {
+            const firstMovie = window.heroMoviesData[0];
+            console.log('First movie ID:', firstMovie.id);
+            console.log('First movie title:', firstMovie.title);
+            
+            // 🖼️ DEBUG: Kiểm tra background URLs
+            console.log('🖼️ BACKGROUND URL CHECK:');
+            window.heroMoviesData.forEach((movie, index) => {
+                console.log(`${index + 1}. ${movie.title} -> ${movie.background}`);
+            });
+            
+            // Kiểm tra xem có phải data từ API không
+            const isFromAPI = firstMovie.id && firstMovie.id.includes('00000000-0000-0000-0000-');
+            const isFromFallback = firstMovie.id && (firstMovie.id === '1' || firstMovie.id === '2' || firstMovie.id === '3');
+            
+            if (isFromAPI) {
+                console.log('✅ USING API DATA - Backend working!');
+                console.log('🎬 Movies from database:', window.heroMoviesData.map(m => m.title));
+            } else if (isFromFallback) {
+                console.log('⚠️ USING FALLBACK DATA - API might be down');
+                console.log('🎬 Fallback movies:', window.heroMoviesData.map(m => m.title));
+            } else {
+                console.log('❓ UNKNOWN DATA SOURCE');
+                console.log('🎬 All movies:', window.heroMoviesData);
+            }
+        } else {
+            console.log('❌ NO MOVIE DATA AVAILABLE');
+        }
         
         window.movieUrls = {
             moviesIndex: '@Url.Action("Index", "Movies")',
             movieDetails: '@Url.Action("Details", "Movies")'
         };
-        
-        // Auth Modal Functions
-        function switchToLogin() {
-            $('#registerModal').modal('hide');
-            setTimeout(() => {
-                $('#loginModal').modal('show');
-            }, 300);
-        }
-        
-        function switchToRegister() {
-            $('#loginModal').modal('hide');
-            setTimeout(() => {
-                $('#registerModal').modal('show');
-            }, 300);
-        }
-        
-        // Toggle password visibility
-        document.querySelectorAll('.toggle-password').forEach(button => {
-            button.addEventListener('click', function() {
-                const input = this.parentElement.querySelector('input');
-                const icon = this.querySelector('i');
+
+        // User dropdown functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const userDropdown = document.getElementById('userDropdown');
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            
+            if (userDropdown && dropdownMenu) {
+                // Handle click on entire button area
+                userDropdown.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Toggle dropdown immediately without delay
+                    const isShowing = dropdownMenu.classList.contains('show');
+                    
+                    if (isShowing) {
+                        dropdownMenu.classList.remove('show');
+                        userDropdown.setAttribute('aria-expanded', 'false');
+                    } else {
+                        dropdownMenu.classList.add('show');
+                        userDropdown.setAttribute('aria-expanded', 'true');
+                    }
+                });
                 
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
+                // Also handle click on any child element of button
+                userDropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                }, true);
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.remove('show');
+                        userDropdown.setAttribute('aria-expanded', 'false');
+                    }
+                });
+                
+                // Close dropdown when pressing Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+                        dropdownMenu.classList.remove('show');
+                        userDropdown.setAttribute('aria-expanded', 'false');
+                        userDropdown.focus();
+                    }
+                });
+            }
+        });
+
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('movieSearchInput');
+            const searchButton = document.getElementById('searchButton');
+
+            // Search on button click
+            searchButton?.addEventListener('click', function () {
+                performSearch();
+            });
+
+            // Search on Enter key press
+            searchInput?.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    performSearch();
                 }
             });
-        });
-        
-        // Login form submission
-        document.getElementById('loginForm')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            
-            // Clear previous errors
-            document.getElementById('loginError').textContent = '';
-            
-            // Basic validation
-            if (!formData.get('username') || !formData.get('password')) {
-                document.getElementById('loginError').textContent = 'Vui lòng nhập đầy đủ thông tin';
-                return;
-            }
-            
-            try {
-                // Prepare form data for model binding
-                const formBody = new URLSearchParams();
-                formBody.append('Username', formData.get('username'));
-                formBody.append('Password', formData.get('password'));
-                formBody.append('RememberMe', 'false');
-                
-                const response = await fetch('@Url.Action("Login", "Account")', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    },
-                    body: formBody.toString()
-                });
-                
-                // Check if response is JSON
-                const contentType = response.headers.get("content-type");
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        // Reload page after successful login
-                        window.location.reload();
-                    } else {
-                        document.getElementById('loginError').textContent = result.message || 'Đăng nhập thất bại';
-                    }
-                } else {
-                    // If not JSON, it might be a redirect or HTML response
-                    if (response.ok || response.redirected) {
-                        window.location.reload();
-                    } else {
-                        document.getElementById('loginError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
-                    }
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                document.getElementById('loginError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
-            }
-        });
-        
-        // Register form submission
-        document.getElementById('registerForm')?.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            
-            // Clear previous errors
-            document.getElementById('registerError').textContent = '';
-            
-            // Basic validation
-            if (!formData.get('username') || !formData.get('email') || !formData.get('password') || 
-                !formData.get('confirmPassword') || !formData.get('fullName')) {
-                document.getElementById('registerError').textContent = 'Vui lòng nhập đầy đủ thông tin bắt buộc';
-                return;
-            }
-            
-            if (formData.get('password') !== formData.get('confirmPassword')) {
-                document.getElementById('registerError').textContent = 'Mật khẩu xác nhận không khớp';
-                return;
-            }
-            
-            try {
-                // Prepare form data for model binding
-                const formBody = new URLSearchParams();
-                formBody.append('Username', formData.get('username'));
-                formBody.append('Email', formData.get('email'));
-                formBody.append('Password', formData.get('password'));
-                formBody.append('ConfirmPassword', formData.get('confirmPassword'));
-                formBody.append('FullName', formData.get('fullName'));
-                formBody.append('Phone', formData.get('phone') || '');
-                formBody.append('IdentityCard', formData.get('identityCard') || '');
-                formBody.append('Address', formData.get('address') || '');
-                formBody.append('BirthDate', formData.get('birthDate') || '');
-                formBody.append('Gender', formData.get('gender') || '');
-                
-                const response = await fetch('@Url.Action("Register", "Account")', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'RequestVerificationToken': document.querySelector('#registerForm input[name="__RequestVerificationToken"]').value
-                    },
-                    body: formBody.toString()
-                });
-                
-                // Check if response is JSON
-                const contentType = response.headers.get("content-type");
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        // Switch to login modal
-                        switchToLogin();
-                        // Show success message
-                        document.getElementById('loginError').innerHTML = '<div class="alert alert-success">Đăng ký thành công! Vui lòng đăng nhập.</div>';
-                    } else {
-                        document.getElementById('registerError').textContent = result.message || 'Đăng ký thất bại';
-                    }
-                } else {
-                    // If not JSON, check if it's a redirect
-                    if (response.ok || response.redirected) {
-                        switchToLogin();
-                        document.getElementById('loginError').innerHTML = '<div class="alert alert-success">Đăng ký thành công! Vui lòng đăng nhập.</div>';
-                    } else {
-                        document.getElementById('registerError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
-                    }
-                }
-            } catch (error) {
-                console.error('Register error:', error);
-                document.getElementById('registerError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
+
+            async function performSearch() {
+                const keyword = searchInput.value.trim();
+
+                // Redirect to search results page
+                const searchUrl = '@Url.Action("Search", "Movies")' + (keyword ? `?keyword=${encodeURIComponent(keyword)}` : '');
+                window.location.href = searchUrl;
             }
         });
     </script>
     <script src="~/js/homepage.js"></script>
+}
+
+@functions {
+    private string GetMovieImageUrl(MovieViewModel movie)
+    {
+        return movie.PrimaryImageUrl 
+            ?? movie.ImageUrl 
+            ?? movie.Images?.FirstOrDefault(img => img.IsPrimary)?.ImageUrl 
+            ?? movie.Images?.FirstOrDefault()?.ImageUrl 
+            ?? "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
+    }
+
+    private string GetMovieDescription(string? content)
+    {
+        if (string.IsNullOrEmpty(content)) return "Chưa có thông tin nội dung.";
+        return content.Length > 150 ? content[..150] + "..." : content;
+    }
 }

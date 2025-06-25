@@ -24,7 +24,7 @@
     <header class="dashboard-header">
         <div class="header-content">
             <div class="brand-section">
-                <a href="@Url.Action("Index", "Home")" class="d-flex align-items-center text-decoration-none">
+                <a href="/" class="d-flex align-items-center text-decoration-none">
                     <div class="brand-logo"></div>
                     <div class="ms-3">
                         <div class="brand-name">Cinema City</div>
@@ -33,7 +33,7 @@
                         </a>
                     </div>
             <nav class="nav-links">
-                <a href="@Url.Action("Index", "Home")" class="nav-link">Trang chủ</a>
+                <a href="/" class="nav-link">Trang chủ</a>
                 <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                     @Html.AntiForgeryToken()
                     <button type="submit" class="btn btn-link nav-link text-decoration-none">
@@ -62,11 +62,7 @@
                         <h3>@ViewBag.FullName</h3>
                         <span class="user-role-badge badge bg-danger">Admin</span>
                     </div>
-                    <div class="col-md-3 mb-3">
-                        <a asp-controller="Promotions" asp-action="Index" class="btn btn-outline-info w-100">
-                            <i class="fas fa-calendar-alt me-2"></i>Quản lý khuyến mãi
-                        </a>
-                    </div>
+
                 </div>
             </div>
 
@@ -74,19 +70,19 @@
                 <!-- Main Menu -->
                 <div class="menu-section">
                     <div class="menu-title">Menu Chính</div>
-                    <a href="@Url.Action("Index", "Dashboard")" class="menu-item active">
+                    <a href="/Dashboard" class="menu-item active">
                         <i class="fas fa-tachometer-alt"></i>
                         Dashboard
                     </a>
-                    <a href="@Url.Action("Index", "Movies")" class="menu-item">
+                    <a href="/Movies" class="menu-item">
                         <i class="fas fa-film"></i>
                         Danh sách phim
                     </a>
-                    <a href="@Url.Action("Index", "Events")" class="menu-item">
+                    <a href="/Events" class="menu-item">
                         <i class="fas fa-calendar-alt"></i>
                         Sự kiện
                     </a>
-                    <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="menu-item">
+                    <a href="/PromotionManagement/Promotions" class="menu-item">
                         <i class="fas fa-gift"></i>
                         Khuyến mãi
                     </a>
@@ -95,11 +91,11 @@
                 <!-- Management -->
                 <div class="menu-section">
                     <div class="menu-title">Quản trị hệ thống</div>
-                    <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="menu-item">
+                    <a href="/UserManagement/Members" class="menu-item">
                         <i class="fas fa-users"></i>
                         Quản lý thành viên
                     </a>
-                    <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="menu-item">
+                    <a href="/MovieManagement/Movies" class="menu-item">
                         <i class="fas fa-video"></i>
                         Quản lý phim
                     </a>
@@ -116,7 +112,7 @@
                 <!-- Personal -->
                 <div class="menu-section">
                     <div class="menu-title">Cá nhân</div>
-                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="menu-item">
+                    <a href="/UserManagement/Account/Profile" class="menu-item">
                         <i class="fas fa-user-edit"></i>
                         Chỉnh sửa hồ sơ
                     </a>
@@ -210,23 +206,17 @@
                                 <i class="fas fa-bolt me-2"></i>Truy cập nhanh
                 </h5>
                             <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <a asp-area="UserManagement" asp-controller="Members" asp-action="Index" class="btn btn-outline-primary w-100">
+                                <div class="col-md-6 mb-3">
+                                    <a href="/UserManagement/Members" class="btn btn-outline-primary w-100">
                                         <i class="fas fa-users me-2"></i>
                                         Quản lý thành viên
                                     </a>
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <a asp-area="MovieManagement" asp-controller="Movies" asp-action="Index" class="btn btn-outline-success w-100">
+                                <div class="col-md-6 mb-3">
+                                    <a href="/MovieManagement/Movies" class="btn btn-outline-success w-100">
                                         <i class="fas fa-film me-2"></i>
                                         Quản lý phim
                     </a>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <a asp-area="PromotionManagement" asp-controller="Promotions" asp-action="Index" class="btn btn-outline-warning w-100">
-                                        <i class="fas fa-gift me-2"></i>
-                                        Quản lý khuyến mãi
-                                    </a>
                                 </div>
                 </div>
             </div>

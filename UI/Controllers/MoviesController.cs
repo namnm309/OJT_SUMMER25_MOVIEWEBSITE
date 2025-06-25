@@ -20,48 +20,132 @@ namespace UI.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string filter = "all", int page = 1)
         {
             ViewData["Title"] = "Phim";
+            ViewData["CurrentFilter"] = filter;
+            ViewData["CurrentPage"] = page;
             
             try
             {
-                var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/View");
-                
-                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
-                {
-                    if (result.Data.TryGetProperty("data", out var dataProp))
-                    {
-                        var options = new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        };
-                        
-                        // Parse thành dynamic object trước để xử lý mapping
-                        var moviesJson = JsonSerializer.Deserialize<JsonElement[]>(dataProp.GetRawText(), options);
-                        var movies = new List<MovieViewModel>();
-                        
-                        if (moviesJson != null)
-                        {
-                            foreach (var movieJson in moviesJson)
-                            {
-                                var movie = MapJsonToMovieViewModel(movieJson);
-                                movies.Add(movie);
-                            }
-                        }
-                        
-                        return View(movies);
-                    }
-                }
-                
-                _logger.LogError("Không thể lấy danh sách phim: {Message}", result.Message);
+                // Khởi tạo danh sách rỗng để không bị lỗi khi load trang đầu tiên
+                return View(new List<MovieViewModel>());
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi khi lấy danh sách phim");
+                _logger.LogError(ex, "Lỗi khi khởi tạo trang phim");
+                return View(new List<MovieViewModel>());
             }
-            
-            return View(new List<MovieViewModel>());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMoviesByFilter(string filter = "all", int page = 1, int pageSize = 12)
+        {
+            try
+            {
+                string apiUrl;
+                
+                switch (filter.ToLower())
+                {
+                    case "all":
+                        // Sử dụng ViewPagination API cho "Tất cả phim"
+                        apiUrl = $"/api/v1/movie/ViewPagination?page={page}&pageSize={pageSize}";
+                        break;
+                        
+                    case "recommended":
+                        // Lấy TẤT CẢ phim đề xuất (không phân trang)
+                        apiUrl = "/api/v1/movie/GetRecommended";
+                        break;
+                        
+                    case "coming-soon":
+                        // Lấy TẤT CẢ phim sắp chiếu (không phân trang) 
+                        apiUrl = "/api/v1/movie/GetComingSoon";
+                        break;
+                        
+                    case "now-showing":
+                        // Lấy TẤT CẢ phim đang chiếu (không phân trang)
+                        apiUrl = "/api/v1/movie/GetNowShowing";
+                        break;
+                        
+                    default:
+                        apiUrl = $"/api/v1/movie/ViewPagination?page={page}&pageSize={pageSize}";
+                        break;
+                }
+
+                var result = await _apiService.GetAsync<JsonElement>(apiUrl);
+                
+                _logger.LogInformation("API Response for filter {Filter}: Success={Success}", filter, result.Success);
+                
+                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    if (filter == "all")
+                    {
+                        try
+                        {
+                            // Parse pagination response: result.Data contains the SuccessResp structure
+                            if (result.Data.TryGetProperty("data", out var paginationDataProp))
+                            {
+                                var paginationData = JsonSerializer.Deserialize<JsonElement>(paginationDataProp.GetRawText(), options);
+                                
+                                // Extract movies array and pagination info
+                                var moviesArray = paginationData.GetProperty("data");
+                                var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(moviesArray.GetRawText(), options);
+                                
+                                var total = paginationData.GetProperty("total").GetInt32();
+                                var currentPage = paginationData.GetProperty("page").GetInt32();
+                                var currentPageSize = paginationData.GetProperty("pageSize").GetInt32();
+                                var totalPages = (int)Math.Ceiling((double)total / currentPageSize);
+                                
+                                _logger.LogInformation("Successfully loaded {Count} movies for page {Page}", movies?.Count ?? 0, currentPage);
+                                
+                                return Json(new { 
+                                    success = true, 
+                                    data = movies,
+                                    pagination = new {
+                                        currentPage = currentPage,
+                                        totalPages = totalPages,
+                                        totalItems = total,
+                                        pageSize = currentPageSize
+                                    }
+                                });
+                            }
+                            
+                            return Json(new { success = false, message = "Invalid pagination response structure" });
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Error parsing pagination response: {Data}", result.Data.GetRawText());
+                            return Json(new { success = false, message = $"Parse error: {ex.Message}" });
+                        }
+                    }
+                    else
+                    {
+                        // For non-paginated responses (recommended, coming-soon, now-showing)
+                        if (result.Data.TryGetProperty("data", out var dataProp))
+                        {
+                            var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), options);
+                            return Json(new { 
+                                success = true, 
+                                data = movies,
+                                totalCount = movies?.Count ?? 0
+                            });
+                        }
+                    }
+                }
+                
+                _logger.LogError("Không thể lấy danh sách phim với filter {Filter}: {Message}", filter, result.Message);
+                return Json(new { success = false, message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy danh sách phim với filter {Filter}", filter);
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi tải danh sách phim" });
+            }
         }
 
         public async Task<IActionResult> Details(Guid id)
@@ -77,7 +161,12 @@ namespace UI.Controllers
                 {
                     if (result.Data.TryGetProperty("data", out var dataProp))
                     {
-                        var movie = MapJsonToMovieViewModel(dataProp);
+                        var options = new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
+                        
+                        var movie = JsonSerializer.Deserialize<MovieViewModel>(dataProp.GetRawText(), options);
                         return View(movie);
                     }
                 }
@@ -101,106 +190,44 @@ namespace UI.Controllers
             return View();
         }
 
-        private MovieViewModel MapJsonToMovieViewModel(JsonElement movieJson)
+        public async Task<IActionResult> Search(string keyword)
         {
-            return new MovieViewModel
-            {
-                Id = movieJson.TryGetProperty("id", out var idProp) ? idProp.GetGuid().ToString() : string.Empty,
-                Title = movieJson.TryGetProperty("title", out var titleProp) ? titleProp.GetString() ?? string.Empty : string.Empty,
-                ReleaseDate = movieJson.TryGetProperty("releaseDate", out var releaseProp) ? releaseProp.GetDateTime() : DateTime.Now,
-                ProductionCompany = movieJson.TryGetProperty("productionCompany", out var prodProp) ? prodProp.GetString() : null,
-                RunningTime = movieJson.TryGetProperty("runningTime", out var timeProp) ? timeProp.GetInt32() : 0,
-                Version = movieJson.TryGetProperty("version", out var versionProp) ? versionProp.GetString() ?? string.Empty : string.Empty,
-                Director = movieJson.TryGetProperty("director", out var directorProp) ? directorProp.GetString() : null,
-                Actors = movieJson.TryGetProperty("actors", out var actorsProp) ? actorsProp.GetString() : null,
-                Content = movieJson.TryGetProperty("content", out var contentProp) ? contentProp.GetString() : null,
-                TrailerUrl = movieJson.TryGetProperty("trailerUrl", out var trailerProp) ? trailerProp.GetString() : null,
-                Status = movieJson.TryGetProperty("status", out var statusProp) ? statusProp.GetInt32() : 0,
-                
-                // Map PrimaryImageUrl và ImageUrl
-                PrimaryImageUrl = movieJson.TryGetProperty("primaryImageUrl", out var primaryImgProp) ? primaryImgProp.GetString() : null,
-                ImageUrl = movieJson.TryGetProperty("primaryImageUrl", out var imgProp) ? imgProp.GetString() : null, // Fallback cho ImageUrl
-                
-                // Map Genres từ List<GenreDto> sang List<string>
-                Genres = MapGenres(movieJson),
-                
-                // Map Images từ List<MovieImageDto> sang List<MovieImageViewModel>
-                Images = MapImages(movieJson),
-                
-                // Map ShowTimes (có thể không có trong response)
-                ShowTimes = MapShowTimes(movieJson)
-            };
-        }
+            ViewData["Title"] = string.IsNullOrEmpty(keyword) ? "Tất cả phim" : $"Kết quả tìm kiếm: {keyword}";
+            ViewData["SearchKeyword"] = keyword;
 
-        private List<string> MapGenres(JsonElement movieJson)
-        {
-            var genres = new List<string>();
-            
-            if (movieJson.TryGetProperty("genres", out var genresProp) && genresProp.ValueKind == JsonValueKind.Array)
+            try
             {
-                foreach (var genreElement in genresProp.EnumerateArray())
+                // Gọi API search - nếu không có keyword thì hiển thị tất cả
+                var apiUrl = string.IsNullOrEmpty(keyword)
+                    ? "/api/v1/movie/View"
+                    : $"/api/v1/movie/Search?keyword={Uri.EscapeDataString(keyword)}";
+
+                var result = await _apiService.GetAsync<JsonElement>(apiUrl);
+
+                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
-                    if (genreElement.TryGetProperty("name", out var nameProp))
+                    if (result.Data.TryGetProperty("data", out var dataProp))
                     {
-                        var genreName = nameProp.GetString();
-                        if (!string.IsNullOrEmpty(genreName))
+                        var options = new JsonSerializerOptions
                         {
-                            genres.Add(genreName);
-                        }
+                            PropertyNameCaseInsensitive = true
+                        };
+
+                        var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), options);
+                        return View("SearchResults", movies);
                     }
                 }
-            }
-            
-            return genres;
-        }
 
-        private List<MovieImageViewModel> MapImages(JsonElement movieJson)
-        {
-            var images = new List<MovieImageViewModel>();
-            
-            if (movieJson.TryGetProperty("images", out var imagesProp) && imagesProp.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var imageElement in imagesProp.EnumerateArray())
-                {
-                    var image = new MovieImageViewModel
-                    {
-                        Id = Guid.NewGuid().ToString(), // Generate ID vì BE không có
-                        ImageUrl = imageElement.TryGetProperty("imageUrl", out var urlProp) ? urlProp.GetString() ?? string.Empty : string.Empty,
-                        Description = imageElement.TryGetProperty("description", out var descProp) ? descProp.GetString() ?? string.Empty : string.Empty,
-                        IsPrimary = imageElement.TryGetProperty("isPrimary", out var primaryProp) ? primaryProp.GetBoolean() : false,
-                        DisplayOrder = imageElement.TryGetProperty("displayOrder", out var orderProp) ? orderProp.GetInt32() : 1
-                    };
-                    
-                    images.Add(image);
-                }
+                _logger.LogError("Không thể tìm kiếm phim: {Message}", result.Message);
+                TempData["ErrorMessage"] = "Không thể tìm kiếm phim";
             }
-            
-            return images;
-        }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi tìm kiếm phim");
+                TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tìm kiếm";
+            }
 
-        private List<MovieShowTimeViewModel> MapShowTimes(JsonElement movieJson)
-        {
-            var showTimes = new List<MovieShowTimeViewModel>();
-            
-            if (movieJson.TryGetProperty("showTimes", out var showTimesProp) && showTimesProp.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var showTimeElement in showTimesProp.EnumerateArray())
-                {
-                    var showTime = new MovieShowTimeViewModel
-                    {
-                        Id = showTimeElement.TryGetProperty("id", out var idProp) ? idProp.GetGuid().ToString() : Guid.NewGuid().ToString(),
-                        ShowDate = showTimeElement.TryGetProperty("showDate", out var dateProp) ? dateProp.GetDateTime() : DateTime.Now,
-                        ShowTime = showTimeElement.TryGetProperty("showTime", out var timeProp) ? timeProp.GetString() ?? string.Empty : string.Empty,
-                        RoomId = showTimeElement.TryGetProperty("roomId", out var roomIdProp) ? roomIdProp.GetGuid().ToString() : string.Empty,
-                        RoomName = showTimeElement.TryGetProperty("roomName", out var roomNameProp) ? roomNameProp.GetString() ?? string.Empty : string.Empty,
-                        Status = showTimeElement.TryGetProperty("status", out var statusProp) ? statusProp.GetString() ?? string.Empty : string.Empty
-                    };
-                    
-                    showTimes.Add(showTime);
-                }
-            }
-            
-            return showTimes;
+            return View("SearchResults", new List<MovieViewModel>());
         }
     }
 }

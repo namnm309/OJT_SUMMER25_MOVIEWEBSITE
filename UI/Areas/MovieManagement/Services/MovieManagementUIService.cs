@@ -8,6 +8,7 @@ namespace UI.Areas.MovieManagement.Services
     {
         // T27: View Movie List
         Task<ApiResponse<dynamic>> GetMoviesAsync();
+        Task<ApiResponse<dynamic>> GetMoviesPaginationAsync(int page = 1, int pageSize = 100);
         
         // T28: Add Movie
         Task<ApiResponse<dynamic>> AddMovieAsync(MovieCreateViewModel model);
@@ -36,11 +37,29 @@ namespace UI.Areas.MovieManagement.Services
             try
             {
                 _logger.LogInformation("Getting movies list for management");
-                return await _apiService.GetAsync<dynamic>("admin/movies");
+                return await _apiService.GetAsync<dynamic>("api/v1/movie/View");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting movies list");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể tải danh sách phim. Vui lòng thử lại."
+                };
+            }
+        }
+
+        public async Task<ApiResponse<dynamic>> GetMoviesPaginationAsync(int page = 1, int pageSize = 100)
+        {
+            try
+            {
+                _logger.LogInformation("Getting movies list with pagination - Page: {Page}, PageSize: {PageSize}", page, pageSize);
+                return await _apiService.GetAsync<dynamic>($"api/v1/movie/ViewPagination?Page={page}&PageSize={pageSize}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting movies pagination list");
                 return new ApiResponse<dynamic>
                 {
                     Success = false,

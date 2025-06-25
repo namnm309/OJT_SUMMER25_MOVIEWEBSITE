@@ -24,5 +24,11 @@ namespace ApplicationLayer.Services.MovieManagement
         Task<IActionResult> GetAllGenre();
         Task<IActionResult> CreateGenre(GenreCreateDto Dto);
         Task<IActionResult> ChangeStatusGenre(Guid Id);
+        Task<IActionResult> SetFeatured(Guid movieId, bool isFeatured);
+        Task<IActionResult> SetRecommended(Guid movieId, bool isRecommended);
+        Task<IActionResult> UpdateRating(Guid movieId, double rating);
+        Task<IActionResult> GetRecommended();
+        Task<IActionResult> GetComingSoon();
+        Task<IActionResult> GetNowShowing();
     }
 }

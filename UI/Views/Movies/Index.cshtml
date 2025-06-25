@@ -1,319 +1,871 @@
+@model List<MovieViewModel>
 @{
-    ViewData["Title"] = "Phim";
+    ViewData["Title"] = "Danh Sách Phim - Cinema City";
+    Layout = "_Layout";
 }
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="page-header">
-                <h1 class="page-title">
-                    <i class="fas fa-film me-2"></i>Phim Đang Chiếu
-                </h1>
-                <p class="page-subtitle">Khám phá những bộ phim mới nhất và hấp dẫn nhất</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="search-container">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Tìm kiếm phim..." id="movieSearch">
-                    <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="filter-container">
-                <select class="form-select" id="genreFilter">
-                    <option value="">Tất cả thể loại</option>
-                    <option value="action">Hành động</option>
-                    <option value="comedy">Hài kịch</option>
-                    <option value="drama">Chính kịch</option>
-                    <option value="horror">Kinh dị</option>
-                    <option value="romance">Lãng mạn</option>
-                    <option value="thriller">Ly kỳ</option>
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="movie-card">
-                <div class="movie-poster">
-                    <img src="https://via.placeholder.com/300x450?text=Phim+1" alt="Movie Poster" class="img-fluid">
-                    <div class="movie-overlay">
-                        <div class="movie-actions">
-                            <a href="@Url.Action("Details", new { id = 1 })" class="btn btn-primary btn-sm">
-                                <i class="fas fa-info-circle"></i> Chi tiết
-                            </a>
-                            <a href="@Url.Action("Showtimes", new { id = 1 })" class="btn btn-success btn-sm">
-                                <i class="fas fa-clock"></i> Lịch chiếu
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-info">
-                    <h5 class="movie-title">Phim Bom Tấn 2024</h5>
-                    <p class="movie-genre">Hành động, Phiêu lưu</p>
-                    <div class="movie-meta">
-                        <span class="movie-rating">
-                            <i class="fas fa-star"></i> 8.5
-                        </span>
-                        <span class="movie-duration">
-                            <i class="fas fa-clock"></i> 120 phút
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="movie-card">
-                <div class="movie-poster">
-                    <img src="https://via.placeholder.com/300x450?text=Phim+2" alt="Movie Poster" class="img-fluid">
-                    <div class="movie-overlay">
-                        <div class="movie-actions">
-                            <a href="@Url.Action("Details", new { id = 2 })" class="btn btn-primary btn-sm">
-                                <i class="fas fa-info-circle"></i> Chi tiết
-                            </a>
-                            <a href="@Url.Action("Showtimes", new { id = 2 })" class="btn btn-success btn-sm">
-                                <i class="fas fa-clock"></i> Lịch chiếu
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-info">
-                    <h5 class="movie-title">Hài Kịch Vui Nhộn</h5>
-                    <p class="movie-genre">Hài kịch, Gia đình</p>
-                    <div class="movie-meta">
-                        <span class="movie-rating">
-                            <i class="fas fa-star"></i> 7.8
-                        </span>
-                        <span class="movie-duration">
-                            <i class="fas fa-clock"></i> 95 phút
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="movie-card">
-                <div class="movie-poster">
-                    <img src="https://via.placeholder.com/300x450?text=Phim+3" alt="Movie Poster" class="img-fluid">
-                    <div class="movie-overlay">
-                        <div class="movie-actions">
-                            <a href="@Url.Action("Details", new { id = 3 })" class="btn btn-primary btn-sm">
-                                <i class="fas fa-info-circle"></i> Chi tiết
-                            </a>
-                            <a href="@Url.Action("Showtimes", new { id = 3 })" class="btn btn-success btn-sm">
-                                <i class="fas fa-clock"></i> Lịch chiếu
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-info">
-                    <h5 class="movie-title">Tình Yêu Lãng Mạn</h5>
-                    <p class="movie-genre">Lãng mạn, Chính kịch</p>
-                    <div class="movie-meta">
-                        <span class="movie-rating">
-                            <i class="fas fa-star"></i> 7.2
-                        </span>
-                        <span class="movie-duration">
-                            <i class="fas fa-clock"></i> 110 phút
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="movie-card">
-                <div class="movie-poster">
-                    <img src="https://via.placeholder.com/300x450?text=Phim+4" alt="Movie Poster" class="img-fluid">
-                    <div class="movie-overlay">
-                        <div class="movie-actions">
-                            <a href="@Url.Action("Details", new { id = 4 })" class="btn btn-primary btn-sm">
-                                <i class="fas fa-info-circle"></i> Chi tiết
-                            </a>
-                            <a href="@Url.Action("Showtimes", new { id = 4 })" class="btn btn-success btn-sm">
-                                <i class="fas fa-clock"></i> Lịch chiếu
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-info">
-                    <h5 class="movie-title">Kinh Dị Đêm Khuya</h5>
-                    <p class="movie-genre">Kinh dị, Ly kỳ</p>
-                    <div class="movie-meta">
-                        <span class="movie-rating">
-                            <i class="fas fa-star"></i> 6.9
-                        </span>
-                        <span class="movie-duration">
-                            <i class="fas fa-clock"></i> 105 phút
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-12">
-            <nav aria-label="Phân trang phim">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">Trước</a>
-                    </li>
-                    <li class="page-item active">
-                        <a class="page-link" href="#">1</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">2</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">3</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Sau</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-</div>
-
 @section Styles {
+    <link rel="stylesheet" href="~/css/HomePage/base.css" />
+    <link rel="stylesheet" href="~/css/HomePage/header.css" />
+    <link rel="stylesheet" href="~/css/HomePage/button.css" />
+    <link rel="stylesheet" href="~/css/HomePage/moviecard.css" />
+    <link rel="stylesheet" href="~/css/HomePage/layout.css" />
+    <link rel="stylesheet" href="~/css/HomePage/responsive.css" />
+    <link rel="stylesheet" href="~/css/HomePage/custom-sections.css" />
     <style>
-        .page-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding: 2rem 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        /* Movies Page Specific Styles */
+        .cinema-movies-page {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
             color: white;
-            border-radius: 10px;
-            margin-bottom: 3rem;
+            font-family: 'Inter', sans-serif;
         }
 
-        .page-title {
+        .movies-hero-section {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.5)),
+                        url('https://images.unsplash.com/photo-1489599511188-17dd6989e6db?w=1920&h=1080&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 6rem 0 4rem;
+            position: relative;
+        }
+
+        .movies-hero-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .movies-hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #e0e6ed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .movies-hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .movies-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
             font-size: 2.5rem;
             font-weight: 700;
+            color: #fff;
             margin-bottom: 0.5rem;
         }
 
-        .page-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 0;
+        .stat-label {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .movie-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        /* Filter Section */
+        .filter-section {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: -3rem 2rem 3rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .filter-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .filter-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-subtitle {
+            color: rgba(255,255,255,0.7);
+            font-size: 1rem;
+        }
+
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .filter-tab {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.8);
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-tab:hover {
+            border-color: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .search-box-movies {
+            position: relative;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.2);
             overflow: hidden;
+            backdrop-filter: blur(10px);
         }
 
-        .movie-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        .search-box-movies input {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 3rem;
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 1rem;
         }
 
-        .movie-poster {
+        .search-box-movies input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .search-box-movies .search-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+        }
+
+        /* Movies Grid */
+        .movies-content {
+            padding: 0 2rem 4rem;
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .movie-card-cinema {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .movie-card-cinema:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .movie-poster-container {
             position: relative;
             overflow: hidden;
+            aspect-ratio: 2/3;
         }
 
-        .movie-poster img {
+        .movie-poster-container img {
             width: 100%;
-            height: 350px;
+            height: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
 
-        .movie-card:hover .movie-poster img {
+        .movie-card-cinema:hover .movie-poster-container img {
             transform: scale(1.05);
         }
 
+        /* Movie Badges */
+        .movie-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+        }
+
+        .movie-badge.recommended {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+        }
+
+        .movie-badge.coming-soon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .movie-badge.now-showing {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
+
+        /* Overlay */
         .movie-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             transition: opacity 0.3s ease;
+            z-index: 3;
         }
 
-        .movie-card:hover .movie-overlay {
+        .movie-card-cinema:hover .movie-overlay {
             opacity: 1;
         }
 
         .movie-actions {
             display: flex;
-            gap: 10px;
+            gap: 1rem;
+            flex-direction: column;
         }
 
+        .movie-actions .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .movie-actions .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .movie-actions .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
+
+        /* Rating */
+        .movie-rating {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ffa500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Movie Info */
         .movie-info {
-            padding: 1rem;
+            padding: 1.5rem;
         }
 
         .movie-title {
-            font-weight: 600;
+            font-size: 1.25rem;
+            font-weight: 700;
             margin-bottom: 0.5rem;
-            color: #333;
+            color: #fff;
+            line-height: 1.3;
         }
 
         .movie-genre {
-            color: #666;
+            color: rgba(255,255,255,0.7);
             font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
         }
 
         .movie-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 0.5rem;
         }
 
-        .movie-rating {
-            color: #ffa500;
+        .movie-director {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            margin-bottom: 0;
         }
 
-        .movie-duration {
-            color: #666;
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
         }
 
-        .search-container, .filter-container {
+        .empty-content {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .empty-content i {
+            color: rgba(255,255,255,0.3);
             margin-bottom: 1rem;
         }
 
-        .input-group .btn {
-            border-left: none;
+        .empty-content h3 {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1rem;
         }
 
-        .form-select {
-            border-radius: 5px;
+        .empty-content p {
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 2rem;
         }
 
+        /* Responsive Design */
         @@media (max-width: 768px) {
-            .page-title {
+            .movies-hero-title {
+                font-size: 2.5rem;
+            }
+
+            .movies-stats {
+                gap: 2rem;
+            }
+
+            .filter-section {
+                margin: -2rem 1rem 2rem;
+                padding: 1.5rem;
+            }
+
+            .filter-tabs {
+                justify-content: center;
+            }
+
+            .filter-tab {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .movies-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .movies-content {
+                padding: 0 1rem 3rem;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .movies-hero-section {
+                padding: 5rem 0 3rem;
+            }
+
+            .movies-hero-title {
                 font-size: 2rem;
             }
 
-            .movie-poster img {
-                height: 300px;
+            .movies-stats {
+                flex-direction: column;
+                gap: 1rem;
             }
+
+            .filter-section {
+                margin: -1.5rem 1rem 2rem;
+                padding: 1rem;
+            }
+
+            .movies-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+        }
+
+        /* Background Animation */
+        .movies-hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 107, 53, 0.1) 0%, transparent 50%);
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @@keyframes backgroundShift {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            33% { transform: translateX(-20px) translateY(-10px); }
+            66% { transform: translateX(20px) translateY(10px); }
         }
     </style>
 }
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<div class="cinema-movies-page">
+    @await Html.PartialAsync("~/Views/Shared/_Header.cshtml")
+
+    <div class="movies-hero-section">
+        <div class="container">
+            <div class="movies-hero-content">
+                <h1 class="movies-hero-title">
+                    <i class="fas fa-film me-3"></i>Danh Sách Phim
+                </h1>
+                <p class="movies-hero-subtitle">Khám phá kho tàng điện ảnh phong phú tại Cinema City</p>
+                
+                <div class="movies-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalMovies">0</span>
+                        <span class="stat-label">Tổng số phim</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="nowShowingCount">0</span>
+                        <span class="stat-label">Đang chiếu</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="comingSoonCount">0</span>
+                        <span class="stat-label">Sắp chiếu</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="filter-section">
+            <div class="filter-header">
+                <h2 class="filter-title">Lọc Phim</h2>
+                <p class="filter-subtitle">Tìm kiếm phim theo thể loại và trạng thái</p>
+            </div>
+            
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all">
+                    <i class="fas fa-th-large"></i>
+                    Tất cả phim
+                </button>
+                <button class="filter-tab" data-filter="recommended">
+                    <i class="fas fa-thumbs-up"></i>
+                    Phim đề xuất
+                </button>
+                <button class="filter-tab" data-filter="coming-soon">
+                    <i class="fas fa-calendar-alt"></i>
+                    Phim sắp chiếu
+                </button>
+                <button class="filter-tab" data-filter="now-showing">
+                    <i class="fas fa-play-circle"></i>
+                    Đang chiếu
+                </button>
+            </div>
+
+            <div class="search-container">
+                <div class="search-box-movies">
+                    <i class="fas fa-search search-icon" id="searchBtn"></i>
+                    <input type="text" placeholder="Tìm kiếm phim theo tên, thể loại, đạo diễn..." id="movieSearch">
+                </div>
+            </div>
+        </div>
+
+        <div class="movies-content">
+            <div class="movies-grid" id="moviesGrid">
+                <!-- Movies will be loaded here via JavaScript -->
+                <div class="loading-state" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
+                    <i class="fas fa-spinner fa-spin fa-3x" style="color: rgba(255,255,255,0.6);"></i>
+                    <h3 style="color: rgba(255,255,255,0.8); margin-top: 1rem;">Đang tải phim...</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            const searchInput = document.getElementById('movieSearch');
+            const searchBtn = document.getElementById('searchBtn');
+            const moviesGrid = document.getElementById('moviesGrid');
+            
+            let currentFilter = 'all';
+            let currentPage = 1;
+            let totalPages = 1;
+            let isLoading = false;
+
+            // Load initial data
+            loadMovies('all', 1);
+
+            // Filter functionality
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    if (isLoading) return;
+                    
+                    // Remove active class from all tabs
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+
+                    const filter = this.getAttribute('data-filter');
+                    currentFilter = filter;
+                    currentPage = 1; // Reset to first page
+                    
+                    console.log('🎬 [FILTER] Switching to:', filter);
+                    loadMovies(filter, 1);
+                });
+            });
+
+            async function loadMovies(filter, page = 1) {
+                if (isLoading) return;
+                
+                try {
+                    isLoading = true;
+                    showLoading();
+                    
+                    console.log(`🔄 [API CALL] Loading movies: filter=${filter}, page=${page}`);
+                    
+                    const response = await fetch(`@Url.Action("GetMoviesByFilter", "Movies")?filter=${filter}&page=${page}&pageSize=12`);
+                    const result = await response.json();
+                    
+                    console.log('📥 [API RESPONSE]', result);
+                    
+                    if (result.success) {
+                        displayMovies(result.data, filter);
+                        updateStats(result, filter);
+                        
+                        // Handle pagination for "all" filter
+                        if (filter === 'all' && result.pagination) {
+                            totalPages = result.pagination.totalPages;
+                            currentPage = result.pagination.currentPage;
+                            displayPagination(result.pagination);
+                        } else {
+                            // Hide pagination for other filters
+                            hidePagination();
+                        }
+                        
+                        console.log(`✅ [SUCCESS] Loaded ${result.data?.length || 0} movies for filter: ${filter}`);
+                    } else {
+                        console.error('❌ [ERROR] API call failed:', result.message);
+                        showError(result.message || 'Không thể tải danh sách phim');
+                    }
+                } catch (error) {
+                    console.error('❌ [FETCH ERROR]', error);
+                    showError('Đã xảy ra lỗi khi tải danh sách phim');
+                } finally {
+                    isLoading = false;
+                    hideLoading();
+                }
+            }
+
+            function displayMovies(movies, filter) {
+                if (!movies || movies.length === 0) {
+                    moviesGrid.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-content">
+                                <i class="fas fa-film fa-5x"></i>
+                                <h3>Không có phim nào</h3>
+                                <p>Hiện tại không tìm thấy phim nào cho danh mục "${getFilterDisplayName(filter)}".</p>
+                                <button class="btn btn-primary" onclick="loadMovies('all', 1)">
+                                    <i class="fas fa-refresh"></i>
+                                    Xem tất cả phim
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const moviesHtml = movies.map(movie => createMovieCard(movie)).join('');
+                moviesGrid.innerHTML = moviesHtml;
+                
+                // Animate cards
+                setTimeout(() => {
+                    const cards = moviesGrid.querySelectorAll('.movie-card-cinema');
+                    cards.forEach((card, index) => {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, index * 100);
+                    });
+                }, 50);
+            }
+
+            function createMovieCard(movie) {
+                const imageUrl = movie.primaryImageUrl || movie.imageUrl || 
+                    (movie.images && movie.images.length > 0 ? 
+                        (movie.images.find(img => img.isPrimary) || movie.images[0]).imageUrl : 
+                        'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image');
+
+                            const genresText = movie.genres && movie.genres.length > 0 ?
+                movie.genres.map(g => g.name).join(', ') : 'Chưa phân loại';
+
+                const isRecommended = movie.isRecommended;
+                const isComingSoon = movie.status === 1;
+                const isNowShowing = movie.status === 2;
+
+                return `
+                    <div class="movie-card-cinema">
+                        <div class="movie-poster-container">
+                            <img src="${imageUrl}" alt="${movie.title}" loading="lazy"
+                                 onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
+                            
+                            ${isRecommended ? `
+                                <div class="movie-badge recommended">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    Đề xuất
+                                </div>
+                            ` : ''}
+                            
+                            ${isComingSoon ? `
+                                <div class="movie-badge coming-soon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Sắp chiếu
+                                </div>
+                            ` : ''}
+                            
+                            ${isNowShowing ? `
+                                <div class="movie-badge now-showing">
+                                    <i class="fas fa-play-circle"></i>
+                                    Đang chiếu
+                                </div>
+                            ` : ''}
+
+                            <div class="movie-overlay">
+                                <div class="movie-actions">
+                                    <a href="@Url.Action("Details", "Movies")/${movie.id}" class="btn btn-primary">
+                                        <i class="fas fa-info-circle"></i>
+                                        Chi tiết
+                                    </a>
+                                    ${isNowShowing ? `
+                                        <a href="@Url.Action("Showtimes", "Movies")/${movie.id}" class="btn btn-success">
+                                            <i class="fas fa-clock"></i>
+                                            Đặt vé
+                                        </a>
+                                    ` : ''}
+                                </div>
+                            </div>
+
+                            ${movie.rating > 0 ? `
+                                <div class="movie-rating">
+                                    <i class="fas fa-star"></i>
+                                    ${movie.rating.toFixed(1)}
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="movie-info">
+                            <h3 class="movie-title">${movie.title}</h3>
+                            <p class="movie-genre">${genresText}</p>
+                            <div class="movie-meta">
+                                <span class="movie-duration">
+                                    <i class="fas fa-clock"></i>
+                                    ${movie.runningTime} phút
+                                </span>
+                                <span class="movie-year">
+                                    <i class="fas fa-calendar"></i>
+                                    ${new Date(movie.releaseDate).getFullYear()}
+                                </span>
+                            </div>
+                            ${movie.director ? `
+                                <p class="movie-director">
+                                    <i class="fas fa-user-tie"></i>
+                                    ${movie.director}
+                                </p>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            function updateStats(result, filter) {
+                if (filter === 'all' && result.pagination) {
+                    document.getElementById('totalMovies').textContent = result.pagination.totalItems;
+                    // Để nguyên stats cho now-showing và coming-soon khi ở tab "all"
+                } else {
+                    // Cập nhật số liệu cho tab hiện tại
+                    const count = result.totalCount || result.data?.length || 0;
+                    document.getElementById('totalMovies').textContent = count;
+                    
+                    if (filter === 'recommended') {
+                        // Có thể cập nhật thêm stats riêng cho recommended
+                    }
+                }
+            }
+
+            function displayPagination(pagination) {
+                let paginationHtml = '';
+                
+                if (pagination.totalPages > 1) {
+                    paginationHtml = `
+                        <nav aria-label="Phân trang phim" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item ${pagination.currentPage <= 1 ? 'disabled' : ''}">
+                                    <button class="page-link" ${pagination.currentPage > 1 ? `onclick="loadMovies('all', ${pagination.currentPage - 1})"` : ''}>
+                                        <i class="fas fa-chevron-left"></i> Trước
+                                    </button>
+                                </li>
+                `;
+                    
+                    // Hiển thị các trang
+                    for (let i = Math.max(1, pagination.currentPage - 2); 
+                         i <= Math.min(pagination.totalPages, pagination.currentPage + 2); 
+                         i++) {
+                        paginationHtml += `
+                            <li class="page-item ${i === pagination.currentPage ? 'active' : ''}">
+                                <button class="page-link" onclick="loadMovies('all', ${i})">${i}</button>
+                            </li>
+                        `;
+                    }
+                    
+                    paginationHtml += `
+                                <li class="page-item ${pagination.currentPage >= pagination.totalPages ? 'disabled' : ''}">
+                                    <button class="page-link" ${pagination.currentPage < pagination.totalPages ? `onclick="loadMovies('all', ${pagination.currentPage + 1})"` : ''}>
+                                        Sau <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
+                    `;
+                }
+                
+                // Add pagination after movies grid
+                const existingPagination = document.querySelector('.pagination-container');
+                if (existingPagination) {
+                    existingPagination.remove();
+                }
+                
+                if (paginationHtml) {
+                    const paginationDiv = document.createElement('div');
+                    paginationDiv.className = 'pagination-container';
+                    paginationDiv.innerHTML = paginationHtml;
+                    moviesGrid.parentNode.appendChild(paginationDiv);
+                }
+            }
+
+            function hidePagination() {
+                const existingPagination = document.querySelector('.pagination-container');
+                if (existingPagination) {
+                    existingPagination.remove();
+                }
+            }
+
+            function showLoading() {
+                moviesGrid.innerHTML = `
+                    <div class="loading-state" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
+                        <i class="fas fa-spinner fa-spin fa-3x" style="color: rgba(255,255,255,0.6);"></i>
+                        <h3 style="color: rgba(255,255,255,0.8); margin-top: 1rem;">Đang tải phim...</h3>
+                    </div>
+                `;
+            }
+
+            function hideLoading() {
+                const loadingState = document.querySelector('.loading-state');
+                if (loadingState) {
+                    loadingState.remove();
+                }
+            }
+
+            function showError(message) {
+                moviesGrid.innerHTML = `
+                    <div class="error-state" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
+                        <i class="fas fa-exclamation-triangle fa-3x" style="color: #ff6b6b;"></i>
+                        <h3 style="color: rgba(255,255,255,0.8); margin: 1rem 0;">Đã xảy ra lỗi</h3>
+                        <p style="color: rgba(255,255,255,0.6); margin-bottom: 2rem;">${message}</p>
+                        <button class="btn btn-primary" onclick="loadMovies(currentFilter, currentPage)">
+                            <i class="fas fa-refresh"></i>
+                            Thử lại
+                        </button>
+                    </div>
+                `;
+            }
+
+            function getFilterDisplayName(filter) {
+                const names = {
+                    'all': 'Tất cả phim',
+                    'recommended': 'Phim đề xuất', 
+                    'coming-soon': 'Phim sắp chiếu',
+                    'now-showing': 'Phim đang chiếu'
+                };
+                return names[filter] || filter;
+            }
+
+            // Search functionality
+            function performSearch() {
+                const keyword = searchInput.value.trim();
+                
+                if (keyword) {
+                    window.location.href = `@Url.Action("Search", "Movies")?keyword=${encodeURIComponent(keyword)}`;
+                } else {
+                    loadMovies(currentFilter, 1);
+                }
+            }
+
+            searchBtn.addEventListener('click', performSearch);
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            console.log('🎬 Cinema Movies page initialized with AJAX loading');
+        });
+    </script>
+} 

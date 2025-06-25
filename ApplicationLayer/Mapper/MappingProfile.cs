@@ -18,6 +18,12 @@ namespace ApplicationLayer.Mapper
         {
             //Movie
             CreateMap<MovieCreateDto, Movie>();
+            
+            //Movie Update - include new properties
+            CreateMap<MovieUpdateDto, Movie>()
+                .ForMember(dest => dest.MovieGenres, opt => opt.Ignore())
+                .ForMember(dest => dest.ShowTimes, opt => opt.Ignore())
+                .ForMember(dest => dest.MovieImages, opt => opt.Ignore());
 
             //Movie Image
             CreateMap<MovieImageDto, MovieImage>();
@@ -49,11 +55,7 @@ namespace ApplicationLayer.Mapper
                 });
 
 
-            //Update Movie
-            CreateMap<MovieUpdateDto, Movie>()
-                .ForMember(dest => dest.MovieGenres, opt => opt.Ignore())
-                .ForMember(dest => dest.ShowTimes, opt => opt.Ignore())
-                .ForMember(dest => dest.MovieImages, opt => opt.Ignore());
+
 
             // Add these to your existing MappingProfile class
             CreateMap<PromotionCreateDto, Promotion>();

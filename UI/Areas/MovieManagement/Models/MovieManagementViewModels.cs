@@ -36,6 +36,13 @@ namespace UI.Areas.MovieManagement.Models
         [Required(ErrorMessage = "Phiên bản phim là bắt buộc")]
         public string Version { get; set; } = string.Empty; // 2D, 3D
         
+        [Range(0.0, 10.0, ErrorMessage = "Điểm đánh giá phải từ 0.0 đến 10.0")]
+        public double Rating { get; set; } = 0.0;
+        
+        public bool IsFeatured { get; set; } = false;
+        
+        public bool IsRecommended { get; set; } = false;
+        
         // For backend API
         public List<Guid> GenreIds { get; set; } = new List<Guid>();
         
@@ -88,5 +95,30 @@ namespace UI.Areas.MovieManagement.Models
         public string RoomName { get; set; } = string.Empty;
         public int TotalSeats { get; set; }
         public bool IsActive { get; set; }
+    }
+
+    public class MovieDisplayViewModel
+    {
+        public Guid MovieId { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public DateTime? ReleaseDate { get; set; }
+        public int Duration { get; set; }
+        public string? PosterUrl { get; set; }
+        public double? Rating { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public List<GenreViewModel> Genres { get; set; } = new List<GenreViewModel>();
+    }
+
+    public class MovieIndexViewModel
+    {
+        public IEnumerable<MovieDisplayViewModel>? Movies { get; set; }
+        public IEnumerable<GenreViewModel>? Genres { get; set; }
+        public string? SearchTerm { get; set; }
+        public Guid? GenreId { get; set; }
+        public string? Status { get; set; }
+        public int TotalMovies { get; set; }
+        public int ActiveMovies { get; set; }
+        public int ComingSoonMovies { get; set; }
+        public int StoppedMovies { get; set; }
     }
 } 

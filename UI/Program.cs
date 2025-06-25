@@ -48,6 +48,9 @@ namespace UI
             
             // Đăng ký AuthUIService
             builder.Services.AddScoped<UI.Services.IAuthUIService, UI.Services.AuthUIService>();
+            
+            // Đăng ký ImageService (for movie/promotion management)
+            builder.Services.AddScoped<UI.Services.IImageService, UI.Services.CloudinaryImageService>();
 
             var app = builder.Build();
 

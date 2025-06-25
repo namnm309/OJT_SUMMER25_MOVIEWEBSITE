@@ -49,6 +49,11 @@ namespace ApplicationLayer.DTO.MovieManagement
 
         [Required]
         public List<MovieImageDto> Images { get; set; } = new();
+
+        // New properties for movie management
+        public bool IsRecommended { get; set; } = false;
+        public bool IsFeatured { get; set; } = false;
+        public double Rating { get; set; } = 0.0;
     }
 
 }

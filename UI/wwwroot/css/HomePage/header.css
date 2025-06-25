@@ -8,7 +8,7 @@
     padding: 0 20px;
     transform: translateX(-50px);
     position: relative; /* Thêm position relative */
-    z-index: 100; /* Z-index cao hơn background layers */
+    z-index: 1100; /* Z-index cao hơn background layers và video */
 }
 
 .nav-content {
@@ -20,7 +20,7 @@
     min-width: 0;
     flex-wrap: nowrap;
     position: relative; /* Thêm position relative */
-    z-index: 101; /* Z-index cao hơn hero-nav */
+    z-index: 1101; /* Z-index cao hơn hero-nav */
 }
 
 .nav-left {
@@ -218,37 +218,52 @@
     justify-content: flex-end;
 }
 
-/* Brand */
+/* Brand - Fixed layout to prevent overlapping */
 .brand {
     text-align: left;
     margin-right: 20px;
+    flex-shrink: 0; /* Prevent shrinking */
+    min-width: 200px; /* Ensure minimum width */
+}
+
+.brand-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* Small gap between header and subtitle */
 }
 
 .brand-header {
     display: flex;
     align-items: center;
-    gap: 12px; /* Tăng gap */
+    gap: 12px;
     justify-content: flex-start;
+    flex-wrap: nowrap; /* Prevent wrapping */
 }
 
 .brand-name {
-    font-size: 18px; /* Tăng font size */
+    font-size: 18px;
     font-weight: 700;
     color: white;
+    white-space: nowrap; /* Prevent text wrapping */
+    line-height: 1.2;
 }
 
 .brand-logo {
-    width: 44px; /* Tăng size logo */
-    height: 36px; /* Tăng size logo */
+    width: 44px;
+    height: 36px;
     background: #df2144;
     border-radius: 4px;
-    order: -1; /* Đặt logo trước tên */
+    order: -1; /* Logo first */
+    flex-shrink: 0; /* Don't shrink logo */
 }
 
 .brand-subtitle {
-    font-size: 14px; /* Tăng font size */
-    color: white;
-    margin-top: 4px;
+    font-size: 12px; /* Slightly smaller to fit better */
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 2px;
+    margin-left: 56px; /* Align with brand name (logo width + gap) */
+    white-space: nowrap; /* Prevent text wrapping */
+    line-height: 1.2;
 }
 
 /* Search Toggle */
@@ -277,3 +292,4 @@
     background: white;
     border-radius: 1px;
 }
+
