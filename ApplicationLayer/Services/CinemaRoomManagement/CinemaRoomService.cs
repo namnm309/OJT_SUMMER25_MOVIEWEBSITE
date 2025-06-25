@@ -110,7 +110,7 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
         {
             var room = string.IsNullOrWhiteSpace(keyword)
                 ? await _cinemaRoomRepo.ListAsync()
-                : await _cinemaRoomRepo.WhereAsync(r => r.RoomName.Contains(keyword));
+                : await _cinemaRoomRepo.WhereAsync(r => r.RoomName.ToLower().Contains(keyword.ToLower()));
 
             var result = _mapper.Map<List<CinemaRoomListDto>>(room);
 
