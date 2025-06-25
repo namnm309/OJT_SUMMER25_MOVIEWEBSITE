@@ -18,6 +18,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<IActionResult> GetAvailableMovies(); //Lấy danh sách phim
         Task<IActionResult> GetShowDatesByMovie(Guid movieId); //Lấy danh sách ngày chiếu cho phim
         Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate); //Lấy các giờ chiếu trong ngày
+
     }
     public class BookingTicketService : IBookingTicketService
     {

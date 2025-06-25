@@ -35,7 +35,7 @@ namespace InfrastructureLayer.Data
         public DbSet<BookingDetail> BookingDetails { get; set; }
         public DbSet<PointHistory> PointHistories { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
-
+        public DbSet<Employee> Employees { get; set; }
 
 
         //Nếu muốn cấu hình chi tiết thêm thì overrive OnModelCreating
