@@ -375,6 +375,9 @@ namespace InfrastructureLayer.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<decimal>("PriceSeat")
+                        .HasColumnType("numeric");
+
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uuid");
 

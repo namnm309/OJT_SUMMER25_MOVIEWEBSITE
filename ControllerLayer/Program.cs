@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using ApplicationLayer.Services.PromotionManagement;
 using ApplicationLayer.Services.CinemaRoomManagement;
 using ApplicationLayer.Services.BookingTicketManagement;
+using ApplicationLayer.Mappings;
 
 namespace ControllerLayer
 {
@@ -58,6 +59,7 @@ namespace ControllerLayer
 
             // Đăng ký AutoMapper
             builder.Services.AddAutoMapper(typeof(ApplicationLayer.Mappings.MovieMappingProfile));
+            builder.Services.AddAutoMapper(typeof(SeatMappingProfile));
 
             // Đăng ký Generic Repository Pattern
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -76,6 +78,9 @@ namespace ControllerLayer
             builder.Services.AddScoped<IPointHistoryService, PointHistoryService>();
 
             builder.Services.AddScoped<IBookingTicketService, BookingTicketService>();
+
+            builder.Services.AddScoped<ISeatRepository, SeatRepository>();
+            builder.Services.AddScoped<ISeatService, SeatService>();
 
             // Cấu hình Authentication với Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

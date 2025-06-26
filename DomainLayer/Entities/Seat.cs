@@ -23,6 +23,9 @@ namespace DomainLayer.Entities
         [Required]
         public bool IsActive { get; set; } = true;
 
+        [Required]
+        public decimal PriceSeat { get; set; }
+
         // Foreign key
         [Required]
         public Guid RoomId { get; set; }

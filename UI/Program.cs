@@ -44,6 +44,8 @@ namespace UI
 
             builder.Services.AddAuthorization();
 
+            builder.Services.AddScoped<UI.Areas.BookingManagement.Services.IBookingManagementUIService, UI.Areas.BookingManagement.Services.BookingManagementUIService>();
+
             // Đăng ký ApiService
             builder.Services.AddScoped<UI.Services.IApiService, UI.Services.ApiService>();
             

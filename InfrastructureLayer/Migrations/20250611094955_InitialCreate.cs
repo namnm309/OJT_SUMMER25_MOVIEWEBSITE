@@ -121,6 +121,7 @@ namespace InfrastructureLayer.Migrations
                     RowIndex = table.Column<int>(type: "integer", nullable: false),
                     ColumnIndex = table.Column<int>(type: "integer", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    PriceSeat = table.Column<decimal>(type: "numeric", nullable: false),
                     RoomId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
