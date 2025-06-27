@@ -1,20 +1,172 @@
 ﻿@model List<UI.Models.PromotionViewModel>
 @{
-    ViewData["Title"] = "Quản lý khuyến mãi";
+    ViewData["Title"] = "Khuyến Mãi - Cinema City";
+    Layout = null;
 }
 
-<div class="container-fluid px-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mt-4">
-            <i class="fas fa-tags me-2 text-primary"></i>@ViewData["Title"]
-        </h1>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Homepage Base CSS for Footer -->
+    <link rel="stylesheet" href="~/css/HomePage/base.css" />
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    
+    <style>
+        /* Cinema Red-Black Theme */
+        html, body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 25%, #1a1a1a 50%, #0a0a0a 75%, #1a1a1a 100%);
+            background-attachment: fixed;
+            background-size: 100% 100%;
+            margin: 0 !important;
+            padding: 0 !important;
+            height: 100%;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .promotion-page {
+            min-height: 100vh;
+            padding-top: 2rem;
+        }
+        
+        .page-header {
+            background: rgba(42, 42, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(223, 33, 68, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .page-title {
+            background: linear-gradient(135deg, #df2144 0%, #ff4466 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            margin: 0;
+        }
+        
+        .card {
+            background: rgba(42, 42, 42, 0.9) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 20px !important;
+            backdrop-filter: blur(20px) !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3) !important;
+        }
+        
+        .card:hover {
+            border-color: rgba(223, 33, 68, 0.3) !important;
+        }
+        
+        .card-header {
+            background: rgba(223, 33, 68, 0.1) !important;
+            border-bottom: 1px solid rgba(223, 33, 68, 0.2) !important;
+            color: white !important;
+        }
+        
+        .table {
+            color: white !important;
+        }
+        
+        .table thead th {
+            background: rgba(223, 33, 68, 0.1) !important;
+            color: #df2144 !important;
+            border-color: rgba(223, 33, 68, 0.2) !important;
+        }
+        
+        .table tbody td {
+            background: transparent !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        .table tbody tr:hover td {
+            background: rgba(223, 33, 68, 0.05) !important;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #df2144 0%, #ff4466 100%) !important;
+            border: none !important;
+            border-radius: 12px !important;
+        }
+        
+        .btn-outline-primary {
+            color: #df2144 !important;
+            border-color: #df2144 !important;
+            border-radius: 12px !important;
+        }
+        
+        .btn-outline-primary:hover {
+            background: #df2144 !important;
+            border-color: #df2144 !important;
+        }
+        
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2) !important;
+            border: 1px solid rgba(40, 167, 69, 0.3) !important;
+            color: #6eff8b !important;
+        }
+        
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.2) !important;
+            border: 1px solid rgba(220, 53, 69, 0.3) !important;
+            color: #ff6b6b !important;
+        }
+        /* Page Layout Fix */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-container {
+            flex: 1;
+        }
+
+        /* Footer styling override */
+        .cinema-footer {
+            margin-top: 4rem !important;
+            position: relative !important;
+            clear: both;
+            width: 100% !important;
+        }
+    </style>
+</head>
+<body>
+    @{
+        ViewBag.CurrentPage = "Promotions";
+    }
+    
+    <!-- Header - Unified Dashboard Style -->
+    @Html.Partial("_DashboardHeader")
+
+    <div class="promotion-page">
+        <div class="container-fluid px-4">
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="page-title">
+                <i class="fas fa-tags me-2"></i>Khuyến Mãi Cinema City
+            </h1>
         <div>
             <button id="refreshBtn" class="btn btn-outline-primary me-2">
                 <i class="fas fa-sync-alt me-2"></i>Tải lại
             </button>
-            <a asp-action="Create" class="btn btn-success">
-                <i class="fas fa-plus me-2"></i>Thêm khuyến mãi
-            </a>
+                             <a asp-action="Create" class="btn btn-success">
+                    <i class="fas fa-plus me-2"></i>Thêm khuyến mãi
+                </a>
+            </div>
         </div>
     </div>
 
@@ -113,11 +265,11 @@
                     </tbody>
                 </table>
             </div>
+            </div>
+        </div>
         </div>
     </div>
-</div>
 
-@section Scripts {
     <script>
         $(document).ready(function() {
             // Xử lý nút tải lại
@@ -126,4 +278,12 @@
             });
         });
     </script>
-}
+
+    <!-- Footer -->
+    @Html.Partial("footer")
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

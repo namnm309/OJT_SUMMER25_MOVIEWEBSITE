@@ -16,33 +16,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Homepage Base CSS for Footer -->
+    <link rel="stylesheet" href="~/css/HomePage/base.css" />
     <!-- Dashboard CSS -->
     <link rel="stylesheet" href="~/css/dashboard.css" />
 </head>
 <body>
-    <!-- Header -->
-    <header class="dashboard-header">
-        <div class="header-content">
-            <div class="brand-section">
-                <a href="@Url.Action("Index", "Home")" class="d-flex align-items-center text-decoration-none">
-                    <div class="brand-logo"></div>
-                    <div class="ms-3">
-                        <div class="brand-name">Cinema City</div>
-                        <div class="brand-subtitle">Rạp chiếu phim hiện đại</div>
-                    </div>
-                </a>
-            </div>
-            <nav class="nav-links">
-                <a href="@Url.Action("Index", "Home")" class="nav-link">Trang chủ</a>
-                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-link nav-link text-decoration-none">
-                        <i class="fas fa-sign-out-alt me-1"></i>Đăng xuất
-                    </button>
-                </form>
-            </nav>
-        </div>
-    </header>
+    @{
+        ViewBag.CurrentPage = "Dashboard";
+    }
+    
+    <!-- Header - Unified Dashboard Style -->
+    @Html.Partial("_DashboardHeader")
 
     <!-- Dashboard Layout -->
     <div class="dashboard-layout">
@@ -262,14 +247,8 @@
         </main>
     </div>
 
-    <!-- Footer -->
-    <footer class="cinema-footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <p>&copy; @DateTime.Now.Year Cinema City. Tất cả quyền được bảo lưu.</p>
-            </div>
-        </div>
-    </footer>
+        <!-- Footer -->
+    @Html.Partial("footer")
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

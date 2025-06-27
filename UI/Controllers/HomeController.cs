@@ -25,113 +25,22 @@ namespace UI.Controllers
             
             try
             {
-                // Lấy danh sách phim từ API
-                var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/View");
-                
-                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
-                {
-                    // Backend trả về format { data: [...], code: 200, message: "OK" }
-                    // Kiểm tra code = 200 thay vì success property
-                    var isSuccessful = result.Data.TryGetProperty("code", out var codeProp) && codeProp.GetInt32() == 200;
-                    
-                    if (isSuccessful && result.Data.TryGetProperty("data", out var dataProp))
-                    {
-                        var options = new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        };
-                        
-                        // Parse thành dynamic object trước để xử lý mapping
-                        var moviesJson = JsonSerializer.Deserialize<JsonElement[]>(dataProp.GetRawText(), options);
-                        var movies = new List<MovieViewModel>();
-                        
-                        if (moviesJson != null)
-                        {
-                            foreach (var movieJson in moviesJson)
-                            {
-                                var movie = new MovieViewModel
-                                {
-                                    Id = movieJson.TryGetProperty("id", out var idProp) ? idProp.GetGuid().ToString() : string.Empty,
-                                    Title = movieJson.TryGetProperty("title", out var titleProp) ? titleProp.GetString() ?? string.Empty : string.Empty,
-                                    ReleaseDate = movieJson.TryGetProperty("releaseDate", out var releaseProp) ? releaseProp.GetDateTime() : DateTime.Now,
-                                    EndDate = movieJson.TryGetProperty("endDate", out var endDateProp) ? endDateProp.GetDateTime() : (DateTime?)null,
-                                    ProductionCompany = movieJson.TryGetProperty("productionCompany", out var prodProp) ? prodProp.GetString() : null,
-                                    RunningTime = movieJson.TryGetProperty("runningTime", out var timeProp) ? timeProp.GetInt32() : 0,
-                                    Version = movieJson.TryGetProperty("version", out var versionProp) ? versionProp.GetString() ?? string.Empty : string.Empty,
-                                    Director = movieJson.TryGetProperty("director", out var directorProp) ? directorProp.GetString() : null,
-                                    Actors = movieJson.TryGetProperty("actors", out var actorsProp) ? actorsProp.GetString() : null,
-                                    Content = movieJson.TryGetProperty("content", out var contentProp) ? contentProp.GetString() : null,
-                                    TrailerUrl = movieJson.TryGetProperty("trailerUrl", out var trailerProp) ? trailerProp.GetString() : null,
-                                    Status = movieJson.TryGetProperty("status", out var statusProp) ? statusProp.GetInt32() : 0,
-                                    Rating = movieJson.TryGetProperty("rating", out var ratingProp) ? ratingProp.GetDouble() : 4.5, // Set default rating
-                                    
-                                    // Map IsFeatured và IsRecommended
-                                    IsFeatured = movieJson.TryGetProperty("isFeatured", out var featuredProp) ? featuredProp.GetBoolean() : false,
-                                    IsRecommended = movieJson.TryGetProperty("isRecommended", out var recommendedProp) ? recommendedProp.GetBoolean() : false,
-                                    
-                                    // Map PrimaryImageUrl và ImageUrl
-                                    PrimaryImageUrl = movieJson.TryGetProperty("primaryImageUrl", out var primaryImgProp) ? primaryImgProp.GetString() : null,
-                                    ImageUrl = movieJson.TryGetProperty("primaryImageUrl", out var imgProp) ? imgProp.GetString() : null, // Fallback cho ImageUrl
-                                    Background = movieJson.TryGetProperty("primaryImageUrl", out var bgProp) ? bgProp.GetString() : null, // Map cho hero background
-                                    
-                                    // Map Genres từ List<GenreDto> sang List<string>
-                                    Genres = MapGenres(movieJson),
-                                    
-                                    // Map Images từ List<MovieImageDto> sang List<MovieImageViewModel>
-                                    Images = MapImages(movieJson)
-                                };
-                                
-                                movies.Add(movie);
-                            }
-                        }
-                        
-                        if (movies != null && movies.Any())
-                        {
-                            // Hero Movies: Lấy phim nổi bật (IsFeatured = true), fallback to all movies nếu không có
-                            var featuredMovies = movies.Where(m => m.IsFeatured).ToList();
-                            viewModel.HeroMovies = featuredMovies.Any() ? featuredMovies.Take(5).ToList() : movies.Take(5).ToList();
-                            viewModel.FeaturedMovie = viewModel.HeroMovies.FirstOrDefault();
-                            
-                            // Phim đề xuất: IsRecommended = true
-                            viewModel.RecommendedMovies = movies
-                                .Where(m => m.IsRecommended)
-                                .Take(6)
-                                .ToList();
-                            
-                            // Phim sắp chiếu: Status = 1 (ComingSoon)
-                            viewModel.ComingSoonMovies = movies
-                                .Where(m => m.Status == 1) // 1 = ComingSoon
-                                .Take(4)
-                                .ToList();
-                                
-                            _logger.LogInformation("✅ USING API DATA - Loaded {Count} movies from backend", movies.Count);
-                            _logger.LogInformation("🎬 Featured movies (Hero): {MovieTitles}", string.Join(", ", viewModel.HeroMovies.Select(m => m.Title)));
-                            _logger.LogInformation("⭐ Recommended movies: {Count} movies", viewModel.RecommendedMovies.Count);
-                            _logger.LogInformation("📅 Coming soon movies: {Count} movies", viewModel.ComingSoonMovies.Count);
-                        }
-                    }
-                }
-                
-                // Set dummy promotions data
-                SetPromotionsData(viewModel);
-                
-                // Nếu không có dữ liệu từ API, dùng dữ liệu mẫu
-                if (!viewModel.HeroMovies.Any())
-                {
-                    _logger.LogWarning("🔄 USING FALLBACK DATA - No data from API");
-                    SetFallbackData(viewModel);
-                }
+                // Load initial data with pagination - Medium Dynamic
+                await LoadInitialData(viewModel);
                 
                 // Set promotions data
                 SetPromotionsData(viewModel);
+                
+                _logger.LogInformation("✅ HOMEPAGE LOADED with Medium Dynamic Pagination");
+                _logger.LogInformation("🎬 Hero movies: {Count}", viewModel.HeroMovies?.Count ?? 0);
+                _logger.LogInformation("⭐ Recommended movies: {Count}", viewModel.RecommendedMovies?.Count ?? 0);
+                _logger.LogInformation("📅 Coming soon movies: {Count}", viewModel.ComingSoonMovies?.Count ?? 0);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi khi lấy dữ liệu phim cho trang chủ");
-                _logger.LogWarning(" FALLING BACK TO SAMPLE DATA due to API error");
+                _logger.LogError(ex, "Lỗi khi lấy dữ liệu phim cho trang chủ - falling back to sample data");
                 // Sử dụng dữ liệu mẫu khi có lỗi
                 SetFallbackData(viewModel);
-                // Set promotions data even in error case
                 SetPromotionsData(viewModel);
             }
             
@@ -381,5 +290,241 @@ namespace UI.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        #region Medium Dynamic Pagination Methods
+
+        private async Task LoadInitialData(HomeViewModel viewModel)
+        {
+            // Load Hero Movies (Featured) - Page 1, 5 items
+            await LoadHeroMovies(viewModel, page: 1, pageSize: 5);
+            
+            // Load Recommended Movies - Page 1, 6 items  
+            await LoadRecommendedMovies(viewModel, page: 1, pageSize: 6);
+            
+            // Load Coming Soon Movies - Page 1, 4 items
+            await LoadComingSoonMovies(viewModel, page: 1, pageSize: 4);
+        }
+
+        private async Task LoadHeroMovies(HomeViewModel viewModel, int page, int pageSize)
+        {
+            try
+            {
+                var apiUrl = $"/api/v1/movie/ViewPagination?page={page}&pageSize={pageSize}";
+                var result = await _apiService.GetAsync<JsonElement>(apiUrl);
+                
+                if (result.Success && result.Data.TryGetProperty("data", out var paginationData))
+                {
+                    var data = JsonSerializer.Deserialize<JsonElement>(paginationData.GetRawText());
+                    var moviesArray = data.GetProperty("data");
+                    var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(moviesArray.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    
+                    // Filter featured movies
+                    var featuredMovies = movies?.Where(m => m.IsFeatured).ToList() ?? new List<MovieViewModel>();
+                    viewModel.HeroMovies = featuredMovies.Any() ? featuredMovies : movies?.Take(5).ToList() ?? new List<MovieViewModel>();
+                    viewModel.FeaturedMovie = viewModel.HeroMovies.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading hero movies");
+                viewModel.HeroMovies = new List<MovieViewModel>();
+            }
+        }
+
+        private async Task LoadRecommendedMovies(HomeViewModel viewModel, int page, int pageSize)
+        {
+            try
+            {
+                var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/GetRecommended");
+                
+                if (result.Success && result.Data.TryGetProperty("data", out var dataProp))
+                {
+                    var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    viewModel.RecommendedMovies = movies?.Take(pageSize).ToList() ?? new List<MovieViewModel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading recommended movies");
+                viewModel.RecommendedMovies = new List<MovieViewModel>();
+            }
+        }
+
+        private async Task LoadComingSoonMovies(HomeViewModel viewModel, int page, int pageSize)
+        {
+            try
+            {
+                var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/GetComingSoon");
+                
+                if (result.Success && result.Data.TryGetProperty("data", out var dataProp))
+                {
+                    var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    viewModel.ComingSoonMovies = movies?.Take(pageSize).ToList() ?? new List<MovieViewModel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading coming soon movies");
+                viewModel.ComingSoonMovies = new List<MovieViewModel>();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRecommendedMovies(
+            int page = 1, 
+            int pageSize = 6,
+            string sortBy = "createdAt",
+            string sortOrder = "desc",
+            string genre = null)
+        {
+            try
+            {
+                var apiUrl = "/api/v1/movie/GetRecommended";
+                var result = await _apiService.GetAsync<JsonElement>(apiUrl);
+                
+                if (result.Success && result.Data.TryGetProperty("data", out var dataProp))
+                {
+                    var allMovies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    
+                    // Apply genre filter if provided
+                    if (!string.IsNullOrEmpty(genre) && genre != "all")
+                    {
+                        allMovies = allMovies?.Where(m => m.Genres?.Any(g => g.Name.ToLower().Contains(genre.ToLower())) == true).ToList();
+                    }
+                    
+                    // Apply sorting
+                    allMovies = ApplySorting(allMovies, sortBy, sortOrder);
+                    
+                    // Apply pagination
+                    var totalItems = allMovies?.Count ?? 0;
+                    var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+                    var skip = (page - 1) * pageSize;
+                    var pagedMovies = allMovies?.Skip(skip).Take(pageSize).ToList() ?? new List<MovieViewModel>();
+                    
+                    return Json(new {
+                        success = true,
+                        data = pagedMovies,
+                        pagination = new {
+                            currentPage = page,
+                            totalPages = totalPages,
+                            totalItems = totalItems,
+                            pageSize = pageSize,
+                            hasNextPage = page < totalPages,
+                            hasPreviousPage = page > 1
+                        }
+                    });
+                }
+                
+                return Json(new { success = false, message = "Không thể lấy phim đề xuất" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetRecommendedMovies");
+                return Json(new { success = false, message = "Lỗi server" });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetComingSoonMovies(
+            int page = 1,
+            int pageSize = 4, 
+            string sortBy = "releaseDate",
+            string sortOrder = "asc",
+            string genre = null,
+            DateTime? fromDate = null,
+            DateTime? toDate = null)
+        {
+            try
+            {
+                var apiUrl = "/api/v1/movie/GetComingSoon";
+                var result = await _apiService.GetAsync<JsonElement>(apiUrl);
+                
+                if (result.Success && result.Data.TryGetProperty("data", out var dataProp))
+                {
+                    var allMovies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    
+                    // Apply filters
+                    allMovies = ApplyFilters(allMovies, genre, fromDate, toDate);
+                    
+                    // Apply sorting
+                    allMovies = ApplySorting(allMovies, sortBy, sortOrder);
+                    
+                    // Apply pagination
+                    var totalItems = allMovies?.Count ?? 0;
+                    var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+                    var skip = (page - 1) * pageSize;
+                    var pagedMovies = allMovies?.Skip(skip).Take(pageSize).ToList() ?? new List<MovieViewModel>();
+                    
+                    return Json(new {
+                        success = true,
+                        data = pagedMovies,
+                        pagination = new {
+                            currentPage = page,
+                            totalPages = totalPages,
+                            totalItems = totalItems,
+                            pageSize = pageSize,
+                            hasNextPage = page < totalPages,
+                            hasPreviousPage = page > 1
+                        }
+                    });
+                }
+                
+                return Json(new { success = false, message = "Không thể lấy phim sắp chiếu" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetComingSoonMovies");
+                return Json(new { success = false, message = "Lỗi server" });
+            }
+        }
+
+        private List<MovieViewModel> ApplyFilters(List<MovieViewModel> movies, string genre, DateTime? fromDate, DateTime? toDate)
+        {
+            if (movies == null) return new List<MovieViewModel>();
+            
+            // Genre filter
+            if (!string.IsNullOrEmpty(genre) && genre != "all")
+            {
+                movies = movies.Where(m => m.Genres?.Any(g => g.Name.ToLower().Contains(genre.ToLower())) == true).ToList();
+            }
+            
+            // Date range filter
+            if (fromDate.HasValue)
+            {
+                movies = movies.Where(m => m.ReleaseDate >= fromDate.Value).ToList();
+            }
+            
+            if (toDate.HasValue)
+            {
+                movies = movies.Where(m => m.ReleaseDate <= toDate.Value).ToList();
+            }
+            
+            return movies;
+        }
+
+        private List<MovieViewModel> ApplySorting(List<MovieViewModel> movies, string sortBy, string sortOrder)
+        {
+            if (movies == null) return new List<MovieViewModel>();
+            
+            var orderedMovies = sortBy.ToLower() switch
+            {
+                "title" => sortOrder.ToLower() == "desc" 
+                    ? movies.OrderByDescending(m => m.Title)
+                    : movies.OrderBy(m => m.Title),
+                "releasedate" => sortOrder.ToLower() == "desc"
+                    ? movies.OrderByDescending(m => m.ReleaseDate)
+                    : movies.OrderBy(m => m.ReleaseDate),
+                "rating" => sortOrder.ToLower() == "desc"
+                    ? movies.OrderByDescending(m => m.Rating)
+                    : movies.OrderBy(m => m.Rating),
+                _ => sortOrder.ToLower() == "desc"
+                    ? movies.OrderByDescending(m => m.ReleaseDate)
+                    : movies.OrderBy(m => m.ReleaseDate)
+            };
+            
+            return orderedMovies.ToList();
+        }
+
+        #endregion
     }
 }

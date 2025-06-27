@@ -22,15 +22,17 @@ body {
     position: sticky;
     top: 0;
     z-index: 1000;
+    height: 70px; /* Fixed header height */
 }
 
 .header-content {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 15px 20px; /* Reduced padding */
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 100%;
 }
 
 .brand-section {
@@ -83,6 +85,7 @@ body {
     display: flex;
     flex: 1;
     position: relative;
+    min-height: calc(100vh - 70px); /* Match header height */
 }
 
 /* Sidebar Styles */
@@ -91,10 +94,11 @@ body {
     background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     position: sticky;
-    top: 80px; /* Height of header */
-    height: calc(100vh - 80px);
+    top: 70px; /* Match header height */
+    height: calc(100vh - 70px); /* Match header height */
     overflow-y: auto;
     transition: all 0.3s ease;
+    flex-shrink: 0; /* Prevent sidebar from shrinking */
 }
 
 .sidebar-header {
@@ -206,7 +210,7 @@ body {
 .sidebar-toggle {
     display: none;
     position: fixed;
-    top: 100px;
+    top: 85px; /* Adjust for new header height */
     left: 20px;
     z-index: 999;
     background: #df2144;
@@ -215,7 +219,6 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -231,8 +234,10 @@ body {
 /* Main Content Area */
 .dashboard-main {
     flex: 1;
-    padding: 40px;
+    padding: 20px; /* Reduced padding */
     overflow-y: auto;
+    min-height: calc(100vh - 70px); /* Match header height */
+    background: #0a0a0a;
 }
 
 .dashboard-container {
@@ -693,4 +698,72 @@ body {
     .table {
         font-size: 14px;
     }
+}
+
+/* Footer fixes for all dashboard pages */
+.cinema-footer {
+    margin-top: 4rem !important;
+    position: relative !important;
+    clear: both;
+    width: 100% !important;
+    background-color: #0f0f0f !important;
+    color: #fff !important;
+    padding: 60px 0 20px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Ensure proper page layout for footer */
+.dashboard-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-main {
+    flex: 1;
+}
+
+/* Additional footer styling */
+.footer-container {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+}
+
+.footer-top {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+    margin-bottom: 40px !important;
+}
+
+.footer-logo {
+    flex: 0 0 100% !important;
+    max-width: 300px !important;
+    margin-bottom: 30px !important;
+}
+
+.footer-brand-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.footer-brand-name {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: white !important;
+}
+
+.footer-brand-logo {
+    width: 44px !important;
+    height: 36px !important;
+    background: #df2144 !important;
+    border-radius: 4px !important;
+}
+
+.footer-brand-subtitle {
+    font-size: 14px !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    margin-top: 8px !important;
 } 

@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Homepage Base CSS for Footer -->
+    <link rel="stylesheet" href="~/css/HomePage/base.css" />
     
     <style>
         * {
@@ -352,35 +354,12 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="dashboard-header">
-        <div class="header-content">
-            <div class="brand-section">
-                <a href="@Url.Action("Index", "Home")" class="d-flex align-items-center text-decoration-none">
-                    <div class="brand-logo"></div>
-                    <div class="ms-3">
-                        <div class="brand-name">Cinema City</div>
-                        <div class="brand-subtitle">Rạp chiếu phim hiện đại</div>
-                    </div>
-                        </a>
-                    </div>
-            <nav class="nav-links">
-                <a href="@Url.Action("Index", "Home")" class="nav-link">Trang chủ</a>
-                <a href="@Url.Action("Index", "Movies")" class="nav-link">Phim</a>
-                <a href="@Url.Action("Index", "Events")" class="nav-link">Sự kiện</a>
-                <a href="@Url.Action("Index", "Dashboard")" class="nav-link active">Dashboard</a>
-                
-                <div class="user-menu">
-                    <div class="user-info">
-                        <div class="user-avatar">
-                            @ViewBag.UserName?.Substring(0, 1).ToUpper()
-                        </div>
-                        <span class="user-name">@ViewBag.UserName</span>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </header>
+    @{
+        ViewBag.CurrentPage = "Dashboard";
+    }
+    
+    <!-- Header - Unified Dashboard Style -->
+    @Html.Partial("_DashboardHeader")
 
     <!-- Main Content -->
     <main class="dashboard-container">
@@ -486,13 +465,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="cinema-footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <p>&copy; @DateTime.Now.Year Cinema City. Tất cả quyền được bảo lưu.</p>
-    </div>
-</div> 
-    </footer>
+    @Html.Partial("footer")
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

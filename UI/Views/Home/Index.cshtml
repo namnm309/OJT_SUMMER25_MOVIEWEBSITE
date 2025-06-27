@@ -58,23 +58,23 @@
                 </div>
                 <div class="nav-center">
                     <div class="nav-links">
-                        <a href="#" class="nav-link">Giới thiệu</a>
+                        <a href="@Url.Action("Index","Home")" class="nav-link">Trang chủ</a>
+                        <a href="@Url.Action("Index", "Movies")" class="nav-link">
+                            <span>Phim</span>                            
+                        </a>
                         <a href="@Url.Action("Index", "Events")" class="nav-link">
-                            <span>Sự kiện</span>
+                            <span>Sự Kiện</span>
                             
                         </a>
                         <a href="@Url.Action("Index", "Products")" class="nav-link">
-                            <span>Sản phẩm</span>
+                            <span>Sản Phẩm</span>
                             
                         </a>
-                        <a href="@Url.Action("Index", "Movies")" class="nav-link">
-                            <span>Phim</span>
                             
-                        </a>
                     </div>
                 </div>
                 <div class="nav-right">
-                    <div class="divider"></div>
+                    
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <div class="user-profile">
@@ -338,6 +338,66 @@
                 Xem tất cả <i class="fas fa-chevron-right"></i>
             </a>
         </div>
+        
+        <!-- Modern Pagination Controls for Recommended Movies - TRƯỚC danh sách phim -->
+        <div class="section-pagination" id="recommendedPagination">
+            <div class="pagination-controls">
+                <div class="sort-filter-controls">
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-sort-amount-down"></i>
+                            <span>Sắp xếp</span>
+                        </label>
+                        <select id="recommendedSort" class="pagination-select">
+                            <option value="createdAt-desc">🕒 Mới nhất</option>
+                            <option value="title-asc">🔤 Tên A-Z</option>
+                            <option value="title-desc">🔤 Tên Z-A</option>
+                            <option value="rating-desc">⭐ Đánh giá cao nhất</option>
+                            <option value="rating-asc">⭐ Đánh giá thấp nhất</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-theater-masks"></i>
+                            <span>Thể loại</span>
+                        </label>
+                        <select id="recommendedGenre" class="pagination-select">
+                            <option value="all">🎭 Tất cả thể loại</option>
+                            <option value="hành động">💥 Hành động</option>
+                            <option value="tình cảm">💕 Tình cảm</option>
+                            <option value="kinh dị">👻 Kinh dị</option>
+                            <option value="hài">😂 Hài</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-list"></i>
+                            <span>Hiển thị</span>
+                        </label>
+                        <select id="recommendedPageSize" class="pagination-select">
+                            <option value="6">📄 6 phim</option>
+                            <option value="9">📄 9 phim</option>
+                            <option value="12">📄 12 phim</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button id="loadMoreRecommended" class="btn-load-more">
+                    <i class="fas fa-chevron-down"></i>
+                    <span>Xem thêm</span>
+                </button>
+                
+                <div class="pagination-info" id="recommendedInfo">
+                    <div class="info-content">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Trang 1 / 1 (0 phim)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="recommended-content">
             <div class="recommended-grid">
             @if (Model?.RecommendedMovies != null && Model.RecommendedMovies.Any())
@@ -351,7 +411,7 @@
                                 if (string.IsNullOrEmpty(imageUrl) && movie.Images != null && movie.Images.Any())
                                 {
                                     var primaryImage = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
-                                    imageUrl = primaryImage?.ImageUrl;
+                                    imageUrl = primaryImage?.ImageUrl ?? "";
                                 }
                                 imageUrl = imageUrl ?? "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
                             }
@@ -401,57 +461,123 @@
         </div>
     </div>
 
-    <!-- Phim Sắp Chiếu và Khuyến Mãi -->
-    <div class="dual-sections-container">
-        <!-- Phim Sắp Chiếu -->
-        <div class="custom-section">
+    <!-- Phim Sắp Chiếu - Full Width như Phim đề xuất -->
+    <div class="recommended-section-new">
             <div class="section-title-bar">
                 <h2><i class="fas fa-film"></i> Phim Sắp Chiếu</h2>
                 <a href="@Url.Action("Index", "Movies")" class="view-all-link">
                     Xem tất cả <i class="fas fa-chevron-right"></i>
                 </a>
             </div>
-            <div class="coming-soon-content">
-                <div class="coming-soon-list">
+        
+        <!-- Modern Pagination Controls for Coming Soon Movies - TRƯỚC danh sách phim -->
+        <div class="section-pagination" id="comingSoonPagination">
+            <div class="pagination-controls">
+                <div class="sort-filter-controls">
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Sắp xếp</span>
+                        </label>
+                        <select id="comingSoonSort" class="pagination-select">
+                            <option value="releaseDate-asc">📅 Ngày chiếu gần nhất</option>
+                            <option value="releaseDate-desc">📅 Ngày chiếu xa nhất</option>
+                            <option value="title-asc">🔤 Tên A-Z</option>
+                            <option value="rating-desc">⭐ Đánh giá cao nhất</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-film"></i>
+                            <span>Thể loại</span>
+                        </label>
+                        <select id="comingSoonGenre" class="pagination-select">
+                            <option value="all">🎬 Tất cả thể loại</option>
+                            <option value="hành động">💥 Hành động</option>
+                            <option value="tình cảm">💕 Tình cảm</option>
+                            <option value="kinh dị">👻 Kinh dị</option>
+                            <option value="hài">😂 Hài</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-eye"></i>
+                            <span>Hiển thị</span>
+                        </label>
+                        <select id="comingSoonPageSize" class="pagination-select">
+                            <option value="4">📑 4 phim</option>
+                            <option value="6">📑 6 phim</option>
+                            <option value="8">📑 8 phim</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button id="loadMoreComingSoon" class="btn-load-more">
+                    <i class="fas fa-chevron-down"></i>
+                    <span>Xem thêm</span>
+                </button>
+                
+                <div class="pagination-info" id="comingSoonInfo">
+                    <div class="info-content">
+                        <i class="fas fa-clock"></i>
+                        <span>Trang 1 / 1 (0 phim)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recommended-content">
+            <div class="recommended-grid">
                     @if (Model?.ComingSoonMovies != null && Model.ComingSoonMovies.Any())
         {
                         foreach (var movie in Model.ComingSoonMovies.Take(4))
                         {
-                            <div class="coming-soon-item">
-                                <div class="coming-soon-poster">
+                        <div class="recommended-item">
+                            <div class="recommended-poster">
                                     @{
                                         string imageUrl = movie.PrimaryImageUrl ?? movie.ImageUrl;
                                         if (string.IsNullOrEmpty(imageUrl) && movie.Images != null && movie.Images.Any())
             {
                                             var primaryImage = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
-                                            imageUrl = primaryImage?.ImageUrl;
+                                            imageUrl = primaryImage?.ImageUrl ?? "";
             }
                                         imageUrl = imageUrl ?? "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
                                     }
                                     <img src="@imageUrl" alt="@movie.Title" loading="lazy"
                                          onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
-                                    <div class="coming-soon-overlay">
-                                        <a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="coming-soon-view-btn">
+                                <div class="recommended-overlay">
+                                    <a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="recommended-view-btn">
                                             <i class="fas fa-info-circle"></i>
                                             Xem Chi Tiết
                                         </a>
                                     </div>
-                                    <div class="coming-soon-release">@movie.ReleaseDate.ToString("dd/MM/yyyy")</div>
+                                <!-- Release Date Badge cho Coming Soon -->
+                                <div class="recommended-release-date">
+                                    <i class="fas fa-calendar-alt"></i> @movie.ReleaseDate.ToString("dd/MM/yyyy")
+                                </div>
                                     @if (movie.Rating > 0)
                                     {
-                                        <div class="coming-soon-rating">
+                                    <div class="recommended-rating">
                                             <i class="fas fa-star"></i> @movie.Rating.ToString("F1")
                                         </div>
                                     }
                                 </div>
-                                <div class="coming-soon-info">
-                                    <h3 class="coming-soon-title">@movie.Title</h3>
-                                    <div class="coming-soon-meta">
-                                        <span>@(movie.Genres != null && movie.Genres.Any() ? movie.Genres.First().Name : "Chưa phân loại")</span>
+                            <div class="recommended-info">
+                                <span class="recommended-genre">
+                                    @(movie.Genres != null && movie.Genres.Any() ? movie.Genres.First().Name : "Chưa phân loại")
+                                </span>
+                                <h3 class="recommended-title">@movie.Title</h3>
+                                <div class="recommended-meta">
+                                    <div class="recommended-duration">
+                                        <i class="fas fa-clock"></i>
                                         <span>@movie.RunningTime phút</span>
                                     </div>
+                                    <span>@movie.ReleaseDate.Year</span>
                                 </div>
                             </div>
+                        </div>
                         }
                     }
                     else
@@ -472,32 +598,47 @@
             </div>
         </div>
 
-        <!-- Khuyến Mãi -->
-        <div class="custom-section">
+    <!-- Khuyến Mãi - Independent Section -->
+    <div class="recommended-section-new">
             <div class="section-title-bar">
                 <h2><i class="fas fa-tags"></i> Khuyến Mãi</h2>
                 <a href="@Url.Action("Index", "Promotions")" class="view-all-link">
                     Xem tất cả <i class="fas fa-chevron-right"></i>
                 </a>
             </div>
-            <div class="promotions-content">
-                <div class="promotions-list">
+            <div class="recommended-content">
+                <div class="recommended-grid">
                     @if (Model?.Promotions != null && Model.Promotions.Any())
                     {
                         foreach (var promo in Model.Promotions.Take(4))
                         {
-                            <div class="promotion-item">
-                                <div class="promotion-image">
+                            <div class="recommended-item">
+                                <div class="recommended-poster">
                                     <img src="@promo.ImageUrl" alt="@promo.Title"
-                                         onerror="this.src='https://via.placeholder.com/120/1a1a1a/ffffff?text=Promo'">
+                                         onerror="this.src='https://via.placeholder.com/300x450/df2144/ffffff?text=Khuyến+Mãi'">
+                                    <div class="recommended-overlay">
+                                        <a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
+                                            <i class="fas fa-tag"></i>
+                                            Xem Chi Tiết
+                                        </a>
+                                    </div>
+                                    <!-- Promotion Badge -->
+                                    <div class="recommended-promotion-badge">
+                                        <i class="fas fa-percentage"></i> Khuyến Mãi
+                                    </div>
                                 </div>
-                                <div class="promotion-info">
-                                    <h3 class="promotion-title">@promo.Title</h3>
-                                    <div class="promotion-period">
+                                <div class="recommended-info">
+                                    <span class="recommended-genre">
                                         <i class="fas fa-calendar-alt"></i>
                                         @promo.StartDate.ToString("dd/MM") - @promo.EndDate.ToString("dd/MM/yyyy")
+                                    </span>
+                                    <h3 class="recommended-title">@promo.Title</h3>
+                                    <div class="recommended-meta">
+                                        <div class="recommended-description">
+                                            <i class="fas fa-info-circle"></i>
+                                            <span>@(promo.Description.Length > 50 ? promo.Description.Substring(0, 50) + "..." : promo.Description)</span>
+                                        </div>
                                     </div>
-                                    <p class="promotion-desc">@promo.Description</p>
                                 </div>
                             </div>
                         }
@@ -505,56 +646,112 @@
         else
         {
                         <!-- Dữ liệu mẫu khi không có khuyến mãi -->
-                        <div class="promotion-item">
-                            <div class="promotion-image">
-                                <img src="https://via.placeholder.com/120/df2144/ffffff?text=2+1" alt="Mua 2 tặng 1">
+                        <div class="recommended-item">
+                            <div class="recommended-poster">
+                                <img src="https://via.placeholder.com/300x450/df2144/ffffff?text=2+1" alt="Mua 2 tặng 1">
+                                <div class="recommended-overlay">
+                                    <a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
+                                        <i class="fas fa-tag"></i>
+                                        Xem Chi Tiết
+                                    </a>
+                                </div>
+                                <div class="recommended-promotion-badge">
+                                    <i class="fas fa-gift"></i> Mua 2 Tặng 1
+                                </div>
                             </div>
-                            <div class="promotion-info">
-                                <h3 class="promotion-title">Mua 2 tặng 1 vé xem phim</h3>
-                                <div class="promotion-period">
+                            <div class="recommended-info">
+                                <span class="recommended-genre">
                                     <i class="fas fa-calendar-alt"></i>
                                     01/06 - 30/06/2024
+                                </span>
+                                <h3 class="recommended-title">Mua 2 tặng 1 vé xem phim</h3>
+                                <div class="recommended-meta">
+                                    <div class="recommended-description">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>Mua 2 vé được tặng 1 vé miễn phí cùng ngày...</span>
+                                    </div>
                                 </div>
-                                <p class="promotion-desc">Khi mua 2 vé xem phim bất kỳ, bạn sẽ được tặng thêm 1 vé miễn phí cho suất chiếu cùng ngày.</p>
                             </div>
                         </div>
-                        <div class="promotion-item">
-                            <div class="promotion-image">
-                                <img src="https://via.placeholder.com/120/df2144/ffffff?text=50%" alt="Giảm giá">
+                        <div class="recommended-item">
+                            <div class="recommended-poster">
+                                <img src="https://via.placeholder.com/300x450/df2144/ffffff?text=50%" alt="Giảm giá">
+                                <div class="recommended-overlay">
+                                    <a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
+                                        <i class="fas fa-tag"></i>
+                                        Xem Chi Tiết
+                                    </a>
+                                </div>
+                                <div class="recommended-promotion-badge">
+                                    <i class="fas fa-percentage"></i> Giảm 50%
+                                </div>
                             </div>
-                            <div class="promotion-info">
-                                <h3 class="promotion-title">Giảm 50% combo bắp nước</h3>
-                                <div class="promotion-period">
+                            <div class="recommended-info">
+                                <span class="recommended-genre">
                                     <i class="fas fa-calendar-alt"></i>
                                     15/06 - 15/07/2024
+                                </span>
+                                <h3 class="recommended-title">Giảm 50% combo bắp nước</h3>
+                                <div class="recommended-meta">
+                                    <div class="recommended-description">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>Giảm giá 50% combo vào thứ 3 và thứ 4...</span>
+                                    </div>
                                 </div>
-                                <p class="promotion-desc">Giảm giá 50% cho tất cả các combo bắp nước khi mua vé xem phim vào các ngày thứ 3 và thứ 4.</p>
                             </div>
                         </div>
-                        <div class="promotion-item">
-                            <div class="promotion-image">
-                                <img src="https://via.placeholder.com/120/df2144/ffffff?text=VIP" alt="Thành viên">
+                        <div class="recommended-item">
+                            <div class="recommended-poster">
+                                <img src="https://via.placeholder.com/300x450/df2144/ffffff?text=VIP" alt="Thành viên">
+                                <div class="recommended-overlay">
+                                    <a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
+                                        <i class="fas fa-tag"></i>
+                                        Xem Chi Tiết
+                                    </a>
+                                </div>
+                                <div class="recommended-promotion-badge">
+                                    <i class="fas fa-crown"></i> VIP
+                                </div>
                             </div>
-                            <div class="promotion-info">
-                                <h3 class="promotion-title">Ưu đãi thành viên mới</h3>
-                                <div class="promotion-period">
+                            <div class="recommended-info">
+                                <span class="recommended-genre">
                                     <i class="fas fa-calendar-alt"></i>
                                     01/06 - 31/12/2024
+                                </span>
+                                <h3 class="recommended-title">Ưu đãi thành viên mới</h3>
+                                <div class="recommended-meta">
+                                    <div class="recommended-description">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>Đăng ký mới nhận 2 vé và combo miễn phí...</span>
+                                    </div>
                                 </div>
-                                <p class="promotion-desc">Đăng ký thành viên mới, nhận ngay 2 vé xem phim miễn phí và 1 combo bắp nước.</p>
                             </div>
                         </div>
-                        <div class="promotion-item">
-                            <div class="promotion-image">
-                                <img src="https://via.placeholder.com/120/df2144/ffffff?text=BDAY" alt="Sinh nhật">
+                        <div class="recommended-item">
+                            <div class="recommended-poster">
+                                <img src="https://via.placeholder.com/300x450/df2144/ffffff?text=BDAY" alt="Sinh nhật">
+                                <div class="recommended-overlay">
+                                    <a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
+                                        <i class="fas fa-tag"></i>
+                                        Xem Chi Tiết
+                                    </a>
+                                </div>
+                                <div class="recommended-promotion-badge">
+                                    <i class="fas fa-birthday-cake"></i> Sinh Nhật
+                                </div>
                             </div>
-                            <div class="promotion-info">
-                                <h3 class="promotion-title">Ưu đãi sinh nhật</h3>
-                                <div class="promotion-period">
+                            <div class="recommended-info">
+                                <span class="recommended-genre">
                                     <i class="fas fa-calendar-alt"></i>
                                     Quanh năm
+                                </span>
+                                <h3 class="recommended-title">Ưu đãi sinh nhật</h3>
+                                <div class="recommended-meta">
+                                    <div class="recommended-description">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>Miễn phí 1 vé trong tháng sinh nhật...</span>
+                                    </div>
                                 </div>
-                                <p class="promotion-desc">Miễn phí 1 vé xem phim trong tháng sinh nhật cho tất cả các thành viên.</p>
                             </div>
                     </div>
                     }

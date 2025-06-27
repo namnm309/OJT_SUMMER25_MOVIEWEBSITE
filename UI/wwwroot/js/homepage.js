@@ -852,31 +852,20 @@ document.addEventListener('click', function(e) {
 function bookTickets() {
     console.log('🎫 [BOOK TICKETS] Function called');
     
-    if (!movies || movies.length === 0) {
-        console.warn('🎫 No movies data available, redirecting to movies page');
-        window.location.href = window.movieUrls?.moviesIndex || '/Movies';
+    // Kiểm tra đăng nhập trước khi đặt vé
+    const isAuthenticated = document.querySelector('.user-profile') !== null;
+    
+    if (!isAuthenticated) {
+        // Chưa đăng nhập - chuyển đến trang login
+        if (confirm('Bạn cần đăng nhập để đặt vé. Chuyển đến trang đăng nhập?')) {
+            window.location.href = '/Account/Login';
+        }
         return;
     }
     
-    if (!window.movieUrls) {
-        console.warn('🎫 No movie URLs configured, using fallback');
-        window.location.href = '/Movies';
-        return;
-    }
-    
-    const currentMovie = movies[currentMovieIndex];
-    console.log('🎫 Current movie:', currentMovie?.title, 'ID:', currentMovie?.id);
-    
-    if (currentMovie && currentMovie.id) {
-        // Chuyển đến trang chi tiết phim để đặt vé
-        const detailsUrl = window.movieUrls.movieDetails + '/' + currentMovie.id;
-        console.log('🎫 Redirecting to movie details:', detailsUrl);
-        window.location.href = detailsUrl;
-    } else {
-        // Fallback - đi đến trang tất cả phim
-        console.log('🎫 No movie ID, redirecting to movies index');
-        window.location.href = window.movieUrls.moviesIndex;
-    }
+    // Đã đăng nhập - chuyển đến trang đặt vé
+    console.log('🎫 User authenticated, redirecting to booking');
+    window.location.href = '/BookingManagement/Booking/SelectMovie';
 }
 
 function showMovieInfo() {
@@ -1010,3 +999,294 @@ function handleSwipe() {
         }
     }
 }
+
+// =====================
+// 🔄 HOMEPAGE PAGINATION
+// =====================
+
+class HomepagePagination {
+    constructor() {
+        this.currentPages = {
+            recommended: 1,
+            comingSoon: 1
+        };
+        
+        this.init();
+    }
+    
+    init() {
+        this.bindRecommendedEvents();
+        this.bindComingSoonEvents();
+        this.updatePaginationInfo();
+    }
+    
+    bindRecommendedEvents() {
+        // Sort change
+        document.getElementById('recommendedSort')?.addEventListener('change', (e) => {
+            this.currentPages.recommended = 1;
+            this.loadRecommendedMovies();
+        });
+        
+        // Genre filter change
+        document.getElementById('recommendedGenre')?.addEventListener('change', (e) => {
+            this.currentPages.recommended = 1;
+            this.loadRecommendedMovies();
+        });
+        
+        // Page size change
+        document.getElementById('recommendedPageSize')?.addEventListener('change', (e) => {
+            this.currentPages.recommended = 1;
+            this.loadRecommendedMovies();
+        });
+        
+        // Load more button
+        document.getElementById('loadMoreRecommended')?.addEventListener('click', (e) => {
+            this.currentPages.recommended++;
+            this.loadRecommendedMovies(true);
+        });
+    }
+    
+    bindComingSoonEvents() {
+        // Sort change
+        document.getElementById('comingSoonSort')?.addEventListener('change', (e) => {
+            this.currentPages.comingSoon = 1;
+            this.loadComingSoonMovies();
+        });
+        
+        // Genre filter change
+        document.getElementById('comingSoonGenre')?.addEventListener('change', (e) => {
+            this.currentPages.comingSoon = 1;
+            this.loadComingSoonMovies();
+        });
+        
+        // Page size change
+        document.getElementById('comingSoonPageSize')?.addEventListener('change', (e) => {
+            this.currentPages.comingSoon = 1;
+            this.loadComingSoonMovies();
+        });
+        
+        // Load more button
+        document.getElementById('loadMoreComingSoon')?.addEventListener('click', (e) => {
+            this.currentPages.comingSoon++;
+            this.loadComingSoonMovies(true);
+        });
+    }
+    
+    async loadRecommendedMovies(append = false) {
+        const sortSelect = document.getElementById('recommendedSort');
+        const genreSelect = document.getElementById('recommendedGenre');
+        const pageSizeSelect = document.getElementById('recommendedPageSize');
+        const pagination = document.getElementById('recommendedPagination');
+        
+        if (!sortSelect || !genreSelect || !pageSizeSelect) return;
+        
+        const [sortBy, sortOrder] = sortSelect.value.split('-');
+        const genre = genreSelect.value;
+        const pageSize = parseInt(pageSizeSelect.value);
+        const page = this.currentPages.recommended;
+        
+        // Show loading state
+        pagination.classList.add('loading');
+        
+        try {
+            const params = new URLSearchParams({
+                page: page,
+                pageSize: pageSize,
+                sortBy: sortBy,
+                sortOrder: sortOrder
+            });
+            
+            if (genre && genre !== 'all') {
+                params.append('genre', genre);
+            }
+            
+            const response = await fetch(`/Home/GetRecommendedMovies?${params}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                this.updateRecommendedGrid(data.data, append);
+                this.updatePaginationInfo('recommended', data.pagination);
+            } else {
+                console.error('Failed to load recommended movies:', data.message);
+            }
+        } catch (error) {
+            console.error('Error loading recommended movies:', error);
+        } finally {
+            pagination.classList.remove('loading');
+        }
+    }
+    
+    async loadComingSoonMovies(append = false) {
+        const sortSelect = document.getElementById('comingSoonSort');
+        const genreSelect = document.getElementById('comingSoonGenre');
+        const pageSizeSelect = document.getElementById('comingSoonPageSize');
+        const pagination = document.getElementById('comingSoonPagination');
+        
+        if (!sortSelect || !genreSelect || !pageSizeSelect) return;
+        
+        const [sortBy, sortOrder] = sortSelect.value.split('-');
+        const genre = genreSelect.value;
+        const pageSize = parseInt(pageSizeSelect.value);
+        const page = this.currentPages.comingSoon;
+        
+        // Show loading state
+        pagination.classList.add('loading');
+        
+        try {
+            const params = new URLSearchParams({
+                page: page,
+                pageSize: pageSize,
+                sortBy: sortBy,
+                sortOrder: sortOrder
+            });
+            
+            if (genre && genre !== 'all') {
+                params.append('genre', genre);
+            }
+            
+            const response = await fetch(`/Home/GetComingSoonMovies?${params}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                this.updateComingSoonGrid(data.data, append);
+                this.updatePaginationInfo('comingSoon', data.pagination);
+            } else {
+                console.error('Failed to load coming soon movies:', data.message);
+            }
+        } catch (error) {
+            console.error('Error loading coming soon movies:', error);
+        } finally {
+            pagination.classList.remove('loading');
+        }
+    }
+    
+    updateRecommendedGrid(movies, append = false) {
+        const grid = document.querySelector('.recommended-grid');
+        if (!grid) return;
+        
+        if (!append) {
+            // Replace content
+            grid.innerHTML = '';
+        }
+        
+        movies.forEach(movie => {
+            const movieElement = this.createRecommendedMovieElement(movie);
+            grid.appendChild(movieElement);
+        });
+    }
+    
+    updateComingSoonGrid(movies, append = false) {
+        const list = document.querySelector('.coming-soon-list');
+        if (!list) return;
+        
+        if (!append) {
+            // Replace content
+            list.innerHTML = '';
+        }
+        
+        movies.forEach(movie => {
+            const movieElement = this.createComingSoonMovieElement(movie);
+            list.appendChild(movieElement);
+        });
+    }
+    
+    createRecommendedMovieElement(movie) {
+        const div = document.createElement('div');
+        div.className = 'recommended-item';
+        div.innerHTML = `
+            <div class="recommended-poster">
+                <img src="${movie.primaryImageUrl || movie.imageUrl || 'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'}" 
+                     alt="${movie.title}" loading="lazy" 
+                     onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
+                <div class="recommended-overlay">
+                    <a href="/Movies/Details/${movie.id}" class="recommended-view-btn">
+                        <i class="fas fa-info-circle"></i>
+                        Xem Chi Tiết
+                    </a>
+                </div>
+                <div class="recommended-rating">
+                    <i class="fas fa-star"></i> ${movie.rating.toFixed(1)}
+                </div>
+            </div>
+            <div class="recommended-info">
+                <span class="recommended-genre">
+                    ${movie.genres && movie.genres.length > 0 ? movie.genres[0].name : 'Chưa phân loại'}
+                </span>
+                <h3 class="recommended-title">${movie.title}</h3>
+                <div class="recommended-meta">
+                    <div class="recommended-duration">
+                        <i class="fas fa-clock"></i>
+                        <span>${movie.runningTime} phút</span>
+                    </div>
+                    <span>${new Date(movie.releaseDate).getFullYear()}</span>
+                </div>
+            </div>
+        `;
+        return div;
+    }
+    
+    createComingSoonMovieElement(movie) {
+        const div = document.createElement('div');
+        div.className = 'coming-soon-item';
+        div.innerHTML = `
+            <div class="coming-soon-poster">
+                <img src="${movie.primaryImageUrl || movie.imageUrl || 'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'}" 
+                     alt="${movie.title}" loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
+                <div class="coming-soon-overlay">
+                    <a href="/Movies/Details/${movie.id}" class="coming-soon-view-btn">
+                        <i class="fas fa-info-circle"></i>
+                        Xem Chi Tiết
+                    </a>
+                </div>
+                <div class="coming-soon-release">${new Date(movie.releaseDate).toLocaleDateString('vi-VN')}</div>
+                ${movie.rating > 0 ? `
+                    <div class="coming-soon-rating">
+                        <i class="fas fa-star"></i> ${movie.rating.toFixed(1)}
+                    </div>
+                ` : ''}
+            </div>
+            <div class="coming-soon-info">
+                <h3 class="coming-soon-title">${movie.title}</h3>
+                <div class="coming-soon-meta">
+                    <span>${movie.genres && movie.genres.length > 0 ? movie.genres[0].name : 'Chưa phân loại'}</span>
+                    <span>${movie.runningTime} phút</span>
+                </div>
+            </div>
+        `;
+        return div;
+    }
+    
+    updatePaginationInfo(section = null, pagination = null) {
+        if (section && pagination) {
+            const infoElement = document.getElementById(`${section}Info`);
+            const loadMoreBtn = document.getElementById(`loadMore${section.charAt(0).toUpperCase() + section.slice(1)}`);
+            
+            if (infoElement) {
+                const infoContent = infoElement.querySelector('.info-content span');
+                if (infoContent) {
+                    infoContent.textContent = `Trang ${pagination.currentPage} / ${pagination.totalPages} (${pagination.totalItems} phim)`;
+                } else {
+                    // Fallback for old structure
+                    infoElement.textContent = `Trang ${pagination.currentPage} / ${pagination.totalPages} (${pagination.totalItems} phim)`;
+                }
+            }
+            
+            if (loadMoreBtn) {
+                loadMoreBtn.style.display = pagination.hasNextPage ? 'flex' : 'none';
+            }
+        }
+    }
+}
+
+// Initialize pagination when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Add small delay to ensure all elements are rendered
+    setTimeout(() => {
+        if (document.getElementById('recommendedPagination') && 
+            document.getElementById('comingSoonPagination')) {
+            new HomepagePagination();
+            console.log('✅ Homepage Pagination initialized successfully');
+        }
+    }, 500);
+});
