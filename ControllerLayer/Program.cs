@@ -7,11 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using ApplicationLayer.Services.PromotionManagement;
 using ApplicationLayer.Services.CinemaRoomManagement;
 using ApplicationLayer.Services.BookingTicketManagement;
-<<<<<<< HEAD
 using ApplicationLayer.Services.EmployeeManagement;
-=======
 using ApplicationLayer.Mappings;
->>>>>>> origin/dev
 
 namespace ControllerLayer
 {
@@ -83,12 +80,10 @@ namespace ControllerLayer
 
             builder.Services.AddScoped<IBookingTicketService, BookingTicketService>();
 
-<<<<<<< HEAD
-            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-=======
             builder.Services.AddScoped<ISeatRepository, SeatRepository>();
             builder.Services.AddScoped<ISeatService, SeatService>();
->>>>>>> origin/dev
+
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
             // Cấu hình Authentication với Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
