@@ -19,11 +19,9 @@
 
   <ItemGroup>
     <Folder Include="DTO\AccoutManagement\" />
-    <Folder Include="DTO\EmployeeManagement\" />
     <Folder Include="DTO\TicketSellingManagement\" />
     <Folder Include="DTO\UserManagement\" />
     <Folder Include="Services\AccoutManagement\" />
-    <Folder Include="Services\EmployeeManagement\" />
     <Folder Include="Services\TicketSellingManagement\" />
   </ItemGroup>
 

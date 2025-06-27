@@ -8,6 +8,22 @@ namespace DomainLayer.Entities
     public class Booking : BaseEntity
     {
         [Required]
+        [MaxLength(100)]
+        public string FullName { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string Email { get; set; }
+
+        [Required]
+        [MaxLength(20)]
+        public string PhoneNumber { get; set; }
+
+        [Required]
+        [MaxLength(20)]
+        public string IdentityCardNumber { get; set; }
+
+        [Required]
         [MaxLength(20)]
         public string BookingCode { get; set; } = string.Empty;
 

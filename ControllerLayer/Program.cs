@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using ApplicationLayer.Services.PromotionManagement;
 using ApplicationLayer.Services.CinemaRoomManagement;
 using ApplicationLayer.Services.BookingTicketManagement;
+using ApplicationLayer.Services.EmployeeManagement;
 
 namespace ControllerLayer
 {
@@ -76,6 +77,8 @@ namespace ControllerLayer
             builder.Services.AddScoped<IPointHistoryService, PointHistoryService>();
 
             builder.Services.AddScoped<IBookingTicketService, BookingTicketService>();
+
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
             // Cấu hình Authentication với Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

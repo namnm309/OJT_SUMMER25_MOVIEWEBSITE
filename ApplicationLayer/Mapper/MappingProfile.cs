@@ -1,5 +1,6 @@
 ﻿using ApplicationLayer.DTO.BookingTicketManagement;
 using ApplicationLayer.DTO.CinemaRoomManagement;
+using ApplicationLayer.DTO.EmployeeManagement;
 using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.DTO.PromotionManagement;
 using AutoMapper;
@@ -77,6 +78,11 @@ namespace ApplicationLayer.Mapper
 
             //Booking
             CreateMap<Movie, MovieDropdownDto>();
+
+            //Employee
+            CreateMap<EmployeeCreateDto, Employee>();
+            CreateMap<Employee, EmployeeListDto>();
+            CreateMap<EmployeeUpdateDto, Employee>().ReverseMap();
         }
     }
 }

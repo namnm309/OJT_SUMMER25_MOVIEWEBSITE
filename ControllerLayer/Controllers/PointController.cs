@@ -18,8 +18,8 @@ namespace ControllerLayer.Controllers
             _logger = logger;
         }
 
-        [HttpPost("view-score-history")]
-        public async Task<IActionResult> ViewPointHistory(Guid UserId, [FromBody] PointHistoryFilterDto Dto)
+        [HttpGet("view-score-history")]
+        public async Task<IActionResult> ViewPointHistory(Guid UserId, [FromQuery] PointHistoryFilterDto Dto)
         {
             _logger.LogInformation("View Point-History");
             return await _pointHistoryService.ViewPointHistory(UserId, Dto);
