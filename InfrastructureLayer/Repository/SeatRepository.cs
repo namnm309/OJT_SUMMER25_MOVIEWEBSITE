@@ -57,22 +57,30 @@ namespace InfrastructureLayer.Repository
 
             var validSeatsCount = await _context.Seats
                 .CountAsync(s => s.RoomId == showTime.RoomId &&
-                               s.IsActive &&
-                               seatIds.Contains(s.Id));
+                                 s.IsActive && // Đảm bảo ghế còn active
+                                 seatIds.Contains(s.Id));
 
             return validSeatsCount == seatIds.Count;
         }
 
         public async Task<Seat?> GetByIdAsync(Guid seatId)
         {
-            return await _context.Seats
-                .FirstOrDefaultAsync(s => s.Id == seatId && s.IsActive);
+            // Thay đổi logic: chỉ cần tìm ghế theo ID, không cần kiểm tra IsActive ở đây
+            // Việc kiểm tra IsActive sẽ được thực hiện ở tầng Service hoặc tại thời điểm đặt vé
+            return await _context.Seats.FirstOrDefaultAsync(s => s.Id == seatId);
         }
 
         // Trong SeatRepository
         public async Task UpdateSeatAsync(Seat seat)
         {
             _context.Seats.Update(seat);
+            await _context.SaveChangesAsync();
+        }
+
+        // THÊM PHƯƠNG THỨC NÀY: Update nhiều ghế cùng lúc
+        public async Task UpdateSeatsAsync(IEnumerable<Seat> seats)
+        {
+            _context.Seats.UpdateRange(seats);
             await _context.SaveChangesAsync();
         }
 
@@ -90,6 +98,14 @@ namespace InfrastructureLayer.Repository
             return await _context.BookingDetails
                 .Where(bd => bd.Booking.ShowTimeId == showTimeId)
                 .Select(bd => bd.SeatId)
+                .ToListAsync();
+        }
+
+        // THÊM PHƯƠNG THỨC NÀY: Lấy danh sách ghế theo nhiều ID
+        public async Task<List<Seat>> GetSeatsByIdsAsync(List<Guid> seatIds)
+        {
+            return await _context.Seats
+                .Where(s => seatIds.Contains(s.Id))
                 .ToListAsync();
         }
     }
