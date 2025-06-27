@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using UI.Services;
 
 namespace UI
 {
@@ -43,6 +44,8 @@ namespace UI
 
             builder.Services.AddAuthorization();
 
+            builder.Services.AddScoped<UI.Areas.BookingManagement.Services.IBookingManagementUIService, UI.Areas.BookingManagement.Services.BookingManagementUIService>();
+
             // Đăng ký ApiService
             builder.Services.AddScoped<UI.Services.IApiService, UI.Services.ApiService>();
             
@@ -54,6 +57,9 @@ namespace UI
             
             // Đăng ký BookingManagementUIService
             builder.Services.AddScoped<UI.Areas.BookingManagement.Services.IBookingManagementUIService, UI.Areas.BookingManagement.Services.BookingManagementUIService>();
+
+            //đăng ký cloudinary
+            builder.Services.AddTransient<IImageService, CloudinaryImageService>();
 
             var app = builder.Build();
 
