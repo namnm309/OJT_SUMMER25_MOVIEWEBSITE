@@ -19,6 +19,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
     public interface ISeatService
     {
         Task<IActionResult> GetAvailableSeats(Guid showTimeId);
+        // Thay đổi kiểu trả về nếu muốn truyền thêm thông tin đã validate
+        // Hiện tại vẫn giữ IActionResult, nhưng logic bên trong sẽ không cập nhật trạng thái ghế
         Task<IActionResult> ValidateSelectedSeats(Guid showTimeId, List<Guid> seatIds);
 
         Task<IActionResult> GetShowTimeDetails(Guid showTimeId);
@@ -27,16 +29,16 @@ namespace ApplicationLayer.Services.BookingTicketManagement
     {
 
         private readonly ISeatRepository _seatRepository;
-        private readonly IGenericRepository<ShowTime> _showTimeRepository; // Add this
+        private readonly IGenericRepository<ShowTime> _showTimeRepository;
         private readonly IMapper _mapper;
 
         public SeatService(
             ISeatRepository seatRepository,
-            IGenericRepository<ShowTime> showTimeRepository, // Add this to the constructor
+            IGenericRepository<ShowTime> showTimeRepository,
             IMapper mapper)
         {
             _seatRepository = seatRepository;
-            _showTimeRepository = showTimeRepository; // Assign it
+            _showTimeRepository = showTimeRepository;
             _mapper = mapper;
         }
 
@@ -69,7 +71,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     ColumnIndex = s.ColumnIndex,
                     IsAvailable = s.IsActive && !bookedSeatIds.Contains(s.Id), // Ghế available khi IsActive=true và chưa được đặt
                     Price = s.PriceSeat,
-                  
+
                 }).ToList();
 
                 return SuccessResp.Ok(new SeatResponse
@@ -88,54 +90,70 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             }
         }
 
+        // PHẦN ĐƯỢC SỬA ĐỔI: ValidateSelectedSeats
         public async Task<IActionResult> ValidateSelectedSeats(Guid showTimeId, List<Guid> seatIds)
         {
             try
             {
                 // Validate input
                 if (seatIds == null || seatIds.Count == 0)
-                    return ErrorResp.BadRequest("Please select at least one seat");
+                    return ErrorResp.BadRequest("Please select at least one seat.");
 
                 if (seatIds.Count > 8)
-                    return ErrorResp.BadRequest("Maximum 8 seats per booking");
+                    return ErrorResp.BadRequest("Maximum 8 seats per booking.");
 
-                // Kiểm tra ghế có hợp lệ không (cùng phòng với suất chiếu)
-                var isValid = await _seatRepository.ValidateSeatsAsync(showTimeId, seatIds);
-                if (!isValid)
-                    return ErrorResp.BadRequest("Some seats are invalid or not in the same room as the showtime");
-
-                // Kiểm tra ghế có đang active (chưa đặt) không
-                var seats = new List<Seat>();
-                foreach (var seatId in seatIds)
+                // 1. Kiểm tra ghế có hợp lệ không (cùng phòng với suất chiếu)
+                var showTime = await _showTimeRepository.FindByIdAsync(showTimeId, "Room"); // Include Room để lấy RoomId
+                if (showTime == null)
                 {
-                    var seat = await _seatRepository.GetByIdAsync(seatId);
-                    if (seat == null)
-                        return ErrorResp.BadRequest($"Seat with ID {seatId} not found");
+                    return ErrorResp.NotFound($"ShowTime with ID {showTimeId} not found.");
+                }
 
+                // Lấy tất cả các ghế được chọn
+                var selectedSeatsEntities = await _seatRepository.GetSeatsByIdsAsync(seatIds); // Thêm phương thức này vào ISeatRepository/SeatRepository
+
+                if (selectedSeatsEntities.Count != seatIds.Count)
+                {
+                    return ErrorResp.BadRequest("Some selected seats were not found.");
+                }
+
+                // 2. Kiểm tra tất cả các ghế có thuộc cùng một phòng chiếu và đang Active không
+                foreach (var seat in selectedSeatsEntities)
+                {
+                    if (seat.RoomId != showTime.RoomId)
+                    {
+                        return ErrorResp.BadRequest($"Seat {seat.SeatCode} is not in the correct room for this showtime.");
+                    }
                     if (!seat.IsActive)
-                        return ErrorResp.BadRequest($"Seat {seat.SeatCode} is already booked");
-
-                    seats.Add(seat);
+                    {
+                        return ErrorResp.BadRequest($"Seat {seat.SeatCode} is currently inactive."); // Hoặc có thể đã bị vô hiệu hóa
+                    }
                 }
 
-                // Cập nhật trạng thái IsActive của ghế
-                foreach (var seat in seats)
+                // 3. Kiểm tra xem các ghế đã chọn có bị đặt bởi người khác cho suất chiếu này không
+                var bookedSeatIds = await _seatRepository.GetBookedSeatIdsForShowTimeAsync(showTimeId);
+                var alreadyBookedSeats = seatIds.Where(id => bookedSeatIds.Contains(id)).ToList();
+
+                if (alreadyBookedSeats.Any())
                 {
-                    seat.IsActive = false;
-                    await _seatRepository.UpdateSeatAsync(seat);
+                    // Lấy SeatCode của các ghế đã đặt để hiển thị thông báo thân thiện
+                    var bookedSeatCodes = selectedSeatsEntities
+                                            .Where(s => alreadyBookedSeats.Contains(s.Id))
+                                            .Select(s => s.SeatCode)
+                                            .ToList();
+                    return ErrorResp.BadRequest($"The following seats are already booked: {string.Join(", ", bookedSeatCodes)}.");
                 }
 
+                // Nếu mọi thứ đều ổn
                 return SuccessResp.Ok(new
                 {
                     IsValid = true,
-                    Message = "Booking seat successfully",
-                   
+                    Message = "Selected seats are valid and available for booking."
                 });
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex, "Error validating and reserving seats");
-                return ErrorResp.InternalServerError(ex.Message);
+                return ErrorResp.InternalServerError("An error occurred during seat validation. Please try again.");
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using ApplicationLayer.Services.BookingTicketManagement;
+﻿using ApplicationLayer.DTO.BookingTicketManagement;
+using ApplicationLayer.Services.BookingTicketManagement;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControllerLayer.Controllers
@@ -62,6 +63,15 @@ namespace ControllerLayer.Controllers
         {
             _logger.LogInformation("Getting details for showtime: {ShowTimeId}", showTimeId);
             return await _seatService.GetShowTimeDetails(showTimeId);
+        }
+
+        [HttpPost("confirm")]
+        public async Task<IActionResult> ConfirmBooking([FromBody] ConfirmBookingRequestDto request)
+        {
+            _logger.LogInformation("Confirming booking for ShowtimeId: {ShowTimeId}, UserId: {UserId}",
+                request.ShowtimeId, request.UserId); // Log UserID nếu có
+
+            return await _bookingTicketService.ConfirmBooking(request);
         }
     }
 }
