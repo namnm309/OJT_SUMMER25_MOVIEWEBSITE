@@ -319,7 +319,7 @@ namespace ApplicationLayer.Services.MovieManagement
                     nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
                 )
                 : await _movieRepo.WhereAsync(
-                    filter: m => m.Title.Contains(keyword),
+                    filter: m => m.Title.ToLower().Contains(keyword.ToLower()),
                     navigationProperties: new[]
                     {
                         nameof(Movie.MovieImages),
