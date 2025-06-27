@@ -160,11 +160,11 @@ namespace UI.Areas.BookingManagement.Services
 
                 // Get seats
                 var seatsResult = await _apiService.GetAsync<ApiResponseData<SeatSelectionViewModel>>(
-                    $"/api/v1/seats/available?showTimeId={showTimeId}");
+                    $"/api/v1/booking-ticket/available?showTimeId={showTimeId}");
 
                 // Get showtime details
                 var detailsResult = await _apiService.GetAsync<ApiResponseData<ShowtimeDetailsDto>>(
-                    $"/api/v1/seats/{showTimeId}/details");
+                    $"/api/v1/booking-ticket/{showTimeId}/details");
 
                 if (seatsResult.Success && seatsResult.Data != null &&
                     detailsResult.Success && detailsResult.Data != null)
@@ -221,7 +221,7 @@ namespace UI.Areas.BookingManagement.Services
                 _logger.LogInformation("Validating {SeatCount} seats for showtime: {ShowTimeId}", seatIds.Count, showTimeId);
 
                 var result = await _apiService.PostAsync<ApiResponseData<SeatValidationResponse>>(
-                    $"/api/v1/seats/validate?showTimeId={showTimeId}",
+                    $"/api/v1/booking-ticket/validate?showTimeId={showTimeId}",
                     seatIds);
 
                 if (result.Success && result.Data != null)

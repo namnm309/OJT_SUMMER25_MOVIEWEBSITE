@@ -75,5 +75,22 @@ namespace InfrastructureLayer.Repository
             _context.Seats.Update(seat);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<Seat>> GetSeatsByRoomIdAsync(Guid roomId)
+        {
+            return await _context.Seats
+                .Where(s => s.RoomId == roomId)
+                .OrderBy(s => s.RowIndex)
+                .ThenBy(s => s.ColumnIndex)
+                .ToListAsync();
+        }
+
+        public async Task<List<Guid>> GetBookedSeatIdsForShowTimeAsync(Guid showTimeId)
+        {
+            return await _context.BookingDetails
+                .Where(bd => bd.Booking.ShowTimeId == showTimeId)
+                .Select(bd => bd.SeatId)
+                .ToListAsync();
+        }
     }
 }

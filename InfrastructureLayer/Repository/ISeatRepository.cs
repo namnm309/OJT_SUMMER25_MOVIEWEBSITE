@@ -15,5 +15,8 @@ namespace InfrastructureLayer.Repository
         Task<Seat?> GetByIdAsync(Guid seatId);
 
         Task UpdateSeatAsync(Seat seat);
+
+        Task<List<Seat>> GetSeatsByRoomIdAsync(Guid roomId);
+        Task<List<Guid>> GetBookedSeatIdsForShowTimeAsync(Guid showTimeId);
     }
 }

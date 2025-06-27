@@ -8,11 +8,13 @@ namespace ControllerLayer.Controllers
     public class BookingTicketController : Controller
     {
         private readonly IBookingTicketService _bookingTicketService;
+        private readonly ISeatService _seatService;
         private readonly ILogger<BookingTicketController> _logger;
 
-        public BookingTicketController(IBookingTicketService bookingTicketService, ILogger<BookingTicketController> logger)
+        public BookingTicketController(IBookingTicketService bookingTicketService, ISeatService seatService, ILogger<BookingTicketController> logger)
         {
             _bookingTicketService = bookingTicketService;
+            _seatService = seatService;
             _logger = logger;
         }
 
@@ -36,6 +38,30 @@ namespace ControllerLayer.Controllers
             _logger.LogInformation("Get ShowTimes");
             return await _bookingTicketService.GetShowTimesByMovieAndDate(movieId, date);
         }
-            
+
+        [HttpGet("available")]
+        public async Task<IActionResult> GetAvailableSeats([FromQuery] Guid showTimeId)
+        {
+            _logger.LogInformation("Get available seats for showtime: {ShowTimeId}", showTimeId);
+            return await _seatService.GetAvailableSeats(showTimeId);
+        }
+
+        [HttpPost("validate")]
+        public async Task<IActionResult> ValidateSelectedSeats(
+            [FromQuery] Guid showTimeId,
+            [FromBody] List<Guid> seatIds)
+        {
+            _logger.LogInformation("Validating selected seats: {SeatIds} for showtime: {ShowTimeId}",
+                string.Join(",", seatIds), showTimeId);
+
+            return await _seatService.ValidateSelectedSeats(showTimeId, seatIds);
+        }
+
+        [HttpGet("{showTimeId}/details")] // New endpoint
+        public async Task<IActionResult> GetShowTimeDetails(Guid showTimeId)
+        {
+            _logger.LogInformation("Getting details for showtime: {ShowTimeId}", showTimeId);
+            return await _seatService.GetShowTimeDetails(showTimeId);
+        }
     }
 }
