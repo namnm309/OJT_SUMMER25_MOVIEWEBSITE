@@ -820,56 +820,48 @@
 
 /* Main Pagination Card */
 .pagination-controls {
-    background: linear-gradient(145deg, rgba(15, 15, 20, 0.95) 0%, rgba(25, 25, 35, 0.9) 100%);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 24px 28px;
+    background: linear-gradient(145deg, rgba(15, 15, 20, 0.9) 0%, rgba(35, 35, 45, 0.8) 50%, rgba(25, 25, 35, 0.9) 100%);
+    backdrop-filter: blur(25px);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 25px;
+    padding: 28px 32px;
     box-shadow: 
-        0 10px 40px rgba(0, 0, 0, 0.3),
-        0 4px 20px rgba(223, 33, 68, 0.1),
-        0 8px 32px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 15px 50px rgba(0, 0, 0, 0.4),
+        0 8px 30px rgba(223, 33, 68, 0.15),
+        0 12px 40px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
+    gap: 28px;
     flex-wrap: wrap;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    margin-bottom: 30px;
 }
 
-/* Subtle gradient separator below pagination */
+/* Enhanced gradient separator */
 .pagination-controls::after {
     content: '';
     position: absolute;
-    bottom: -10px;
-    left: 10%;
-    right: 10%;
-    height: 1px;
+    bottom: -15px;
+    left: 5%;
+    right: 5%;
+    height: 2px;
     background: linear-gradient(90deg, 
         transparent, 
-        rgba(255, 255, 255, 0.1) 20%, 
-        rgba(255, 255, 255, 0.2) 50%, 
-        rgba(255, 255, 255, 0.1) 80%, 
+        rgba(255, 107, 107, 0.3) 20%, 
+        rgba(223, 33, 68, 0.6) 50%, 
+        rgba(255, 107, 107, 0.3) 80%, 
         transparent
     );
+    border-radius: 2px;
     z-index: 1;
 }
 
-/* Keep separator when loading */
-.section-pagination.loading .pagination-controls::after {
-    content: '';
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.1) 20%, 
-        rgba(255, 255, 255, 0.2) 50%, 
-        rgba(255, 255, 255, 0.1) 80%, 
-        transparent
-    );
-}
-
+/* Enhanced shimmer effect */
 .pagination-controls::before {
     content: '';
     position: absolute;
@@ -877,8 +869,14 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(223, 33, 68, 0.05), transparent);
-    transition: left 1s ease;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 107, 107, 0.08), 
+        rgba(223, 33, 68, 0.12), 
+        rgba(255, 107, 107, 0.08), 
+        transparent
+    );
+    transition: left 1.2s ease;
 }
 
 .pagination-controls:hover::before {
@@ -886,129 +884,141 @@
 }
 
 .pagination-controls:hover {
-    border-color: rgba(223, 33, 68, 0.2);
+    border-color: rgba(255, 107, 107, 0.3);
     box-shadow: 
-        0 15px 50px rgba(0, 0, 0, 0.4),
-        0 6px 25px rgba(223, 33, 68, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 10px 35px rgba(223, 33, 68, 0.2),
+        0 15px 45px rgba(255, 107, 107, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
 }
 
-/* ===== FILTER CONTROLS SECTION ===== */
-.sort-filter-controls {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    flex: 1;
-}
-
-/* Filter Group Container */
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 160px;
-}
-
-/* Filter Labels */
+/* Enhanced Filter Labels */
 .filter-label {
     display: flex;
     align-items: center;
-    gap: 6px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 12px;
-    font-weight: 600;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     margin: 0;
     cursor: default;
     user-select: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .filter-label i {
-    font-size: 11px;
-    color: rgba(223, 33, 68, 0.8);
-    transition: all 0.3s ease;
+    font-size: 12px;
+    color: rgba(255, 107, 107, 0.9);
+    transition: all 0.4s ease;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 .filter-group:hover .filter-label i {
-    color: #df2144;
-    transform: scale(1.1);
+    color: #ff6b6b;
+    transform: scale(1.15) rotate(5deg);
 }
 
-/* Select Styling */
+/* Enhanced Select Styling */
 .pagination-select {
-    background: linear-gradient(145deg, rgba(35, 35, 45, 0.8) 0%, rgba(25, 25, 35, 0.9) 100%);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    padding: 12px 16px;
+    background: linear-gradient(145deg, rgba(40, 40, 50, 0.85) 0%, rgba(30, 30, 40, 0.9) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    border-radius: 16px;
+    padding: 14px 18px;
     color: #ffffff;
     font-size: 14px;
-    font-weight: 500;
-    min-width: 140px;
+    font-weight: 600;
+    min-width: 150px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: relative;
     box-shadow: 
-        0 2px 10px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+        0 4px 15px rgba(0, 0, 0, 0.25),
+        0 2px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px !important;
 }
 
 .pagination-select:hover {
-    border-color: rgba(223, 33, 68, 0.4);
-    background: linear-gradient(145deg, rgba(45, 45, 55, 0.9) 0%, rgba(35, 35, 45, 0.95) 100%);
+    border-color: rgba(255, 107, 107, 0.5);
+    background: linear-gradient(145deg, rgba(50, 50, 60, 0.9) 0%, rgba(40, 40, 50, 0.95) 100%);
     box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.3),
-        0 2px 8px rgba(223, 33, 68, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
+        0 6px 20px rgba(0, 0, 0, 0.35),
+        0 3px 12px rgba(255, 107, 107, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
 }
 
 .pagination-select:focus {
     outline: none;
-    border-color: #df2144;
+    border-color: #ff6b6b;
     box-shadow: 
-        0 0 0 4px rgba(223, 33, 68, 0.25),
-        0 4px 15px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
+        0 0 0 5px rgba(255, 107, 107, 0.3),
+        0 6px 20px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
 }
 
 .pagination-select option {
-    background: rgba(20, 20, 25, 0.95);
-    color: #ffffff;
-    padding: 12px;
-    border: none;
+    background: rgba(20, 20, 25, 0.95) !important;
+    color: #ffffff !important;
+    padding: 12px 16px !important;
+    border: none !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
 }
 
 .pagination-select option:hover {
-    background: rgba(223, 33, 68, 0.1);
+    background: rgba(223, 33, 68, 0.2) !important;
+    color: #ffffff !important;
 }
 
-/* ===== LOAD MORE BUTTON ===== */
+.pagination-select option:checked {
+    background: rgba(223, 33, 68, 0.3) !important;
+    color: #ffffff !important;
+}
+
+.pagination-select option:selected {
+    background: rgba(223, 33, 68, 0.4) !important;
+    color: #ffffff !important;
+}
+
+/* Enhanced Load More Button */
 .btn-load-more {
-    background: linear-gradient(145deg, #df2144 0%, #c91e3a 50%, #b01b35 100%);
-    border: none;
-    border-radius: 14px;
-    padding: 14px 24px;
+    background: linear-gradient(145deg, #df2144 0%, #ff6b6b 30%, #ee5a6f 70%, #b31835 100%);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 18px;
+    padding: 16px 28px;
     color: #ffffff;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 10px;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    gap: 12px;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: relative;
     overflow: hidden;
     box-shadow: 
-        0 6px 20px rgba(223, 33, 68, 0.3),
-        0 2px 10px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    min-width: 140px;
+        0 8px 25px rgba(223, 33, 68, 0.4),
+        0 4px 15px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    min-width: 160px;
     justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .btn-load-more::before {
@@ -1018,17 +1028,8 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.6s ease;
-}
-
-.btn-load-more::after {
-    content: '';
-    position: absolute;
-    inset: 1px;
-    border-radius: 13px;
-    background: linear-gradient(145deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
-    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.8s ease;
 }
 
 .btn-load-more:hover::before {
@@ -1036,56 +1037,55 @@
 }
 
 .btn-load-more:hover {
-    background: linear-gradient(145deg, #e63456 0%, #d02340 50%, #bb1d38 100%);
-    transform: translateY(-3px) scale(1.02);
+    background: linear-gradient(145deg, #ff6b6b 0%, #e63456 30%, #d02340 70%, #bb1d38 100%);
+    transform: translateY(-4px) scale(1.03);
     box-shadow: 
-        0 10px 30px rgba(223, 33, 68, 0.4),
-        0 4px 15px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-.btn-load-more:active {
-    transform: translateY(-1px) scale(0.98);
-    transition: all 0.1s ease;
+        0 12px 35px rgba(223, 33, 68, 0.5),
+        0 6px 20px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 .btn-load-more i {
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     font-size: 14px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 .btn-load-more:hover i {
-    transform: rotate(180deg) scale(1.1);
+    transform: rotate(180deg) scale(1.15);
 }
 
-/* ===== PAGINATION INFO ===== */
+/* Enhanced Pagination Info */
 .pagination-info {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-    padding: 12px 18px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    min-width: 180px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+    padding: 14px 20px;
+    border-radius: 16px;
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(15px);
+    min-width: 200px;
     text-align: center;
     box-shadow: 
-        inset 0 1px 0 rgba(255, 255, 255, 0.1),
-        0 2px 8px rgba(0, 0, 0, 0.1);
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .info-content {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    color: rgba(255, 255, 255, 0.8);
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.85);
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .info-content i {
-    color: rgba(223, 33, 68, 0.7);
-    font-size: 12px;
+    color: rgba(255, 107, 107, 0.8);
+    font-size: 13px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 /* ===== LOADING STATES ===== */
@@ -1246,7 +1246,7 @@
     }
 }
 
-/* ===== ADVANCED VISUAL EFFECTS ===== */
+/* ===== ADANCED VISUAL EFFECTS ===== */
 
 /* Entrance Animation */
 @media (prefers-reduced-motion: no-preference) {
@@ -1551,6 +1551,91 @@
     .recommended-description {
         font-size: 11px;
     }
+}
+
+/* ===== FILTER CONTROLS SECTION ===== */
+.sort-filter-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+/* Filter Group Container */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 160px;
+}
+
+/* Thiết lập đặc biệt cho section pagination liền mạch */
+.section-pagination .sort-filter-controls {
+    gap: 16px;
+}
+
+.section-pagination .filter-group {
+    min-width: 140px;
+}
+
+.section-pagination .pagination-select {
+    min-width: 140px;
+}
+
+.section-pagination .btn-load-more {
+    min-width: 140px;
+}
+
+/* Browser-specific dropdown fixes */
+.pagination-select::-ms-expand {
+    display: none; /* Remove default arrow in IE */
+}
+
+/* Firefox specific styling */
+@-moz-document url-prefix() {
+    .pagination-select {
+        background-image: none;
+        padding-right: 18px !important;
+    }
+    
+    .pagination-select option {
+        background: #1a1a1a !important;
+        color: #ffffff !important;
+    }
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+.pagination-select::-webkit-select-dropdown {
+    background: rgba(20, 20, 25, 0.95);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+}
+
+/* Fallback for older browsers */
+select.pagination-select {
+    background: linear-gradient(145deg, rgba(40, 40, 50, 0.85) 0%, rgba(30, 30, 40, 0.9) 100%) !important;
+    color: #ffffff !important;
+    border: 2px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Force white text on all options */
+.pagination-select > option {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+}
+
+/* Selected option styling */
+.pagination-select > option:checked {
+    background-color: #df2144 !important;
+    color: #ffffff !important;
+}
+
+/* Hover state for options */
+.pagination-select > option:hover {
+    background-color: rgba(223, 33, 68, 0.3) !important;
+    color: #ffffff !important;
 }
 
 
