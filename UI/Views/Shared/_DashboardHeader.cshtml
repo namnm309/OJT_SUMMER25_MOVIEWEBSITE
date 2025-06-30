@@ -48,9 +48,9 @@
                 <div class="dropdown">
                     <a href="#" class="nav-link dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-user-circle me-1"></i>
-                        @(ViewContext.HttpContext.User.Identity?.Name?.Length > 10 ? 
-                          ViewContext.HttpContext.User.Identity.Name.Substring(0, 10) + "..." : 
-                          ViewContext.HttpContext.User.Identity?.Name)
+                        @(User.Identity?.Name?.Length > 10 ? 
+                          User.Identity.Name.Substring(0, 10) + "..." : 
+                          User.Identity?.Name)
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                         <li>
@@ -107,6 +107,80 @@
 </header>
 
 <style>
+    /* Dashboard Header Styles */
+    .dashboard-header {
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1001;
+        height: 80px;
+    }
+
+    .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+    .brand-section {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .brand-logo {
+        width: 50px;
+        height: 40px;
+        background: #df2144;
+        border-radius: 8px;
+    }
+
+    .brand-name {
+        font-size: 24px;
+        font-weight: 700;
+        color: white;
+    }
+
+    .brand-subtitle {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+    }
+
+    .nav-link {
+        color: rgba(255, 255, 255, 0.8) !important;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+        color: #df2144 !important;
+        background: rgba(223, 33, 68, 0.1);
+        text-decoration: none;
+    }
+
+    .nav-link.active {
+        color: #df2144 !important;
+        background: rgba(223, 33, 68, 0.1);
+    }
+
     /* Enhanced dropdown styles for navigation */
     .nav-links .dropdown-menu {
         background: #1a1a1a !important;
@@ -141,30 +215,29 @@
     .nav-links .dropdown-toggle::after {
         margin-left: 0.5rem !important;
     }
-    
-    /* Make nav links spacing consistent */
-    .nav-links {
-        gap: 1.5rem !important;
+
+    /* Make brand link hover effect */
+    .brand-section a:hover .brand-name {
+        color: #df2144;
     }
-    
-    .nav-link.active {
-        color: #df2144 !important;
-        background: rgba(223, 33, 68, 0.1) !important;
-        border-radius: 8px !important;
-        padding: 8px 12px !important;
-    }
-    
-    /* Debug info styling */
-    .debug-info {
-        position: fixed;
-        top: 0;
-        right: 0;
-        background: rgba(0,0,0,0.8);
-        color: white;
-        padding: 10px;
-        z-index: 9999;
-        font-size: 12px;
-        font-family: monospace;
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .header-content {
+            padding: 15px;
+        }
+        
+        .nav-links {
+            gap: 15px;
+        }
+        
+        .brand-name {
+            font-size: 20px;
+        }
+        
+        .nav-link {
+            font-size: 14px;
+        }
     }
 </style>
 

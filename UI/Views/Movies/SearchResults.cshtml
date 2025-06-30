@@ -2,35 +2,17 @@
 @{
     ViewData["Title"] = ViewData["Title"] ?? "Kết quả tìm kiếm";
     var searchKeyword = ViewData["SearchKeyword"] as string;
-    Layout = null;
 }
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Cinema City</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/HomePage/base.css" />
-    <link rel="stylesheet" href="~/css/HomePage/header.css" />
-    <link rel="stylesheet" href="~/css/HomePage/button.css" />
-    <link rel="stylesheet" href="~/css/HomePage/moviecard.css" />
-    <link rel="stylesheet" href="~/css/HomePage/layout.css" />
-    <link rel="stylesheet" href="~/css/HomePage/responsive.css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+@section Styles {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+}
     
     <style>
         body {
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
-        }
-        
-        main {
-            padding-top: 120px;
-            padding-bottom: 60px;
         }
         
         .search-page-wrapper {
@@ -222,12 +204,8 @@
             margin-bottom: 15px;
         }
     </style>
-</head>
-<body>
-    <!-- Header -->
-    @await Html.PartialAsync("_Header")
-    
-    <main>
+
+<!-- Search page content -->
 
 <div class="search-page-wrapper">
     <div class="search-page-header">
@@ -331,12 +309,11 @@
     }
 </div>
 
+@section Scripts {
 <script>
     function searchMovies() {
         const keyword = document.getElementById('searchInput').value.trim();
-        alert('Keyword: ' + keyword); // Thêm dòng này để debug
         const searchUrl = '@Url.Action("Search", "Movies")' + (keyword ? `?keyword=${encodeURIComponent(keyword)}` : '');
-        alert('URL: ' + searchUrl); // Thêm dòng này để debug
         window.location.href = searchUrl;
     }
 
@@ -347,15 +324,4 @@
         }
     });
 </script>
-
-    </main>
-    
-    <!-- Footer -->
-    @await Html.PartialAsync("footer")
-    
-    <!-- Scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/homepage.js"></script>
-</body>
-</html>
+}

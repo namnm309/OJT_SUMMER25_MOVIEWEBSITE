@@ -7,26 +7,72 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Thêm media và keyframes từ CDN -->
-    <!--  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />  -->
+    <!-- Animate CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <link rel="stylesheet" href="~/css/figma-nav.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+    
+    @{
+        var isHomepage = ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && 
+                        ViewContext.RouteData.Values["Action"]?.ToString() == "Index";
+        var isDashboard = ViewContext.RouteData.Values["Area"]?.ToString() != null || 
+                         ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard";
+    }
+    
+    @if (!isHomepage && !isDashboard)
+    {
+        <!-- Shared CSS for non-Homepage pages -->
+        <link rel="stylesheet" href="~/css/shared-header.css" asp-append-version="true" />
+    }
+    
+    @if (isDashboard)
+    {
+        <!-- Dashboard specific CSS -->
+        <link rel="stylesheet" href="~/css/figma-nav.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+    }
+    
+    <!-- Shared Footer CSS for all pages -->
+    <link rel="stylesheet" href="~/css/shared-footer.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/UI.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/HomePage/base.css" asp-append-version="true" />
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
 
-    @if (ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index")
+    @{
+        var isHomepage = ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && 
+                        ViewContext.RouteData.Values["Action"]?.ToString() == "Index";
+        var isDashboard = ViewContext.RouteData.Values["Area"]?.ToString() != null || 
+                         ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard";
+    }
+
+    @if (!isDashboard)
     {
+        @if (!isHomepage)
+        {
+            <!-- Shared Header for non-Homepage pages -->
+            @await Html.PartialAsync("_SharedHeader")
+        }
+    }
+
+    @if (isHomepage)
+    {
+        <!-- Homepage: No header in layout, full control -->
         <main role="main">
             @RenderBody()
         </main>
     }
+    else if (isDashboard)
+    {
+        <!-- Dashboard: Uses its own header in DashboardHeader.cshtml -->
+        <div class="container-fluid">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    }
     else
     {
+        <!-- Other pages: Standard layout with shared header -->
         <div class="container">
             <main role="main" class="pb-3 pt-3">
                 @RenderBody()
@@ -34,6 +80,7 @@
         </div>
     }
 
+    <!-- Footer for all pages -->
     @await Html.PartialAsync("footer")
 
 

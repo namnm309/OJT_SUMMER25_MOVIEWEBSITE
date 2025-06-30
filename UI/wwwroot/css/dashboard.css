@@ -582,24 +582,7 @@ body {
     color: white;
 }
 
-/* Footer */
-.cinema-footer {
-    background: #1a1a1a;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 60px 0 30px;
-    margin-top: auto;
-}
-
-.footer-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.footer-content {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.5);
-}
+/* Footer styles removed - Using shared-footer.css instead */
 
 /* User Menu */
 .user-menu {
@@ -700,17 +683,7 @@ body {
     }
 }
 
-/* Footer fixes for all dashboard pages */
-.cinema-footer {
-    margin-top: 4rem !important;
-    position: relative !important;
-    clear: both;
-    width: 100% !important;
-    background-color: #0f0f0f !important;
-    color: #fff !important;
-    padding: 60px 0 20px !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
+/* Footer styling moved to shared-footer.css - No override needed */
 
 /* Ensure proper page layout for footer */
 .dashboard-layout {
@@ -721,49 +694,4 @@ body {
 
 .dashboard-main {
     flex: 1;
-}
-
-/* Additional footer styling */
-.footer-container {
-    max-width: 1200px !important;
-    margin: 0 auto !important;
-    padding: 0 20px !important;
-}
-
-.footer-top {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: space-between !important;
-    margin-bottom: 40px !important;
-}
-
-.footer-logo {
-    flex: 0 0 100% !important;
-    max-width: 300px !important;
-    margin-bottom: 30px !important;
-}
-
-.footer-brand-header {
-    display: flex !important;
-    align-items: center !important;
-    gap: 12px !important;
-}
-
-.footer-brand-name {
-    font-size: 24px !important;
-    font-weight: 700 !important;
-    color: white !important;
-}
-
-.footer-brand-logo {
-    width: 44px !important;
-    height: 36px !important;
-    background: #df2144 !important;
-    border-radius: 4px !important;
-}
-
-.footer-brand-subtitle {
-    font-size: 14px !important;
-    color: rgba(255, 255, 255, 0.7) !important;
-    margin-top: 8px !important;
 } 

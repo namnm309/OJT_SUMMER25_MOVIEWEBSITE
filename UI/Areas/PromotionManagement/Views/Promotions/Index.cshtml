@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="~/css/HomePage/base.css" />
     <!-- Dashboard CSS -->
     <link rel="stylesheet" href="~/css/dashboard.css" />
+    <!-- Shared Footer CSS -->
+    <link rel="stylesheet" href="~/css/shared-footer.css" />
 
     <style>
         body {
@@ -405,7 +407,7 @@
     </main>
 
     <!-- Footer -->
-    @Html.Partial("footer")
+    @await Html.PartialAsync("footer")
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
