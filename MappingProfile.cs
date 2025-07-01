@@ -29,66 +29,62 @@ namespace ApplicationLayer.Mapper
 	{
 		public MappingProfile()
 		{
-			// Alert Mapping
+			// Ánh xạ cho Alert
 			CreateMap<Alert, AlertDto>().ReverseMap();
 			CreateMap<Alert, CheckHealthAlertRequestDto>().ReverseMap();
 
-
-			//BmiCategory
+			// Ánh xạ cho BmiCategory
 			CreateMap<BmiCategory, BmiCategoryCreateDto>().ReverseMap();
 			CreateMap<BmiCategory, BmiCategoryDto>();
 
-			//Children
+			// Ánh xạ cho Children
 			CreateMap<Children, ChildrenCreateDto>().ReverseMap();
 			CreateMap<Children, ChildrentResponseDto>();
 			CreateMap<Children, ChildrenUpdateDto>().ReverseMap();
 			CreateMap<Children, ChildrenDto>();
 
-			//User
+			// Ánh xạ cho User
 			CreateMap<User, UserDto>().ReverseMap();
 			CreateMap<User, UserUpdateDto>().ReverseMap();
 
-			//Doctor
+			// Ánh xạ cho Doctor
 			CreateMap<DoctorLicense, DoctorDto>().ReverseMap();
 			CreateMap<DoctorLicense, DoctorUpdateDto>().ReverseMap();
 			CreateMap<DoctorCreateDto, DoctorLicense>().ReverseMap();
 
-			//RatingFeedback
+			// Ánh xạ cho RatingFeedback
 			CreateMap<RatingFeedback, RatingFeedbackCreateDto>().ReverseMap();
 			CreateMap<RatingFeedback, RatingFeedbackUpdateDto>().ReverseMap();
 			CreateMap<RatingFeedback, RatingFeedbackDto>().ReverseMap();
 
-			//Package
+			// Ánh xạ cho Package
 			CreateMap<Package, PackageCreateDto>().ReverseMap();
 			CreateMap<Package, RenewPackageDto>();
 			CreateMap<Package, PackageUpdateDto>().ReverseMap();
 			CreateMap<Package, PackageDto>();
 
-			//UserPackage
+			// Ánh xạ cho UserPackage
 			CreateMap<UserPackage, UserPackageDto>()
 						   .ForMember(dest => dest.PackageName, opt => opt.MapFrom(src => src.Package.PackageName));
 
-			//Transaction
+			// Ánh xạ cho Transaction
 			CreateMap<Transaction, PaymentResponseDto>();
 			CreateMap<Transaction, TransactionDto>().ReverseMap();
 			CreateMap<Transaction, PaymentListDto>()
-						.ForMember(dest => dest.PackageName, opt => opt.MapFrom(src => src.Package.PackageName)) // Lấy từ Transaction.Package.PackageName
-						.ForMember(dest => dest.PaymentStatus, opt => opt.MapFrom(src => src.PaymentStatus.ToString())); // Enum phải chuyển về string
+						.ForMember(dest => dest.PackageName, opt => opt.MapFrom(src => src.Package.PackageName)) // Ánh xạ tên gói từ bảng Package
+						.ForMember(dest => dest.PaymentStatus, opt => opt.MapFrom(src => src.PaymentStatus.ToString())); // Chuyển enum thành chuỗi
 
-			//Feature
-			//CreateMap<Feature, FeatureDto>().ReverseMap();
-			//CreateMap<Feature, FeatureCreateDto>().ReverseMap();
-			//CreateMap<Feature, FeatureUpdateDto>().ReverseMap();
+			// Ánh xạ Feature - hiện tại được comment
 
-			//Consultation Request
+			// Ánh xạ cho Consultation Request
 			CreateMap<ConsultationRequest, ConsultationRequestDto>().ReverseMap();
 			CreateMap<ConsultationRequest, ConsultationRequestCreateDto>().ReverseMap();
 
-			//Response
+			// Ánh xạ cho Response
 			CreateMap<ConsultationResponse, ConsultationResponseDto>().ReverseMap();
 			CreateMap<ConsultationResponse, ConsultationResponseCreateDto>().ReverseMap();
 
-			//WhoData
+			// Ánh xạ cho WhoData
 			CreateMap<WhoDataDto, WhoData>().ReverseMap();
 			CreateMap<WhoDataUpdateDto, WhoData>();
 		}

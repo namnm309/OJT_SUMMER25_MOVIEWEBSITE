@@ -57,47 +57,7 @@ namespace ApplicationLayer.Services.MovieManagement
             return SuccessResp.Ok(result);
         }
 
-        //public async Task<MovieResponseDto?> GetByIdAsync(Guid movieId)
-        //{
-        //    var movie = await _movieRepo.FirstOrDefaultAsync(
-        //        m => m.Id == movieId,
-        //        "MovieImages", "MovieGenres.Genre"
-        //    );
-            
-        //    if (movie == null) return null;
-            
-        //    return new MovieResponseDto
-        //    {
-        //        Id = movie.Id,
-        //        Title = movie.Title,
-        //        ReleaseDate = movie.ReleaseDate ?? DateTime.Now,
-        //        ProductionCompany = movie.ProductionCompany,
-        //        RunningTime = movie.RunningTime,
-        //        Version = movie.Version?.ToString() ?? "TwoD",
-        //        Director = movie.Director,
-        //        Actors = movie.Actors,
-        //        Content = movie.Content,
-        //        TrailerUrl = movie.TrailerUrl,
-        //        Status = (int)movie.Status,
-        //        // Lấy hình ảnh primary
-        //        PrimaryImageUrl = movie.MovieImages?
-        //            .FirstOrDefault(img => img.IsPrimary)?.ImageUrl,
-        //        // Lấy tất cả hình ảnh
-        //        Images = movie.MovieImages?
-        //            .Select(img => new MovieImageDto
-        //            {
-        //                ImageUrl = img.ImageUrl,
-        //                Description = img.Description ?? "",
-        //                DisplayOrder = img.DisplayOrder,
-        //                IsPrimary = img.IsPrimary
-        //            }).ToList() ?? new List<MovieImageDto>(),
-        //        // Lấy danh sách thể loại
-        //        Genres = movie.MovieGenres?
-        //            .Select(mg => mg.Genre?.GenreName ?? "")
-        //            .Where(g => !string.IsNullOrEmpty(g))
-        //            .ToList() ?? new List<string>()
-        //    };
-        //}
+        // Phương thức GetByIdAsync cũ - hiện tại không sử dụng
 
         public async Task<IActionResult> CreateMovie(MovieCreateDto Dto)
         {

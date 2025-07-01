@@ -1,4 +1,4 @@
-/* Dashboard Common Styles - Dark Theme */
+/* CSS chung cho Dashboard - Theme tối */
 * {
     margin: 0;
     padding: 0;
@@ -14,7 +14,7 @@ body {
     flex-direction: column;
 }
 
-/* Header Styles */
+/* Style header */
 .dashboard-header {
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
     backdrop-filter: blur(10px);
@@ -22,13 +22,13 @@ body {
     position: sticky;
     top: 0;
     z-index: 1000;
-    height: 70px; /* Fixed header height */
+    height: 70px; /* Chiều cao header cố định */
 }
 
 .header-content {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 15px 20px; /* Reduced padding */
+    padding: 15px 20px; /* Giảm padding */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -80,7 +80,7 @@ body {
     color: #df2144;
 }
 
-/* Dashboard Layout with Sidebar */
+/* Layout Dashboard với Sidebar */
 .dashboard-layout {
     display: flex;
     flex: 1;
@@ -88,17 +88,17 @@ body {
     min-height: calc(100vh - 70px); /* Match header height */
 }
 
-/* Sidebar Styles */
+/* Style Sidebar */
 .dashboard-sidebar {
     width: 280px;
     background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     position: sticky;
-    top: 70px; /* Match header height */
-    height: calc(100vh - 70px); /* Match header height */
+    top: 70px; /* Khớp với chiều cao header */
+    height: calc(100vh - 70px); /* Khớp với chiều cao header */
     overflow-y: auto;
     transition: all 0.3s ease;
-    flex-shrink: 0; /* Prevent sidebar from shrinking */
+    flex-shrink: 0; /* Ngăn sidebar co lại */
 }
 
 .sidebar-header {
@@ -143,7 +143,7 @@ body {
     font-weight: 500;
 }
 
-/* Sidebar Menu */
+/* Menu Sidebar */
 .sidebar-menu {
     padding: 20px 0;
 }
@@ -206,11 +206,11 @@ body {
     font-size: 16px;
 }
 
-/* Sidebar Toggle Button */
+/* Nút toggle Sidebar */
 .sidebar-toggle {
     display: none;
     position: fixed;
-    top: 85px; /* Adjust for new header height */
+    top: 85px; /* Điều chỉnh theo chiều cao header mới */
     left: 20px;
     z-index: 999;
     background: #df2144;
@@ -231,10 +231,10 @@ body {
     box-shadow: 0 4px 15px rgba(223, 33, 68, 0.5);
 }
 
-/* Main Content Area */
+/* Khu vực nội dung chính */
 .dashboard-main {
     flex: 1;
-    padding: 20px; /* Reduced padding */
+    padding: 20px; /* Giảm padding */
     overflow-y: auto;
     min-height: calc(100vh - 70px); /* Match header height */
     background: #0a0a0a;
@@ -245,7 +245,7 @@ body {
     margin: 0 auto;
 }
 
-/* When sidebar is collapsed */
+/* Khi sidebar bị thu gọn */
 .dashboard-layout.sidebar-collapsed .dashboard-sidebar {
     transform: translateX(-100%);
 }
@@ -254,8 +254,7 @@ body {
     margin-left: 0;
 }
 
-/* Original Main Content Styles */
-/* Page Header */
+/* Style nội dung chính */
 .page-header {
     text-align: center;
     margin-bottom: 50px;
@@ -276,7 +275,7 @@ body {
     font-size: 18px;
 }
 
-/* Dashboard Cards */
+/* Card Dashboard */
 .dashboard-card {
     background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(45, 45, 45, 0.9) 100%);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -316,7 +315,7 @@ body {
     color: white;
 }
 
-/* Stats Cards */
+/* Card thống kê */
 .stats-card {
     padding: 20px;
 }
@@ -349,7 +348,7 @@ body {
     margin: 0;
 }
 
-/* Tables */
+/* Bảng */
 .table {
     color: white;
 }
@@ -384,7 +383,7 @@ body {
     color: rgba(255, 255, 255, 0.8);
 }
 
-/* Form Controls */
+/* Điều khiển form */
 .form-label {
     color: rgba(255, 255, 255, 0.9);
     font-weight: 500;
@@ -411,7 +410,7 @@ body {
     color: rgba(255, 255, 255, 0.4);
 }
 
-/* Buttons */
+/* Nút bấm */
 .btn {
     border-radius: 10px;
     padding: 10px 20px;
@@ -496,7 +495,7 @@ body {
     color: white;
 }
 
-/* Badges */
+/* Huy hiệu */
 .badge {
     padding: 5px 15px;
     border-radius: 20px;
@@ -582,7 +581,7 @@ body {
     color: white;
 }
 
-/* Footer styles removed - Using shared-footer.css instead */
+/* Style footer đã chuyển sang shared-footer.css */
 
 /* User Menu */
 .user-menu {
@@ -683,7 +682,7 @@ body {
     }
 }
 
-/* Footer styling moved to shared-footer.css - No override needed */
+/* Style footer đã chuyển sang shared-footer.css */
 
 /* Ensure proper page layout for footer */
 .dashboard-layout {

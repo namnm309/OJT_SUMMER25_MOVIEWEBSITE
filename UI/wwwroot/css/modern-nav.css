@@ -1,4 +1,4 @@
-/* Modern Navigation Component Styles - Inspired by Builder.io */
+/* CSS cho Navigation hiện đại */
 :root {
   --nav-bg: rgb(255, 255, 255);
   --nav-border: rgb(221, 221, 221);
@@ -14,7 +14,7 @@
   --transition: all 0.2s ease;
 }
 
-/* Main Navigation Container */
+/* Container navigation chính */
 .modern-nav {
   background: var(--nav-bg);
   border-bottom: 1px solid var(--nav-border);
@@ -36,14 +36,14 @@
   height: 64px;
 }
 
-/* Left Section - Brand and Navigation */
+/* Phần trái - Brand và Navigation */
 .nav-left {
   display: flex;
   align-items: center;
   gap: 32px;
 }
 
-/* Brand */
+/* Thương hiệu */
 .nav-brand {
   display: flex;
   align-items: center;
@@ -89,7 +89,7 @@
   background-clip: text;
 }
 
-/* Navigation Links */
+/* Liên kết navigation */
 .nav-links {
   display: flex;
   align-items: center;
@@ -136,14 +136,14 @@
   font-weight: 500;
 }
 
-/* Right Section - Actions and User */
+/* Phần phải - Actions và User */
 .nav-right {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-/* Action Buttons */
+/* Nút hành động */
 .nav-actions {
   display: flex;
   align-items: center;
@@ -188,7 +188,7 @@
   justify-content: center;
 }
 
-/* User Dropdown */
+/* Dropdown người dùng */
 .user-dropdown {
   position: relative;
 }
@@ -251,7 +251,7 @@
   transform: rotate(180deg);
 }
 
-/* User Menu */
+/* Menu người dùng */
 .user-menu {
   min-width: 280px;
   border: 1px solid var(--nav-border);
@@ -334,7 +334,7 @@
   color: rgb(220, 38, 38) !important;
 }
 
-/* Guest Actions */
+/* Hành động khách */
 .guest-actions {
   display: flex;
   align-items: center;
@@ -382,7 +382,7 @@
   box-shadow: var(--shadow-medium);
 }
 
-/* Mobile Toggle */
+/* Toggle mobile */
 .mobile-toggle {
   display: none;
   flex-direction: column;
@@ -401,7 +401,7 @@
   transition: var(--transition);
 }
 
-/* Mobile Navigation */
+/* Navigation mobile */
 .mobile-nav {
   padding: 16px;
   border-top: 1px solid var(--nav-border);
@@ -450,7 +450,7 @@
   width: 100%;
 }
 
-/* Responsive Design */
+/* Thiết kế responsive */
 @media (max-width: 768px) {
   .nav-container {
     padding: 12px 16px;

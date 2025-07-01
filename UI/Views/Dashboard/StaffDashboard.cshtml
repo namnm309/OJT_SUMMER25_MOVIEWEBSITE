@@ -28,7 +28,7 @@
     
     <!-- Dashboard Header -->
     @await Html.PartialAsync("_DashboardHeader")
-    
+
     <!-- Dashboard Layout -->
     <div class="dashboard-layout">
         <!-- Sidebar Toggle Button (Mobile) -->
@@ -62,66 +62,66 @@
                             <i class="fas fa-home"></i>
                             <span>Trang chủ</span>
                         </a>
-                    </div>
                 </div>
-                
+            </div>
+
                 <div class="nav-section">
                     <div class="nav-section-title">Bán vé & Dịch vụ</div>
                     <div class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="fas fa-ticket-alt"></i>
                             <span>Bán vé tại quầy</span>
-                        </a>
+                    </a>
                     </div>
                     <div class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="fas fa-search"></i>
                             <span>Tra cứu vé</span>
-                        </a>
+                    </a>
                     </div>
                     <div class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="fas fa-box"></i>
                             <span>Sản phẩm</span>
-                        </a>
+                    </a>
                     </div>
                 </div>
-                
+
                 <div class="nav-section">
                     <div class="nav-section-title">Quản lý</div>
                     <div class="nav-item">
                         <a href="@Url.Action("Index", "Movies")" class="nav-link">
                             <i class="fas fa-film"></i>
                             <span>Phim</span>
-                        </a>
+                    </a>
                     </div>
                     <div class="nav-item">
                         <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="nav-link">
-                            <i class="fas fa-users"></i>
+                        <i class="fas fa-users"></i>
                             <span>Thành viên</span>
-                        </a>
+                    </a>
                     </div>
                     <div class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class="fas fa-calendar-check"></i>
+                        <i class="fas fa-calendar-check"></i>
                             <span>Lịch chiếu</span>
-                        </a>
+                    </a>
                     </div>
                 </div>
-                
+
                 <div class="nav-section">
                     <div class="nav-section-title">Cá nhân</div>
                     <div class="nav-item">
                         <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="nav-link">
-                            <i class="fas fa-user-edit"></i>
+                        <i class="fas fa-user-edit"></i>
                             <span>Hồ sơ</span>
-                        </a>
+                    </a>
                     </div>
                     <div class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class="fas fa-history"></i>
+                        <i class="fas fa-history"></i>
                             <span>Lịch sử làm việc</span>
-                        </a>
+                    </a>
                     </div>
                 </div>
             </nav>
@@ -166,7 +166,7 @@
                 </div>
             </div>
         </aside>
-        
+
         <!-- Backdrop for mobile -->
         <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
 

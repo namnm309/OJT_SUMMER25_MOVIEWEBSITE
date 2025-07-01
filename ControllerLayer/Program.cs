@@ -18,9 +18,7 @@ namespace ControllerLayer
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Đăng kí service tại đây 
-
-            //===================================================================================================================================================
+            // Đăng ký các service và cấu hình ứng dụng
 
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
@@ -38,10 +36,10 @@ namespace ControllerLayer
                     policy.WithOrigins("https://localhost:7069", "http://localhost:7069", "http://localhost:5073", "https://localhost:5073", "http://localhost:5000", "https://localhost:5001")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
-                          .AllowCredentials(); // Quan trọng: cho phép share cookies
+                          .AllowCredentials(); // Cho phép chia sẻ cookie giữa UI và API
                 });
                 
-                // Policy cho public APIs - không cần credentials
+                // Chính sách cho API công khai - không yêu cầu xác thực
                 options.AddPolicy("PublicAPI", policy =>
                 {
                     policy.AllowAnyOrigin()
@@ -100,11 +98,9 @@ namespace ControllerLayer
 
             builder.Services.AddAuthorization();
 
-            //===================================================================================================================================================
-
             var app = builder.Build();
 
-            //Tự động migrate database và seed dữ liệu
+            // Tự động tạo database và khởi tạo dữ liệu mẫu
             using (var scope = app.Services.CreateScope())
             {
                 Console.WriteLine("Đang kiểm tra database...");

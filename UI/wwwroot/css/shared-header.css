@@ -589,7 +589,7 @@ body {
     scroll-behavior: smooth;
 }
 
-/* Page content margin to account for fixed header */
+/* Margin nội dung cho header cố định */
 body {
     margin-top: 70px;
 }

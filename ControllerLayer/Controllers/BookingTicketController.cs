@@ -27,14 +27,14 @@ namespace ControllerLayer.Controllers
         }
 
         [HttpGet("dropdown/movies/{movieId}/dates")]
-        public async Task<IActionResult> GetShowDates(Guid movieId) //Lấy danh sách ngày chiếu cho phim
+        public async Task<IActionResult> GetShowDates(Guid movieId) // Lấy danh sách ngày chiếu theo phim
         {
             _logger.LogInformation("Get ShowDates");
             return await _bookingTicketService.GetShowDatesByMovie(movieId);
         } 
 
         [HttpGet("dropdown/movies/{movieId}/times")]
-        public async Task<IActionResult> GetShowTimes(Guid movieId, [FromQuery] DateTime date) //Lấy các giờ chiếu
+        public async Task<IActionResult> GetShowTimes(Guid movieId, [FromQuery] DateTime date) // Lấy giờ chiếu theo phim và ngày
         {
             _logger.LogInformation("Get ShowTimes");
             return await _bookingTicketService.GetShowTimesByMovieAndDate(movieId, date);
@@ -58,7 +58,7 @@ namespace ControllerLayer.Controllers
             return await _seatService.ValidateSelectedSeats(showTimeId, seatIds);
         }
 
-        [HttpGet("{showTimeId}/details")] // New endpoint
+        [HttpGet("{showTimeId}/details")] // Endpoint lấy chi tiết suất chiếu
         public async Task<IActionResult> GetShowTimeDetails(Guid showTimeId)
         {
             _logger.LogInformation("Getting details for showtime: {ShowTimeId}", showTimeId);
@@ -69,7 +69,7 @@ namespace ControllerLayer.Controllers
         public async Task<IActionResult> ConfirmBooking([FromBody] ConfirmBookingRequestDto request)
         {
             _logger.LogInformation("Confirming booking for ShowtimeId: {ShowTimeId}, UserId: {UserId}",
-                request.ShowtimeId, request.UserId); // Log UserID nếu có
+                request.ShowtimeId, request.UserId); // Ghi log thông tin người dùng
 
             return await _bookingTicketService.ConfirmBooking(request);
         }

@@ -1,16 +1,14 @@
-/* ===============================================
-   MODERN DASHBOARD CSS - Cinema City
-   =============================================== */
+/* CSS Dashboard hiện đại - Cinema City */
 
 /* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-/* Bootstrap Override */
+/* Override Bootstrap */
 :root {
     --bs-body-bg: #000000 !important;
     --bs-body-color: #ffffff !important;
     
-    /* Cinema City Theme Colors */
+    /* Màu chủ đề Cinema City */
     --primary-red: #df2144;
     --primary-red-dark: #c01b3a;
     --accent-red: #ff3366;
@@ -38,26 +36,18 @@ body {
     overflow-x: hidden;
 }
 
-/* ===============================================
-   DASHBOARD HEADER - Styles handled by _DashboardHeader.cshtml
-   =============================================== */
+/* Style header Dashboard được xử lý trong _DashboardHeader.cshtml */
 
-/* Header styles are now inline in _DashboardHeader.cshtml for consistency */
-
-/* ===============================================
-   DASHBOARD LAYOUT WITH SIDEBAR
-   =============================================== */
+/* Layout Dashboard với Sidebar */
 
 .dashboard-layout {
     min-height: 100vh;
     display: flex;
     background: var(--dark-bg);
-    padding-top: 80px; /* Account for fixed header */
+    padding-top: 80px; /* Tính cho header cố định */
 }
 
-/* ===============================================
-   SIDEBAR
-   =============================================== */
+/* Sidebar */
 
 .dashboard-sidebar {
     width: 280px;
@@ -67,8 +57,8 @@ body {
     padding: 2rem 0;
     position: fixed;
     left: 0;
-    top: 80px; /* Start below header */
-    height: calc(100vh - 80px); /* Account for header height */
+    top: 80px; /* Bắt đầu dưới header */
+    height: calc(100vh - 80px); /* Tính chiều cao header */
     z-index: 1000;
     transition: all 0.3s ease;
     overflow-y: auto;
@@ -157,9 +147,7 @@ body {
     margin: 0;
 }
 
-/* ===============================================
-   SIDEBAR NAVIGATION
-   =============================================== */
+/* Navigation Sidebar */
 
 .sidebar-nav {
     padding: 0 1rem;
@@ -246,9 +234,7 @@ body {
     font-weight: 600;
 }
 
-/* ===============================================
-   USER PROFILE IN SIDEBAR
-   =============================================== */
+/* Profile người dùng trong Sidebar */
 
 .sidebar-user {
     padding: 1rem;
@@ -317,9 +303,7 @@ body {
     text-decoration: none;
 }
 
-/* ===============================================
-   MAIN CONTENT AREA
-   =============================================== */
+/* Khu vực nội dung chính */
 
 .dashboard-main {
     flex: 1;
@@ -425,14 +409,12 @@ body {
     width: 100%;
 }
 
-/* ===============================================
-   RESPONSIVE SIDEBAR
-   =============================================== */
+/* Sidebar responsive */
 
 .sidebar-toggle {
     display: none;
     position: fixed;
-    top: calc(80px + 1rem); /* Below header */
+    top: calc(80px + 1rem); /* Dưới header */
     left: 1rem;
     z-index: 1001;
     background: var(--primary-red);
@@ -466,7 +448,7 @@ body {
 @media (max-width: 1024px) {
     .dashboard-sidebar {
         transform: translateX(-100%);
-        top: 80px; /* Keep header space on mobile */
+        top: 80px; /* Giữ khoảng trống header trên mobile */
         height: calc(100vh - 80px);
     }
     

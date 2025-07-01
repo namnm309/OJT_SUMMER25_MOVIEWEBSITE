@@ -425,7 +425,7 @@
     opacity: 1;
 }
 
-/* Đặc biệt cho iframe - không thể dùng object-fit */
+/* Iframe đặc biệt - không dùng object-fit */
 iframe.hero-video {
     object-fit: none;
 }
@@ -481,14 +481,14 @@ iframe.hero-video[src*="player.cloudinary.com"] {
     overflow: hidden !important;
 }
 
-/* Force fullscreen cho tất cả Cloudinary elements bên trong iframe */
+/* Cloudinary iframe fullscreen */
 iframe.hero-video[src*="player.cloudinary.com"] * {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
 }
 
-/* Hide Cloudinary controls để tránh overlap với UI */
+/* Ẩn điều khiển Cloudinary tránh chồng UI */
 iframe.hero-video[src*="player.cloudinary.com"]::after {
     content: '';
     position: absolute;
@@ -501,7 +501,7 @@ iframe.hero-video[src*="player.cloudinary.com"]::after {
     pointer-events: none;
 }
 
-/* SUPER HIGH SPECIFICITY - Override everything from Cloudinary */
+/* Override Cloudinary styles */
 .hero-section .hero-background iframe.hero-video[src*="player.cloudinary.com"] {
     position: absolute !important;
     top: 50% !important;
@@ -530,7 +530,7 @@ iframe.hero-video[src*="player.cloudinary.com"]::after {
     box-sizing: border-box !important;
 }
 
-/* FALLBACK: If aspect-ratio still causes issues, force scale */
+/* Aspect ratio fallback */
 iframe.hero-video[src*="player.cloudinary.com"].loaded {
     width: 120vw !important;
     height: 120vh !important;
@@ -551,7 +551,7 @@ iframe.hero-video[src*="player.cloudinary.com"].loaded {
     );
 }
 
-/* Background layers priority - PHẢI hiển thị khi không có video */
+/* Background layer visibility */
 .bg-layer {
     position: absolute;
     top: 0;
@@ -564,7 +564,7 @@ iframe.hero-video[src*="player.cloudinary.com"].loaded {
     z-index: 1 !important;
 }
 
-/* Video playing state - ẩn background khi có video */
+/* Trạng thái video playing - ẩn background */
 .hero-section.video-playing .bg-layer {
     z-index: 0 !important;
 }
@@ -2058,6 +2058,7 @@ iframe.hero-video[src*="player.cloudinary.com"].loaded {
         0 10px 30px rgba(223, 33, 68, 0.2),
         0 4px 20px rgba(0, 0, 0, 0.3);
     border-color: rgba(223, 33, 68, 0.3);
+    border: 1px solid rgba(223, 33, 68, 0.3);
 }
 
 .recommended-poster {
@@ -2075,9 +2076,15 @@ iframe.hero-video[src*="player.cloudinary.com"].loaded {
     filter: brightness(0.95) contrast(1.05);
 }
 
-.recommended-item:hover .recommended-poster img {
-    transform: scale(1.08);
-    filter: brightness(1.1) contrast(1.1) saturate(1.2);
+/* BLUR POSTER - KEEP VISIBLE BUT MUTED */
+.recommended-item:hover .recommended-poster img,
+.recommended-item.hover .recommended-poster img,
+.recommended-poster:hover img,
+div.recommended-item:hover div.recommended-poster img {
+    transform: scale(1.08) !important;
+    filter: blur(3px) brightness(0.7) saturate(0.4) !important;
+    -webkit-filter: blur(3px) brightness(0.7) saturate(0.4) !important;
+    opacity: 0.8 !important;
 }
 
 .recommended-rating {
@@ -2100,7 +2107,7 @@ iframe.hero-video[src*="player.cloudinary.com"].loaded {
 }
 
 .recommended-rating i {
-    color: #ffcc00;
+    color: white;
     font-size: 10px;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
@@ -3269,5 +3276,415 @@ select.pagination-select {
     background-color: rgba(223, 33, 68, 0.3) !important;
     color: #ffffff !important;
 }
+
+/* Movie card hover overlay */
+
+.recommended-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: none;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 10;
+}
+
+.recommended-item:hover .recommended-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+.overlay-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    width: 100%;
+    max-width: 200px;
+    align-items: center;
+    transform: translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.recommended-item:hover .overlay-buttons {
+    transform: translateY(0);
+}
+
+.recommended-book-btn,
+.recommended-view-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    min-width: 140px;
+    white-space: nowrap;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.recommended-book-btn::before,
+.recommended-view-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: -1;
+}
+
+/* Primary Button - Đặt vé ngay */
+.recommended-book-btn {
+    background: linear-gradient(135deg, #df2144 0%, #ff3366 100%);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 8px 25px rgba(223, 33, 68, 0.4),
+        0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.recommended-book-btn::before {
+    background: linear-gradient(135deg, #ff3366 0%, #ff1444 100%);
+}
+
+.recommended-book-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    color: white;
+    text-decoration: none;
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 
+        0 15px 40px rgba(223, 33, 68, 0.6),
+        0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.recommended-book-btn:hover::before {
+    width: 120%;
+    height: 120%;
+}
+
+.recommended-book-btn i {
+    font-size: 16px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* Secondary Button - Xem chi tiết */
+.recommended-view-btn {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.recommended-view-btn::before {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.recommended-view-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    color: white;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 
+        0 12px 30px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.recommended-view-btn:hover::before {
+    width: 110%;
+    height: 110%;
+}
+
+.recommended-view-btn i {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .overlay-buttons {
+        gap: 12px;
+        padding: 15px;
+        max-width: 160px;
+    }
+    
+    .recommended-book-btn,
+    .recommended-view-btn {
+        padding: 10px 16px;
+        font-size: 12px;
+        min-width: 120px;
+    }
+    
+    .recommended-book-btn i,
+    .recommended-view-btn i {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .overlay-buttons {
+        gap: 10px;
+        padding: 12px;
+        max-width: 140px;
+    }
+    
+    .recommended-book-btn,
+    .recommended-view-btn {
+        padding: 8px 12px;
+        font-size: 11px;
+        min-width: 100px;
+        gap: 6px;
+    }
+}
+
+/* Backup overlay - simplified */
+
+/* Overlay hover effect */
+.recommended-item:hover .recommended-overlay {
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Make sure overlay buttons are visible */
+.overlay-buttons {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.recommended-book-btn,
+.recommended-view-btn {
+    background: #df2144 !important;
+    color: white !important;
+    padding: 10px 20px !important;
+    border-radius: 20px !important;
+    text-decoration: none !important;
+    font-weight: bold !important;
+    z-index: 999 !important;
+    position: relative !important;
+}
+
+.recommended-view-btn {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid white !important;
+}
+
+/* Clean poster background */
+.recommended-item:hover .recommended-poster {
+    background: transparent !important;
+}
+
+/* Transparent overlay */
+.recommended-item:hover .recommended-overlay {
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Poster blur effect */
+html body div.recommended-item:hover div.recommended-poster img,
+html body .recommended-item:hover .recommended-poster img,
+html body .movie-card:hover .movie-poster img,
+html body .movie-card:hover img,
+html body .promotion-card:hover img {
+    filter: blur(4px) brightness(0.6) saturate(0.3) !important;
+    -webkit-filter: blur(4px) brightness(0.6) saturate(0.3) !important;
+    opacity: 0.8 !important;
+}
+
+/* Transparent poster container */
+html body div.recommended-item:hover div.recommended-poster,
+html body .recommended-item:hover .recommended-poster {
+    background: transparent !important;
+}
+
+/* Overlay and buttons */
+html body .recommended-item:hover .recommended-overlay {
+    background: rgba(0, 0, 0, 0.4) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+html body .recommended-item:hover .overlay-buttons {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    z-index: 999 !important;
+}
+
+html body .recommended-item:hover .recommended-book-btn,
+html body .recommended-item:hover .recommended-view-btn {
+    display: flex !important;
+    z-index: 999 !important;
+    position: relative !important;
+}
+
+/* Remove yellow outlines */
+html body .movie-card:hover,
+html body .promotion-card:hover {
+    outline: none !important;
+}
+
+/* Keep red border */
+html body .recommended-item {
+    outline: none !important;
+}
+
+html body .recommended-item:hover {
+    outline: none !important;
+}
+
+/* Focus reset for movie cards */
+html body .recommended-item:focus,
+html body .recommended-item:focus-visible,
+html body .recommended-item:focus-within,
+html body .recommended-item img:focus,
+html body .recommended-item a:focus,
+html body .recommended-item button:focus {
+    outline: none !important;
+}
+
+/* Target yellow outlines */
+img:focus, img:hover {
+    outline: none !important;
+}
+
+button:focus, a:focus {
+    outline: none !important;
+}
+
+/* Disable img outline */
+.recommended-poster img,
+.recommended-poster img:hover,
+.recommended-poster img:focus,
+.recommended-poster img:active,
+.recommended-poster img:visited {
+    outline: none !important;
+    outline-color: transparent !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    border: none !important;
+}
+
+/* Cross-browser reset */
+.recommended-poster img::-moz-focus-inner {
+    border: 0 !important;
+    outline: none !important;
+}
+
+.movie-poster img:focus {
+    outline: none !important;
+}
+
+/* Remove focus from clickable elements */
+.recommended-item a:focus,
+.recommended-item button:focus {
+    outline: none !important;
+}
+
+/* Anti-yellow override */
+.recommended-item *[style*="yellow"],
+.recommended-item *[style*="gold"],
+.recommended-item *[style*="#ffd700"],
+.recommended-item *[style*="#ffcc00"] {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Browser focus override */
+.recommended-item,
+.recommended-item *:focus-visible {
+    outline: none !important;
+    outline-color: transparent !important;
+    outline-width: 0 !important;
+}
+
+/* High specificity img reset */
+html body .recommended-poster img {
+    outline: none !important;
+    border: none !important;
+}
+
+html body .recommended-poster img:hover,
+html body .recommended-poster img:focus,
+html body .recommended-poster img:active {
+    outline: none !important;
+    border: none !important;
+}
+
+/* Cross-browser img reset */
+.recommended-poster img {
+    -webkit-appearance: none !important;
+    -webkit-focus-ring-color: transparent !important;
+    -webkit-tap-highlight-color: transparent !important;
+    outline: none !important;
+}
+
+.recommended-poster img::-moz-focus-outer {
+    border: none !important;
+    outline: none !important;
+}
+
+/* Global outline reset */
+* {
+    outline: none !important;
+}
+
+*:focus, *:hover, *:active, *:focus-visible {
+    outline: none !important;
+}
+
+/* Poster container */
+.recommended-poster {
+    position: relative;
+}
+
+/* Poster image styling */
+.recommended-poster img {
+    outline: none !important;
+    border: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Remove focus states */
+.recommended-poster img:focus,
+.recommended-poster img:hover,
+.recommended-poster img:active {
+    outline: none !important;
+    border: none !important;
+}
+
+/* Remove browser focus outlines */
 
 /* END OF UNIFIED CSS FILE */ 

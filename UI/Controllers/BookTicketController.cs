@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UI.Areas.BookingManagement.Services; // Add this using directive
-using UI.Models; // Add this using directive
-using System.Linq; // Add this using directive
+using UI.Areas.BookingManagement.Services; // Service quản lý đặt vé
+using UI.Models; // Model dữ liệu UI
+using System.Linq; // Hỗ trợ LINQ
 
 namespace UI.Controllers
 {

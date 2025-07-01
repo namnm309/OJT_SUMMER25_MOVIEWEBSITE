@@ -42,7 +42,7 @@
         }
         
         .management-content {
-            padding: 20px 0;
+            padding: 100px 0 20px 0;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -50,8 +50,8 @@
         
         .page-header {
             background: linear-gradient(135deg, #df2144 0%, #ff1e2b 100%);
-            padding: 60px 0;
-            margin-bottom: 30px;
+            padding: 40px 0;
+            margin-bottom: 40px;
             margin-top: 0;
             position: relative;
             overflow: hidden;
@@ -477,6 +477,8 @@
         <!-- Header - Unified Dashboard Style -->
         @Html.Partial("_DashboardHeader")
         
+    <!-- Main Content -->
+        <div class="management-content">
         <!-- Page Header -->
         <div class="page-header">
             <div class="container">
@@ -499,8 +501,6 @@
                         </div>
                 </div>
 
-    <!-- Main Content -->
-        <div class="management-content">
             <div class="container-fluid px-4">
 
 
@@ -579,7 +579,7 @@
             </div>
 
             </div>
-        </div>
+                        </div>
         
         <!-- Footer -->
         @await Html.PartialAsync("footer")

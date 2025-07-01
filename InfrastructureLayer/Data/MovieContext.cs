@@ -20,9 +20,7 @@ namespace InfrastructureLayer.Data
         {
         }
 
-        //========================================================================================================================
-        //Khai báo entity 
-        //Dbset biểu diễn 1 bảng của csdl 
+        // Khai báo các DbSet Entity - mỗi DbSet đại diện cho một bảng trong cơ sở dữ liệu 
         public DbSet<Users> Users { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<MovieImage> MovieImages { get; set; }
@@ -38,14 +36,12 @@ namespace InfrastructureLayer.Data
         public DbSet<Employee> Employees { get; set; }
 
 
-        //Nếu muốn cấu hình chi tiết thêm thì overrive OnModelCreating
-        //Nếu đã sử dụng [] trc các attribute thì có thể ko cần method này 
-        //Nếu có 1 số cái phức tạp mà [] ko thể triển khai hết thì nên dùng method này 
+        // Cấu hình chi tiết Entity - sử dụng khi cần cấu hình phức tạp ngoài Data Annotations 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            //Setup lại các thuộc tính cho entity user , đã có [] vẫn có thể settup đc nó sẽ override
+            // Cấu hình chi tiết cho Entity Users - override các thuộc tính đã có trong Data Annotations
             modelBuilder.Entity<Users>(entity =>
             {
                 entity.HasIndex(u => u.Username)

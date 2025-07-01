@@ -346,7 +346,7 @@
     
     <!-- Dashboard Header -->
     @await Html.PartialAsync("_DashboardHeader")
-    
+
     <!-- Dashboard Layout -->
     <div class="dashboard-layout">
         <!-- Sidebar Toggle Button (Mobile) -->
@@ -504,10 +504,10 @@
                                 <i class="fas fa-cog"></i>
                             </button>
                         </div>
-                    </div>
                 </div>
             </div>
-            
+        </div>
+
             <!-- Dashboard Content -->
             <div class="dashboard-content">
             <!-- Hero Section -->
@@ -550,24 +550,24 @@
                             </h3>
                         </div>
                         <div class="quick-actions">
-                            <a href="@Url.Action("Index", "Movies")" class="action-btn">
-                                <i class="fas fa-film"></i>
-                                <span>Xem phim</span>
-                            </a>
-                            <a href="#" class="action-btn">
-                                <i class="fas fa-ticket-alt"></i>
-                                <span>Vé của tôi</span>
-                            </a>
-                            <a href="@Url.Action("Index", "Promotions")" class="action-btn">
-                                <i class="fas fa-gift"></i>
-                                <span>Khuyến mãi</span>
-                            </a>
-                            <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="action-btn">
-                                <i class="fas fa-user-edit"></i>
-                                <span>Chỉnh sửa hồ sơ</span>
-                            </a>
-                        </div>
-                    </div>
+                <a href="@Url.Action("Index", "Movies")" class="action-btn">
+                    <i class="fas fa-film"></i>
+                    <span>Xem phim</span>
+                </a>
+                <a href="#" class="action-btn">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Vé của tôi</span>
+                </a>
+                <a href="@Url.Action("Index", "Promotions")" class="action-btn">
+                    <i class="fas fa-gift"></i>
+                    <span>Khuyến mãi</span>
+                </a>
+                <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="action-btn">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Chỉnh sửa hồ sơ</span>
+                </a>
+    </div>
+</div>
 
                     <!-- User Information -->
                     <div class="modern-card">
@@ -579,32 +579,32 @@
                         </div>
                         <div class="user-info-grid">
                             <div class="user-info-item">
-                                <div class="info-label">Tên đăng nhập</div>
-                                <div class="info-value">@ViewBag.UserName</div>
-                            </div>
+                            <div class="info-label">Tên đăng nhập</div>
+                            <div class="info-value">@ViewBag.UserName</div>
+                        </div>
                             <div class="user-info-item">
-                                <div class="info-label">Email</div>
-                                <div class="info-value">@ViewBag.Email</div>
-                            </div>
+                            <div class="info-label">Email</div>
+                            <div class="info-value">@ViewBag.Email</div>
+                        </div>
                             <div class="user-info-item">
-                                <div class="info-label">Họ tên</div>
-                                <div class="info-value">@ViewBag.FullName</div>
-                            </div>
+                            <div class="info-label">Họ tên</div>
+                            <div class="info-value">@ViewBag.FullName</div>
+                        </div>
                             <div class="user-info-item">
-                                <div class="info-label">Vai trò</div>
-                                <div class="info-value">
+                            <div class="info-label">Vai trò</div>
+                            <div class="info-value">
                                     <span class="status-badge member">@ViewBag.Role</span>
                                 </div>
                             </div>
                             <div class="user-info-item">
-                                <div class="info-label">Trạng thái</div>
-                                <div class="info-value">
-                                    @if(ViewBag.IsActive)
-                                    {
+                            <div class="info-label">Trạng thái</div>
+                            <div class="info-value">
+                            @if(ViewBag.IsActive)
+                            {
                                         <span class="status-badge active">Hoạt động</span>
-                                    }
-                                    else
-                                    {
+                            }
+                            else
+                            {
                                         <span class="status-badge inactive">Không hoạt động</span>
                                     }
                                 </div>

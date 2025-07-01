@@ -28,7 +28,7 @@
     
     <!-- Dashboard Header -->
     @await Html.PartialAsync("_DashboardHeader")
-    
+
     <!-- Dashboard Layout -->
     <div class="dashboard-layout">
         <!-- Sidebar Toggle Button (Mobile) -->
@@ -62,30 +62,30 @@
                             <i class="fas fa-home"></i>
                             <span>Trang chủ</span>
                         </a>
-                    </div>
                 </div>
-                
+            </div>
+
                 <div class="nav-section">
                     <div class="nav-section-title">Quản lý phim</div>
                     <div class="nav-item">
                         <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="nav-link">
-                            <i class="fas fa-film"></i>
+                        <i class="fas fa-film"></i>
                             <span>Danh sách phim</span>
-                        </a>
+                    </a>
                     </div>
                     <div class="nav-item">
                         <a href="@Url.Action("Create", "Movies", new { area = "MovieManagement" })" class="nav-link">
                             <i class="fas fa-plus"></i>
                             <span>Thêm phim mới</span>
-                        </a>
+                    </a>
                     </div>
                 </div>
-                
+
                 <div class="nav-section">
                     <div class="nav-section-title">Quản lý người dùng</div>
                     <div class="nav-item">
                         <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="nav-link">
-                            <i class="fas fa-users"></i>
+                        <i class="fas fa-users"></i>
                             <span>Thành viên</span>
                             <span class="nav-badge">124</span>
                         </a>
@@ -108,28 +108,28 @@
                     </div>
                     <div class="nav-item">
                         <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="nav-link">
-                            <i class="fas fa-ticket-alt"></i>
+                        <i class="fas fa-ticket-alt"></i>
                             <span>Đặt vé</span>
                             <span class="nav-badge">8</span>
                         </a>
                     </div>
-                </div>
-                
+        </div>
+
                 <div class="nav-section">
                     <div class="nav-section-title">Báo cáo</div>
                     <div class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="fas fa-chart-bar"></i>
                             <span>Doanh thu</span>
-                        </a>
+                    </a>
                     </div>
                     <div class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="fas fa-analytics"></i>
                             <span>Thống kê</span>
-                        </a>
+                    </a>
                     </div>
-                </div>
+    </div>
             </nav>
             
             <!-- User Profile in Sidebar -->
@@ -172,7 +172,7 @@
                 </div>
             </div>
         </aside>
-        
+
         <!-- Backdrop for mobile -->
         <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
 
@@ -197,7 +197,7 @@
                             <button class="topbar-btn" title="Cài đặt">
                                 <i class="fas fa-cog"></i>
                             </button>
-                        </div>
+</div>
                     </div>
                 </div>
             </div>
@@ -213,23 +213,23 @@
                                 Chào mừng Admin!
                             </h1>
                             <p>Tổng quan quản trị hệ thống rạp chiếu phim Cinema City</p>
-                        </div>
+        </div>
                         <div class="hero-stats">
                             <div class="hero-stat">
                                 <span class="hero-stat-value">@ViewBag.TotalUsers</span>
                                 <span class="hero-stat-label">Thành viên</span>
-                            </div>
+    </div>
                             <div class="hero-stat">
                                 <span class="hero-stat-value">@ViewBag.TotalMovies</span>
                                 <span class="hero-stat-label">Phim</span>
-                            </div>
+                    </div>
                             <div class="hero-stat">
                                 <span class="hero-stat-value">@ViewBag.TotalBookings</span>
                                 <span class="hero-stat-label">Vé hôm nay</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
                 <!-- Stats Grid -->
                 <div class="stats-grid animate-fade-in">
@@ -241,14 +241,14 @@
                             <button class="stat-menu">
                                 <i class="fas fa-ellipsis-h"></i>
                             </button>
-                        </div>
+                    </div>  
                         <div class="stat-value">@ViewBag.TotalUsers</div>
                         <div class="stat-label">Tổng thành viên</div>
                         <div class="stat-change positive">
                             <i class="fas fa-arrow-up"></i>
                             <span>+12% so với tháng trước</span>
-                        </div>
-                    </div>
+                </div>
+            </div>
 
                     <div class="stat-card">
                         <div class="stat-header">
@@ -264,8 +264,8 @@
                         <div class="stat-change positive">
                             <i class="fas fa-arrow-up"></i>
                             <span>+5 phim mới</span>
-                        </div>
-                    </div>
+        </div>
+    </div>
 
                     <div class="stat-card">
                         <div class="stat-header">
@@ -288,25 +288,25 @@
                         <div class="stat-header">
                             <div class="stat-icon revenue">
                                 <i class="fas fa-dollar-sign"></i>
-                            </div>
+                </div>
                             <button class="stat-menu">
                                 <i class="fas fa-ellipsis-h"></i>
                             </button>
-                        </div>
+            </div>
                         <div class="stat-value">@ViewBag.TodayRevenue</div>
                         <div class="stat-label">Doanh thu hôm nay</div>
                         <div class="stat-change positive">
                             <i class="fas fa-arrow-up"></i>
                             <span>+15% so với hôm qua</span>
-                        </div>
-                    </div>
-                </div>
+        </div>
+    </div>
+</div>
 
                 <!-- Content Grid -->
                 <div class="content-grid animate-slide-in">
                     <!-- Main Panel -->
                     <div class="main-panel">
-                        <!-- Quick Actions -->
+                <!-- Quick Actions -->
                         <div class="modern-card">
                             <div class="card-header">
                                 <h3 class="card-title">
@@ -385,11 +385,11 @@
                                     <div class="activity-content">
                                         <div class="activity-title">Thanh toán thành công</div>
                                         <div class="activity-time">2 giờ trước</div>
-                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
                     <!-- Side Panel -->
                     <div class="side-panel">
@@ -408,8 +408,8 @@
                                             <i class="fas fa-info-circle"></i>
                                         </div>
                                         <div class="notification-text">
-                                            Hệ thống đang hoạt động bình thường
-                                        </div>
+                    Hệ thống đang hoạt động bình thường
+                </div>
                                     </div>
                                 </div>
                                 <div class="notification-item warning">
@@ -418,7 +418,7 @@
                                             <i class="fas fa-exclamation-triangle"></i>
                                         </div>
                                         <div class="notification-text">
-                                            Có <strong>@ViewBag.PendingTasks</strong> nhiệm vụ cần xử lý
+                    Có <strong>@ViewBag.PendingTasks</strong> nhiệm vụ cần xử lý
                                         </div>
                                     </div>
                                 </div>
@@ -431,9 +431,9 @@
                                             Backup dữ liệu hoàn tất
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+            </div>
+        </div>
 
                         <!-- System Status -->
                         <div class="modern-card">

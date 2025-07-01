@@ -1,4 +1,4 @@
-/* Cinema City Movie Management - Complete Redesign */
+/* CSS quản lý phim Cinema City */
 
 /* Global Styles */
 .cinema-movie-management {
@@ -528,6 +528,11 @@
 
 .movie-card:hover .movie-poster {
     transform: scale(1.1);
+}
+
+.movie-card:hover .movie-poster img {
+    filter: blur(3px) brightness(0.7) saturate(0.4) !important;
+    opacity: 0.8 !important;
 }
 
 .movie-overlay {
@@ -1421,7 +1426,7 @@
     padding: 0;
 }
 
-/* Movie List Header - exact like the red header in image */
+/* Header danh sách phim */
 .movie-list-header {
     background: #dc2626;
     padding: 1rem 0;
@@ -2317,7 +2322,7 @@
 }
 
 .checkmark {
-    /* This is handled by the checkbox input styling above */
+    /* Được xử lý bởi style checkbox ở trên */
 }
 
 /* Text muted */

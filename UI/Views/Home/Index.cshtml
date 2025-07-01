@@ -6,10 +6,41 @@
 }
 
 @section Styles {
-    <!-- 🚀 UNIFIED CSS - Merged from 13 files for optimal performance -->
+    <!-- CSS tổng hợp từ 13 file để tối ưu hiệu năng -->
     <link rel="stylesheet" href="~/css/HomePage/homepage-unified.css" />
-    <!-- Footer styles to match other pages -->
+    <!-- CSS footer để khớp với các trang khác -->
     <link rel="stylesheet" href="~/css/shared-footer.css" />
+    
+    <!-- CSS debug inline để hiển thị overlay -->
+    <style>
+        .recommended-item:hover .recommended-overlay {
+            opacity: 1 !important;
+            visibility: visible !important;
+            background: rgba(255, 0, 0, 0.8) !important;
+            border: 3px solid yellow !important;
+        }
+        .overlay-buttons {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 15px !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .recommended-book-btn, .recommended-view-btn {
+            background: #df2144 !important;
+            color: white !important;
+            padding: 15px 25px !important;
+            border-radius: 25px !important;
+            text-decoration: none !important;
+            font-weight: bold !important;
+            font-size: 16px !important;
+            z-index: 9999 !important;
+        }
+        .recommended-view-btn {
+            background: rgba(255, 255, 255, 0.3) !important;
+            border: 2px solid white !important;
+        }
+    </style>
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -331,7 +362,7 @@
             </a>
         </div>
         
-        <!-- Modern Pagination Controls for Recommended Movies - TRƯỚC danh sách phim -->
+        <!-- Điều khiển phân trang hiện đại cho phim đề xuất -->
         <div class="section-pagination" id="recommendedPagination">
             <div class="pagination-controls">
                 <div class="sort-filter-controls">
@@ -410,10 +441,16 @@
                             <img src="@imageUrl" alt="@movie.Title" loading="lazy" 
                                  onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
                                 <div class="recommended-overlay">
+                                    <div class="overlay-buttons">
+                                        <a href="@Url.Action("SelectMovieAndShowtime", "BookTicket", new { movieId = movie.Id })" class="recommended-book-btn">
+                                            <i class="fas fa-ticket-alt"></i>
+                                            Đặt vé ngay
+                                        </a>
                                     <a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="recommended-view-btn">
                                         <i class="fas fa-info-circle"></i>
                                         Xem Chi Tiết
                                     </a>
+                                    </div>
                                 </div>
                                 <div class="recommended-rating">
                                     <i class="fas fa-star"></i> @movie.Rating.ToString("F1")
@@ -462,7 +499,7 @@
                 </a>
             </div>
         
-        <!-- Modern Pagination Controls for Coming Soon Movies - TRƯỚC danh sách phim -->
+        <!-- Điều khiển phân trang hiện đại cho phim sắp chiếu -->
         <div class="section-pagination" id="comingSoonPagination">
             <div class="pagination-controls">
                 <div class="sort-filter-controls">
@@ -540,10 +577,16 @@
                                     <img src="@imageUrl" alt="@movie.Title" loading="lazy"
                                          onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
                                 <div class="recommended-overlay">
+                                    <div class="overlay-buttons">
+                                        <a href="@Url.Action("SelectMovieAndShowtime", "BookTicket", new { movieId = movie.Id })" class="recommended-book-btn">
+                                            <i class="fas fa-ticket-alt"></i>
+                                            Đặt vé ngay
+                                        </a>
                                     <a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="recommended-view-btn">
                                             <i class="fas fa-info-circle"></i>
                                             Xem Chi Tiết
                                         </a>
+                                    </div>
                                     </div>
                                 <!-- Release Date Badge cho Coming Soon -->
                                 <div class="recommended-release-date">
@@ -609,10 +652,12 @@
                                     <img src="@promo.ImageUrl" alt="@promo.Title"
                                          onerror="this.src='https://via.placeholder.com/300x450/df2144/ffffff?text=Khuyến+Mãi'">
                                     <div class="recommended-overlay">
+                                        <div class="overlay-buttons">
                                         <a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
                                             <i class="fas fa-tag"></i>
                                             Xem Chi Tiết
                                         </a>
+                                        </div>
                                     </div>
                                     <!-- Promotion Badge -->
                                     <div class="recommended-promotion-badge">
@@ -642,10 +687,12 @@
                             <div class="recommended-poster">
                                 <img src="https://via.placeholder.com/300x450/df2144/ffffff?text=2+1" alt="Mua 2 tặng 1">
                                 <div class="recommended-overlay">
+                                    <div class="overlay-buttons">
                                     <a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
                                         <i class="fas fa-tag"></i>
                                         Xem Chi Tiết
                                     </a>
+                                    </div>
                                 </div>
                                 <div class="recommended-promotion-badge">
                                     <i class="fas fa-gift"></i> Mua 2 Tặng 1
@@ -669,10 +716,12 @@
                             <div class="recommended-poster">
                                 <img src="https://via.placeholder.com/300x450/df2144/ffffff?text=50%" alt="Giảm giá">
                                 <div class="recommended-overlay">
+                                    <div class="overlay-buttons">
                                     <a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
                                         <i class="fas fa-tag"></i>
                                         Xem Chi Tiết
                                     </a>
+                                    </div>
                                 </div>
                                 <div class="recommended-promotion-badge">
                                     <i class="fas fa-percentage"></i> Giảm 50%
@@ -696,10 +745,12 @@
                             <div class="recommended-poster">
                                 <img src="https://via.placeholder.com/300x450/df2144/ffffff?text=VIP" alt="Thành viên">
                                 <div class="recommended-overlay">
+                                    <div class="overlay-buttons">
                                     <a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
                                         <i class="fas fa-tag"></i>
                                         Xem Chi Tiết
                                     </a>
+                                    </div>
                                 </div>
                                 <div class="recommended-promotion-badge">
                                     <i class="fas fa-crown"></i> VIP
@@ -723,10 +774,12 @@
                             <div class="recommended-poster">
                                 <img src="https://via.placeholder.com/300x450/df2144/ffffff?text=BDAY" alt="Sinh nhật">
                                 <div class="recommended-overlay">
+                                    <div class="overlay-buttons">
                                     <a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
                                         <i class="fas fa-tag"></i>
                                         Xem Chi Tiết
                                     </a>
+                                    </div>
                                 </div>
                                 <div class="recommended-promotion-badge">
                                     <i class="fas fa-birthday-cake"></i> Sinh Nhật

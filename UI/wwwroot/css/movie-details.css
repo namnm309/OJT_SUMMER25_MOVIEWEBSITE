@@ -1,8 +1,6 @@
-/* ================================
-   MOVIE DETAILS REDESIGN STYLES
-   ================================ */
+/* CSS cho trang chi tiết phim */
 
-/* Global HTML and Body Background */
+/* Background toàn cục cho HTML và Body */
 html {
     background: 
         radial-gradient(circle at 20% 80%, rgba(196, 30, 58, 0.15) 0%, transparent 50%),
@@ -26,20 +24,20 @@ body {
     color: #ffffff;
 }
 
-/* Override any global body styles */
+/* Override style body toàn cục */
 body.movie-details-body {
     background: transparent !important;
     background-color: transparent !important;
 }
 
-/* CSS Reset for Movie Details Page */
+/* Reset CSS cho trang chi tiết phim */
 .movie-details-page * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Base Variables */
+/* Biến CSS cơ bản */
 :root {
     --primary-red: #C41E3A;
     --secondary-red: #8B0000;
@@ -53,7 +51,7 @@ body.movie-details-body {
     --gradient-overlay: linear-gradient(135deg, rgba(196, 30, 58, 0.1) 0%, rgba(10, 10, 10, 0.9) 100%);
 }
 
-/* Page Container with Beautiful Background */
+/* Container trang với background đẹp */
 .movie-details-page {
     background: transparent !important;
     background-color: transparent !important;
@@ -67,7 +65,7 @@ body.movie-details-body {
     position: relative;
 }
 
-/* Animated Background Elements on HTML */
+/* Hiệu ứng background animation cho HTML */
 html::before {
     content: '';
     position: fixed;
@@ -119,15 +117,13 @@ html::after {
     }
 }
 
-/* Ensure content is above animated backgrounds */
+/* Đảm bảo nội dung hiển thị trên background animation */
 .movie-details-page > * {
     position: relative;
     z-index: 1;
 }
 
-/* ================================
-   MAIN LAYOUT WITH SIDEBARS
-   ================================ */
+/* Layout chính với sidebar */
 .details-main-container {
     display: grid;
     grid-template-columns: 200px 1fr 200px;
@@ -140,7 +136,7 @@ html::after {
     box-sizing: border-box;
 }
 
-/* Sidebars */
+/* Sidebar */
 .details-sidebar {
     position: sticky;
     top: 6rem;
@@ -154,7 +150,7 @@ html::after {
     gap: 1.5rem;
 }
 
-/* Advertisement Banners */
+/* Banner quảng cáo */
 .ad-banner {
     background: 
         linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(40, 40, 40, 0.8) 100%),
@@ -243,16 +239,14 @@ html::after {
     box-shadow: 0 4px 15px rgba(196, 30, 58, 0.3);
 }
 
-/* Center Content */
+/* Nội dung trung tâm */
 .details-center-content {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
-/* ================================
-   MOVIE HERO SECTION
-   ================================ */
+/* Phần hero của phim */
 .movie-hero {
     position: relative;
     background: 
@@ -299,7 +293,7 @@ html::after {
     align-items: center;
 }
 
-/* Poster Section */
+/* Phần poster */
 .poster-section {
     display: flex;
     justify-content: center;
@@ -362,7 +356,7 @@ html::after {
     transform: scale(1.1);
 }
 
-/* Movie Info */
+/* Thông tin phim */
 .movie-info {
     display: flex;
     flex-direction: column;
@@ -392,7 +386,7 @@ html::after {
     font-weight: 500;
 }
 
-/* Movie Meta */
+/* Metadata phim */
 .movie-meta {
     display: flex;
     flex-wrap: wrap;
@@ -428,7 +422,7 @@ html::after {
     color: var(--primary-red);
 }
 
-/* Genre Tags */
+/* Tag thể loại */
 .genre-tags {
     display: flex;
     flex-wrap: wrap;
@@ -452,7 +446,7 @@ html::after {
     transform: translateY(-2px);
 }
 
-/* Movie Description */
+/* Mô tả phim */
 .movie-description {
     font-size: 1.1rem;
     line-height: 1.7;
@@ -461,7 +455,7 @@ html::after {
     max-width: 600px;
 }
 
-/* Action Buttons */
+/* Nút hành động */
 .action-buttons {
     display: flex;
     gap: 1rem;
@@ -505,9 +499,7 @@ html::after {
     border-color: var(--primary-red);
 }
 
-/* ================================
-   CAST & CREW SECTION
-   ================================ */
+/* Phần diễn viên & đạo diễn */
 .cast-crew-section {
     background: 
         linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(35, 35, 35, 0.9) 100%),
@@ -585,11 +577,9 @@ html::after {
     margin: 0;
 }
 
-/* ================================
-   SHOWTIME & BOOKING SECTIONS
-   ================================ */
+/* Phần suất chiếu & đặt vé */
 
-/* Showtime Section - Full Width */
+/* Phần suất chiếu - Full Width */
 .showtime-section {
     background: 
         linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(35, 35, 35, 0.9) 100%),
@@ -614,7 +604,7 @@ html::after {
     margin-top: 1.5rem;
 }
 
-/* Booking Section - Centered Layout */
+/* Phần đặt vé - Layout trung tâm */
 .booking-section {
     background: 
         linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(35, 35, 35, 0.9) 100%),
@@ -650,9 +640,9 @@ html::after {
     gap: 1.5rem;
 }
 
-/* Remove old styles that are no longer needed */
+/* Xóa style cũ không còn cần thiết */
 .details-section {
-    display: none; /* Hide old grid container if still exists */
+    display: none; /* Ẩn grid container cũ nếu còn tồn tại */
 }
 
 .details-container {
@@ -660,16 +650,16 @@ html::after {
 }
 
 .details-grid {
-    display: none; /* Hide old grid layout */
+    display: none; /* Ẩn layout grid cũ */
 }
 
 .showtime-card,
 .booking-card {
-    /* These are now replaced by showtime-section and booking-section */
+    /* Được thay thế bởi showtime-section và booking-section */
     display: none;
 }
 
-/* Day Card Styling */
+/* Style card ngày */
 .day-card {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
@@ -759,7 +749,7 @@ html::after {
     font-weight: 500;
 }
 
-/* Form Styles */
+/* Style form */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -879,9 +869,7 @@ html::after {
     display: none;
 }
 
-/* ================================
-   TRAILER MODAL
-   ================================ */
+/* Modal trailer */
 .trailer-modal {
     position: fixed;
     top: 0;
@@ -952,7 +940,7 @@ html::after {
     height: 100%;
 }
 
-/* Floating Elements */
+/* Phần tử nổi */
 .details-main-container::before {
     content: '';
     position: absolute;
@@ -990,9 +978,7 @@ html::after {
     }
 }
 
-/* ================================
-   RESPONSIVE DESIGN
-   ================================ */
+/* Thiết kế responsive */
 @media (max-width: 1400px) {
     .details-main-container {
         grid-template-columns: 180px 1fr 180px;
