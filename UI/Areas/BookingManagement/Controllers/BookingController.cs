@@ -123,7 +123,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmBooking(ConfirmBookingViewModel model)
+        public IActionResult ConfirmBooking(ConfirmBookingViewModel model)
         {
             if (!ModelState.IsValid)
             {
