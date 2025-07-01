@@ -1,4 +1,4 @@
-﻿using Application.ResponseCode;
+using Application.ResponseCode;
 using ApplicationLayer.DTO.BookingTicketManagement;
 using AutoMapper;
 using DomainLayer.Entities;
@@ -6,11 +6,6 @@ using DomainLayer.Enum;
 using DomainLayer.Exceptions;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ApplicationLayer.Services.BookingTicketManagement
 {
@@ -20,7 +15,10 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<IActionResult> GetShowDatesByMovie(Guid movieId); //Lấy danh sách ngày chiếu cho phim
         Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate); //Lấy các giờ chiếu trong ngày
         Task<IActionResult> ConfirmBooking(ConfirmBookingRequestDto request);
+        Task<IActionResult> GetBookingDetailsAsync(Guid bookingId, Guid userId);
+
     }
+
     public class BookingTicketService : IBookingTicketService
     {
         private readonly IGenericRepository<Movie> _movieRepo;
@@ -29,6 +27,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         private readonly IGenericRepository<BookingDetail> _bookingDetailRepo; // Thêm
         private readonly ISeatRepository _seatRepository; // Thêm để truy cập logic ghế đã có
         private readonly IMapper _mapper;
+        private readonly IBookingRepository _bookingRepository;
 
         public BookingTicketService(
             IGenericRepository<Movie> movieRepo,
@@ -36,7 +35,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             IGenericRepository<Booking> bookingRepo, // Thêm
             IGenericRepository<BookingDetail> bookingDetailRepo, // Thêm
             ISeatRepository seatRepository, // Thêm
-            IMapper mapper)
+            IMapper mapper,
+            IBookingRepository bookingRepository)
         {
             _movieRepo = movieRepo;
             _showtimeRepo = showtimeRepo;
@@ -44,6 +44,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             _bookingDetailRepo = bookingDetailRepo; // Gán
             _seatRepository = seatRepository; // Gán
             _mapper = mapper;
+            _bookingRepository = bookingRepository;
         }
 
 
@@ -200,6 +201,44 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         {
             // Logic tạo mã booking duy nhất (ví dụ: kết hợp thời gian và random string)
             return "BK" + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + Guid.NewGuid().ToString().Substring(0, 4).ToUpper();
+
+        }
+
+        public async Task<IActionResult> GetBookingDetailsAsync(Guid bookingId, Guid userId)
+        {
+            // Get booking with details
+            var booking = await _bookingRepository.GetBookingWithDetailsAsync(bookingId, userId);
+            if (booking == null)
+            {
+                return ErrorResp.NotFound("Booking not found");
+            }
+
+            // Check if booking has all required data
+            if (booking.ShowTime?.Movie == null || booking.ShowTime?.Room == null ||
+                !booking.BookingDetails.Any() || booking.User == null)
+            {
+                return ErrorResp.BadRequest("Incomplete booking data. Please return and complete seat selection.");
+            }
+
+            // Map booking to DTO
+            var bookingDetailsDto = new BookingDetailsDto
+            {
+                BookingId = booking.Id,
+                BookingCode = booking.BookingCode,
+                MovieName = booking.ShowTime.Movie.Title,
+                RoomName = booking.ShowTime.Room.RoomName,
+                ShowDate = booking.ShowTime.ShowDate ?? DateTime.UtcNow,
+                SeatCodes = booking.BookingDetails.Select(bd => bd.Seat.SeatCode).ToList(),
+                UnitPrice = booking.BookingDetails.FirstOrDefault()?.Price ?? 0,
+                TotalPrice = booking.TotalPrice,
+                TotalSeats = booking.TotalSeats,
+                FullName = booking.User.FullName,
+                Email = booking.User.Email,
+                IdentityCard = booking.User.IdentityCard,
+                Phone = booking.User.Phone
+            };
+
+            return SuccessResp.Ok(bookingDetailsDto);
         }
     }
 }
