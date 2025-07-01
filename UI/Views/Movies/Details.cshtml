@@ -48,6 +48,130 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/movie-details.css" />
     <link rel="stylesheet" href="~/css/dashboard.css" />
+    <style>
+        /* Override conflicts và layout improvements */
+        .movie-details-page {
+            margin-top: 80px; /* Space for fixed header */
+            padding-top: 0;
+        }
+        
+        .details-main-container {
+            margin-top: 0;
+            padding-top: 2rem;
+            min-height: auto;
+        }
+        
+        /* Fix container conflicts */
+        .container {
+            max-width: none;
+            padding: 0;
+        }
+        
+        .pb-3.pt-3 {
+            padding: 0 !important;
+        }
+        
+        /* Ensure ad banners display properly */
+        .details-sidebar-left,
+        .details-sidebar-right {
+            max-height: calc(100vh - 12rem);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-red) transparent;
+        }
+        
+        .details-sidebar-left::-webkit-scrollbar,
+        .details-sidebar-right::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .details-sidebar-left::-webkit-scrollbar-track,
+        .details-sidebar-right::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .details-sidebar-left::-webkit-scrollbar-thumb,
+        .details-sidebar-right::-webkit-scrollbar-thumb {
+            background: var(--primary-red);
+            border-radius: 2px;
+        }
+        
+        /* Improve button interactions */
+        .ad-btn:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+        
+        /* Enhanced glow effect on focus */
+        .ad-btn:focus {
+            outline: none;
+            box-shadow: 
+                0 8px 25px rgba(196, 30, 58, 0.4),
+                0 0 0 3px rgba(196, 30, 58, 0.3);
+        }
+        
+        /* Improve readability */
+        .ad-body p {
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .ad-body h4 {
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Fix grid alignment */
+        .details-main-container {
+            gap: 1.5rem;
+            align-items: start;
+        }
+        
+        /* Improve hero section fit */
+        .movie-hero {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Better section spacing */
+        .cast-crew-section,
+        .showtime-section,
+        .booking-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Footer spacing fix */
+        .cinema-footer {
+            margin-top: 3rem;
+        }
+        
+        /* Better mobile optimization */
+        @@media (max-width: 1200px) {
+            .details-main-container {
+                margin-top: 0;
+                padding-top: 1rem;
+            }
+        }
+        
+        @@media (max-width: 576px) {
+            .movie-details-page {
+                margin-top: 60px;
+            }
+            
+            .details-sidebar-left,
+            .details-sidebar-right {
+                max-height: none;
+                overflow-y: visible;
+            }
+            
+            .vertical-ad {
+                box-shadow: 
+                    0 4px 20px rgba(0, 0, 0, 0.3),
+                    0 0 0 1px rgba(196, 30, 58, 0.2);
+            }
+            
+            .details-main-container {
+                padding: 0.5rem;
+                gap: 1rem;
+            }
+        }
+    </style>
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -86,13 +210,13 @@
             <div class="ad-banner vertical-ad">
                 <div class="ad-content">
                     <div class="ad-header">
-                        <i class="fas fa-film"></i>
-                        <span>Khuyến Mãi Đặc Biệt</span>
+                        <i class="fas fa-tags"></i>
+                        <span>Flash Sale</span>
                     </div>
                     <div class="ad-body">
-                        <h4>Ưu đãi cuối tuần</h4>
-                        <p>Giảm 30% cho vé đôi</p>
-                        <button class="ad-btn">Xem Chi Tiết</button>
+                        <h4>Siêu Ưu Đãi Cuối Tuần</h4>
+                        <p>Giảm tới 50% cho vé đôi tình nhân</p>
+                        <button class="ad-btn" onclick="window.open('/promotions', '_blank')">Nhận Ngay</button>
                     </div>
                 </div>
             </div>
@@ -100,13 +224,27 @@
             <div class="ad-banner vertical-ad">
                 <div class="ad-content">
                     <div class="ad-header">
-                        <i class="fas fa-popcorn"></i>
-                        <span>Combo Bắp Nước</span>
+                        <i class="fas fa-utensils"></i>
+                        <span>Combo Đặc Biệt</span>
                     </div>
                     <div class="ad-body">
-                        <h4>Combo Family</h4>
-                        <p>2 bắp + 2 nước chỉ 159k</p>
-                        <button class="ad-btn">Đặt Ngay</button>
+                        <h4>Premium Package</h4>
+                        <p>Bắp rang bơ + Nước ngọt + Kẹo</p>
+                        <button class="ad-btn" onclick="window.open('/products', '_blank')">Đặt Combo</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ad-banner vertical-ad">
+                <div class="ad-content">
+                    <div class="ad-header">
+                        <i class="fas fa-star"></i>
+                        <span>VIP Experience</span>
+                    </div>
+                    <div class="ad-body">
+                        <h4>Ghế VIP Luxury</h4>
+                        <p>Trải nghiệm điện ảnh đẳng cấp</p>
+                        <button class="ad-btn" onclick="scrollToBooking()">Chọn Ghế VIP</button>
                     </div>
                 </div>
             </div>
@@ -386,13 +524,13 @@
             <div class="ad-banner vertical-ad">
                 <div class="ad-content">
                     <div class="ad-header">
-                        <i class="fas fa-gift"></i>
-                        <span>Thẻ Thành Viên</span>
+                        <i class="fas fa-crown"></i>
+                        <span>Membership Elite</span>
                     </div>
                     <div class="ad-body">
-                        <h4>CinemaCard</h4>
-                        <p>Tích điểm đổi quà</p>
-                        <button class="ad-btn">Đăng Ký</button>
+                        <h4>CinemaCard Gold</h4>
+                        <p>Ưu đãi độc quyền & tích điểm x2</p>
+                        <button class="ad-btn" onclick="window.open('/account/register', '_blank')">Đăng Ký VIP</button>
                     </div>
                 </div>
             </div>
@@ -400,13 +538,27 @@
             <div class="ad-banner vertical-ad">
                 <div class="ad-content">
                     <div class="ad-header">
-                        <i class="fas fa-calendar-week"></i>
-                        <span>Sự Kiện Đặc Biệt</span>
+                        <i class="fas fa-fire"></i>
+                        <span>Event Hot</span>
                     </div>
                     <div class="ad-body">
-                        <h4>Ngày Phim Việt</h4>
-                        <p>Ủng hộ điện ảnh trong nước</p>
-                        <button class="ad-btn">Tham Gia</button>
+                        <h4>Lễ Hội Điện Ảnh</h4>
+                        <p>Những bộ phim bom tấn mới nhất</p>
+                        <button class="ad-btn" onclick="window.open('/events', '_blank')">Khám Phá</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ad-banner vertical-ad">
+                <div class="ad-content">
+                    <div class="ad-header">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Cinema App</span>
+                    </div>
+                    <div class="ad-body">
+                        <h4>Download App</h4>
+                        <p>Đặt vé nhanh chóng, tiện lợi</p>
+                        <button class="ad-btn" onclick="alert('App sẽ ra mắt sớm!')">Tải Ngay</button>
                     </div>
                 </div>
             </div>

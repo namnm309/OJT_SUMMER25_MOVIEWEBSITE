@@ -926,6 +926,7 @@ namespace UI.Areas.MovieManagement.Controllers
                     {
                         movie.ImageUrl = primaryUrl;
                     }
+
                 }
 
 
