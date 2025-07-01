@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 ﻿using ApplicationLayer.DTO.BookingTicketManagement;
 using ApplicationLayer.Services.BookingTicketManagement;
-=======
 ﻿using ApplicationLayer.Services.BookingTicketManagement;
 using Microsoft.AspNetCore.Authorization;
->>>>>>> 6ba535ce8d8b07b079ee983895159e03eaa44924
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -46,7 +43,6 @@ namespace ControllerLayer.Controllers
             return await _bookingTicketService.GetShowTimesByMovieAndDate(movieId, date);
         }
 
-<<<<<<< HEAD
         [HttpGet("available")]
         public async Task<IActionResult> GetAvailableSeats([FromQuery] Guid showTimeId)
         {
@@ -80,7 +76,7 @@ namespace ControllerLayer.Controllers
 
             return await _bookingTicketService.ConfirmBooking(request);
         }
-=======
+
         [HttpGet("{bookingId}/details")]
         [Authorize(Roles = "Member")]
         public async Task<IActionResult> GetBookingDetails(Guid bookingId)
@@ -95,6 +91,5 @@ namespace ControllerLayer.Controllers
             return await _bookingTicketService.GetBookingDetailsAsync(bookingId, userId);
         }
 
->>>>>>> 6ba535ce8d8b07b079ee983895159e03eaa44924
     }
 }

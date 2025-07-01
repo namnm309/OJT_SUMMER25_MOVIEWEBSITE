@@ -373,13 +373,23 @@ namespace UI.Areas.MovieManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMoviesPagination(int page = 1, int pageSize = 100)
+        public async Task<IActionResult> GetMoviesPagination(int page = 1, int pageSize = 10, string? searchTerm = null)
         {
             try
             {
-                _logger.LogInformation("Getting movies with pagination - Page: {Page}, PageSize: {PageSize}", page, pageSize);
+                _logger.LogInformation("Getting movies with pagination - Page: {Page}, PageSize: {PageSize}, SearchTerm: {SearchTerm}", 
+                    page, pageSize, searchTerm ?? "null");
                 
-                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/movie/ViewPagination?Page={page}&PageSize={pageSize}");
+                string apiUrl = $"/api/v1/movie/ViewPagination?Page={page}&PageSize={pageSize}";
+                
+                // Add search term if provided
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    // Encode search term for URL
+                    apiUrl += $"&searchTerm={Uri.EscapeDataString(searchTerm)}";
+                }
+                
+                var result = await _apiService.GetAsync<JsonElement>(apiUrl);
 
                 if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
@@ -390,45 +400,83 @@ namespace UI.Areas.MovieManagement.Controllers
                     if (result.Data.TryGetProperty("data", out var outerDataProp))
                     {
                         dataElement = outerDataProp;
+                        
+                        // Nếu có cấu trúc phân trang đầy đủ, trả về nguyên dạng để FE xử lý
+                        if (dataElement.TryGetProperty("data", out var _) && 
+                            dataElement.TryGetProperty("total", out var _) && 
+                            dataElement.TryGetProperty("page", out var _) && 
+                            dataElement.TryGetProperty("pageSize", out var _))
+                        {
+                            return Json(new { success = true, data = dataElement });
+                        }
+                        
+                        // Kiểm tra xem có property "data" trong level tiếp theo không
+                        if (dataElement.TryGetProperty("data", out var innerDataProp))
+                        {
+                            var movies = new List<object>();
+                            int totalItems = 0;
+                            
+                            // Kiểm tra nếu có property "total" để lấy tổng số phim
+                            if (dataElement.TryGetProperty("total", out var totalProp))
+                            {
+                                totalItems = totalProp.GetInt32();
+                            }
+                            
+                            if (innerDataProp.ValueKind == JsonValueKind.Array)
+                            {
+                                foreach (var movieElement in innerDataProp.EnumerateArray())
+                                {
+                                    var movie = ExtractMovieData(movieElement);
+                                    if (movie != null)
+                                    {
+                                        movies.Add(movie);
+                                    }
+                                }
+                                
+                                // Nếu không có thông tin tổng số phim, lấy từ số lượng kết quả
+                                if (totalItems == 0)
+                                {
+                                    totalItems = movies.Count;
+                                }
+                            }
+
+                            // Trả về đúng cấu trúc phân trang
+                            return Json(new { 
+                                success = true, 
+                                data = new { 
+                                    data = movies, 
+                                    total = totalItems,
+                                    page = page,
+                                    pageSize = pageSize
+                                }
+                            });
+                        }
                     }
                     
-                    // Kiểm tra xem có property "data" trong level tiếp theo không  
-                    if (dataElement.TryGetProperty("data", out var innerDataProp))
+                    // Trường hợp data là array trực tiếp
+                    if (dataElement.ValueKind == JsonValueKind.Array)
                     {
                         var movies = new List<object>();
                         
-                        if (innerDataProp.ValueKind == JsonValueKind.Array)
+                        foreach (var movieElement in dataElement.EnumerateArray())
                         {
-                            foreach (var movieElement in innerDataProp.EnumerateArray())
+                            var movie = ExtractMovieData(movieElement);
+                            if (movie != null)
                             {
-                                var movie = ExtractMovieData(movieElement);
-                                if (movie != null)
-                                {
-                                    movies.Add(movie);
-                                }
+                                movies.Add(movie);
                             }
                         }
 
-                        return Json(new { success = true, data = movies });
-                    }
-                    else
-                    {
-                        // Trường hợp data là array trực tiếp
-                        if (dataElement.ValueKind == JsonValueKind.Array)
-                        {
-                            var movies = new List<object>();
-                            
-                            foreach (var movieElement in dataElement.EnumerateArray())
-                            {
-                                var movie = ExtractMovieData(movieElement);
-                                if (movie != null)
-                                {
-                                    movies.Add(movie);
-                                }
+                        // Trả về cấu trúc phân trang tạo mới
+                        return Json(new { 
+                            success = true, 
+                            data = new { 
+                                data = movies, 
+                                total = movies.Count,
+                                page = page,
+                                pageSize = pageSize
                             }
-
-                            return Json(new { success = true, data = movies });
-                        }
+                        });
                     }
                 }
 

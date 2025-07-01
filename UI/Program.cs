@@ -15,7 +15,7 @@ namespace UI
             // Add HttpContextAccessor for accessing current HTTP context
             builder.Services.AddHttpContextAccessor();
             
-            // Add HttpClient for API calls với credential sharing
+            // thêm httpclient để gọi api bên be 
             builder.Services.AddHttpClient("ApiClient", client =>
             {
                 var baseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5274";
@@ -29,7 +29,7 @@ namespace UI
                 };
             });
 
-            // Add Authentication with Cookies
+            // thêm cookie để authen 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -46,16 +46,12 @@ namespace UI
 
             builder.Services.AddScoped<UI.Areas.BookingManagement.Services.IBookingManagementUIService, UI.Areas.BookingManagement.Services.BookingManagementUIService>();
 
-            // Đăng ký ApiService
             builder.Services.AddScoped<UI.Services.IApiService, UI.Services.ApiService>();
             
-            // Đăng ký AuthUIService
             builder.Services.AddScoped<UI.Services.IAuthUIService, UI.Services.AuthUIService>();
-            
-            // Đăng ký ImageService (for movie/promotion management)
+
             builder.Services.AddScoped<UI.Services.IImageService, UI.Services.CloudinaryImageService>();
             
-            // Đăng ký BookingManagementUIService
             builder.Services.AddScoped<UI.Areas.BookingManagement.Services.IBookingManagementUIService, UI.Areas.BookingManagement.Services.BookingManagementUIService>();
 
             //đăng ký cloudinary

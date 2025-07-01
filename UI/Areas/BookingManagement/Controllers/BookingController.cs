@@ -21,7 +21,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
         // T7: Search Movies
         [HttpGet]
-        public async Task<IActionResult> SearchMovies(string searchTerm = "")
+        public IActionResult SearchMovies(string searchTerm = "")
         {
             ViewData["Title"] = "Tìm kiếm phim";
             
@@ -46,7 +46,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
         // T8: Select Movie and Showtime
         [HttpGet]
-        public async Task<IActionResult> SelectMovie()
+        public IActionResult SelectMovie()
         {
             ViewData["Title"] = "Chọn phim và suất chiếu";
             
@@ -59,14 +59,14 @@ namespace UI.Areas.BookingManagement.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetShowDates(Guid movieId)
+        public IActionResult GetShowDates(Guid movieId)
         {
             var dates = GetDummyShowDates();
             return Json(new { success = true, data = dates });
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetShowTimes(Guid movieId, DateTime showDate)
+        public IActionResult GetShowTimes(Guid movieId, DateTime showDate)
         {
             var showTimes = GetDummyShowTimes(movieId, showDate);
             return Json(new { success = true, data = showTimes });
@@ -74,7 +74,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
         // T9: Select Seats
         [HttpGet]
-        public async Task<IActionResult> SelectSeat(Guid showTimeId)
+        public IActionResult SelectSeat(Guid showTimeId)
         {
             ViewData["Title"] = "Chọn ghế";
             
@@ -83,7 +83,7 @@ namespace UI.Areas.BookingManagement.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateSelectedSeats([FromBody] List<Guid> seatIds)
+        public IActionResult UpdateSelectedSeats([FromBody] List<Guid> seatIds)
         {
             // Tính toán giá
             var dummySeats = GetDummySeats();
@@ -105,7 +105,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
         // T10: Confirm Booking
         [HttpGet]
-        public async Task<IActionResult> ConfirmBooking(Guid showTimeId, string seatIds)
+        public IActionResult ConfirmBooking(Guid showTimeId, string seatIds)
         {
             ViewData["Title"] = "Xác nhận đặt vé";
             
@@ -152,7 +152,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
         // T11: Ticket Information
         [HttpGet]
-        public async Task<IActionResult> TicketInfo(Guid bookingId)
+        public IActionResult TicketInfo(Guid bookingId)
         {
             ViewData["Title"] = "Thông tin vé";
             

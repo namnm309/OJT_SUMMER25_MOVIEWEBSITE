@@ -219,6 +219,160 @@
             background: rgba(255, 255, 255, 0.02);
         }
 
+        /* Loading overlay styles */
+        .movie-table-container.loading {
+            position: relative;
+            transition: opacity 0.2s ease;
+            opacity: 0.7;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 10;
+            border-radius: 20px;
+        }
+        
+        .loading-spinner-small {
+            background-color: rgba(42, 42, 42, 0.9);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(223, 33, 68, 0.3);
+            border: 2px solid rgba(223, 33, 68, 0.2);
+        }
+        
+        .loading-spinner-small i {
+            color: #df2144;
+            font-size: 24px;
+        }
+        
+        /* Pagination styles */
+        .pagination-container {
+            background: rgba(42, 42, 42, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .pagination-info {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-pagination {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-pagination:hover:not(:disabled) {
+            background: rgba(223, 33, 68, 0.2);
+            border-color: rgba(223, 33, 68, 0.5);
+        }
+        
+        .btn-pagination.btn-active {
+            background: rgba(223, 33, 68, 0.5);
+            transform: scale(0.95);
+            transition: all 0.1s ease;
+        }
+
+        .btn-pagination:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .mini-loading {
+            margin-left: 8px;
+            color: rgba(223, 33, 68, 0.8);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @@keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .page-numbers {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-number {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .page-number:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .page-number.active {
+            background: #df2144;
+            font-weight: bold;
+        }
+        
+        .page-ellipsis {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: bold;
+            margin: 0 2px;
+        }
+
+        .pagination-size .form-select {
+            background: rgba(42, 42, 42, 0.9);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(223, 33, 68, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            width: 100px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .pagination-size .form-select option {
+            background-color: #2a2a2a;
+            color: white;
+        }
+
         .movie-poster {
             width: 60px;
             height: 80px;
@@ -389,13 +543,13 @@
         }
 
         .modal-content {
-            background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+            background: #121212;
             margin: 5% auto;
             padding: 0;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             width: 90%;
-            max-width: 800px;
+            max-width: 900px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             color: white;
             overflow: hidden;
@@ -407,30 +561,369 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: none;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+        }
+        
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+            border-radius: 20px 20px 0 0;
+            pointer-events: none;
         }
 
         .modal-header h3 {
             margin: 0;
             font-size: 1.5rem;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .modal-header h3 i {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.2);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .modal-close {
             color: white;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
             cursor: pointer;
             line-height: 1;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            position: relative;
+            z-index: 5;
         }
 
         .modal-close:hover {
-            opacity: 0.7;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
         }
 
         .modal-body {
-            padding: 30px;
-            max-height: 70vh;
+            padding: 0;
+            max-height: 80vh;
             overflow-y: auto;
+        }
+        
+        /* Modern Movie Detail Styles */
+        .movie-detail-modern {
+            position: relative;
+            width: 100%;
+            color: white;
+        }
+        
+        .movie-detail-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 250px;
+            background-size: cover;
+            background-position: center top;
+            z-index: 0;
+        }
+        
+        .movie-detail-content {
+            position: relative;
+            z-index: 1;
+            padding: 30px;
+        }
+        
+        .movie-detail-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .movie-detail-poster-wrapper {
+            position: relative;
+            flex-shrink: 0;
+            margin-top: 50px;
+        }
+        
+        .movie-detail-poster {
+            width: 220px;
+            height: 330px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .movie-status {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .status-active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .status-coming {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .status-stopped {
+            background: #F44336;
+            color: white;
+        }
+        
+        .movie-detail-info {
+            flex: 1;
+            padding-top: 120px;
+        }
+        
+        .movie-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .movie-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .movie-year, .movie-runtime {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .movie-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .rating-stars {
+            color: #FFC107;
+            letter-spacing: 2px;
+        }
+        
+        .rating-number {
+            font-weight: 600;
+        }
+        
+        .movie-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .movie-genre-pill {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: white;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.2s ease;
+        }
+        
+        .movie-genre-pill:hover {
+            background: rgba(223, 33, 68, 0.2);
+            border-color: rgba(223, 33, 68, 0.4);
+        }
+        
+        .movie-tags {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .movie-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+        
+        .movie-tag.featured {
+            background: rgba(223, 33, 68, 0.2);
+            color: #ff4466;
+            border: 1px solid rgba(223, 33, 68, 0.3);
+        }
+        
+        .movie-tag.recommended {
+            background: rgba(33, 150, 243, 0.2);
+            color: #64B5F6;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+        
+        .movie-overview {
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            max-width: 700px;
+        }
+        
+        .movie-detail-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .info-grid-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .info-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .movie-trailer-section {
+            margin-top: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .trailer-container {
+            position: relative;
+            width: 100%;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .trailer-embed-wrapper {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background-color: #000;
+        }
+        
+        .trailer-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            z-index: 1;
+        }
+        
+        .trailer-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #df2144, #ff4466);
+            z-index: 2;
+        }
+        
+        .trailer-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 2;
+        }
+        
+        /* Responsive Styles for Movie Detail */
+        @@media (max-width: 768px) {
+            .movie-detail-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .movie-detail-poster-wrapper {
+                margin-top: 100px;
+            }
+            
+            .movie-detail-info {
+                padding-top: 20px;
+            }
+            
+            .movie-title {
+                font-size: 2rem;
+            }
+            
+            .movie-meta, .movie-genres, .movie-tags {
+                justify-content: center;
+            }
+            
+            .movie-detail-info-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Footer styling override */
@@ -544,6 +1037,26 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+        
+        <!-- Pagination UI -->
+        <div class="pagination-container">
+            <div class="pagination-info">
+                <span id="paginationInfo">Đang tải...</span>
+            </div>
+            <div class="pagination-controls">
+                <button id="prevPageBtn" class="btn-pagination" disabled>❮ Trước</button>
+                <div id="pageNumbers" class="page-numbers"></div>
+                <button id="nextPageBtn" class="btn-pagination" disabled>Sau ❯</button>
+            </div>
+            <div class="pagination-size">
+                <select id="pageSizeSelect" class="form-select">
+                    <option value="5">5/trang</option>
+                    <option value="10" selected>10/trang</option>
+                    <option value="25">25/trang</option>
+                    <option value="50">50/trang</option>
+                </select>
+            </div>
                     </div>
                     </div>
                 </div>
@@ -555,7 +1068,7 @@
 <div id="movieDetailModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Chi tiết phim</h3>
+            <h3><i class="fas fa-film"></i> Chi tiết phim</h3>
             <span class="modal-close" onclick="closeModal('movieDetailModal')">&times;</span>
                     </div>
         <div class="modal-body">
@@ -597,10 +1110,85 @@
         // API Base URL
         const API_BASE = '/api/v1';
         let movies = [];
+        
+        // Variables for pagination
+        let currentPage = 1;
+        let pageSize = 10;
+        let totalMovies = 0;
+        let totalPages = 0;
 
         // Load movies on page load
         document.addEventListener('DOMContentLoaded', function() {
-            loadMovies();
+            // Load initial page
+            loadMoviesPage(currentPage, pageSize);
+            
+            // Event listener for page size change - thêm debounce
+        const pageSizeSelect = document.getElementById('pageSizeSelect');
+        let pageSizeChangeTimeout;
+        
+        pageSizeSelect.addEventListener('change', function() {
+            clearTimeout(pageSizeChangeTimeout);
+            
+            // Hiển thị loading nhỏ bên cạnh dropdown để biết đang xử lý
+            const pageSizeContainer = this.closest('.pagination-size');
+            const loadingIcon = document.createElement('span');
+            loadingIcon.className = 'mini-loading';
+            loadingIcon.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            // Thêm icon loading và xóa icon loading cũ nếu có
+            const existingLoading = pageSizeContainer.querySelector('.mini-loading');
+            if (existingLoading) {
+                existingLoading.remove();
+            }
+            pageSizeContainer.appendChild(loadingIcon);
+            
+            pageSizeChangeTimeout = setTimeout(() => {
+                pageSize = parseInt(this.value);
+                currentPage = 1; // Reset to first page
+                loadMoviesPage(currentPage, pageSize);
+                
+                // Xóa icon loading sau 1 giây
+                setTimeout(() => {
+                    if (loadingIcon.parentNode) {
+                        loadingIcon.remove();
+                    }
+                }, 1000);
+            }, 300); // Debounce 300ms
+        });
+        
+        // Event listeners for pagination buttons - thêm visual feedback
+        document.getElementById('prevPageBtn').addEventListener('click', function() {
+            if (currentPage > 1) {
+                this.classList.add('btn-active');
+                setTimeout(() => this.classList.remove('btn-active'), 200);
+                
+                currentPage--;
+                loadMoviesPage(currentPage, pageSize);
+            }
+        });
+        
+        document.getElementById('nextPageBtn').addEventListener('click', function() {
+            if (currentPage < totalPages) {
+                this.classList.add('btn-active');
+                setTimeout(() => this.classList.remove('btn-active'), 200);
+                
+                currentPage++;
+                loadMoviesPage(currentPage, pageSize);
+            }
+        });
+        
+        // Event listener for search - debounce implementation
+        const searchInput = document.getElementById('movieSearch');
+        let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    // Reset to first page when searching
+                    currentPage = 1;
+                    loadMoviesPage(currentPage, pageSize, this.value.trim());
+                }, 500); // 500ms debounce delay
+            });
             
             // Add event listeners for toggle switches
             document.addEventListener('click', function(e) {
@@ -618,47 +1206,384 @@
             });
         });
 
+        // Biến để theo dõi lần gọi API mới nhất và tránh spam API
+        let currentApiCall = 0;
+        let isLoadingData = false;
+        let lastAPICallTime = 0;
+        const API_COOLDOWN = 500; // 500ms cooldown giữa các lần gọi API
+
         // Load movies from pagination API using controller
-        async function loadMovies() {
+        async function loadMoviesPage(page, pageSize, searchTerm = '') {
             try {
-                console.log('Loading movies through controller...');
+                // Tránh gọi API liên tục, thêm cooldown
+                const now = Date.now();
+                if (isLoadingData || (now - lastAPICallTime < API_COOLDOWN)) {
+                    console.log('Skipping API call - too frequent or already loading');
+                    return;
+                }
                 
-                // Call controller endpoint that uses ApiService
-                const response = await fetch('/MovieManagement/Movies/GetMoviesPagination?page=1&pageSize=100');
+                // Đánh dấu đang loading
+                isLoadingData = true;
+                lastAPICallTime = now;
+                
+                const tbody = document.getElementById('movieTableBody');
+                const thisApiCall = ++currentApiCall; // Mỗi lần gọi API sẽ có một ID duy nhất
+                
+                // Hiển thị animation loading và giữ lại nội dung cũ với opacity thấp hơn
+                const tableContainer = document.querySelector('.movie-table-container');
+                
+                // Xoá overlay loading cũ nếu có
+                const oldOverlay = tableContainer.querySelector('.loading-overlay');
+                if (oldOverlay) {
+                    oldOverlay.remove();
+                }
+                
+                // Thêm class loading để hiệu ứng mờ
+                tableContainer.classList.add('loading');
+                
+                // Thêm overlay loading indicator
+                const loadingOverlay = document.createElement('div');
+                loadingOverlay.className = 'loading-overlay';
+                loadingOverlay.innerHTML = `
+                    <div class="loading-spinner-small">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                `;
+                tableContainer.appendChild(loadingOverlay);
+                
+                console.log(`Loading movies - Page: ${page}, PageSize: ${pageSize}, Search: "${searchTerm}"`);
+                
+                // Build query URL
+                let url = `/MovieManagement/Movies/GetMoviesPagination?page=${page}&pageSize=${pageSize}`;
+                if (searchTerm) {
+                    url += `&searchTerm=${encodeURIComponent(searchTerm)}`;
+                }
+                
+                // Thêm timestamp để tránh cache
+                url += `&_=${Date.now()}`;
+                
+                const response = await fetch(url);
                 
                 if (response.ok) {
-                    const data = await response.json();
-                    console.log('Controller Response:', data);
-                    
-                    if (data.success && data.data) {
-                        movies = data.data;
-                        console.log(`Successfully loaded ${movies.length} movies`);
-                    } else {
-                        console.error('Controller returned error:', data.message);
-                        movies = [];
+                    const result = await response.json();
+                    console.log('API Response:', result);
+
+                    // Log chi tiết cấu trúc API để debug
+                    if (result.success && result.data) {
+                        console.log('API Response Structure:');
+                        if (result.data.data && Array.isArray(result.data.data) && result.data.data.length > 0) {
+                            const firstMovie = result.data.data[0];
+                            console.log('First movie structure:', firstMovie);
+                            console.log('First movie has primaryImageUrl:', !!firstMovie.primaryImageUrl);
+                            console.log('First movie has PrimaryImageUrl:', !!firstMovie.PrimaryImageUrl);
+                            console.log('First movie has images array:', !!firstMovie.images && Array.isArray(firstMovie.images));
+                            console.log('First movie has Images array:', !!firstMovie.Images && Array.isArray(firstMovie.Images));
+
+                            if (firstMovie.images && firstMovie.images.length > 0) {
+                                console.log('First image in images array:', firstMovie.images[0]);
+                            }
+                            if (firstMovie.Images && firstMovie.Images.length > 0) {
+                                console.log('First image in Images array:', firstMovie.Images[0]);
+                            }
+                        }
                     }
                     
+                    // Kiểm tra nếu API call này đã bị thay thế bởi call mới hơn
+                    if (thisApiCall < currentApiCall) {
+                        console.log(`Ignoring stale API response for call #${thisApiCall}`);
+                        return;
+                    }
+                    
+                    if (result.success && result.data) {
+                        // Check if response has proper pagination data structure
+                        if (result.data.data) {
+                            // Response format: { data: { data: [...], total: X, page: Y, pageSize: Z } }
+                            movies = result.data.data || [];
+                            totalMovies = result.data.total || 0;
+                            currentPage = result.data.page || page;
+                            pageSize = result.data.pageSize || pageSize;
+                    } else {
+                            // Legacy format without pagination info
+                            movies = result.data;
+                            totalMovies = movies.length;
+                            currentPage = page;
+                        }
+                        
+                        // Calculate total pages
+                        totalPages = Math.max(1, Math.ceil(totalMovies / pageSize));
+                        
+                        console.log(`Loaded ${movies.length} movies (Page ${currentPage}/${totalPages}, Total: ${totalMovies})`);
+                        
+                        // Update UI
+                        updatePaginationInfo();
+                        renderPageNumbers();
                     updateMovieHeader();
                     renderMovies();
+                        
+                        // Update button states
+                        document.getElementById('prevPageBtn').disabled = (currentPage <= 1);
+                        document.getElementById('nextPageBtn').disabled = (currentPage >= totalPages);
+                    } else {
+                        console.error('Controller returned error:', result.message);
+                        movies = [];
+                        showEmptyState('Không thể tải dữ liệu phim. ' + (result.message || ''));
+                    }
+                    
+                    // Xóa overlay loading và class loading
+                    const tableContainer = document.querySelector('.movie-table-container');
+                    const loadingOverlay = tableContainer.querySelector('.loading-overlay');
+                    if (loadingOverlay) {
+                        loadingOverlay.remove();
+                    }
+                    tableContainer.classList.remove('loading');
+                    
+                    // Reset loading flag
+                    isLoadingData = false;
                 } else {
                     console.error('Controller Error:', response.status);
                     showEmptyState('Không thể tải dữ liệu phim. Vui lòng thử lại.');
+                    
+                    // Xóa overlay loading và class loading
+                    const tableContainer = document.querySelector('.movie-table-container');
+                    const loadingOverlay = tableContainer.querySelector('.loading-overlay');
+                    if (loadingOverlay) {
+                        loadingOverlay.remove();
+                    }
+                    tableContainer.classList.remove('loading');
+                    
+                    // Reset loading flag
+                    isLoadingData = false;
                 }
-                
             } catch (error) {
                 console.error('Error loading movies:', error);
                 showEmptyState('Không thể tải dữ liệu phim. Vui lòng thử lại.');
+                
+                // Xóa overlay loading và class loading
+                const tableContainer = document.querySelector('.movie-table-container');
+                const loadingOverlay = tableContainer.querySelector('.loading-overlay');
+                if (loadingOverlay) {
+                    loadingOverlay.remove();
+                }
+                tableContainer.classList.remove('loading');
+                
+                // Reset loading flag
+                isLoadingData = false;
             }
         }
 
         // Update movie header with count - exactly like the image
         function updateMovieHeader() {
-            const movieCount = movies.length;
             const headerTitle = document.getElementById('movieListTitle');
-            headerTitle.innerHTML = `<i class="fas fa-film me-2"></i>Danh sách phim (${movieCount} phim)`;
+            headerTitle.innerHTML = `<i class="fas fa-film me-2"></i>Danh sách phim (${totalMovies} phim)`;
             
             // Debug log
-            console.log(`Loaded ${movieCount} movies successfully`);
+            console.log(`Loaded ${movies.length} movies (total: ${totalMovies}) successfully`);
+        }
+        
+        // Hàm lấy đường dẫn ảnh từ thông tin phim
+        // Hàm chuyển đổi URL thường thành URL embed cho trailer
+        function getEmbedUrl(url) {
+            if (!url) return '';
+            
+            // Xử lý URL YouTube
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                // Lấy video ID từ URL YouTube
+                let videoId = '';
+                
+                if (url.includes('youtube.com/watch')) {
+                    const urlParams = new URLSearchParams(new URL(url).search);
+                    videoId = urlParams.get('v');
+                } else if (url.includes('youtu.be/')) {
+                    videoId = url.split('youtu.be/')[1].split('?')[0];
+                } else if (url.includes('youtube.com/embed/')) {
+                    videoId = url.split('youtube.com/embed/')[1].split('?')[0];
+                }
+                
+                if (videoId) {
+                    return `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0`;
+                }
+            }
+            
+            // Xử lý URL Cloudinary
+            if (url.includes('cloudinary.com')) {
+                // Nếu đã là URL embed, trả về nguyên URL
+                if (url.includes('/embed')) {
+                    return url;
+                }
+                
+                // Chuyển đổi URL thường sang URL embed
+                if (url.includes('/video/upload/')) {
+                    return url.replace('/video/upload/', '/video/upload/e_volume:0/');
+                }
+            }
+            
+            // Xử lý URL Vimeo
+            if (url.includes('vimeo.com')) {
+                const vimeoId = url.split('vimeo.com/')[1];
+                if (vimeoId) {
+                    return `https://player.vimeo.com/video/${vimeoId}`;
+                }
+            }
+            
+            // Nếu không phải các loại URL trên, trả về URL gốc
+            return url;
+        }
+        
+        function getMovieImageUrl(movie) {
+            // Kiểm tra theo thứ tự ưu tiên
+            // 1. primaryImageUrl
+            if (movie.primaryImageUrl) {
+                console.log(`Movie ${movie.title}: Using primaryImageUrl: ${movie.primaryImageUrl}`);
+                return movie.primaryImageUrl;
+            }
+            
+            // 2. PrimaryImageUrl (Pascal case)
+            if (movie.PrimaryImageUrl) {
+                console.log(`Movie ${movie.title}: Using PrimaryImageUrl: ${movie.PrimaryImageUrl}`);
+                return movie.PrimaryImageUrl;
+            }
+            
+            // 3. Tìm trong mảng images nếu có isPrimary = true
+            if (movie.images && Array.isArray(movie.images) && movie.images.length > 0) {
+                // Tìm ảnh có isPrimary = true
+                const primaryImage = movie.images.find(img => img.isPrimary === true);
+                if (primaryImage && primaryImage.imageUrl) {
+                    console.log(`Movie ${movie.title}: Using images array with isPrimary: ${primaryImage.imageUrl}`);
+                    return primaryImage.imageUrl;
+                }
+                
+                // Nếu không có isPrimary, lấy ảnh đầu tiên
+                if (movie.images[0].imageUrl) {
+                    console.log(`Movie ${movie.title}: Using first image: ${movie.images[0].imageUrl}`);
+                    return movie.images[0].imageUrl;
+                }
+            }
+            
+            // 4. Tìm trong mảng Images (Pascal case) nếu có IsPrimary = true
+            if (movie.Images && Array.isArray(movie.Images) && movie.Images.length > 0) {
+                // Tìm ảnh có IsPrimary = true
+                const primaryImage = movie.Images.find(img => img.IsPrimary === true || img.isPrimary === true);
+                if (primaryImage) {
+                    const url = primaryImage.ImageUrl || primaryImage.imageUrl;
+                    if (url) {
+                        console.log(`Movie ${movie.title}: Using Images array with IsPrimary: ${url}`);
+                        return url;
+                    }
+                }
+                
+                // Nếu không có IsPrimary, lấy ảnh đầu tiên
+                const firstImageUrl = movie.Images[0].ImageUrl || movie.Images[0].imageUrl;
+                if (firstImageUrl) {
+                    console.log(`Movie ${movie.title}: Using first Image (Pascal): ${firstImageUrl}`);
+                    return firstImageUrl;
+                }
+            }
+            
+            // 5. Kiểm tra imageUrl nếu có
+            if (movie.imageUrl) {
+                console.log(`Movie ${movie.title}: Using imageUrl: ${movie.imageUrl}`);
+                return movie.imageUrl;
+            }
+            
+            // 6. Kiểm tra posterUrl nếu có
+            if (movie.posterUrl) {
+                console.log(`Movie ${movie.title}: Using posterUrl: ${movie.posterUrl}`);
+                return movie.posterUrl;
+            }
+            
+            // 7. Cuối cùng trả về ảnh placeholder
+            console.log(`Movie ${movie.title}: No image found, using placeholder`);
+            return 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'80\' viewBox=\'0 0 60 80\' fill=\'none\'%3E%3Crect width=\'60\' height=\'80\' fill=\'%232a2a2a\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-family=\'Arial\' font-size=\'8\' fill=\'%23666\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3ENo image%3C/text%3E%3C/svg%3E';
+        }
+        
+        // Update pagination info text
+        function updatePaginationInfo() {
+            const infoElement = document.getElementById('paginationInfo');
+            
+            if (totalMovies === 0) {
+                infoElement.textContent = "Không có phim nào";
+                return;
+            }
+            
+            const startItem = (currentPage - 1) * pageSize + 1;
+            const endItem = Math.min(currentPage * pageSize, totalMovies);
+            
+            infoElement.textContent = `Trang ${currentPage}/${totalPages} (Hiển thị ${startItem}-${endItem} của ${totalMovies})`;
+        }
+        
+        // Render page number buttons
+        function renderPageNumbers() {
+            const pageNumbersContainer = document.getElementById('pageNumbers');
+            pageNumbersContainer.innerHTML = '';
+            
+            if (totalPages <= 1) {
+                return;
+            }
+            
+            // Calculate range of page numbers to display
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+            
+            // Always show at least 5 pages if available
+            if (endPage - startPage < 4) {
+                if (startPage === 1) {
+                    endPage = Math.min(5, totalPages);
+                } else {
+                    startPage = Math.max(1, endPage - 4);
+                }
+            }
+            
+            // First page button if not in view
+            if (startPage > 1) {
+                const firstPageBtn = document.createElement('div');
+                firstPageBtn.className = 'page-number';
+                firstPageBtn.textContent = '1';
+                firstPageBtn.addEventListener('click', () => {
+                    currentPage = 1;
+                    loadMoviesPage(currentPage, pageSize);
+                });
+                pageNumbersContainer.appendChild(firstPageBtn);
+                
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('div');
+                    ellipsis.className = 'page-ellipsis';
+                    ellipsis.textContent = '...';
+                    pageNumbersContainer.appendChild(ellipsis);
+                }
+            }
+            
+            // Page number buttons
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('div');
+                pageBtn.className = i === currentPage ? 'page-number active' : 'page-number';
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    if (i !== currentPage) {
+                        currentPage = i;
+                        loadMoviesPage(currentPage, pageSize);
+                    }
+                });
+                pageNumbersContainer.appendChild(pageBtn);
+            }
+            
+            // Last page button if not in view
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('div');
+                    ellipsis.className = 'page-ellipsis';
+                    ellipsis.textContent = '...';
+                    pageNumbersContainer.appendChild(ellipsis);
+                }
+                
+                const lastPageBtn = document.createElement('div');
+                lastPageBtn.className = 'page-number';
+                lastPageBtn.textContent = totalPages;
+                lastPageBtn.addEventListener('click', () => {
+                    currentPage = totalPages;
+                    loadMoviesPage(currentPage, pageSize);
+                });
+                pageNumbersContainer.appendChild(lastPageBtn);
+            }
         }
 
         // Render movies table
@@ -679,10 +1604,11 @@
                 return `
                 <tr data-movie-id="${movie.id}">
                     <td>
-                        <img src="${movie.posterUrl || '/images/placeholder-movie.jpg'}" 
+                        <img src="${getMovieImageUrl(movie)}" 
                              alt="${movie.title}" 
                              class="movie-poster"
-                                                     onerror="this.src='/images/placeholder-movie.jpg'">
+                             loading="lazy"
+                             onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'80\' viewBox=\'0 0 60 80\' fill=\'none\'%3E%3Crect width=\'60\' height=\'80\' fill=\'%232a2a2a\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-family=\'Arial\' font-size=\'8\' fill=\'%23666\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3ENo image%3C/text%3E%3C/svg%3E'">
                                         </td>
                     <td>
                         <div class="movie-info">
@@ -1007,45 +1933,134 @@
             const isFeatured = movieData.isFeatured || movieData.IsFeatured || false;
             const isRecommended = movieData.isRecommended || movieData.IsRecommended || false;
             
-            // Get image URL
-            const posterUrl = movieData.primaryImageUrl || movieData.PrimaryImageUrl || 
-                              (movieData.images && movieData.images.length > 0 ? movieData.images[0].imageUrl : '') ||
-                              (movieData.Images && movieData.Images.length > 0 ? movieData.Images[0].ImageUrl : '') ||
-                              '/images/placeholder-movie.jpg';
+            // Get image URL using our helper function
+            const posterUrl = getMovieImageUrl(movieData);
+            
+            // Get genres
+            let genresHtml = '';
+            if (movieData.genres && Array.isArray(movieData.genres) && movieData.genres.length > 0) {
+                genresHtml = movieData.genres.map(g => 
+                    `<span class="movie-genre-pill">${g.name || g.Name || ''}</span>`
+                ).join('');
+            } else if (movieData.Genres && Array.isArray(movieData.Genres) && movieData.Genres.length > 0) {
+                genresHtml = movieData.Genres.map(g => 
+                    `<span class="movie-genre-pill">${g.name || g.Name || ''}</span>`
+                ).join('');
+            } else {
+                genresHtml = '<span class="movie-genre-pill">Chưa phân loại</span>';
+            }
+            
+            // Calculate rating stars
+            const ratingValue = parseFloat(rating) || 0;
+            const fullStars = Math.floor(ratingValue);
+            const halfStar = ratingValue % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            
+            let starsHtml = '';
+            for (let i = 0; i < fullStars; i++) {
+                starsHtml += '<i class="fas fa-star"></i>';
+            }
+            if (halfStar) {
+                starsHtml += '<i class="fas fa-star-half-alt"></i>';
+            }
+            for (let i = 0; i < emptyStars; i++) {
+                starsHtml += '<i class="far fa-star"></i>';
+            }
+            
+            // Get status badge class
+            const statusClass = status === 2 ? 'status-active' : (status === 1 ? 'status-coming' : 'status-stopped');
+            const statusIcon = status === 2 ? 'fa-play-circle' : (status === 1 ? 'fa-clock' : 'fa-stop-circle');
             
             modalBody.innerHTML = `
+                <div class="movie-detail-modern">
+                    <div class="movie-detail-backdrop" style="background-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(18,18,18,1) 100%), url('${posterUrl}');"></div>
+                    
                 <div class="movie-detail-content">
                     <div class="movie-detail-header">
+                            <div class="movie-detail-poster-wrapper">
                         <img src="${posterUrl}" 
                              alt="${title}" class="movie-detail-poster"
-                             onerror="this.src='/images/placeholder-movie.jpg'">
-                        <div class="movie-detail-info">
-                            <h2>${title}</h2>
-                            <p><strong>Đạo diễn:</strong> ${director}</p>
-                            <p><strong>Diễn viên:</strong> ${actors}</p>
-                            <p><strong>Công ty sản xuất:</strong> ${productionCompany}</p>
-                            <p><strong>Thời lượng:</strong> ${runningTime} phút</p>
-                            <p><strong>Ngày phát hành:</strong> ${releaseDate ? new Date(releaseDate).toLocaleDateString('vi-VN') : 'N/A'}</p>
-                            <p><strong>Trạng thái:</strong> <span class="status-badge status-${status}">${getStatusText(status)}</span></p>
-                            <p><strong>Rating:</strong> ${rating}/10</p>
-                            <div class="movie-tags">
-                                ${isFeatured ? '<span class="tag featured">Nổi bật</span>' : ''}
-                                ${isRecommended ? '<span class="tag recommended">Đề xuất</span>' : ''}
-                                    </div>
+                                     loading="lazy"
+                                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'300\' viewBox=\'0 0 200 300\' fill=\'none\'%3E%3Crect width=\'200\' height=\'300\' fill=\'%232a2a2a\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-family=\'Arial\' font-size=\'14\' fill=\'%23666\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3ENo poster available%3C/text%3E%3C/svg%3E'">
+                                
+                                <div class="movie-status ${statusClass}">
+                                    <i class="fas ${statusIcon}"></i> ${getStatusText(status)}
                                 </div>
                             </div>
-                    <div class="movie-detail-description">
-                        <h4>Mô tả</h4>
+                            
+                        <div class="movie-detail-info">
+                                <h1 class="movie-title">${title}</h1>
+                                
+                                <div class="movie-meta">
+                                    <div class="movie-year">
+                                        <i class="far fa-calendar-alt"></i>
+                                        ${releaseDate ? new Date(releaseDate).getFullYear() : 'N/A'}
+                                    </div>
+                                    <div class="movie-runtime">
+                                        <i class="far fa-clock"></i>
+                                        ${runningTime} phút
+                                </div>
+                                    <div class="movie-rating">
+                                        <div class="rating-stars">
+                                            ${starsHtml}
+                            </div>
+                                        <div class="rating-number">
+                                            ${ratingValue.toFixed(1)}/10
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="movie-genres">
+                                    ${genresHtml}
+                                </div>
+                                
+                                <div class="movie-tags">
+                                    ${isFeatured ? '<span class="movie-tag featured"><i class="fas fa-certificate"></i> Nổi bật</span>' : ''}
+                                    ${isRecommended ? '<span class="movie-tag recommended"><i class="fas fa-thumbs-up"></i> Đề xuất</span>' : ''}
+                                </div>
+                                
+                                <div class="movie-overview">
                         <p>${content}</p>
                     </div>
+                            </div>
+                        </div>
+                        
+                        <div class="movie-detail-info-grid">
+                            <div class="info-grid-item">
+                                <div class="info-label">Đạo diễn</div>
+                                <div class="info-value">${director}</div>
+                            </div>
+                            <div class="info-grid-item">
+                                <div class="info-label">Diễn viên</div>
+                                <div class="info-value">${actors}</div>
+                            </div>
+                            <div class="info-grid-item">
+                                <div class="info-label">Công ty sản xuất</div>
+                                <div class="info-value">${productionCompany}</div>
+                            </div>
+                            <div class="info-grid-item">
+                                <div class="info-label">Ngày phát hành</div>
+                                <div class="info-value">${releaseDate ? new Date(releaseDate).toLocaleDateString('vi-VN') : 'N/A'}</div>
+                            </div>
+                        </div>
+                        
                     ${trailerUrl ? `
-                        <div class="movie-detail-trailer">
-                            <h4>Trailer</h4>
-                            <a href="${trailerUrl}" target="_blank" class="trailer-link">
-                                <i class="fas fa-play"></i> Xem trailer
-                        </a>
+                        <div class="movie-trailer-section">
+                            <h3 class="section-title"><i class="fas fa-film"></i> Trailer</h3>
+                            <div class="trailer-container">
+                                <div class="trailer-embed-wrapper">
+                                    <iframe 
+                                        src="${getEmbedUrl(trailerUrl)}" 
+                                        frameborder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen
+                                        class="trailer-iframe">
+                                    </iframe>
+                                </div>
+                            </div>
                     </div>
                     ` : ''}
+                    </div>
             </div>
             `;
             
@@ -1077,11 +2092,8 @@
             const isRecommended = movieData.isRecommended || movieData.IsRecommended || false;
             const version = movieData.version || movieData.Version || '2D';
             
-            // Get image URL
-            const posterUrl = movieData.primaryImageUrl || movieData.PrimaryImageUrl || 
-                              (movieData.images && movieData.images.length > 0 ? movieData.images[0].imageUrl : '') ||
-                              (movieData.Images && movieData.Images.length > 0 ? movieData.Images[0].ImageUrl : '') ||
-                              '';
+            // Get image URL using our helper function
+            const posterUrl = getMovieImageUrl(movieData);
             
             modalBody.innerHTML = `
                 <form id="editMovieForm" onsubmit="updateMovie(event, '${id}')">
@@ -1226,9 +2238,10 @@
                                     </div>
                                 </div>
                                 <div class="image-preview">
-                                    <img src="${posterUrl || '/images/placeholder-movie.jpg'}" 
+                                    <img src="${posterUrl || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'450\' viewBox=\'0 0 300 450\' fill=\'none\'%3E%3Crect width=\'300\' height=\'450\' fill=\'%232a2a2a\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-family=\'Arial\' font-size=\'16\' fill=\'%23666\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3EPoster image%3C/text%3E%3C/svg%3E'}" 
                                          alt="Poster preview" class="poster-preview" id="posterPreview"
-                                         onerror="this.src='/images/placeholder-movie.jpg'">
+                                         loading="lazy"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'450\' viewBox=\'0 0 300 450\' fill=\'none\'%3E%3Crect width=\'300\' height=\'450\' fill=\'%232a2a2a\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-family=\'Arial\' font-size=\'16\' fill=\'%23666\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3EPoster image%3C/text%3E%3C/svg%3E'">
                                     <span class="poster-label">Poster chính</span>
                                     <div class="image-meta">
                                         <input type="text" id="posterDescription" name="posterDescription" placeholder="Mô tả hình ảnh..." class="image-description-input">
