@@ -78,6 +78,7 @@ namespace ControllerLayer
 
             builder.Services.AddScoped<IPointHistoryService, PointHistoryService>();
 
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
             builder.Services.AddScoped<IBookingTicketService, BookingTicketService>();
 
             builder.Services.AddScoped<ISeatRepository, SeatRepository>();
