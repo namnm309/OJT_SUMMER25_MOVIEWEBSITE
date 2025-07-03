@@ -6,17 +6,17 @@ namespace UI.Models
     {
         public string Id { get; set; }
 
-        [Required(ErrorMessage = "Vui l?ng nh?p tên khuy?n m?i")]
+        [Required(ErrorMessage = "Vui l?ng nh?p tï¿½n khuy?n m?i")]
         public string Title { get; set; }
 
-        [Required(ErrorMessage = "Vui l?ng ch?n ngày b?t Eu")]
+        [Required(ErrorMessage = "Vui l?ng ch?n ngï¿½y b?t ï¿½Eu")]
         public DateTime StartDate { get; set; }
 
-        [Required(ErrorMessage = "Vui l?ng ch?n ngày k?t thúc")]
+        [Required(ErrorMessage = "Vui l?ng ch?n ngï¿½y k?t thï¿½c")]
         public DateTime EndDate { get; set; }
 
-        [Required(ErrorMessage = "Vui l?ng nh?p ph?n trãm gi?m giE")]
-        [Range(1, 100, ErrorMessage = "Ph?n trãm gi?m giEph?i t? 1 En 100")]
+        [Required(ErrorMessage = "Vui l?ng nh?p ph?n trï¿½m gi?m giï¿½E")]
+        [Range(1, 100, ErrorMessage = "Ph?n trï¿½m gi?m giï¿½Eph?i t? 1 ï¿½En 100")]
         public int DiscountPercent { get; set; }
 
         public string Description { get; set; }
