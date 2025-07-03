@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Quản lý thành viên";
+    ViewData["Title"] = "Quản lý người dùng";
     Layout = null;
 }
 
@@ -8,421 +8,888 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Cinema City</title>
+    <title>@ViewData["Title"] - Cinema Management</title>
     
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Homepage Base CSS for Footer -->
-    <link rel="stylesheet" href="~/css/HomePage/base.css" />
-    <!-- Dashboard CSS -->
-    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/new-dashboard.css" />
     
     <style>
-        /* Page Layout Fix */
-        body {
-            min-height: 100vh;
+        /* User Management Specific Styles */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 15px;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .search-box {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .btn-add-user {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-add-user:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .user-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-table .table {
+            margin: 0;
+        }
+        
+        .user-table .table thead th {
+            background: #f8f9fa;
+            border: none;
+            font-weight: 600;
+            color: #495057;
+            padding: 1rem;
+        }
+        
+        .user-table .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-color: #e9ecef;
+        }
+        
+        .user-table .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .loading-spinner .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #667eea;
+        }
+        
+        /* Pagination Styles */
+        .pagination-container {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
         }
-
-        .dashboard-container {
-            flex: 1;
+        
+        .pagination {
+            margin: 0;
         }
-
-        /* Footer styling override */
-        .cinema-footer {
-            margin-top: 4rem !important;
-            position: relative !important;
-            clear: both;
-            width: 100% !important;
+        
+        .pagination .page-link {
+            border: none;
+            color: #667eea;
+            padding: 0.5rem 0.75rem;
+            margin: 0 0.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+        
+        .pagination .page-link:hover {
+            background-color: #e9ecef;
+            color: #667eea;
+        }
+        
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .page-size-selector select {
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        /* User Avatar */
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .user-details h6 {
+            margin: 0;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .user-details small {
+            color: #6c757d;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Role Badges */
+        .role-admin {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+        
+        .role-staff {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #212529;
+        }
+        
+        .role-member {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-view {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .btn-view:hover {
+            background-color: #1976d2;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+        
+        .btn-edit {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .btn-edit:hover {
+            background-color: #f57c00;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 124, 0, 0.3);
+        }
+        
+        .btn-delete {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .btn-delete:hover {
+            background-color: #d32f2f;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+        }
+        
+        .btn-toggle {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .btn-toggle:hover {
+            background-color: #7b1fa2;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(123, 31, 162, 0.3);
+        }
+        
+        /* Ripple Effect */
+        .btn-action {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-action::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s;
+            transform: translate(-50%, -50%);
+        }
+        
+        .btn-action:active::before {
+            width: 100px;
+            height: 100px;
+            top: 50%;
+            left: 50%;
+        }
+        
+        /* Modal Styles */
+        .modal-content {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            border: none;
+        }
+        
+        .modal-header .btn-close {
+            filter: invert(1);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .modal-footer {
+            border: none;
+            padding: 1rem 2rem 2rem;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.75rem;
+        }
+        
+        .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        /* Animation */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .search-box {
+                padding: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            
+            .pagination-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
         }
     </style>
 </head>
+
 <body>
-    @{
-        ViewBag.CurrentPage = "UserManagement";
-    }
-    
-    <!-- Header - Unified Dashboard Style -->
-    @Html.Partial("_DashboardHeader")
-
-    <!-- Main Content -->
-    <main class="dashboard-container">
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1 class="page-title">
-                <i class="fas fa-users"></i>
-                Quản lý thành viên
-            </h1>
-            <p class="page-subtitle">Danh sách và quản lý tất cả thành viên trong hệ thống</p>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-12">
-                <a href="@Url.Action("Index", "Dashboard", new { area = "" })" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Quay lại Dashboard
+    <!-- New Dashboard Layout -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-film"></i>
+                    <span>Cinema Admin</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="/Dashboard" class="menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="/MovieManagement/Movies" class="menu-item">
+                    <i class="fas fa-film"></i>
+                    <span>Movie</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Booking</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Showtimes</span>
+                </a>
+                <a href="/PromotionManagement/Promotions" class="menu-item">
+                    <i class="fas fa-tags"></i>
+                    <span>Promotions</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Events</span>
+                </a>
+                <a href="/UserManagement/Members" class="menu-item active">
+                    <i class="fas fa-users"></i>
+                    <span>User Management</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
                 </a>
             </div>
-        </div>
-
-        <!-- Search and Filters -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="dashboard-card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fas fa-search me-2"></i>Tìm kiếm và lọc
-                        </h5>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="searchName" class="form-label">Tìm theo tên</label>
-                                    <input type="text" class="form-control" id="searchName" placeholder="Nhập tên thành viên...">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label for="filterRole" class="form-label">Vai trò</label>
-                                    <select class="form-select" id="filterRole">
-                                        <option value="">Tất cả vai trò</option>
-                                        <option value="Member">Thành viên</option>
-                                        <option value="Staff">Nhân viên</option>
-                                        <option value="Admin">Quản trị viên</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label for="filterStatus" class="form-label">Trạng thái</label>
-                                    <select class="form-select" id="filterStatus">
-                                        <option value="">Tất cả trạng thái</option>
-                                        <option value="true">Hoạt động</option>
-                                        <option value="false">Không hoạt động</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="mb-3">
-                                    <label class="form-label">&nbsp;</label>
-                                    <button type="button" class="btn btn-primary w-100" onclick="searchMembers()">
-                                        <i class="fas fa-search me-1"></i>Tìm kiếm
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">@ViewBag.UserName</div>
+                        <div class="user-role">@ViewBag.UserRole</div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Quick Stats -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="dashboard-card stats-card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon bg-primary">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h5 class="card-title mb-0" id="totalMembers">-</h5>
-                                <p class="card-text text-muted small mb-0">Tổng thành viên</p>
-                            </div>
-                        </div>
-                    </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="container-fluid">
+                    <h1><i class="fas fa-users me-3"></i>Quản lý người dùng</h1>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="dashboard-card stats-card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon bg-success">
-                                <i class="fas fa-user-check"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h5 class="card-title mb-0" id="activeMembers">-</h5>
-                                <p class="card-text text-muted small mb-0">Đang hoạt động</p>
-                            </div>
+            
+            <div class="container-fluid">
+                <!-- Search and Filter Section -->
+                <div class="search-box">
+                    <div class="row align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label">Tìm kiếm theo tên</label>
+                            <input type="text" class="form-control" id="searchName" placeholder="Nhập tên người dùng...">
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="dashboard-card stats-card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon bg-warning">
-                                <i class="fas fa-user-tie"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h5 class="card-title mb-0" id="staffMembers">-</h5>
-                                <p class="card-text text-muted small mb-0">Nhân viên</p>
-                            </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Vai trò</label>
+                            <select class="form-select" id="filterRole">
+                                <option value="">Tất cả vai trò</option>
+                                <option value="Admin">Quản trị viên</option>
+                                <option value="Staff">Nhân viên</option>
+                                <option value="Member">Thành viên</option>
+                            </select>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="dashboard-card stats-card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon bg-info">
-                                <i class="fas fa-calendar-plus"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h5 class="card-title mb-0" id="newMembers">-</h5>
-                                <p class="card-text text-muted small mb-0">Mới tuần này</p>
-                            </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Trạng thái</label>
+                            <select class="form-select" id="filterStatus">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="active">Hoạt động</option>
+                                <option value="inactive">Không hoạt động</option>
+                            </select>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Error display -->
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-triangle me-2"></i>
-                @TempData["ErrorMessage"]
-            </div>
-        }
-
-        <!-- Members Table -->
-        <div class="row">
-            <div class="col-12">
-                <div class="dashboard-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-list me-2"></i>Danh sách thành viên
-                            </h5>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-outline-primary w-100" onclick="searchUsers()">
+                                <i class="fas fa-search me-1"></i>Tìm kiếm
+                            </button>
+                        </div>
+                        <div class="col-md-2">
                             @if(User.IsInRole("Admin"))
                             {
-                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMemberModal">
-                                    <i class="fas fa-plus me-1"></i>Thêm thành viên mới
+                                <button type="button" class="btn btn-add-user w-100" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                                    <i class="fas fa-plus me-1"></i>Thêm người dùng
                                 </button>
                             }
                         </div>
-
-                        <div class="table-responsive">
-                            <table class="table table-hover" id="membersTable">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Tên đăng nhập</th>
-                                        <th>Họ tên</th>
-                                        <th>Email</th>
-                                        <th>Vai trò</th>
-                                        <th>Trạng thái</th>
-                                        <th>Ngày tạo</th>
+                    </div>
+                </div>
+                
+                <!-- Users Table -->
+                <div class="user-table">
+                    <div class="loading-spinner" id="loadingSpinner">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Đang tải dữ liệu người dùng...</p>
+                    </div>
+                    
+                    <table class="table table-hover" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Người dùng</th>
+                                <th>Email</th>
+                                <th>Vai trò</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tạo</th>
+                                @if(User.IsInRole("Admin"))
+                                {
+                                    <th>Thao tác</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            @if (ViewBag.Members != null && ViewBag.Members.Length > 0)
+                            {
+                                @foreach (var member in ViewBag.Members)
+                                {
+                                    <tr class="fade-in">
+                                        <td>
+                                            <div class="user-info">
+                                                <div class="user-avatar">
+                                                    @member.GetProperty("fullName").ToString().Substring(0, 1).ToUpper()
+                                                </div>
+                                                <div class="user-details">
+                                                    <h6>@member.GetProperty("fullName").ToString()</h6>
+                                                    <small>@@member.GetProperty("username").ToString()</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>@member.GetProperty("email").ToString()</td>
+                                        <td>
+                                            @{
+                                                var role = member.GetProperty("role").ToString();
+                                            }
+                                            @if(role == "Admin")
+                                            {
+                                                <span class="badge role-admin">Quản trị viên</span>
+                                            }
+                                            else if(role == "Staff")
+                                            {
+                                                <span class="badge role-staff">Nhân viên</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge role-member">Thành viên</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="status-badge status-active">Hoạt động</span>
+                                        </td>
+                                        <td>
+                                            @{
+                                                var createdAt = member.GetProperty("createdAt").ToString();
+                                                if (DateTime.TryParse(createdAt, out DateTime created))
+                                                {
+                                                    @created.ToString("dd/MM/yyyy")
+                                                }
+                                                else
+                                                {
+                                                    @createdAt
+                                                }
+                                            }
+                                        </td>
                                         @if(User.IsInRole("Admin"))
                                         {
-                                            <th>Thao tác</th>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <button type="button" class="action-btn btn-view btn-action" 
+                                                            onclick="viewUser('@member.GetProperty("userId").ToString()')" 
+                                                            title="Xem chi tiết">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button type="button" class="action-btn btn-edit btn-action" 
+                                                            onclick="editUser('@member.GetProperty("userId").ToString()')" 
+                                                            title="Chỉnh sửa">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button type="button" class="action-btn btn-toggle btn-action" 
+                                                            onclick="toggleUserStatus('@member.GetProperty("userId").ToString()', false)" 
+                                                            title="Thay đổi trạng thái">
+                                                        <i class="fas fa-user-slash"></i>
+                                                    </button>
+                                                    <button type="button" class="action-btn btn-delete btn-action" 
+                                                            onclick="deleteUser('@member.GetProperty("userId").ToString()')" 
+                                                            title="Xóa">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
                                         }
                                     </tr>
-                                </thead>
-                                <tbody id="membersTableBody">
-                                    @if (ViewBag.Members != null && ViewBag.Members.Length > 0)
-                                    {
-                                        @foreach (var member in ViewBag.Members)
-                                        {
-                                            <tr>
-                                                <td>@member.GetProperty("userId").ToString()</td>
-                                                <td>
-                                                    <strong>@member.GetProperty("username").ToString()</strong>
-                                                </td>
-                                                <td>@member.GetProperty("fullName").ToString()</td>
-                                                <td>@member.GetProperty("email").ToString()</td>
-                                                <td>
-                                                    @{
-                                                        var role = member.GetProperty("role").ToString();
-                                                    }
-                                                    @if(role == "Admin")
-                                                    {
-                                                        <span class="badge bg-danger">Quản trị viên</span>
-                                                    }
-                                                    else if(role == "Staff")
-                                                    {
-                                                        <span class="badge bg-warning">Nhân viên</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="badge bg-info">Thành viên</span>
-                                                    }
-                                                </td>
-                                                <td>
-                                                    <span class="badge bg-success">Hoạt động</span>
-                                                </td>
-                                                <td>
-                                                    @{
-                                                        var createdAt = member.GetProperty("createdAt").ToString();
-                                                        if (DateTime.TryParse(createdAt, out DateTime created))
-                                                        {
-                                                            @created.ToString("dd/MM/yyyy")
-                                                        }
-                                                        else
-                                                        {
-                                                            @createdAt
-                                                        }
-                                                    }
-                                                </td>
-                                                @if(User.IsInRole("Admin"))
-                                                {
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary me-1" 
-                                                                onclick="viewMember('@member.GetProperty("userId").ToString()')" title="Xem chi tiết">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-outline-warning me-1" 
-                                                                onclick="editMember('@member.GetProperty("userId").ToString()')" title="Chỉnh sửa">
-                                                            <i class="fas fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary" 
-                                                                onclick="toggleMemberStatus('@member.GetProperty("userId").ToString()', false)" title="Vô hiệu hóa">
-                                                            <i class="fas fa-user-slash"></i>
-                                                        </button>
-                                                    </td>
-                                                }
-                                            </tr>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="8" class="text-center text-muted">
-                                                <i class="fas fa-info-circle me-2"></i>
-                                                Không có dữ liệu thành viên để hiển thị
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-5">
+                                        <i class="fas fa-users fa-3x mb-3 d-block"></i>
+                                        <h5>Không có dữ liệu người dùng</h5>
+                                        <p>Hiện tại chưa có người dùng nào trong hệ thống.</p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <div class="page-size-selector">
+                            <span class="text-muted">Hiển thị</span>
+                            <select class="form-select" id="pageSize" onchange="changePageSize()">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span class="text-muted">mục</span>
                         </div>
-
-                        <!-- Pagination -->
-                        <nav aria-label="Phân trang" class="mt-3">
-                            <ul class="pagination justify-content-center" id="pagination">
-                                <!-- Pagination will be generated by JavaScript -->
+                        
+                        <nav aria-label="Phân trang">
+                            <ul class="pagination" id="pagination">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item active">
+                                    <a class="page-link" href="#">1</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">2</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">3</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
                             </ul>
                         </nav>
                     </div>
                 </div>
             </div>
+        </main>
+    </div>
+    
+    <!-- Add User Modal -->
+    @if(User.IsInRole("Admin"))
+    {
+        <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addUserModalLabel">
+                            <i class="fas fa-user-plus me-2"></i>Thêm người dùng mới
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addUserForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Tên đăng nhập <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="newUsername" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Họ tên <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="newFullName" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" id="newEmail" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Số điện thoại</label>
+                                        <input type="tel" class="form-control" id="newPhone">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Mật khẩu <span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control" id="newPassword" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Vai trò <span class="text-danger">*</span></label>
+                                        <select class="form-select" id="newRole" required>
+                                            <option value="">Chọn vai trò</option>
+                                            <option value="Member">Thành viên</option>
+                                            <option value="Staff">Nhân viên</option>
+                                            <option value="Admin">Quản trị viên</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Hủy
+                        </button>
+                        <button type="button" class="btn btn-add-user" onclick="addUser()">
+                            <i class="fas fa-save me-1"></i>Thêm người dùng
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </main>
-
-        <!-- Footer -->
-    @Html.Partial("footer")
-
-    <!-- Scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-    @section Scripts {
-        <script>
-            // Initialize page
-            document.addEventListener('DOMContentLoaded', function() {
-                updateStats();
-                initializeTable();
-            });
-
-            // Search members
-            function searchMembers() {
-                const name = document.getElementById('searchName').value;
-                const role = document.getElementById('filterRole').value;
-                const status = document.getElementById('filterStatus').value;
-                
-                // TODO: Implement API call to search members
-                console.log('Searching with:', { name, role, status });
-            }
-
-            // Update statistics
-            function updateStats() {
-                if (typeof ViewBag !== 'undefined' && ViewBag.Members) {
-                    const members = @Html.Raw(Json.Serialize(ViewBag.Members ?? new object[0]));
-                    
-                    document.getElementById('totalMembers').textContent = members.length;
-                    document.getElementById('activeMembers').textContent = members.filter(m => m.isActive).length;
-                    document.getElementById('staffMembers').textContent = members.filter(m => m.role === 'Staff' || m.role === 'Admin').length;
-                    
-                    // New members this week (placeholder)
-                    document.getElementById('newMembers').textContent = Math.floor(Math.random() * 10);
-                } else {
-                    document.getElementById('totalMembers').textContent = '0';
-                    document.getElementById('activeMembers').textContent = '0';
-                    document.getElementById('staffMembers').textContent = '0';
-                    document.getElementById('newMembers').textContent = '0';
-                }
-            }
-
-            // Initialize table features
-            function initializeTable() {
-                // TODO: Add sorting, pagination, etc.
-            }
-
-            // View member details
-            function viewMember(id) {
-                // TODO: Show member details modal
-                alert('Xem chi tiết thành viên ID: ' + id);
-            }
-
-            // Edit member
-            function editMember(id) {
-                // TODO: Show edit member modal
-                alert('Chỉnh sửa thành viên ID: ' + id);
-            }
-
-            // Toggle member status
-            function toggleMemberStatus(id, newStatus) {
-                if (confirm('Bạn có chắc chắn muốn thay đổi trạng thái của thành viên này?')) {
-                    // TODO: API call to toggle status
-                    alert('Đổi trạng thái thành viên ID: ' + id + ' thành ' + (newStatus ? 'hoạt động' : 'không hoạt động'));
-                }
-            }
-
-            // Add new member (Admin only)
-            function addMember() {
-                const form = document.getElementById('addMemberForm');
-                const formData = new FormData(form);
-                
-                // Basic validation
-                const username = document.getElementById('newUsername').value;
-                const email = document.getElementById('newEmail').value;
-                const fullName = document.getElementById('newFullName').value;
-                const password = document.getElementById('newPassword').value;
-                const role = document.getElementById('newRole').value;
-                
-                if (!username || !email || !fullName || !password || !role) {
-                    alert('Vui lòng điền đầy đủ thông tin!');
-                    return;
-                }
-                
-                // TODO: API call to add member
-                alert('Thêm thành viên mới: ' + fullName);
-                
-                // Close modal and reset form
-                const modal = bootstrap.Modal.getInstance(document.getElementById('addMemberModal'));
-                modal.hide();
-                form.reset();
-            }
-
-            // Auto-hide alerts after 5 seconds
-            setTimeout(function() {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    if (alert.classList.contains('alert-danger') || alert.classList.contains('alert-success')) {
-                        alert.style.transition = 'opacity 0.5s';
-                        alert.style.opacity = '0';
-                        setTimeout(() => alert.remove(), 500);
-                    }
-                });
-            }, 5000);
-        </script>
     }
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTable();
+            hideLoadingSpinner();
+        });
+        
+        // Hide loading spinner
+        function hideLoadingSpinner() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+        
+        // Search users
+        function searchUsers() {
+            const name = document.getElementById('searchName').value;
+            const role = document.getElementById('filterRole').value;
+            const status = document.getElementById('filterStatus').value;
+            
+            showLoadingSpinner();
+            
+            // TODO: Implement API call to search users
+            console.log('Searching with:', { name, role, status });
+            
+            setTimeout(() => {
+                hideLoadingSpinner();
+            }, 1000);
+        }
+        
+        // Show loading spinner
+        function showLoadingSpinner() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+        
+        // Initialize table features
+        function initializeTable() {
+            // Add fade-in animation to existing rows
+            const rows = document.querySelectorAll('#usersTableBody tr');
+            rows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.classList.add('fade-in');
+                }, index * 100);
+            });
+        }
+        
+        // View user details
+        function viewUser(id) {
+            // TODO: Show user details modal
+            alert('Xem chi tiết người dùng ID: ' + id);
+        }
+        
+        // Edit user
+        function editUser(id) {
+            // TODO: Show edit user modal
+            alert('Chỉnh sửa người dùng ID: ' + id);
+        }
+        
+        // Toggle user status
+        function toggleUserStatus(id, newStatus) {
+            if (confirm('Bạn có chắc chắn muốn thay đổi trạng thái của người dùng này?')) {
+                // TODO: API call to toggle status
+                alert('Đổi trạng thái người dùng ID: ' + id + ' thành ' + (newStatus ? 'hoạt động' : 'không hoạt động'));
+            }
+        }
+        
+        // Delete user
+        function deleteUser(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa người dùng này? Hành động này không thể hoàn tác!')) {
+                // TODO: API call to delete user
+                alert('Xóa người dùng ID: ' + id);
+            }
+        }
+        
+        // Add new user (Admin only)
+        function addUser() {
+            const form = document.getElementById('addUserForm');
+            const formData = new FormData(form);
+            
+            // Basic validation
+            const username = document.getElementById('newUsername').value;
+            const email = document.getElementById('newEmail').value;
+            const fullName = document.getElementById('newFullName').value;
+            const password = document.getElementById('newPassword').value;
+            const role = document.getElementById('newRole').value;
+            
+            if (!username || !email || !fullName || !password || !role) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Vui lòng nhập email hợp lệ!');
+                return;
+            }
+            
+            // Password validation
+            if (password.length < 6) {
+                alert('Mật khẩu phải có ít nhất 6 ký tự!');
+                return;
+            }
+            
+            // TODO: API call to add user
+            alert('Thêm người dùng mới: ' + fullName);
+            
+            // Close modal and reset form
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+            modal.hide();
+            form.reset();
+        }
+        
+        // Change page size
+        function changePageSize() {
+            const pageSize = document.getElementById('pageSize').value;
+            console.log('Page size changed to:', pageSize);
+            // TODO: Implement page size change
+        }
+        
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                if (alert.classList.contains('alert-danger') || alert.classList.contains('alert-success')) {
+                    alert.style.transition = 'opacity 0.5s';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                }
+            });
+        }, 5000);
+    </script>
 </body>
 </html>

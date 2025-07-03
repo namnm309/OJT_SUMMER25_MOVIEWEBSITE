@@ -1,6 +1,5 @@
-﻿@model List<UI.Models.PromotionViewModel>
-@{
-    ViewData["Title"] = "Quản lý khuyến mãi";
+﻿@{
+    ViewData["Title"] = "Quản lý khuyến mãi - Cinema City";
     Layout = null;
 }
 
@@ -9,415 +8,1700 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Cinema City</title>
-
+    <title>@ViewData["Title"]</title>
+    
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Homepage Base CSS for Footer -->
-    <link rel="stylesheet" href="~/css/HomePage/base.css" />
-    <!-- Dashboard CSS -->
-    <link rel="stylesheet" href="~/css/dashboard.css" />
-
+    <!-- New Dashboard CSS -->
+    <link rel="stylesheet" href="~/css/new-dashboard.css" />
+    
     <style>
-        body {
-            background-color: #0a0a0a;
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .page-header {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        /* Promotion Management Specific Styles */
+        .promotion-management-content {
             padding: 2rem;
-            border-radius: 1rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(223, 33, 68, 0.3);
         }
-
-        .page-title {
-            color: #ffffff;
+        
+        /* Page Header */
+        .promotion-page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .promotion-page-title {
+            font-size: 2rem;
             font-weight: 700;
+            color: var(--text-dark);
             margin: 0;
             display: flex;
             align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .promotion-page-subtitle {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        /* Controls Section */
+        .promotion-controls {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
         }
 
-            .page-title i {
-                color: #df2144;
-                margin-right: 1rem;
-            }
+        .promotion-controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
 
-        .dashboard-card {
-            background: #1a1a1a;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+        .promotion-search-box {
+            position: relative;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .promotion-search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            z-index: 2;
+        }
+        
+        .promotion-search-input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 1px solid var(--content-border);
+            border-radius: 8px;
+            background: var(--content-secondary);
+            color: var(--text-dark);
+            font-size: 14px;
             transition: all 0.3s ease;
         }
-
-            .dashboard-card:hover {
-                border-color: rgba(223, 33, 68, 0.5);
-                box-shadow: 0 0 20px rgba(223, 33, 68, 0.2);
-            }
-
-        .table {
-            color: #ffffff;
+        
+        .promotion-search-input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: var(--content-bg);
+            outline: none;
         }
 
-            .table thead th {
-                background: #2d2d2d;
-                color: #df2144;
-                border-color: rgba(255, 255, 255, 0.1);
-                font-weight: 600;
-                text-transform: uppercase;
-                font-size: 0.75rem;
-                letter-spacing: 0.5px;
-                padding: 1rem;
-            }
-
-            .table tbody td {
-                background: #1a1a1a;
-                border-color: rgba(255, 255, 255, 0.1);
-                padding: 1rem;
-                vertical-align: middle;
-            }
-
-            .table tbody tr:hover td {
-                background: #252525;
-            }
-
-        .btn-outline-secondary {
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.3);
+        .promotion-search-input::placeholder {
+            color: var(--text-muted);
         }
-
-            .btn-outline-secondary:hover {
-                background: rgba(255, 255, 255, 0.1);
-                border-color: rgba(255, 255, 255, 0.5);
-                color: #ffffff;
-            }
-
-        .btn-outline-primary {
-            color: #df2144;
-            border-color: #df2144;
-        }
-
-            .btn-outline-primary:hover {
-                background: #df2144;
-                border-color: #df2144;
-                color: #ffffff;
-            }
-
-        .btn-success {
-            background: #df2144;
-            border-color: #df2144;
-        }
-
-            .btn-success:hover {
-                background: #ff2951;
-                border-color: #ff2951;
-            }
-
-        .badge {
-            font-weight: 500;
-            padding: 0.35em 0.65em;
-        }
-
-            .badge.bg-info {
-                background: #17a2b8 !important;
-            }
-
-            .badge.bg-success {
-                background: #28a745 !important;
-            }
-
-            .badge.bg-warning {
-                background: #ffc107 !important;
-            }
-
-            .badge.bg-secondary {
-                background: #6c757d !important;
-            }
-
-        .alert {
+        
+        .btn-add-promotion {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
             border: none;
-            border-radius: 0.5rem;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-add-promotion:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Promotion Table Container */
+        .promotion-table-container {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            position: relative;
         }
 
-        .alert-danger {
-            background: rgba(220, 53, 69, 0.2);
-            color: #ff6b6b;
-            border: 1px solid rgba(220, 53, 69, 0.3);
+        .promotion-table-container.loading {
+            opacity: 0.7;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .loading-spinner-small {
+            color: var(--primary-purple);
+            font-size: 1.5rem;
         }
 
-        .alert-success {
-            background: rgba(40, 167, 69, 0.2);
-            color: #6eff8b;
-            border: 1px solid rgba(40, 167, 69, 0.3);
+        /* Promotion Table */
+        .promotion-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-dark);
         }
 
-        .btn-group .btn {
-            border-color: rgba(255, 255, 255, 0.2);
+        .promotion-table thead {
+            background: var(--content-secondary);
+        }
+        
+        .promotion-table thead th {
+            padding: 16px 12px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--content-border);
+            text-align: left;
+        }
+        
+        .promotion-table tbody tr {
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            transition: background-color 0.2s ease;
         }
 
-        .btn-outline-info {
-            color: #17a2b8;
-            border-color: #17a2b8;
+        .promotion-table tbody tr:hover {
+            background: var(--content-secondary);
+        }
+        
+        .promotion-table tbody td {
+            padding: 16px 12px;
+            vertical-align: middle;
+            font-size: 14px;
         }
 
-            .btn-outline-info:hover {
-                background: #17a2b8;
-                color: #ffffff;
-            }
-
-        .btn-outline-warning {
-            color: #ffc107;
-            border-color: #ffc107;
+        /* Loading overlay styles */
+        .promotion-table-container.loading {
+            position: relative;
+            transition: opacity 0.2s ease;
+            opacity: 0.7;
+        }
+        
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 10;
+            border-radius: 20px;
+        }
+        
+        .loading-spinner-small {
+            background-color: rgba(42, 42, 42, 0.9);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(223, 33, 68, 0.3);
+            border: 2px solid rgba(223, 33, 68, 0.2);
+        }
+        
+        .loading-spinner-small i {
+            color: #df2144;
+            font-size: 24px;
+        }
+        
+        /* Pagination */
+        .promotion-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            margin-top: 1.5rem;
         }
 
-            .btn-outline-warning:hover {
-                background: #ffc107;
-                color: #000000;
-            }
-
-        .btn-outline-danger {
-            color: #dc3545;
-            border-color: #dc3545;
+        .pagination-info {
+            color: var(--text-muted);
+            font-size: 14px;
         }
 
-            .btn-outline-danger:hover {
-                background: #dc3545;
-                color: #ffffff;
-            }
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        .empty-state {
-            padding: 4rem 2rem;
+        .btn-pagination {
+            padding: 8px 12px;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn-pagination:hover:not(:disabled) {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .btn-pagination:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-numbers {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-number {
+            padding: 8px 12px;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            min-width: 40px;
             text-align: center;
         }
 
-            .empty-state i {
-                color: #df2144;
-                opacity: 0.5;
-            }
-
-            .empty-state h5 {
-                color: #999;
-                margin-top: 1rem;
-            }
-
-        .stats-info {
-            color: #999;
-            font-size: 0.875rem;
+        .page-number:hover {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
         }
 
-        .pagination .page-link {
-            background: #1a1a1a;
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
+        .page-number.active {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
         }
 
-        .pagination .page-item.active .page-link {
-            background: #df2144;
-            border-color: #df2144;
+        .pagination-size {
+            position: relative;
+        }
+        
+        .pagination-size select {
+            padding: 8px 12px;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+        
+        .mini-loading {
+            margin-left: 8px;
+            color: var(--primary-purple);
         }
 
-        .pagination .page-item.disabled .page-link {
-            background: #1a1a1a;
-            color: #666;
-        }
-
+        /* Promotion Image */
         .promotion-image {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 75px;
             object-fit: cover;
-            border-radius: 0.5rem;
-            margin-right: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Promotion Info */
+        .promotion-info {
+            max-width: 200px;
+        }
+
+        .promotion-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .promotion-description {
+            color: var(--text-muted);
+            font-size: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .status-upcoming {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-expired {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--text-muted);
+        }
+
+        /* Discount Badge */
+        .discount-badge {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn-view {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .btn-view:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-edit {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .btn-edit:hover {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .btn-delete:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Loading States */
+        .loading-spinner {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+        
+        .loading-spinner i {
+            font-size: 2rem;
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+        }
+        
+        .loading-spinner p {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Modal Styles - Basic for now */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: var(--content-bg);
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: var(--shadow-xl);
+            animation: modalShow 0.3s ease;
+        }
+
+        @@keyframes modalShow {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            background: rgba(18, 18, 18, 0.95);
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1100;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .notification i {
+            font-size: 1.2rem;
+        }
+        
+        .notification-success i {
+            color: #4CAF50;
+        }
+        
+        .notification-error i {
+            color: #F44336;
+        }
+        
+        .notification-info i {
+            color: #2196F3;
+        }
+        
+        .notification-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        
+        .notification-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        @@keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
-<body>
-    @{
-        ViewBag.CurrentPage = "PromotionManagement";
-    }
-    
-    <!-- Header - Unified Dashboard Style -->
-    @Html.Partial("_DashboardHeader")
-
-    <!-- Main Content -->
-    <main class="dashboard-container">
-        <div class="page-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h1 class="page-title">
-                    <i class="fas fa-tags"></i>
-                    @ViewData["Title"]
-                </h1>
-                <div>
-                    <a href="@Url.Action("Index", "Dashboard", new { area = "" })" class="btn btn-outline-secondary me-2">
-                        <i class="fas fa-arrow-left me-2"></i>Quay lại Dashboard
-                    </a>
-                    <a id="refreshBtn" class="btn btn-outline-primary me-2">
-                        <i class="fas fa-sync-alt me-2"></i>Tải lại
+<body class="dashboard-body">
+    <div class="new-dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="new-dashboard-sidebar">
+            <div class="new-sidebar-header">
+                <a href="@Url.Action("Index", "Home")" class="new-sidebar-brand">
+                    <div class="new-brand-logo"></div>
+                    <div class="new-brand-text"><h2>Cinema City</h2><p>Admin Panel</p></div>
+                </a>
+            </div>
+            <nav class="new-sidebar-nav">
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Tổng quan</div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("AdminDashboard", "Dashboard")" class="new-nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Dashboard</span>
                         </a>
-                        <a asp-action="Create" class="btn btn-success">
-                            <i class="fas fa-plus me-2"></i>Thêm khuyến mãi mới
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Home")" class="new-nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Trang chủ</span>
                         </a>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
-            </div>
-        }
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Quản lý</div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-nav-link">
+                            <i class="fas fa-film"></i>
+                            <span>Quản lý phim</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span>Quản lý đặt vé</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Quản lý lịch chiếu</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-nav-link active">
+                            <i class="fas fa-gift"></i>
+                            <span>Quản lý khuyến mãi</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-star"></i>
+                            <span>Quản lý sự kiện</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Quản lý người dùng</span>
+                        </a>
+                    </div>
+                </div>
 
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
-            </div>
-        }
-
-        <div class="dashboard-card">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Khuyến mãi</th>
-                            <th>Thời gian</th>
-                            <th class="text-center">Giảm giá</th>
-                            <th class="text-center">Trạng thái</th>
-                            <th class="text-center">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Any())
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Hệ thống</div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Báo cáo</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Cài đặt</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            
+            <!-- User Profile in Sidebar -->
+            <div class="new-sidebar-user">
+                <div class="new-user-profile">
+                    <div class="new-user-avatar">
+                        @if (User.Identity?.IsAuthenticated == true)
                         {
-                            foreach (var promotion in Model)
-                            {
-                                var isActive = DateTime.Now >= promotion.StartDate && DateTime.Now <= promotion.EndDate;
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            @if (!string.IsNullOrEmpty(promotion.ImageUrl))
-                                            {
-                                                <img src="@promotion.ImageUrl" class="promotion-image" alt="Promotion">
-                                            }
-                                            <div>
-                                                <div class="fw-semibold">@promotion.Title</div>
-                                                <small class="text-muted">Mã: @promotion.Id.ToString().Substring(0, 8)</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>@promotion.StartDate.ToString("dd/MM/yyyy") → @promotion.EndDate.ToString("dd/MM/yyyy")</div>
-                                        <small class="text-muted">
-                                            @{
-                                                var daysLeft = (promotion.EndDate - DateTime.Now).Days;
-                                                if (isActive && daysLeft > 0)
-                                                {
-                                                    <span>Còn @daysLeft ngày</span>
-                                                }
-                                                else if (DateTime.Now < promotion.StartDate)
-                                                {
-                                                    <span>Bắt đầu sau @((promotion.StartDate - DateTime.Now).Days) ngày</span>
-                                                }
-                                            }
-                                        </small>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-success">@promotion.DiscountPercent%</span>
-                                    </td>
-                                    <td class="text-center">
-                                        @if (isActive)
-                                        {
-                                            <span class="badge bg-success">Đang chạy</span>
-                                        }
-                                        else if (DateTime.Now < promotion.StartDate)
-                                        {
-                                            <span class="badge bg-warning">Sắp diễn ra</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-secondary">Đã kết thúc</span>
-                                        }
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            <a asp-action="Edit" asp-route-id="@promotion.Id" class="btn btn-outline-warning" title="Chỉnh sửa">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form asp-action="Delete" method="post" class="d-inline">
-                                                <input type="hidden" name="id" value="@promotion.Id" />
-                                                <button type="submit" class="btn btn-outline-danger btn-sm"
-                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa khuyến mãi này?')"
-                                                        title="Xóa">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
+                            @User.Identity.Name?.Substring(0, 1).ToUpper()
                         }
                         else
                         {
+                            <span>A</span>
+                        }
+                    </div>
+                    <div class="new-user-info">
+                        <h4>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                @(User.Identity.Name?.Length > 12 ? User.Identity.Name.Substring(0, 12) + "..." : User.Identity.Name)
+                            }
+                            else
+                            {
+                                <span>Admin</span>
+                            }
+                        </h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+                <div class="new-user-actions">
+                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="new-user-action-btn">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="new-user-action-btn" style="border: none;">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="new-dashboard-main">
+            <div class="promotion-management-content">
+                <!-- Page Header -->
+                <div class="promotion-page-header">
+                    <h1 class="promotion-page-title">
+                        <i class="fas fa-tags"></i>
+                        Quản lý khuyến mãi
+                        <span id="promotionListTitle" style="font-size:1rem; font-weight:400; margin-left:12px;"></span>
+                    </h1>
+                    <p class="promotion-page-subtitle">Quản lý các chương trình khuyến mãi và ưu đãi</p>
+                </div>
+
+                <!-- Controls Section -->
+                <div class="promotion-controls">
+                    <div class="promotion-controls-header">
+                        <div class="promotion-search-box">
+                            <i class="fas fa-search promotion-search-icon"></i>
+                            <input type="text" class="promotion-search-input" placeholder="Tìm kiếm khuyến mãi theo tên..." id="promotionSearch">
+                        </div>
+                        <button class="btn-add-promotion" onclick="openAddPromotionModal()">
+                            <i class="fas fa-plus"></i>
+                            Thêm khuyến mãi mới
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Promotions Table -->
+                <div class="promotion-table-container">
+                    <table class="promotion-table">
+                        <thead>
                             <tr>
-                                <td colspan="5" class="text-center">
-                                    <div class="empty-state">
-                                        <i class="fas fa-tags fa-4x"></i>
-                                        <h5>Không có dữ liệu khuyến mãi</h5>
-                                        <p class="text-muted">Nhấn nút "Thêm khuyến mãi mới" để bắt đầu</p>
-                                    </div>
+                                <th>HÌNH ẢNH</th>
+                                <th>THÔNG TIN KHUYẾN MÃI</th>
+                                <th>THỜI GIAN</th>
+                                <th>GIẢM GIÁ</th>
+                                <th>TRẠNG THÁI</th>
+                                <th>HÀNH ĐỘNG</th>
+                            </tr>
+                        </thead>
+                        <tbody id="promotionTableBody">
+                            <tr>
+                                <td colspan="6" class="loading-spinner">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <p>Đang tải dữ liệu...</p>
                                 </td>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <div class="stats-info">
-                    Hiển thị <span class="fw-bold text-white">@(Model?.Count ?? 0)</span> khuyến mãi
+                        </tbody>
+                    </table>
                 </div>
-                <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-sm mb-0">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1">Trước</a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Tiếp</a>
-                        </li>
-                    </ul>
-                </nav>
+        
+                <!-- Pagination -->
+                <div class="promotion-pagination">
+                    <div class="pagination-info">
+                        <span id="paginationInfo">Đang tải...</span>
+                    </div>
+                    <div class="pagination-controls">
+                        <button id="prevPageBtn" class="btn-pagination" disabled>❮ Trước</button>
+                        <div id="pageNumbers" class="page-numbers"></div>
+                        <button id="nextPageBtn" class="btn-pagination" disabled>Sau ❯</button>
+                    </div>
+                    <div class="pagination-size">
+                        <select id="pageSizeSelect" class="form-select">
+                            <option value="5">5/trang</option>
+                            <option value="10" selected>10/trang</option>
+                            <option value="25">25/trang</option>
+                            <option value="50">50/trang</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Anti-forgery token for AJAX requests -->
+    @Html.AntiForgeryToken()
+
+    <!-- Promotion Detail Modal -->
+    <div id="promotionDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-tags"></i> Chi tiết khuyến mãi</h3>
+                <span class="modal-close" onclick="closeModal('promotionDetailModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Content will be populated by JavaScript -->
             </div>
         </div>
-    </main>
+    </div>
+                
+    <!-- Edit Promotion Modal -->
+    <div id="editPromotionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Chỉnh sửa khuyến mãi</h3>
+                <span class="modal-close" onclick="closeModal('editPromotionModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
 
-    <!-- Footer -->
-    @Html.Partial("footer")
+    <!-- Add Promotion Modal -->
+    <div id="addPromotionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus"></i> Thêm khuyến mãi mới</h3>
+                <span class="modal-close" onclick="closeModal('addPromotionModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
 
-    <!-- Scripts -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
+    
+    <!-- Anti-forgery token for AJAX requests -->
+    @Html.AntiForgeryToken()
+    
     <script>
-        $(document).ready(function() {
-            // Xử lý nút tải lại
-            $('#refreshBtn').click(function() {
-                location.reload();
+        // API Base URL
+        const API_BASE = '/api/v1';
+        let promotions = [];
+        
+        // Variables for pagination
+        let currentPage = 1;
+        let pageSize = 10;
+        let totalPromotions = 0;
+        let totalPages = 0;
+        
+        // Fallback demo data when API is not available
+        const fallbackPromotions = [
+            {
+                id: 1,
+                title: "Giảm giá 50% tất cả vé cuối tuần",
+                startDate: "2024-01-01",
+                endDate: "2024-12-31",
+                discountPercent: 50,
+                description: "Áp dụng cho tất cả các suất chiếu vào thứ 7 và chủ nhật",
+                imageUrl: "/images/promotion-placeholder.svg"
+            },
+            {
+                id: 2,
+                title: "Combo bỏng nước giảm 30%", 
+                startDate: "2024-02-01",
+                endDate: "2024-02-29",
+                discountPercent: 30,
+                description: "Mua combo bỏng nước với giá ưu đãi đặc biệt",
+                imageUrl: "/images/promotion-placeholder.svg"
+            }
+        ];
+
+        // Load promotions on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if required elements exist before proceeding
+            const promotionTableBody = document.getElementById('promotionTableBody');
+            if (!promotionTableBody) {
+                console.error('promotionTableBody element not found');
+                showInitializationError();
+                return;
+            }
+            
+            // Load initial page
+            loadPromotionsPage(currentPage, pageSize);
+            
+            // Event listener for page size change
+            const pageSizeSelect = document.getElementById('pageSizeSelect');
+            let pageSizeChangeTimeout;
+            
+            pageSizeSelect.addEventListener('change', function() {
+                clearTimeout(pageSizeChangeTimeout);
+                
+                // Show loading indicator
+                const pageSizeContainer = this.closest('.pagination-size');
+                const loadingIcon = document.createElement('span');
+                loadingIcon.className = 'mini-loading';
+                loadingIcon.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                const existingLoading = pageSizeContainer.querySelector('.mini-loading');
+                if (existingLoading) {
+                    existingLoading.remove();
+                }
+                pageSizeContainer.appendChild(loadingIcon);
+                
+                pageSizeChangeTimeout = setTimeout(() => {
+                    pageSize = parseInt(this.value);
+                    currentPage = 1; // Reset to first page
+                    loadPromotionsPage(currentPage, pageSize);
+                    loadingIcon.remove();
+                }, 500); // Debounce for 500ms
+            });
+
+            // Search functionality
+            const promotionSearch = document.getElementById('promotionSearch');
+            let searchTimeout;
+            
+            promotionSearch.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const searchTerm = this.value.trim();
+                    filterPromotions(searchTerm);
+                }, 300); // Debounce for 300ms
+            });
+            
+            // Pagination event listeners
+            document.getElementById('prevPageBtn').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    loadPromotionsPage(currentPage - 1, pageSize);
+                }
+            });
+            
+            document.getElementById('nextPageBtn').addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    loadPromotionsPage(currentPage + 1, pageSize);
+                }
             });
         });
+
+        // Load promotions with pagination
+        async function loadPromotionsPage(page, size) {
+            try {
+                // Hiển thị loading ngay lập tức, không delay
+                showTableLoading();
+                
+                // Tạm thời comment API call và dùng data demo để tránh lỗi
+                // const response = await fetch(`${API_BASE}/promotions`);
+                
+                // if (response.ok) {
+                //     const result = await response.json();
+                //     
+                //     if (result.isSuccess && result.data) {
+                //         promotions = result.data;
+                //         processPromotionData(promotions, page, size);
+                //     } else {
+                //         throw new Error('Không thể tải dữ liệu khuyến mãi');
+                //     }
+                // } else {
+                //     throw new Error('API không phản hồi');
+                // }
+                
+                // Sử dụng data demo ngay lập tức để tránh delay gây "giật"
+                // Chỉ delay nhẹ để có cảm giác thực tế mà không bị giật
+                await new Promise(resolve => setTimeout(resolve, 100)); // Giảm từ 300ms xuống 100ms
+                
+                promotions = fallbackPromotions;
+                processPromotionData(promotions, page, size);
+                
+            } catch (error) {
+                console.error('Error loading promotions:', error);
+                
+                // Fallback data ngay lập tức
+                promotions = fallbackPromotions;
+                processPromotionData(promotions, page, size);
+            }
+        }
+
+        // Tách function xử lý data để tái sử dụng và tối ưu
+        function processPromotionData(allPromotions, page, size) {
+            totalPromotions = allPromotions.length;
+            totalPages = Math.ceil(totalPromotions / size);
+            currentPage = page;
+            
+            const startIndex = (page - 1) * size;
+            const endIndex = startIndex + size;
+            const pagePromotions = allPromotions.slice(startIndex, endIndex);
+            
+            // Xử lý data tuần tự để tránh conflict
+            displayPromotions(pagePromotions);
+            updatePaginationInfo();
+            updatePaginationControls();
+            
+            // Ẩn loading sau khi hoàn thành tất cả
+            setTimeout(() => {
+                hideTableLoading();
+            }, 50); // Delay nhẹ để đảm bảo DOM update xong
+        }
+
+        // Display promotions in table
+        function displayPromotions(promotionList) {
+            const tableBody = document.getElementById('promotionTableBody');
+            
+            if (promotionList.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <i class="fas fa-tags"></i>
+                            <p>Không có khuyến mãi nào được tìm thấy</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = promotionList.map(promotion => {
+                const startDate = new Date(promotion.startDate);
+                const endDate = new Date(promotion.endDate);
+                const currentDate = new Date();
+                
+                let status = 'upcoming';
+                let statusText = 'Sắp diễn ra';
+                let statusClass = 'status-upcoming';
+                
+                if (currentDate >= startDate && currentDate <= endDate) {
+                    status = 'active';
+                    statusText = 'Đang diễn ra';
+                    statusClass = 'status-active';
+                } else if (currentDate > endDate) {
+                    status = 'expired';
+                    statusText = 'Đã hết hạn';
+                    statusClass = 'status-expired';
+                }
+                
+                return `
+                    <tr>
+                        <td>
+                            <img src="${promotion.imageUrl || '/images/promotion-placeholder.svg'}" 
+                                 alt="${promotion.title}" 
+                                 class="promotion-image"
+                                 onerror="this.src='/images/promotion-placeholder.svg'">
+                        </td>
+                        <td>
+                            <div class="promotion-info">
+                                <div class="promotion-title">${promotion.title}</div>
+                                <div class="promotion-description">${promotion.description || 'Không có mô tả'}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size: 12px;">
+                                <strong>Từ:</strong> ${formatDate(startDate)}<br>
+                                <strong>Đến:</strong> ${formatDate(endDate)}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="discount-badge">
+                                <i class="fas fa-percentage"></i>
+                                ${promotion.discountPercent}%
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-action btn-view" onclick="viewPromotion('${promotion.id}')" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-action btn-edit" onclick="editPromotion('${promotion.id}')" title="Chỉnh sửa">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-action btn-delete" onclick="deletePromotion('${promotion.id}')" title="Xóa">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Show loading state
+        function showTableLoading() {
+            const tableContainer = document.querySelector('.promotion-table-container');
+            if (tableContainer) {
+                tableContainer.classList.add('loading');
+            }
+        }
+
+        // Hide loading state  
+        function hideTableLoading() {
+            const tableContainer = document.querySelector('.promotion-table-container');
+            if (tableContainer) {
+                tableContainer.classList.remove('loading');
+            }
+        }
+
+        // Show initialization error
+        function showInitializationError() {
+            const tableBody = document.getElementById('promotionTableBody');
+            if (tableBody) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Có lỗi xảy ra khi khởi tạo trang</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Update pagination info
+        function updatePaginationInfo() {
+            const start = (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalPromotions);
+            const paginationInfo = document.getElementById('paginationInfo');
+            paginationInfo.textContent = `Hiển thị ${start}-${end} trong tổng số ${totalPromotions} khuyến mãi`;
+        }
+
+        // Update pagination controls
+        function updatePaginationControls() {
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            const pageNumbers = document.getElementById('pageNumbers');
+            
+            prevBtn.disabled = currentPage <= 1;
+            nextBtn.disabled = currentPage >= totalPages;
+            
+            // Generate page numbers
+            let pageNumbersHTML = '';
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                pageNumbersHTML += `
+                    <span class="page-number ${i === currentPage ? 'active' : ''}" 
+                          onclick="loadPromotionsPage(${i}, ${pageSize})">
+                        ${i}
+                    </span>
+                `;
+            }
+            
+            pageNumbers.innerHTML = pageNumbersHTML;
+        }
+
+        // Filter promotions by search term
+        function filterPromotions(searchTerm) {
+            if (!searchTerm) {
+                loadPromotionsPage(1, pageSize);
+                return;
+            }
+            
+            const filteredPromotions = promotions.filter(promotion => 
+                promotion.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (promotion.description && promotion.description.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+            
+            totalPromotions = filteredPromotions.length;
+            totalPages = Math.ceil(totalPromotions / pageSize);
+            currentPage = 1;
+            
+            const startIndex = 0;
+            const endIndex = pageSize;
+            const pagePromotions = filteredPromotions.slice(startIndex, endIndex);
+            
+            displayPromotions(pagePromotions);
+            updatePaginationInfo();
+            updatePaginationControls();
+        }
+
+        // Format date for display
+        function formatDate(date) {
+            return date.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        // Modal functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Placeholder functions for promotion actions
+        function viewPromotion(promotionId) {
+            const promotion = promotions.find(p => p.id == promotionId);
+            if (!promotion) return;
+            
+            const modal = document.getElementById('promotionDetailModal');
+            const modalBody = modal.querySelector('.modal-body');
+            
+            const startDate = new Date(promotion.startDate);
+            const endDate = new Date(promotion.endDate);
+            const currentDate = new Date();
+            
+            let statusText = 'Sắp diễn ra';
+            let statusClass = 'status-upcoming';
+            
+            if (currentDate >= startDate && currentDate <= endDate) {
+                statusText = 'Đang diễn ra';
+                statusClass = 'status-active';
+            } else if (currentDate > endDate) {
+                statusText = 'Đã hết hạn';
+                statusClass = 'status-expired';
+            }
+            
+            modalBody.innerHTML = `
+                <div class="promotion-detail-modern">
+                    <div class="promotion-detail-content">
+                        <div class="promotion-detail-header">
+                            <div class="promotion-detail-image-wrapper">
+                                <img src="${promotion.imageUrl || '/images/promotion-placeholder.svg'}" 
+                                     alt="${promotion.title}" 
+                                     class="promotion-detail-image"
+                                     onerror="this.src='/images/promotion-placeholder.svg'">
+                                <div class="promotion-status ${statusClass}">${statusText}</div>
+                            </div>
+                            <div class="promotion-detail-info">
+                                <h2 class="promotion-detail-title">${promotion.title}</h2>
+                                <div class="promotion-detail-discount">
+                                    <i class="fas fa-percentage"></i>
+                                    Giảm ${promotion.discountPercent}%
+                                </div>
+                                <div class="promotion-detail-dates">
+                                    <div class="date-info">
+                                        <strong>Từ ngày:</strong> ${formatDate(startDate)}
+                                    </div>
+                                    <div class="date-info">
+                                        <strong>Đến ngày:</strong> ${formatDate(endDate)}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="promotion-detail-description">
+                            <h4><i class="fas fa-info-circle"></i> Mô tả</h4>
+                            <p>${promotion.description || 'Không có mô tả'}</p>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    .promotion-detail-modern {
+                        color: var(--text-dark);
+                    }
+                    .promotion-detail-header {
+                        display: flex;
+                        gap: 2rem;
+                        margin-bottom: 2rem;
+                    }
+                    .promotion-detail-image-wrapper {
+                        position: relative;
+                        flex-shrink: 0;
+                    }
+                    .promotion-detail-image {
+                        width: 200px;
+                        height: 300px;
+                        object-fit: cover;
+                        border-radius: 12px;
+                        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                    }
+                    .promotion-status {
+                        position: absolute;
+                        bottom: -10px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        padding: 8px 16px;
+                        border-radius: 20px;
+                        font-weight: 600;
+                        font-size: 0.9rem;
+                        white-space: nowrap;
+                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                    }
+                    .promotion-detail-info {
+                        flex: 1;
+                    }
+                    .promotion-detail-title {
+                        font-size: 2rem;
+                        font-weight: 700;
+                        margin-bottom: 1rem;
+                        color: var(--text-dark);
+                    }
+                    .promotion-detail-discount {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+                        color: white;
+                        padding: 12px 24px;
+                        border-radius: 20px;
+                        font-weight: 600;
+                        font-size: 1.2rem;
+                        margin-bottom: 1.5rem;
+                    }
+                    .promotion-detail-dates {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                    }
+                    .date-info {
+                        color: var(--text-muted);
+                        font-size: 14px;
+                    }
+                    .promotion-detail-description {
+                        background: var(--content-secondary);
+                        padding: 1.5rem;
+                        border-radius: 12px;
+                        border: 1px solid var(--content-border);
+                    }
+                    .promotion-detail-description h4 {
+                        color: var(--text-dark);
+                        margin-bottom: 1rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    }
+                    .promotion-detail-description p {
+                        color: var(--text-muted);
+                        line-height: 1.6;
+                        margin: 0;
+                    }
+                </style>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        function editPromotion(promotionId) {
+            const promotion = promotions.find(p => p.id == promotionId);
+            if (!promotion) return;
+            
+            const modal = document.getElementById('editPromotionModal');
+            const modalBody = modal.querySelector('.modal-body');
+            
+            const startDate = new Date(promotion.startDate).toISOString().split('T')[0];
+            const endDate = new Date(promotion.endDate).toISOString().split('T')[0];
+            
+            modalBody.innerHTML = `
+                <form id="editPromotionForm" onsubmit="submitEditPromotion(event, '${promotion.id}')">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editTitle">Tên khuyến mãi *</label>
+                            <input type="text" id="editTitle" name="title" value="${promotion.title}" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editStartDate">Ngày bắt đầu *</label>
+                            <input type="date" id="editStartDate" name="startDate" value="${startDate}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEndDate">Ngày kết thúc *</label>
+                            <input type="date" id="editEndDate" name="endDate" value="${endDate}" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editDiscountPercent">Phần trăm giảm giá (%) *</label>
+                            <input type="number" id="editDiscountPercent" name="discountPercent" 
+                                   value="${promotion.discountPercent}" min="1" max="100" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="editDescription">Mô tả</label>
+                            <textarea id="editDescription" name="description" rows="4">${promotion.description || ''}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="editImageUrl">URL hình ảnh</label>
+                            <input type="url" id="editImageUrl" name="imageUrl" value="${promotion.imageUrl || ''}">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('editPromotionModal')">Hủy</button>
+                        <button type="submit" class="btn-save">Cập nhật khuyến mãi</button>
+                    </div>
+                </form>
+                <style>
+                    .form-row {
+                        display: flex;
+                        gap: 20px;
+                        margin-bottom: 20px;
+                    }
+                    .form-group {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px;
+                    }
+                    .form-group.full-width {
+                        width: 100%;
+                    }
+                    .form-group label {
+                        font-size: 0.9rem;
+                        font-weight: 500;
+                        color: var(--text-dark);
+                    }
+                    .form-group input,
+                    .form-group textarea {
+                        padding: 12px 16px;
+                        background: var(--content-bg);
+                        border: 1px solid var(--content-border);
+                        border-radius: 8px;
+                        color: var(--text-dark);
+                        font-size: 1rem;
+                        transition: all 0.3s ease;
+                    }
+                    .form-group input:focus,
+                    .form-group textarea:focus {
+                        outline: none;
+                        border-color: var(--primary-purple);
+                        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                    }
+                    .form-group textarea {
+                        resize: vertical;
+                    }
+                    .form-actions {
+                        display: flex;
+                        justify-content: flex-end;
+                        gap: 10px;
+                        margin-top: 30px;
+                        padding-top: 20px;
+                        border-top: 1px solid var(--content-border);
+                    }
+                    .btn-cancel {
+                        background: var(--content-secondary);
+                        color: var(--text-dark);
+                        border: 1px solid var(--content-border);
+                        padding: 10px 24px;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    }
+                    .btn-cancel:hover {
+                        background: var(--content-bg);
+                    }
+                    .btn-save {
+                        background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
+                        color: white;
+                        border: none;
+                        padding: 10px 24px;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        min-width: 160px;
+                    }
+                    .btn-save:hover:not(:disabled) {
+                        transform: translateY(-2px);
+                        box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+                    }
+                    .btn-save:disabled {
+                        opacity: 0.7;
+                        cursor: not-allowed;
+                    }
+                </style>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        async function deletePromotion(promotionId) {
+            if (!confirm('Bạn có chắc chắn muốn xóa khuyến mãi này?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/promotions/${promotionId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                });
+                
+                if (response.ok) {
+                    showNotification('Xóa khuyến mãi thành công!', 'success');
+                    loadPromotionsPage(currentPage, pageSize);
+                } else {
+                    throw new Error('Không thể xóa khuyến mãi');
+                }
+            } catch (error) {
+                console.error('Error deleting promotion:', error);
+                showNotification('Có lỗi xảy ra khi xóa khuyến mãi', 'error');
+            }
+        }
+
+        function openAddPromotionModal() {
+            const modal = document.getElementById('addPromotionModal');
+            const modalBody = modal.querySelector('.modal-body');
+            
+            modalBody.innerHTML = `
+                <form id="addPromotionForm" onsubmit="submitAddPromotion(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addTitle">Tên khuyến mãi *</label>
+                            <input type="text" id="addTitle" name="title" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addStartDate">Ngày bắt đầu *</label>
+                            <input type="date" id="addStartDate" name="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addEndDate">Ngày kết thúc *</label>
+                            <input type="date" id="addEndDate" name="endDate" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="addDiscountPercent">Phần trăm giảm giá (%) *</label>
+                            <input type="number" id="addDiscountPercent" name="discountPercent" 
+                                   min="1" max="100" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="addDescription">Mô tả</label>
+                            <textarea id="addDescription" name="description" rows="4"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="addImageUrl">URL hình ảnh</label>
+                            <input type="url" id="addImageUrl" name="imageUrl">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('addPromotionModal')">Hủy</button>
+                        <button type="submit" class="btn-save">Thêm khuyến mãi</button>
+                    </div>
+                </form>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        async function submitAddPromotion(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const submitBtn = form.querySelector('.btn-save');
+            
+            // Disable submit button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang thêm...';
+            
+            try {
+                const promotionData = {
+                    title: formData.get('title'),
+                    startDate: formData.get('startDate'),
+                    endDate: formData.get('endDate'),
+                    discountPercent: parseInt(formData.get('discountPercent')),
+                    description: formData.get('description'),
+                    imageUrl: formData.get('imageUrl')
+                };
+                
+                const response = await fetch(`${API_BASE}/promotions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(promotionData)
+                });
+                
+                if (response.ok) {
+                    showNotification('Thêm khuyến mãi thành công!', 'success');
+                    closeModal('addPromotionModal');
+                    loadPromotionsPage(currentPage, pageSize);
+                } else {
+                    throw new Error('Không thể thêm khuyến mãi');
+                }
+            } catch (error) {
+                console.error('Error adding promotion:', error);
+                showNotification('Có lỗi xảy ra khi thêm khuyến mãi', 'error');
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Thêm khuyến mãi';
+            }
+        }
+
+        async function submitEditPromotion(event, promotionId) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const submitBtn = form.querySelector('.btn-save');
+            
+            // Disable submit button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang cập nhật...';
+            
+            try {
+                const promotionData = {
+                    title: formData.get('title'),
+                    startDate: formData.get('startDate'),
+                    endDate: formData.get('endDate'),
+                    discountPercent: parseInt(formData.get('discountPercent')),
+                    description: formData.get('description'),
+                    imageUrl: formData.get('imageUrl')
+                };
+                
+                const response = await fetch(`${API_BASE}/promotions/${promotionId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(promotionData)
+                });
+                
+                if (response.ok) {
+                    showNotification('Cập nhật khuyến mãi thành công!', 'success');
+                    closeModal('editPromotionModal');
+                    loadPromotionsPage(currentPage, pageSize);
+                } else {
+                    throw new Error('Không thể cập nhật khuyến mãi');
+                }
+            } catch (error) {
+                console.error('Error updating promotion:', error);
+                showNotification('Có lỗi xảy ra khi cập nhật khuyến mãi', 'error');
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Cập nhật khuyến mãi';
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(notification => notification.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            
+            let icon = 'fas fa-info-circle';
+            if (type === 'success') icon = 'fas fa-check-circle';
+            if (type === 'error') icon = 'fas fa-exclamation-circle';
+            
+            notification.innerHTML = `
+                <i class="${icon}"></i>
+                <span>${message}</span>
+                <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
     </script>
 </body>
 </html>

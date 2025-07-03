@@ -11,8 +11,7 @@ namespace UI.Areas.PromotionManagement.Controllers
     [Authorize(Roles = "Admin,Staff")]
     public class PromotionsController : Controller
     {
-        private readonly IApiService _apiService;
-        private readonly ILogger<PromotionsController> _logger;
+        private readonly IApiService _apiService;        private readonly ILogger<PromotionsController> _logger;
         //Khai báo service rồi mới sài được
         private readonly IImageService _imageService;
 
@@ -29,41 +28,10 @@ namespace UI.Areas.PromotionManagement.Controllers
             _imageService = imageService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             ViewData["Title"] = "Quản lý khuyến mãi";
-
-            try
-            {
-                var result = await _apiService.GetAsync<JsonElement>("/api/v1/promotions");
-
-                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
-                {
-                    if (result.Data.TryGetProperty("data", out var dataProp))
-                    {
-                        var options = new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        };
-
-                        var promotions = JsonSerializer.Deserialize<List<PromotionViewModel>>(
-                            dataProp.GetRawText(), options);
-
-                        _logger.LogInformation("Received {Count} promotions", promotions?.Count);
-                        return View(promotions);
-                    }
-                }
-
-                _logger.LogError("Failed to get promotions: {Message}", result.Message);
-                TempData["ErrorMessage"] = result.Message;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting promotions");
-                TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tải danh sách khuyến mãi";
-            }
-
-            return View(new List<PromotionViewModel>());
+            return View();
         }
 
         [HttpGet]
@@ -73,13 +41,10 @@ namespace UI.Areas.PromotionManagement.Controllers
             return View();
         }
 
-        // Sửa action Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PromotionViewModel model, IFormFile imageFile) // khai báo biến để sài 
+        public async Task<IActionResult> Create(PromotionViewModel model, IFormFile imageFile)
         {
-            
-
             try
             {
                 // Xử lý upload ảnh nếu có
