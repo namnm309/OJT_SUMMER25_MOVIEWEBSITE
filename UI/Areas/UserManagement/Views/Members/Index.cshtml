@@ -21,195 +21,481 @@
     
     <style>
         /* User Management Specific Styles */
-        .page-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
-            border-radius: 15px;
-        }
-        
-        .page-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0;
-        }
-        
-        .search-box {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-        
-        .btn-add-user {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-add-user:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-            color: white;
-        }
-        
-        .user-table {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .user-table .table {
-            margin: 0;
-        }
-        
-        .user-table .table thead th {
-            background: #f8f9fa;
-            border: none;
-            font-weight: 600;
-            color: #495057;
-            padding: 1rem;
-        }
-        
-        .user-table .table tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-color: #e9ecef;
-        }
-        
-        .user-table .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-        
-        .loading-spinner {
-            display: none;
-            text-align: center;
+        .user-management-content {
             padding: 2rem;
         }
         
-        .loading-spinner .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            color: #667eea;
+        /* Page Header */
+        .user-page-header {
+            margin-bottom: 2rem;
         }
         
-        /* Pagination Styles */
-        .pagination-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            background: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-        }
-        
-        .pagination {
+        .user-page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
             margin: 0;
-        }
-        
-        .pagination .page-link {
-            border: none;
-            color: #667eea;
-            padding: 0.5rem 0.75rem;
-            margin: 0 0.25rem;
-            border-radius: 8px;
-            font-weight: 500;
-        }
-        
-        .pagination .page-item.active .page-link {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-color: transparent;
-        }
-        
-        .pagination .page-link:hover {
-            background-color: #e9ecef;
-            color: #667eea;
-        }
-        
-        .page-size-selector {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .page-size-selector select {
-            border: 1px solid #e9ecef;
-            border-radius: 6px;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-        }
-        
-        /* User Avatar */
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-        
-        .user-info {
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
         
+        .user-page-subtitle {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        /* Loading States */
+        .loading-spinner {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+        
+        .loading-spinner i {
+            font-size: 2rem;
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+        }
+        
+        .loading-spinner p {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+
+        
+        /* Controls Section */
+        .user-controls {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .user-search-box {
+            position: relative;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .user-search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            z-index: 2;
+        }
+        
+        .user-search-input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 1px solid var(--content-border);
+            border-radius: 8px;
+            background: var(--content-secondary);
+            color: var(--text-dark);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .user-search-input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: var(--content-bg);
+            outline: none;
+        }
+
+        .user-search-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .btn-add-user {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-add-user:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+
+
+        
+        /* User Table Container */
+        .user-table-container {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .user-table-container.loading {
+            opacity: 0.7;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .loading-spinner-small {
+            color: var(--primary-purple);
+            font-size: 1.5rem;
+        }
+        
+        /* User Table */
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-dark);
+        }
+
+        .user-table thead {
+            background: var(--content-secondary);
+        }
+        
+        .user-table thead th {
+            padding: 16px 12px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--content-border);
+            text-align: left;
+        }
+        
+        .user-table tbody tr {
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            transition: background-color 0.2s ease;
+        }
+
+        .user-table tbody tr:hover {
+            background: var(--content-secondary);
+        }
+        
+        .user-table tbody td {
+            padding: 16px 12px;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+
+        /* Loading overlay styles */
+        .user-table-container.loading {
+            position: relative;
+            transition: opacity 0.2s ease;
+            opacity: 0.7;
+        }
+        
+
+        
+        /* Pagination Styles */
+        .user-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            margin-top: 1.5rem;
+        }
+
+        .pagination-info {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-pagination {
+            padding: 8px 12px;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn-pagination:hover:not(:disabled) {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .btn-pagination:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-numbers {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-number {
+            padding: 8px 12px;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .page-number:hover {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .page-number.active {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .pagination-size {
+            position: relative;
+        }
+        
+        .pagination-size select {
+            padding: 8px 12px;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+        
+        .mini-loading {
+            margin-left: 8px;
+            color: var(--primary-purple);
+        }
+        
+
+        
+
+        
+        /* User Avatar */
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* User Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            max-width: 200px;
+        }
+
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+
         .user-details h6 {
             margin: 0;
             font-weight: 600;
-            color: #495057;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
-        
+
         .user-details small {
-            color: #6c757d;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         
         /* Status Badges */
         .status-badge {
-            padding: 0.375rem 0.75rem;
+            padding: 0.375rem 0.875rem;
             border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .status-active {
-            background-color: #d4edda;
+            background: #d4edda;
             color: #155724;
         }
         
         .status-inactive {
-            background-color: #f8d7da;
+            background: #f8d7da;
             color: #721c24;
         }
         
         /* Role Badges */
         .role-admin {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            background: #e74c3c;
             color: white;
         }
         
         .role-staff {
-            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
-            color: #212529;
+            background: #f39c12;
+            color: white;
         }
         
         .role-member {
-            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            background: #27ae60;
             color: white;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background-color: var(--content-bg);
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--content-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--content-hover);
+            color: var(--text-dark);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        @@keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         /* Action Buttons */
@@ -384,12 +670,17 @@
         
         /* Responsive */
         @@media (max-width: 768px) {
-            .page-header h1 {
-                font-size: 2rem;
+            .user-page-title {
+                font-size: 1.5rem;
             }
             
-            .search-box {
-                padding: 1rem;
+            .user-controls-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .user-search-box {
+                min-width: auto;
             }
             
             .action-buttons {
@@ -397,7 +688,7 @@
                 gap: 0.25rem;
             }
             
-            .pagination-container {
+            .user-pagination {
                 flex-direction: column;
                 gap: 1rem;
             }
@@ -407,146 +698,188 @@
 
 <body>
     <!-- New Dashboard Layout -->
-    <div class="dashboard-container">
+    <div class="new-dashboard-container">
         <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-film"></i>
-                    <span>Cinema Admin</span>
+        <aside class="new-dashboard-sidebar">
+            <!-- Sidebar Header -->
+            <div class="new-sidebar-header">
+                <a href="@Url.Action("Index", "Home")" class="new-sidebar-brand">
+                    <div class="new-brand-logo"></div>
+                    <div class="new-brand-text">
+                        <h2>Cinema City</h2>
+                        <p>Admin Panel</p>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="new-sidebar-nav">
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Tổng quan</div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("AdminDashboard", "Dashboard")" class="new-nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Home")" class="new-nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Trang chủ</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="sidebar-menu">
-                <a href="/Dashboard" class="menu-item">
-                    <i class="fas fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="/" class="menu-item">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-                <a href="/MovieManagement/Movies" class="menu-item">
-                    <i class="fas fa-film"></i>
-                    <span>Movie</span>
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-ticket-alt"></i>
-                    <span>Booking</span>
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-clock"></i>
-                    <span>Showtimes</span>
-                </a>
-                <a href="/PromotionManagement/Promotions" class="menu-item">
-                    <i class="fas fa-tags"></i>
-                    <span>Promotions</span>
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Events</span>
-                </a>
-                <a href="/UserManagement/Members" class="menu-item active">
-                    <i class="fas fa-users"></i>
-                    <span>User Management</span>
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Reports</span>
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </a>
-            </div>
-            
-            <div class="sidebar-footer">
-                <div class="user-profile">
-                    <div class="user-avatar">
+
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Quản lý</div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-nav-link">
+                            <i class="fas fa-film"></i>
+                            <span>Quản lý phim</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span>Quản lý đặt vé</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Quản lý lịch chiếu</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-nav-link">
+                            <i class="fas fa-gift"></i>
+                            <span>Quản lý khuyến mãi</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-star"></i>
+                            <span>Quản lý sự kiện</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-nav-link active">
+                            <i class="fas fa-users"></i>
+                            <span>Quản lý người dùng</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Hệ thống</div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Báo cáo</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Cài đặt</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+             
+            <!-- User Profile in Sidebar -->
+            <div class="new-sidebar-user">
+                <div class="new-user-profile">
+                    <div class="new-user-avatar">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            @User.Identity.Name?.Substring(0, 1).ToUpper()
+                        }
+                        else
+                        {
+                            <span>A</span>
+                        }
+                    </div>
+                    <div class="new-user-info">
+                        <h4>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                @(User.Identity.Name?.Length > 12 ? User.Identity.Name.Substring(0, 12) + "..." : User.Identity.Name)
+                            }
+                            else
+                            {
+                                <span>Admin</span>
+                            }
+                        </h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+                <div class="new-user-actions">
+                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="new-user-action-btn">
                         <i class="fas fa-user"></i>
-                    </div>
-                    <div class="user-info">
-                        <div class="user-name">@ViewBag.UserName</div>
-                        <div class="user-role">@ViewBag.UserRole</div>
-                    </div>
+                    </a>
+                    <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="new-user-action-btn" style="border: none;">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
-        </nav>
+        </aside>
         
         <!-- Main Content -->
-        <main class="main-content">
-            <!-- Page Header -->
-            <div class="page-header">
-                <div class="container-fluid">
-                    <h1><i class="fas fa-users me-3"></i>Quản lý người dùng</h1>
+        <main class="new-dashboard-main">
+            <!-- Content -->
+            <div class="new-dashboard-content">
+                <!-- Page Header -->
+                <div class="user-page-header">
+                    <h1 class="user-page-title">
+                        <i class="fas fa-users"></i>
+                        Quản lý người dùng
+                    </h1>
+                    <p class="user-page-subtitle">Quản lý thông tin và quyền hạn của người dùng trong hệ thống</p>
                 </div>
-            </div>
             
-            <div class="container-fluid">
-                <!-- Search and Filter Section -->
-                <div class="search-box">
-                    <div class="row align-items-end">
-                        <div class="col-md-4">
-                            <label class="form-label">Tìm kiếm theo tên</label>
-                            <input type="text" class="form-control" id="searchName" placeholder="Nhập tên người dùng...">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Vai trò</label>
-                            <select class="form-select" id="filterRole">
-                                <option value="">Tất cả vai trò</option>
-                                <option value="Admin">Quản trị viên</option>
-                                <option value="Staff">Nhân viên</option>
-                                <option value="Member">Thành viên</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">Trạng thái</label>
-                            <select class="form-select" id="filterStatus">
-                                <option value="">Tất cả trạng thái</option>
-                                <option value="active">Hoạt động</option>
-                                <option value="inactive">Không hoạt động</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" class="btn btn-outline-primary w-100" onclick="searchUsers()">
-                                <i class="fas fa-search me-1"></i>Tìm kiếm
+                <div class="container-fluid">
+                    <!-- Controls Section -->
+                    <div class="user-controls">
+                        <div class="user-controls-header">
+                            <div class="user-search-box">
+                                <i class="fas fa-search user-search-icon"></i>
+                                <input type="text" class="user-search-input" placeholder="Tìm kiếm người dùng theo tên..." id="userSearch">
+                            </div>
+                            <button class="btn-add-user" onclick="openAddUserModal()">
+                                <i class="fas fa-plus"></i>
+                                Thêm người dùng mới
                             </button>
                         </div>
-                        <div class="col-md-2">
-                            @if(User.IsInRole("Admin"))
-                            {
-                                <button type="button" class="btn btn-add-user w-100" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                                    <i class="fas fa-plus me-1"></i>Thêm người dùng
-                                </button>
-                            }
-                        </div>
                     </div>
-                </div>
                 
-                <!-- Users Table -->
-                <div class="user-table">
-                    <div class="loading-spinner" id="loadingSpinner">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden">Đang tải...</span>
+                    <!-- Users Table Container -->
+                    <div class="user-table-container">
+                        <div class="loading-spinner" id="loadingSpinner">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Đang tải...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Đang tải dữ liệu người dùng...</p>
                         </div>
-                        <p class="mt-2 text-muted">Đang tải dữ liệu người dùng...</p>
-                    </div>
-                    
-                    <table class="table table-hover" id="usersTable">
-                        <thead>
-                            <tr>
-                                <th>Người dùng</th>
-                                <th>Email</th>
-                                <th>Vai trò</th>
-                                <th>Trạng thái</th>
-                                <th>Ngày tạo</th>
-                                @if(User.IsInRole("Admin"))
-                                {
-                                    <th>Thao tác</th>
-                                }
-                            </tr>
-                        </thead>
-                        <tbody id="usersTableBody">
+                        
+                        <table class="user-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>AVATAR</th>
+                                    <th>THÔNG TIN NGƯỜI DÙNG</th>
+                                    <th>VAI TRÒ</th>
+                                    <th>TRẠNG THÁI</th>
+                                    <th>NGÀY TẠO</th>
+                                    @if(User.IsInRole("Admin"))
+                                    {
+                                        <th>HÀNH ĐỘNG</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
                             @if (ViewBag.Members != null && ViewBag.Members.Length > 0)
                             {
                                 @foreach (var member in ViewBag.Members)
@@ -557,9 +890,9 @@
                                                 <div class="user-avatar">
                                                     @member.GetProperty("fullName").ToString().Substring(0, 1).ToUpper()
                                                 </div>
-                                                <div class="user-details">
-                                                    <h6>@member.GetProperty("fullName").ToString()</h6>
-                                                    <small>@@member.GetProperty("username").ToString()</small>
+                                                <div>
+                                                    <div class="user-name">@member.GetProperty("fullName").ToString()</div>
+                                                    <div class="user-email">@@member.GetProperty("username").ToString()</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -637,48 +970,29 @@
                                     </td>
                                 </tr>
                             }
-                        </tbody>
-                    </table>
-                    
-                    <!-- Pagination -->
-                    <div class="pagination-container">
-                        <div class="page-size-selector">
-                            <span class="text-muted">Hiển thị</span>
-                            <select class="form-select" id="pageSize" onchange="changePageSize()">
-                                <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                            <span class="text-muted">mục</span>
-                        </div>
+                            </tbody>
+                        </table>
                         
-                        <nav aria-label="Phân trang">
-                            <ul class="pagination" id="pagination">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">2</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">3</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <!-- Pagination -->
+                        <div class="user-pagination">
+                            <div class="pagination-info">
+                                <span id="paginationInfo">Đang tải...</span>
+                            </div>
+                            <div class="pagination-controls">
+                                <button id="prevPageBtn" class="btn-pagination" disabled>❮ Trước</button>
+                                <div id="pageNumbers" class="page-numbers"></div>
+                                <button id="nextPageBtn" class="btn-pagination" disabled>Sau ❯</button>
+                            </div>
+                            <div class="pagination-size">
+                                <select id="pageSizeSelect" class="form-select">
+                                    <option value="10">10 / trang</option>
+                                    <option value="25">25 / trang</option>
+                                    <option value="50">50 / trang</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
         </main>
     </div>
     
@@ -766,6 +1080,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeTable();
             hideLoadingSpinner();
+            
+            // Add event listener for search input
+            const searchInput = document.getElementById('userSearch');
+            if (searchInput) {
+                searchInput.addEventListener('keyup', searchUsers);
+            }
         });
         
         // Hide loading spinner
@@ -775,18 +1095,75 @@
         
         // Search users
         function searchUsers() {
-            const name = document.getElementById('searchName').value;
-            const role = document.getElementById('filterRole').value;
-            const status = document.getElementById('filterStatus').value;
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTableBody tr');
             
-            showLoadingSpinner();
+            rows.forEach(row => {
+                const userName = row.querySelector('.user-name')?.textContent.toLowerCase() || '';
+                const userEmail = row.querySelector('.user-email')?.textContent.toLowerCase() || '';
+                const phoneNumber = row.cells[1]?.textContent.toLowerCase() || '';
+                
+                if (userName.includes(searchTerm) || userEmail.includes(searchTerm) || phoneNumber.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        // Open add user modal
+        function openAddUserModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+            modal.show();
+        }
+        
+        // Filter by role
+        function filterByRole() {
+            const selectedRole = document.getElementById('roleFilter').value;
+            const rows = document.querySelectorAll('#usersTableBody tr');
             
-            // TODO: Implement API call to search users
-            console.log('Searching with:', { name, role, status });
+            rows.forEach(row => {
+                const roleCell = row.cells[2];
+                if (!roleCell) return;
+                
+                const roleBadge = roleCell.querySelector('.badge');
+                if (!roleBadge) return;
+                
+                let roleValue = '';
+                if (roleBadge.classList.contains('role-admin')) roleValue = 'Admin';
+                else if (roleBadge.classList.contains('role-staff')) roleValue = 'Staff';
+                else if (roleBadge.classList.contains('role-member')) roleValue = 'Member';
+                
+                if (!selectedRole || roleValue === selectedRole) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        // Filter by status
+        function filterByStatus() {
+            const selectedStatus = document.getElementById('statusFilter').value;
+            const rows = document.querySelectorAll('#usersTableBody tr');
             
-            setTimeout(() => {
-                hideLoadingSpinner();
-            }, 1000);
+            rows.forEach(row => {
+                const statusCell = row.cells[3];
+                if (!statusCell) return;
+                
+                const statusBadge = statusCell.querySelector('.status-badge');
+                if (!statusBadge) return;
+                
+                let statusValue = '';
+                if (statusBadge.classList.contains('status-active')) statusValue = 'Active';
+                else if (statusBadge.classList.contains('status-inactive')) statusValue = 'Inactive';
+                
+                if (!selectedStatus || statusValue === selectedStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         }
         
         // Show loading spinner
@@ -877,6 +1254,15 @@
             const pageSize = document.getElementById('pageSize').value;
             console.log('Page size changed to:', pageSize);
             // TODO: Implement page size change
+        }
+        
+        // Toggle sidebar function
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.new-dashboard-sidebar');
+            const main = document.querySelector('.new-dashboard-main');
+            
+            sidebar.classList.toggle('collapsed');
+            main.classList.toggle('expanded');
         }
         
         // Auto-hide alerts after 5 seconds
