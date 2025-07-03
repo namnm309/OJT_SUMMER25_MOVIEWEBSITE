@@ -4,208 +4,662 @@
     Layout = "_Layout";
 }
 
-<div class="container-fluid bg-dark text-white min-vh-100 py-4">
-    <div class="container">
-        <div class="text-center mb-4">
-            <h1 class="text-danger">Xác Nhận Thông Tin Đặt Vé</h1>
+<style>
+/* Reset và base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Header Navigation */
+.header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4fc3f7;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: white;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.location-selector {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    color: white;
+    font-size: 0.9rem;
+}
+
+/* Movie Info Section - Full Width */
+.movie-info-section {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.movie-content {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.movie-poster {
+    width: 300px;
+    height: 450px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+}
+
+.movie-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.movie-details {
+    flex: 1;
+    padding-left: 1rem;
+}
+
+.movie-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, #fff, #4fc3f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.movie-meta {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.meta-item i {
+    color: #4fc3f7;
+    width: 20px;
+}
+
+/* Date/Time Selection */
+.datetime-selection {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.datetime-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.date-section, .time-section, .room-section, .seats-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 200px;
+}
+
+.section-label {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.section-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+/* Main Content Layout */
+.main-content {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+/* Customer Info - Left Side */
+.customer-section {
+    flex: 2;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #4fc3f7;
+}
+
+.customer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: white;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #4fc3f7;
+    box-shadow: 0 0 0 0.2rem rgba(79, 195, 247, 0.25);
+    outline: none;
+}
+
+.form-control[readonly] {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.notes-section {
+    margin-top: 1rem;
+}
+
+.notes-section textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Booking Summary - Right Side */
+.booking-summary {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    height: fit-content;
+    position: sticky;
+    top: 2rem;
+}
+
+.summary-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #4fc3f7;
+}
+
+.price-breakdown {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+}
+
+.total-price {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #4fc3f7;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.points-section {
+    background: rgba(255, 193, 7, 0.1);
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.points-header {
+    color: #ffc107;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-check-input {
+    width: 18px;
+    height: 18px;
+    accent-color: #4fc3f7;
+}
+
+.form-check-label {
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+}
+
+.points-input-section {
+    margin-top: 1rem;
+}
+
+.points-note {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.5rem;
+}
+
+.btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 1rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #4fc3f7, #29b6f6);
+    color: white;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #29b6f6, #4fc3f7);
+}
+
+.terms-note {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    line-height: 1.4;
+}
+
+.terms-note a {
+    color: #ffc107;
+    text-decoration: none;
+}
+
+.terms-note a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@@media (max-width: 1024px) {
+    .main-content {
+        flex-direction: column;
+    }
+    
+    .booking-summary {
+        position: static;
+    }
+}
+
+@@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .movie-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .movie-poster {
+        width: 250px;
+        height: 375px;
+        margin: 0 auto;
+    }
+    
+    .movie-title {
+        font-size: 2rem;
+    }
+    
+    .customer-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .datetime-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .date-section, .time-section, .room-section, .seats-section {
+        min-width: 100%;
+    }
+}
+</style>
+
+<div class="container">
+    <!-- Header Navigation -->
+    <div class="header-nav">
+        <div class="nav-left">
+            <div class="logo">WATCHER</div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Phim</a>
+                <a href="#" class="nav-link">Rạp</a>
+                <a href="#" class="nav-link">Khuyến mãi</a>
+            </div>
         </div>
+        <div class="nav-right">
+            <select class="location-selector">
+                <option>Hồ Chí Minh</option>
+                <option>Hà Nội</option>
+                <option>Đà Nẵng</option>
+            </select>
+        </div>
+    </div>
 
-        <form asp-action="ConfirmBooking" method="post" class="needs-validation" novalidate>
-            <div class="row">
-                <!-- Movie & Booking Details -->
-                <div class="col-lg-8">
-                    <div class="card bg-secondary text-white mb-4">
-                        <div class="card-header bg-danger">
-                            <h4 class="mb-0"><i class="fas fa-film"></i> Thông Tin Phim</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <img src="@Model.MoviePoster" alt="@Model.MovieTitle" class="img-fluid rounded">
-                                </div>
-                                <div class="col-md-8">
-                                    <h3 class="text-danger">@Model.MovieTitle</h3>
-                                    <div class="booking-details">
-                                        <p><i class="fas fa-map-marker-alt text-danger"></i> <strong>Phòng chiếu:</strong> @Model.CinemaRoom</p>
-                                        <p><i class="fas fa-calendar text-danger"></i> <strong>Ngày chiếu:</strong> @Model.ShowDate.ToString("dddd, dd/MM/yyyy")</p>
-                                        <p><i class="fas fa-clock text-danger"></i> <strong>Giờ chiếu:</strong> @Model.ShowTime.ToString(@"hh\:mm")</p>
-                                        <p><i class="fas fa-couch text-danger"></i> <strong>Ghế đã chọn:</strong> @string.Join(", ", Model.SelectedSeats)</p>
-                                        <p><i class="fas fa-ticket-alt text-danger"></i> <strong>Số lượng vé:</strong> @Model.TotalSeats</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Movie Info Section - Full Width -->
+    <div class="movie-info-section">
+        <div class="movie-content">
+            <div class="movie-poster">
+                <img src="@Model.MoviePoster" alt="@Model.MovieTitle">
+            </div>
+            <div class="movie-details">
+                <h1 class="movie-title">@Model.MovieTitle</h1>
+                <div class="movie-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span><strong>Phòng:</strong> @Model.CinemaRoom</span>
                     </div>
-
-                    <!-- Customer Information -->
-                    <div class="card bg-secondary text-white">
-                        <div class="card-header bg-danger">
-                            <h4 class="mb-0"><i class="fas fa-user"></i> Thông Tin Khách Hàng</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Họ và tên</label>
-                                        <input type="text" class="form-control bg-dark text-white border-secondary" 
-                                               value="@Model.CustomerName" readonly>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Số điện thoại</label>
-                                        <input type="text" class="form-control bg-dark text-white border-secondary" 
-                                               value="@Model.CustomerPhone" readonly>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" class="form-control bg-dark text-white border-secondary" 
-                                               value="@Model.CustomerEmail" readonly>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">CMND/CCCD</label>
-                                        <input type="text" class="form-control bg-dark text-white border-secondary" 
-                                               value="@Model.CustomerIdCard" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span><strong>Ngày:</strong> @Model.ShowDate.ToString("dddd, dd/MM/yyyy")</span>
                     </div>
-                </div>
-
-                <!-- Payment Summary -->
-                <div class="col-lg-4">
-                    <div class="card bg-secondary text-white position-sticky" style="top: 1rem;">
-                        <div class="card-header bg-success">
-                            <h4 class="mb-0"><i class="fas fa-money-bill-wave"></i> Thanh Toán</h4>
-                        </div>
-                        <div class="card-body">
-                            <!-- Price Breakdown -->
-                            <div class="price-breakdown">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Giá vé (@Model.TotalSeats vé):</span>
-                                    <span>@String.Format("{0:N0}", Model.TotalPrice) VNĐ</span>
-                                </div>
-                                
-                                <!-- Points Section -->
-                                @if(Model.AvailablePoints > 0)
-                                {
-                                    <hr class="border-secondary">
-                                    <div class="points-section">
-                                        <h6 class="text-warning"><i class="fas fa-coins"></i> Điểm thưởng có sẵn: @Model.AvailablePoints điểm</h6>
-                                        <div class="form-check">
-                                            <input asp-for="UsePoints" class="form-check-input" type="checkbox" id="usePointsCheck">
-                                            <label class="form-check-label" for="usePointsCheck">
-                                                Sử dụng điểm thưởng
-                                            </label>
-                                        </div>
-                                        <div id="pointsDetails" style="display: none;" class="mt-2">
-                                            <div class="mb-2">
-                                                <label class="form-label">Số điểm sử dụng:</label>
-                                                <input asp-for="PointsToUse" type="number" class="form-control form-control-sm bg-dark text-white border-secondary" 
-                                                       min="0" max="@Model.AvailablePoints" placeholder="Nhập số điểm">
-                                            </div>
-                                            <small class="text-muted">1 điểm = 1,000 VNĐ</small>
-                                        </div>
-                                    </div>
-                                    
-                                    <div id="discountRow" style="display: none;" class="d-flex justify-content-between mb-2 text-warning">
-                                        <span>Giảm giá (điểm):</span>
-                                        <span id="discountAmount">0 VNĐ</span>
-                                    </div>
-                                }
-
-                                <hr class="border-secondary">
-                                <div class="d-flex justify-content-between fs-5 fw-bold text-success">
-                                    <span>Tổng cần thanh toán:</span>
-                                    <span id="finalAmount">@String.Format("{0:N0}", Model.FinalPrice) VNĐ</span>
-                                </div>
-                            </div>
-
-                            <!-- Notes -->
-                            <div class="mt-3">
-                                <label asp-for="Notes" class="form-label">Ghi chú (tùy chọn)</label>
-                                <textarea asp-for="Notes" class="form-control bg-dark text-white border-secondary" 
-                                          rows="3" placeholder="Nhập ghi chú nếu có..."></textarea>
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="d-grid gap-2 mt-4">
-                                <button type="button" class="btn btn-outline-light" onclick="history.back()">
-                                    <i class="fas fa-arrow-left"></i> Quay lại
-                                </button>
-                                <button type="submit" class="btn btn-success btn-lg">
-                                    <i class="fas fa-check"></i> Xác Nhận Đặt Vé
-                                </button>
-                            </div>
-
-                            <!-- Terms -->
-                            <div class="mt-3">
-                                <small class="text-muted">
-                                    <i class="fas fa-info-circle"></i>
-                                    Bằng việc xác nhận, bạn đồng ý với 
-                                    <a href="#" class="text-warning">điều khoản sử dụng</a> của chúng tôi.
-                                </small>
-                            </div>
-                        </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span><strong>Giờ:</strong> @Model.ShowTime.ToString(@"hh\:mm")</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-couch"></i>
+                        <span><strong>Ghế:</strong> @string.Join(", ", Model.SelectedSeats)</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span><strong>Số vé:</strong> @Model.TotalSeats</span>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Hidden Fields -->
-            <input asp-for="ShowTimeId" type="hidden">
-            <input asp-for="MovieTitle" type="hidden">
-            <input asp-for="MoviePoster" type="hidden">
-            <input asp-for="CinemaRoom" type="hidden">
-            <input asp-for="ShowDate" type="hidden">
-            <input asp-for="ShowTime" type="hidden">
-            <input asp-for="TotalPrice" type="hidden">
-            <input asp-for="TotalSeats" type="hidden">
-            <input asp-for="PricePerTicket" type="hidden">
+    <!-- Date/Time Selection -->
+    <div class="datetime-selection">
+        <div class="datetime-row">
+            <div class="date-section">
+                <div class="section-label">Ngày chiếu</div>
+                <div class="section-value">@Model.ShowDate.ToString("dd/MM/yyyy")</div>
+            </div>
+            <div class="time-section">
+                <div class="section-label">Giờ chiếu</div>
+                <div class="section-value">@Model.ShowTime.ToString(@"hh\:mm")</div>
+            </div>
+            <div class="room-section">
+                <div class="section-label">Phòng chiếu</div>
+                <div class="section-value">@Model.CinemaRoom</div>
+            </div>
+            <div class="seats-section">
+                <div class="section-label">Ghế đã chọn</div>
+                <div class="section-value">@string.Join(", ", Model.SelectedSeats)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Customer Info Section -->
+        <div class="customer-section">
+            <h2 class="section-header">
+                <i class="fas fa-user"></i>
+                Thông Tin Khách Hàng
+            </h2>
             
-            @for (int i = 0; i < Model.SelectedSeats.Count; i++)
-            {
-                <input asp-for="SelectedSeats[i]" type="hidden">
-            }
-            @for (int i = 0; i < Model.SelectedSeatIds.Count; i++)
-            {
-                <input asp-for="SelectedSeatIds[i]" type="hidden">
-            }
-        </form>
+            <form asp-action="ConfirmBooking" method="post" class="needs-validation" novalidate>
+                <div class="customer-grid">
+                    <div class="form-group">
+                        <label class="form-label">Họ và tên</label>
+                        <input type="text" class="form-control" value="@Model.CustomerName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-control" value="@Model.CustomerPhone" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" value="@Model.CustomerEmail" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CMND/CCCD</label>
+                        <input type="text" class="form-control" value="@Model.CustomerIdCard" readonly>
+                    </div>
+                </div>
+
+                <div class="notes-section">
+                    <div class="form-group">
+                        <label asp-for="Notes" class="form-label">Ghi chú (tùy chọn)</label>
+                        <textarea asp-for="Notes" class="form-control" 
+                                  rows="3" placeholder="Nhập ghi chú nếu có..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Hidden Fields -->
+                <input asp-for="ShowTimeId" type="hidden">
+                <input asp-for="MovieTitle" type="hidden">
+                <input asp-for="MoviePoster" type="hidden">
+                <input asp-for="CinemaRoom" type="hidden">
+                <input asp-for="ShowDate" type="hidden">
+                <input asp-for="ShowTime" type="hidden">
+                <input asp-for="TotalPrice" type="hidden">
+                <input asp-for="TotalSeats" type="hidden">
+                <input asp-for="PricePerTicket" type="hidden">
+                
+                @for (int i = 0; i < Model.SelectedSeats.Count; i++)
+                {
+                    <input asp-for="SelectedSeats[i]" type="hidden">
+                }
+                @for (int i = 0; i < Model.SelectedSeatIds.Count; i++)
+                {
+                    <input asp-for="SelectedSeatIds[i]" type="hidden">
+                }
+            </form>
+        </div>
+
+        <!-- Booking Summary -->
+        <div class="booking-summary">
+            <h3 class="summary-header">
+                <i class="fas fa-money-bill-wave"></i>
+                Thanh Toán
+            </h3>
+            
+            <div class="price-breakdown">
+                <div class="summary-row">
+                    <span>Giá vé (@Model.TotalSeats vé):</span>
+                    <span>@String.Format("{0:N0}", Model.TotalPrice) VNĐ</span>
+                </div>
+                
+                @if(Model.AvailablePoints > 0)
+                {
+                    <div class="points-section">
+                        <div class="points-header">
+                            <i class="fas fa-coins"></i>
+                            Điểm thưởng: @Model.AvailablePoints điểm
+                        </div>
+                        <div class="form-check">
+                            <input asp-for="UsePoints" class="form-check-input" type="checkbox" id="usePointsCheck">
+                            <label class="form-check-label" for="usePointsCheck">
+                                Sử dụng điểm thưởng
+                            </label>
+                        </div>
+                        <div id="pointsDetails" class="points-input-section" style="display: none;">
+                            <div class="form-group">
+                                <label class="form-label">Số điểm sử dụng:</label>
+                                <input asp-for="PointsToUse" type="number" class="form-control" 
+                                       min="0" max="@Model.AvailablePoints" placeholder="Nhập số điểm">
+                                <div class="points-note">1 điểm = 1,000 VNĐ</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="discountRow" style="display: none;" class="summary-row" style="color: #ffc107;">
+                        <span>Giảm giá (điểm):</span>
+                        <span id="discountAmount">0 VNĐ</span>
+                    </div>
+                }
+
+                <div class="summary-row total-price">
+                    <span>TỔNG THANH TOÁN:</span>
+                    <span id="finalAmount">@String.Format("{0:N0}", Model.FinalPrice) VNĐ</span>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-secondary" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </button>
+            <button type="submit" class="btn btn-primary" form="confirmForm">
+                <i class="fas fa-check"></i> Xác Nhận Đặt Vé
+            </button>
+
+            <div class="terms-note">
+                <i class="fas fa-info-circle"></i>
+                Bằng việc xác nhận, bạn đồng ý với 
+                <a href="#">điều khoản sử dụng</a> của chúng tôi.
+            </div>
+        </div>
     </div>
 </div>
-
-<style>
-    .booking-details p {
-        margin-bottom: 0.75rem;
-        font-size: 1.1rem;
-    }
-    
-    .price-breakdown {
-        background: rgba(0,0,0,0.2);
-        border-radius: 10px;
-        padding: 1rem;
-    }
-    
-    .points-section {
-        background: rgba(255, 193, 7, 0.1);
-        border-radius: 8px;
-        padding: 1rem;
-        border: 1px solid rgba(255, 193, 7, 0.3);
-    }
-    
-    .card {
-        border: none;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-    
-    .form-control:focus {
-        background-color: #2c2c2c !important;
-        border-color: #dc3545 !important;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
-        color: white !important;
-    }
-</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -215,9 +669,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const discountRow = document.getElementById('discountRow');
     const discountAmount = document.getElementById('discountAmount');
     const finalAmount = document.getElementById('finalAmount');
+    const form = document.querySelector('form');
     
     const totalPrice = @Model.TotalPrice;
     const maxPoints = @Model.AvailablePoints;
+
+    // Add form id for submit button
+    if (form) {
+        form.id = 'confirmForm';
+    }
 
     if (usePointsCheck) {
         usePointsCheck.addEventListener('change', function() {
@@ -225,31 +685,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 pointsDetails.style.display = 'block';
             } else {
                 pointsDetails.style.display = 'none';
-                pointsToUseInput.value = '';
+                if (pointsToUseInput) pointsToUseInput.value = '';
                 updateFinalPrice();
             }
         });
 
-        pointsToUseInput.addEventListener('input', function() {
-            let points = parseInt(this.value) || 0;
-            
-            // Validate points
-            if (points > maxPoints) {
-                points = maxPoints;
-                this.value = maxPoints;
-            }
-            if (points < 0) {
-                points = 0;
-                this.value = 0;
-            }
+        if (pointsToUseInput) {
+            pointsToUseInput.addEventListener('input', function() {
+                let points = parseInt(this.value) || 0;
+                
+                if (points > maxPoints) {
+                    points = maxPoints;
+                    this.value = maxPoints;
+                }
+                if (points < 0) {
+                    points = 0;
+                    this.value = 0;
+                }
 
-            updateFinalPrice();
-        });
+                updateFinalPrice();
+            });
+        }
     }
 
     function updateFinalPrice() {
         const points = parseInt(pointsToUseInput?.value) || 0;
-        const discount = Math.min(points * 1000, totalPrice); // 1 point = 1000 VND
+        const discount = Math.min(points * 1000, totalPrice);
         const finalPrice = totalPrice - discount;
 
         if (points > 0 && discountRow) {
@@ -259,17 +720,19 @@ document.addEventListener('DOMContentLoaded', function() {
             discountRow.style.display = 'none';
         }
 
-        finalAmount.textContent = new Intl.NumberFormat('vi-VN').format(finalPrice) + ' VNĐ';
+        if (finalAmount) {
+            finalAmount.textContent = new Intl.NumberFormat('vi-VN').format(finalPrice) + ' VNĐ';
+        }
     }
 
-    // Form validation
-    const form = document.querySelector('.needs-validation');
-    form.addEventListener('submit', function(event) {
-        if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-    });
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        });
+    }
 });
-</script> 
+</script>

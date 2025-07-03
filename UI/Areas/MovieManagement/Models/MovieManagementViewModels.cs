@@ -43,19 +43,15 @@ namespace UI.Areas.MovieManagement.Models
         
         public bool IsRecommended { get; set; } = false;
         
-        // For backend API
         public List<Guid> GenreIds { get; set; } = new List<Guid>();
         
-        // For display
         public List<string> Genres { get; set; } = new List<string>();
         
         [Required(ErrorMessage = "Hình ảnh phim là bắt buộc")]
         public string ImageUrl { get; set; } = string.Empty;
         
-        // ShowTimes
         public List<ShowTimeViewModel> ShowTimes { get; set; } = new List<ShowTimeViewModel>();
         
-        // Images
         public List<MovieImageViewModel> Images { get; set; } = new List<MovieImageViewModel>();
     }
 

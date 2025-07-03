@@ -1,782 +1,722 @@
 @model UI.Models.MovieViewModel
 @{
     ViewData["Title"] = Model?.Title ?? "Chi tiết phim";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+
+
+
+
+
+    Layout = null; // Remove layout to have full control
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Process API data
+
+
+
+
+
+
+
     var movieData = Model;
+
+
+
+
+
+
+
     var hasValidData = movieData != null && !string.IsNullOrEmpty(movieData.Title);
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Primary image for background
+
+
+
+
+
+
+
     var backgroundImage = hasValidData ? (movieData?.PrimaryImageUrl ?? movieData?.ImageUrl) : "";
+
+
+
+
+
+
+
     if (string.IsNullOrEmpty(backgroundImage) && hasValidData && movieData?.Images?.Any() == true)
+
+
+
+
+
+
+
     {
+
+
+
+
+
+
+
         backgroundImage = movieData.Images?.FirstOrDefault(img => img.IsPrimary)?.ImageUrl ?? movieData.Images?.FirstOrDefault()?.ImageUrl;
+
+
+
+
+
+
+
     }
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Parse actors string to array
+
+
+
+
+
+
+
     var actorsList = new List<string>();
+
+
+
+
+
+
+
     if (hasValidData && !string.IsNullOrEmpty(movieData?.Actors))
+
+
+
+
+
+
+
     {
+
+
+
+
+
+
+
         actorsList = movieData.Actors!.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+
+
+
+
+
+
+
                                     .Select(a => a.Trim())
+
+
+
+
+
+
+
                                     .Where(a => !string.IsNullOrEmpty(a))
+
+
+
+
+
+
+
                                     .ToList();
+
+
+
+
+
+
+
     }
 
-    // Mock showtime data for 7 days
-    var mockShowtimes = new List<object>();
-    var mockShowtimesForJs = new List<object>();
-    for (int i = 0; i < 7; i++)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Extract trailer embed URL
+
+
+
+
+
+
+
+    var embedTrailerUrl = "";
+
+
+
+
+
+
+
+    if (hasValidData && !string.IsNullOrEmpty(movieData?.TrailerUrl))
+
+
+
+
+
+
+
     {
-        var date = DateTime.Now.AddDays(i);
-        var times = new[] { "09:00", "12:30", "15:45", "18:30", "21:15" };
-        var showtimeData = new { 
-            Date = date,
-            Times = times.Select(t => new { Time = t, Room = $"Phòng {(Array.IndexOf(times, t) % 3) + 1}" })
-        };
-        mockShowtimes.Add(showtimeData);
-        
-        // Prepare data for JavaScript
-        mockShowtimesForJs.Add(new {
-            date = date.ToString("yyyy-MM-dd"),
-            times = times.Select(t => new { time = t, room = $"Phòng {(Array.IndexOf(times, t) % 3) + 1}" })
-        });
+
+
+
+
+
+
+
+        var trailerUrl = movieData.TrailerUrl;
+
+
+
+
+
+
+
+        if (trailerUrl.Contains("youtube.com/watch?v="))
+
+
+
+
+
+
+
+        {
+
+
+
+
+
+
+
+            var videoId = trailerUrl.Split("v=")[1].Split("&")[0];
+
+
+
+
+
+
+
+            embedTrailerUrl = $"https://www.youtube.com/embed/{videoId}";
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+        else if (trailerUrl.Contains("youtu.be/"))
+
+
+
+
+
+
+
+        {
+
+
+
+
+
+
+
+            var videoId = trailerUrl.Split("/").Last();
+
+
+
+
+
+
+
+            embedTrailerUrl = $"https://www.youtube.com/embed/{videoId}";
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
     }
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/movie-details.css" />
-    <link rel="stylesheet" href="~/css/dashboard.css" />
-    <style>
-        /* Override conflicts và layout improvements */
-        .movie-details-page {
-            margin-top: 80px; /* Space for fixed header */
-            padding-top: 0;
-        }
-        
-        .details-main-container {
-            margin-top: 0;
-            padding-top: 2rem;
-            min-height: auto;
-        }
-        
-        /* Fix container conflicts */
-        .container {
-            max-width: none;
-            padding: 0;
-        }
-        
-        .pb-3.pt-3 {
-            padding: 0 !important;
-        }
-        
-        /* Ensure ad banners display properly */
-        .details-sidebar-left,
-        .details-sidebar-right {
-            max-height: calc(100vh - 12rem);
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-red) transparent;
-        }
-        
-        .details-sidebar-left::-webkit-scrollbar,
-        .details-sidebar-right::-webkit-scrollbar {
-            width: 4px;
-        }
-        
-        .details-sidebar-left::-webkit-scrollbar-track,
-        .details-sidebar-right::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        
-        .details-sidebar-left::-webkit-scrollbar-thumb,
-        .details-sidebar-right::-webkit-scrollbar-thumb {
-            background: var(--primary-red);
-            border-radius: 2px;
-        }
-        
-        /* Improve button interactions */
-        .ad-btn:active {
-            transform: translateY(-1px) scale(0.98);
-        }
-        
-        /* Enhanced glow effect on focus */
-        .ad-btn:focus {
-            outline: none;
-            box-shadow: 
-                0 8px 25px rgba(196, 30, 58, 0.4),
-                0 0 0 3px rgba(196, 30, 58, 0.3);
-        }
-        
-        /* Improve readability */
-        .ad-body p {
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-        }
-        
-        .ad-body h4 {
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Fix grid alignment */
-        .details-main-container {
-            gap: 1.5rem;
-            align-items: start;
-        }
-        
-        /* Improve hero section fit */
-        .movie-hero {
-            margin-bottom: 1.5rem;
-        }
-        
-        /* Better section spacing */
-        .cast-crew-section,
-        .showtime-section,
-        .booking-section {
-            margin-bottom: 1.5rem;
-        }
-        
-        /* Footer spacing fix */
-        .cinema-footer {
-            margin-top: 3rem;
-        }
-        
-        /* Better mobile optimization */
-        @@media (max-width: 1200px) {
-            .details-main-container {
-                margin-top: 0;
-                padding-top: 1rem;
-            }
-        }
-        
-        @@media (max-width: 576px) {
-            .movie-details-page {
-                margin-top: 60px;
-            }
-            
-            .details-sidebar-left,
-            .details-sidebar-right {
-                max-height: none;
-                overflow-y: visible;
-            }
-            
-            .vertical-ad {
-                box-shadow: 
-                    0 4px 20px rgba(0, 0, 0, 0.3),
-                    0 0 0 1px rgba(196, 30, 58, 0.2);
-            }
-            
-            .details-main-container {
-                padding: 0.5rem;
-                gap: 1rem;
-            }
-        }
-    </style>
-}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="~/css/HomePage/base.css" />
+    <link rel="stylesheet" href="~/css/HomePage/header.css" /> 
+    <link rel="stylesheet" href="~/css/Shared/_header.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/HomePage/layout.css" />
+    <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" />
+    <link rel="stylesheet" href="~/css/HomePage/responsive.css" />
+    <link rel="stylesheet" href="~/css/MovieDetails/movie-details-mostly.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="details-page">
+    @Html.Partial("_Header")
 
-<script>
-    // Add class to body to override background
-    document.addEventListener('DOMContentLoaded', function() {
-        document.body.classList.add('movie-details-body');
-        
-        // Force override body background with inline styles
-        document.body.style.backgroundColor = 'transparent';
-        document.body.style.background = 'transparent';
-        document.documentElement.style.background = `
-            radial-gradient(circle at 20% 80%, rgba(196, 30, 58, 0.15) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(196, 30, 58, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 40% 40%, rgba(139, 0, 0, 0.1) 0%, transparent 50%),
-            linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 25%, #1a1a1a 50%, #0a0a0a 75%, #1a1a1a 100%)
-        `;
-        document.documentElement.style.backgroundAttachment = 'fixed';
-        document.documentElement.style.backgroundSize = '100% 100%, 100% 100%, 100% 100%, 100% 100%';
-    });
-</script>
-
-<div class="movie-details-page">
-    @{
-        ViewBag.CurrentPage = "Movies";
-    }
-    
-    <!-- Header - Unified Dashboard Style -->
-    @Html.Partial("_DashboardHeader")
-
-    <!-- MAIN CONTENT WITH SIDEBAR LAYOUT -->
-    <div class="details-main-container">
-        <!-- LEFT SIDEBAR - Advertisement -->
-        <div class="details-sidebar details-sidebar-left">
-            <div class="ad-banner vertical-ad">
-                <div class="ad-content">
-                    <div class="ad-header">
-                        <i class="fas fa-tags"></i>
-                        <span>Flash Sale</span>
-                    </div>
-                    <div class="ad-body">
-                        <h4>Siêu Ưu Đãi Cuối Tuần</h4>
-                        <p>Giảm tới 50% cho vé đôi tình nhân</p>
-                        <button class="ad-btn" onclick="window.open('/promotions', '_blank')">Nhận Ngay</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ad-banner vertical-ad">
-                <div class="ad-content">
-                    <div class="ad-header">
-                        <i class="fas fa-utensils"></i>
-                        <span>Combo Đặc Biệt</span>
-                    </div>
-                    <div class="ad-body">
-                        <h4>Premium Package</h4>
-                        <p>Bắp rang bơ + Nước ngọt + Kẹo</p>
-                        <button class="ad-btn" onclick="window.open('/products', '_blank')">Đặt Combo</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ad-banner vertical-ad">
-                <div class="ad-content">
-                    <div class="ad-header">
-                        <i class="fas fa-star"></i>
-                        <span>VIP Experience</span>
-                    </div>
-                    <div class="ad-body">
-                        <h4>Ghế VIP Luxury</h4>
-                        <p>Trải nghiệm điện ảnh đẳng cấp</p>
-                        <button class="ad-btn" onclick="scrollToBooking()">Chọn Ghế VIP</button>
-                    </div>
-                </div>
-            </div>
+    <!-- Hero Section -->
+    <section class="hero-section" style="margin-top: 0; padding-top: 120px;"> <!-- Đổi margin-top thành padding-top -->
+        <div class="hero-background" style="top: 0; height: 100vh;"> <!-- Đảm bảo ảnh nền full height -->
+            <img src="@(backgroundImage ?? "https://via.placeholder.com/1920x1080/333/fff?text=Movie+Background")" 
+                 alt="@(movieData?.Title ?? "Movie Background")" 
+                 class="hero-bg"
+                 style="object-fit: cover; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"
+                 onerror="this.src='https://via.placeholder.com/1920x1080/333/fff?text=Movie+Background'">
         </div>
+        <div class="hero-overlay"></div>
 
-        <!-- CENTER CONTENT -->
-        <div class="details-center-content">
-            <!-- PHẦN 1: MOVIE INFO - Hero Section -->
-            <div class="movie-hero">
-                @if (!string.IsNullOrEmpty(backgroundImage))
-                {
-                    <div class="hero-background" style="background-image: url('@backgroundImage');"></div>
-                }
-                
-                <div class="hero-container">
-                    <!-- Poster Section -->
-                    <div class="poster-section">
-                        <div class="poster-wrapper">
-                            <img src="@(backgroundImage ?? "https://via.placeholder.com/350x525/333/fff?text=No+Image")" 
-                                 alt="@(movieData?.Title ?? "Movie Poster")" 
-                                 class="poster-main"
-                                 onerror="this.src='https://via.placeholder.com/350x525/333/fff?text=No+Image'">
-                            <div class="poster-overlay">
-                                <button class="poster-play-btn" onclick="openTrailer('@(movieData?.TrailerUrl ?? "")')">
-                                    <i class="fas fa-play"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+        <div class="hero-content" style="padding-top: 0;"> <!-- Bỏ padding-top thừa -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="movie-info">
+                            <h1 class="movie-title-main">@(movieData?.Title ?? "Tên phim")</h1>
 
-                    <!-- Movie Info Section -->
-                    <div class="movie-info">
-                        <div class="movie-info-content">
-                            <h1 class="movie-title">@(movieData?.Title ?? "Tên phim")</h1>
-                            <p class="movie-subtitle">@(movieData?.ProductionCompany ?? "Nhà sản xuất")</p>
+                            @if (hasValidData && !string.IsNullOrEmpty(movieData?.ProductionCompany))
 
-                            <!-- Movie Meta -->
-                            <div class="movie-meta">
-                                @if (hasValidData && movieData?.Rating > 0)
-                                {
-                                    <div class="rating-badge">
-                                        <i class="fas fa-star"></i>
-                                        <span>@movieData.Rating.ToString("F1")</span>
-                        </div>
-                    }
-                                
-                                @if (hasValidData && movieData?.RunningTime > 0)
-                                {
-                                    <div class="meta-item">
-                                        <i class="fas fa-clock"></i>
-                                        <span>@movieData.RunningTime phút</span>
-                        </div>
-                    }
-                                
-                                @if (hasValidData && movieData != null)
-                                {
-                                    <div class="meta-item">
-                                        <i class="fas fa-calendar"></i>
-                                        <span>@movieData.ReleaseDate.Year</span>
-        </div>
-                                }
 
-                                @if (hasValidData && !string.IsNullOrEmpty(movieData?.Version))
-                                {
-                                    <div class="meta-item">
-                                        <i class="fas fa-film"></i>
-                                        <span>@(movieData.Version == "TwoD" ? "2D" : movieData.Version)</span>
-                                    </div>
-                }
-            </div>
-            
-                            <!-- Genre Tags -->
-                            @if (hasValidData && movieData.Genres?.Any() == true)
+
+
+
+
+
                             {
-                                <div class="genre-tags">
-                                    @foreach (var genre in movieData.Genres)
-                                    {
-                                        <span class="genre-tag">@genre.Name</span>
-                                    }
-                </div>
+                                            <p class="movie-tagline">@movieData.ProductionCompany</p>
                             }
 
-                            <!-- Movie Description -->
-                            <div class="movie-description">
-                                @(movieData?.Content ?? "Thông tin chi tiết về phim sẽ được cập nhật sớm.")
-            </div>
-            
-                            <!-- Action Buttons -->
-            <div class="action-buttons">
-                                @if (hasValidData && !string.IsNullOrEmpty(movieData?.TrailerUrl))
+                            <div class="movie-meta-info">
+                                @if (hasValidData && movieData?.Rating > 0)
+
+
+
+
+
+
+
                                 {
-                                    <button class="btn-action btn-secondary" onclick="openTrailer('@movieData.TrailerUrl')">
-                                        <i class="fas fa-play"></i>
-                                        Xem Trailer
-                                    </button>
+                                                <span><i class="fas fa-star"></i> @movieData.Rating.ToString("F1")</span>
                                 }
-                                <button class="btn-action btn-primary" onclick="scrollToBooking()">
-                    <i class="fas fa-ticket-alt"></i>
-                                    Đặt Vé Ngay
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-            </div>
+                                @if (hasValidData && movieData?.RunningTime > 0)
 
-            <!-- Cast & Crew Section -->
-            @if (actorsList.Any() || (hasValidData && !string.IsNullOrEmpty(movieData?.Director)))
-            {
-                <div class="cast-crew-section">
-                    <div class="section-container">
-                        @if (actorsList.Any())
-                        {
-                            <div class="cast-section">
-                                <h3 class="section-title">
-                                    <i class="fas fa-users"></i>
-                                    Diễn viên
-                </h3>
-                                <div class="cast-grid">
-                                    @foreach (var actor in actorsList.Take(8))
+
+
+
+
+
+
+                                {
+                                                <span><i class="fas fa-clock"></i> @movieData.RunningTime phút</span>
+                                }
+                                @if (hasValidData && movieData != null)
+
+
+
+
+
+
+
+                                {
+                                                <span><i class="fas fa-calendar"></i> @movieData.ReleaseDate.Year</span>
+                                }
+                            </div>
+
+                            @if (hasValidData && movieData.Genres?.Any() == true)
+
+
+
+
+
+
+
+                            {
+                                            <div class="genre-list">
+                                    @foreach (var genre in movieData.Genres)
+
+
+
+
+
+
+
                                     {
-                                        <div class="cast-item">
-                                            <div class="cast-avatar">
-                                                <i class="fas fa-user"></i>
+                                                                <a href="#" class="genre-item">@genre.Name</a>
+                                    }
                                             </div>
-                                            <div class="cast-name">@actor</div>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        }
+                            }
 
-                        @if (hasValidData && !string.IsNullOrEmpty(movieData?.Director))
-                        {
-                            <div class="director-section">
-                                <h3 class="section-title">
-                                    <i class="fas fa-video"></i>
-                                    Đạo diễn
-                                </h3>
-                                <p class="director-name">@movieData.Director</p>
-                            </div>
-                        }
-                    </div>
-                </div>
-            }
+                            <div class="credits-info">
+                                @if (hasValidData && !string.IsNullOrEmpty(movieData?.Director))
 
-            <!-- PHẦN 2: SHOWTIME SECTION -->
-            <div class="showtime-section">
-                <div class="section-container">
-                    <h2 class="section-title">
-                        <i class="fas fa-calendar-alt"></i>
-                        Lịch Chiếu
-                    </h2>
-                    
-                    <div class="showtime-days">
-                        @foreach (var day in mockShowtimes.Take(4))
-                        {
-                            var dayData = (dynamic)day;
-                            <div class="day-card">
-                                <div class="day-header">
-                                    @if (dayData.Date.Date == DateTime.Now.Date)
-                                    {
-                                        <span>Hôm nay</span>
-                                    }
-                                    else if (dayData.Date.Date == DateTime.Now.AddDays(1).Date)
-                                    {
-                                        <span>Ngày mai</span>
-                                    }
-                                    else
-                                    {
-                                        <span>@dayData.Date.ToString("dd/MM")</span>
-                                    }
-                                    <br>
-                                    <small style="font-size: 0.9rem; opacity: 0.8;">@dayData.Date.ToString("dddd")</small>
-                                </div>
-                                
-                                <div class="time-slots">
-                                    @foreach (var timeSlot in dayData.Times)
-                                    {
-                                        <div class="time-slot" onclick="selectTimeSlot(this, '@dayData.Date.ToString("yyyy-MM-dd")', '@timeSlot.Time')">
-                                            <div class="time-text">@timeSlot.Time</div>
-                                            <div class="room-text">@timeSlot.Room</div>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
 
-            <!-- PHẦN 3: QUICK BOOKING SECTION -->
-            <div class="booking-section">
-                <div class="section-container">
-                    <h2 class="section-title">
-                        <i class="fas fa-ticket-alt"></i>
-                        Đặt Vé Nhanh
-                    </h2>
 
-                    <div class="booking-content">
-                        <form class="booking-form" id="quickBookingForm">
-                            <!-- 1. Chọn rạp (Fixed) -->
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    1. Chọn rạp
-                                </label>
-                                <select class="form-select" disabled>
-                                    <option>FPT Software Cinema</option>
-                                </select>
+
+
+
+
+                                {
+                                                <div class="credit-item">
+                                                    <span class="credit-label">Đạo diễn:</span>
+                                                    <span class="credit-value">@movieData.Director</span>
+                                                </div>
+                                }
+                                @if (actorsList.Any())
+
+
+
+
+
+
+
+                                {
+                                                <div class="credit-item">
+                                                    <span class="credit-label">Diễn viên:</span>
+                                                    <span class="credit-value">@string.Join(", ", actorsList.Take(3))</span>
+                                                </div>
+                                }
                             </div>
 
-                            <!-- 2. Chọn phim (Auto-selected) -->
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-film"></i>
-                                    2. Chọn phim
-                                </label>
-                                <select class="form-select" disabled>
-                                    <option>@(movieData?.Title ?? "Phim hiện tại")</option>
-                                </select>
+                            <div class="synopsis">
+                                <p>@(movieData?.Content ?? "Thông tin chi tiết về phim sẽ được cập nhật sớm.")</p>
                             </div>
 
-                            <!-- 3. Chọn ngày -->
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-calendar"></i>
-                                    3. Chọn ngày
-                                </label>
-                                <select class="form-select" id="dateSelect" onchange="updateTimeSlots()">
-                                    <option value="">-- Chọn ngày chiếu --</option>
-                                    @foreach (var day in mockShowtimes)
-                                    {
-                                        var dayData = (dynamic)day;
-                                        <option value="@dayData.Date.ToString("yyyy-MM-dd")">
-                                            @if (dayData.Date.Date == DateTime.Now.Date)
-                                            {
-                                                <text>Hôm nay (@dayData.Date.ToString("dd/MM"))</text>
-                                            }
-                                            else if (dayData.Date.Date == DateTime.Now.AddDays(1).Date)
-                                            {
-                                                <text>Ngày mai (@dayData.Date.ToString("dd/MM"))</text>
-                    }
-                    else
-                    {
-                                                <text>@dayData.Date.ToString("dddd, dd/MM/yyyy")</text>
-                                            }
-                                        </option>
-                                    }
-                                </select>
+                            <div class="social-links">
+                                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="social-link"><i class="fas fa-share-alt"></i></a>
                             </div>
-
-                            <!-- 4. Chọn suất -->
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-clock"></i>
-                                    4. Chọn suất
-                                </label>
-                                <select class="form-select" id="timeSelect" disabled>
-                                    <option>-- Chọn ngày trước --</option>
-                                </select>
-                            </div>
-
-                            <!-- Nút Đặt ngay -->
-                            <button type="button" class="btn-book" id="bookButton" onclick="quickBook()" disabled>
-                                <i class="fas fa-ticket-alt"></i>
-                                Đặt Ngay
-                            </button>
-                        </form>
                         </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- RIGHT SIDEBAR - More Ads/Content -->
-        <div class="details-sidebar details-sidebar-right">
-            <div class="ad-banner vertical-ad">
-                <div class="ad-content">
-                    <div class="ad-header">
-                        <i class="fas fa-crown"></i>
-                        <span>Membership Elite</span>
                     </div>
-                    <div class="ad-body">
-                        <h4>CinemaCard Gold</h4>
-                        <p>Ưu đãi độc quyền & tích điểm x2</p>
-                        <button class="ad-btn" onclick="window.open('/account/register', '_blank')">Đăng Ký VIP</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ad-banner vertical-ad">
-                <div class="ad-content">
-                    <div class="ad-header">
-                        <i class="fas fa-fire"></i>
-                        <span>Event Hot</span>
-                    </div>
-                    <div class="ad-body">
-                        <h4>Lễ Hội Điện Ảnh</h4>
-                        <p>Những bộ phim bom tấn mới nhất</p>
-                        <button class="ad-btn" onclick="window.open('/events', '_blank')">Khám Phá</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ad-banner vertical-ad">
-                <div class="ad-content">
-                    <div class="ad-header">
-                        <i class="fas fa-mobile-alt"></i>
-                        <span>Cinema App</span>
-                    </div>
-                    <div class="ad-body">
-                        <h4>Download App</h4>
-                        <p>Đặt vé nhanh chóng, tiện lợi</p>
-                        <button class="ad-btn" onclick="alert('App sẽ ra mắt sớm!')">Tải Ngay</button>
+
+                    <div class="col-lg-4">
+                        <div class="poster-container">
+                            <div class="poster-wrapper">
+                                <img src="@(backgroundImage ?? "https://via.placeholder.com/300x450/333/fff?text=Movie+Poster")" 
+                                     alt="@(movieData?.Title ?? "Movie Poster")" 
+                                     class="poster-image"
+                                     onerror="this.src='https://via.placeholder.com/300x450/333/fff?text=Movie+Poster'">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<!-- Trailer Modal -->
-<div class="trailer-modal" id="trailerModal">
-    <div class="trailer-content">
-        <button class="close-trailer" onclick="closeTrailer()">
-            <i class="fas fa-times"></i>
-        </button>
-        <iframe class="trailer-iframe" id="trailerIframe" src="" frameborder="0" allowfullscreen></iframe>
-    </div>
-</div>
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <div class="row">
+                <!-- Main Showtimes -->
+                <div class="col-lg-8">
+                    <div class="showtimes-header">
+                        <h2>Lịch chiếu phim</h2>
+                        <div class="date-selector">
+                            <button class="date-btn active">Hôm nay<br><span>@DateTime.Now.ToString("dd/MM")</span></button>
+                            <button class="date-btn">Ngày mai<br><span>@DateTime.Now.AddDays(1).ToString("dd/MM")</span></button>
+                            <button class="date-btn">Thứ 7<br><span>@DateTime.Now.AddDays(2).ToString("dd/MM")</span></button>
+                            <button class="date-btn">Chủ nhật<br><span>@DateTime.Now.AddDays(3).ToString("dd/MM")</span></button>
+                        </div>
+                    </div>
 
-@section Scripts {
+                    <!-- Cinema Showtimes -->
+                    <div class="cinema-showtimes">
+                        <!-- CGV Vincom -->
+                        <div class="cinema-item">
+                            <div class="cinema-info">
+                                <h3 class="cinema-name">CGV Vincom Center</h3>
+                                <p class="cinema-address">191 Bà Triệu, Hai Bà Trưng, Hà Nội</p>
+                                <span class="distance">2.5km</span>
+                            </div>
+                            <div class="showtimes-list">
+                                <div class="format-group">
+                                    <span class="format-label">2D Phụ đề</span>
+                                    <div class="time-slots">
+                                        <button class="time-slot">09:30</button>
+                                        <button class="time-slot">12:15</button>
+                                        <button class="time-slot">15:00</button>
+                                        <button class="time-slot">17:45</button>
+                                        <button class="time-slot">20:30</button>
+                                        <button class="time-slot">23:15</button>
+                                    </div>
+                                </div>
+                                <div class="format-group">
+                                    <span class="format-label">IMAX</span>
+                                    <div class="time-slots">
+                                        <button class="time-slot premium">10:00</button>
+                                        <button class="time-slot premium">13:30</button>
+                                        <button class="time-slot premium">19:00</button>
+                                        <button class="time-slot premium">22:00</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lotte Cinema -->
+                        <div class="cinema-item">
+                            <div class="cinema-info">
+                                <h3 class="cinema-name">Lotte Cinema Landmark</h3>
+                                <p class="cinema-address">E6 Cầu Giấy, Cầu Giấy, Hà Nội</p>
+                                <span class="distance">3.2km</span>
+                            </div>
+                            <div class="showtimes-list">
+                                <div class="format-group">
+                                    <span class="format-label">2D Phụ đề</span>
+                                    <div class="time-slots">
+                                        <button class="time-slot">08:45</button>
+                                        <button class="time-slot">11:30</button>
+                                        <button class="time-slot">14:15</button>
+                                        <button class="time-slot">17:00</button>
+                                        <button class="time-slot">19:45</button>
+                                        <button class="time-slot">22:30</button>
+                                    </div>
+                                </div>
+                                <div class="format-group">
+                                    <span class="format-label">4DX</span>
+                                    <div class="time-slots">
+                                        <button class="time-slot premium">12:00</button>
+                                        <button class="time-slot premium">18:30</button>
+                                        <button class="time-slot premium">21:15</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar (Thu gọn) -->
+                <div class="col-lg-4">
+                    <!-- Trailer Section -->
+                    <div class="sidebar-section">
+                        <div class="trailer-container">
+                            @if (!string.IsNullOrEmpty(embedTrailerUrl))
+
+
+
+
+
+
+
+                            {
+                                            <div class="trailer-video">
+                                                <iframe src="@embedTrailerUrl" 
+                                                         frameborder="0" 
+                                                         allowfullscreen
+                                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                         class="trailer-iframe"></iframe>
+                                            </div>
+                            }
+
+
+
+
+
+
+
+                            else
+
+
+
+
+
+
+
+                            {
+                                            <div class="trailer-thumbnail">
+                                                <img src="@(backgroundImage ?? "https://via.placeholder.com/400x225/333/fff?text=No+Trailer")" alt="@(movieData?.Title ?? "Movie") Trailer" />
+                                                <button class="play-trailer" onclick="playTrailer()">
+                                                    <i class="fas fa-play"></i>
+                                                    <span>Play trailer</span>
+                                                </button>
+                                            </div>
+                            }
+                            <div class="trailer-info">
+                                <p class="trailer-label">Official Trailer</p>
+                                <p class="trailer-count">1 of 5</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Info -->
+                    <div class="sidebar-section">
+                        <h3>Thông tin nhanh</h3>
+                        <div class="quick-info">
+                            @if (hasValidData && movieData?.RunningTime > 0)
+
+
+
+
+
+
+
+                            {
+                                            <div class="info-item">
+                                                <span class="info-label">Thời lượng:</span>
+                                                <span class="info-value">@movieData.RunningTime phút</span>
+                                            </div>
+                            }
+                            @if (hasValidData && movieData != null)
+
+
+
+
+
+
+
+                            {
+                                            <div class="info-item">
+                                                <span class="info-label">Khởi chiếu:</span>
+                                                <span class="info-value">@movieData.ReleaseDate.ToString("dd/MM/yyyy")</span>
+                                            </div>
+                            }
+                            @if (hasValidData && movieData.Genres?.Any() == true)
+
+
+
+
+
+
+
+                            {
+                                            <div class="info-item">
+                                                <span class="info-label">Thể loại:</span>
+                                                <span class="info-value">@string.Join(", ", movieData.Genres.Select(g => g.Name))</span>
+                                            </div>
+                            }
+                            @if (hasValidData && !string.IsNullOrEmpty(movieData?.ProductionCompany))
+
+
+
+
+
+
+
+                            {
+                                            <div class="info-item">
+                                                <span class="info-label">Nhà sản xuất:</span>
+                                                <span class="info-value">@movieData.ProductionCompany</span>
+                                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- User Ratings (Thu gọn) -->
+                    <div class="sidebar-section">
+                        <h3>Đánh giá</h3>
+                        <div class="rating-summary-compact">
+                            <div class="rating-score">
+                                <span class="score">@((movieData?.Rating)?.ToString("F1") ?? "4.7")</span>
+                                <div class="rating-stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                            <p class="rating-count">424,562 đánh giá</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/js/movie-details-mostly.js" asp-append-version="true"></script>
     <script>
-        // Mock showtime data for JavaScript
-        const mockShowtimeData = @Html.Raw(Json.Serialize(mockShowtimesForJs));
-
-        // Global variables
-        let selectedDate = '';
-        let selectedTime = '';
-        let selectedRoom = '';
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Enable date selection
-            document.getElementById('dateSelect').disabled = false;
-        });
-
-        // Select time slot from showtime section
-        function selectTimeSlot(element, date, time) {
-            // Remove previous selections
-            document.querySelectorAll('.time-slot').forEach(slot => {
-                slot.classList.remove('selected');
-            });
-            
-            // Select current slot
-            element.classList.add('selected');
-            
-            // Update form
-            const dateSelect = document.getElementById('dateSelect');
-            const timeSelect = document.getElementById('timeSelect');
-            
-            dateSelect.value = date;
-            selectedDate = date;
-            updateTimeSlots();
-            
-            // Auto select time
-            setTimeout(() => {
-                timeSelect.value = time;
-                selectedTime = time;
-                updateBookButton();
-            }, 100);
-        }
-
-        // Update time slots based on selected date
-        function updateTimeSlots() {
-            const dateSelect = document.getElementById('dateSelect');
-            const timeSelect = document.getElementById('timeSelect');
-            const selectedDate = dateSelect.value;
-
-            if (!selectedDate) {
-                timeSelect.innerHTML = '<option>-- Chọn ngày trước --</option>';
-                timeSelect.disabled = true;
-                updateBookButton();
-                return;
-            }
-
-            // Find times for selected date
-            const dayData = mockShowtimeData.find(day => day.date === selectedDate);
-            
-            if (dayData) {
-                timeSelect.innerHTML = '<option value="">-- Chọn suất chiếu --</option>';
-                dayData.times.forEach(timeSlot => {
-                    const option = document.createElement('option');
-                    option.value = timeSlot.time;
-                    option.textContent = `${timeSlot.time} - ${timeSlot.room}`;
-                    timeSelect.appendChild(option);
-                });
-                timeSelect.disabled = false;
-            }
-
-            updateBookButton();
-        }
-
-        // Update book button state
-        function updateBookButton() {
-            const dateSelect = document.getElementById('dateSelect');
-            const timeSelect = document.getElementById('timeSelect');
-            const bookButton = document.getElementById('bookButton');
-
-            const hasDate = dateSelect.value !== '';
-            const hasTime = timeSelect.value !== '';
-
-            bookButton.disabled = !hasDate || !hasTime;
-        }
-
-        // Handle time selection change
-        document.getElementById('timeSelect').addEventListener('change', function() {
-            selectedTime = this.value;
-            updateBookButton();
-        });
-
-        // Quick booking function
-        function quickBook() {
-            const dateSelect = document.getElementById('dateSelect');
-            const timeSelect = document.getElementById('timeSelect');
-
-            if (!dateSelect.value || !timeSelect.value) {
-                alert('Vui lòng chọn ngày và suất chiếu!');
-                return;
-            }
-
-            // Check if user is logged in
-            const isLoggedIn = @Json.Serialize(User.Identity?.IsAuthenticated == true);
-            
-            if (!isLoggedIn) {
-                if (confirm('Bạn cần đăng nhập để đặt vé. Chuyển đến trang đăng nhập?')) {
-                    window.location.href = '@Url.Action("Login", "Account")?returnUrl=' + encodeURIComponent(window.location.href);
-                }
-                return;
-            }
-
-            // Get selected data
-            const selectedData = {
-                movieId: '@(movieData?.Id ?? "")',
-                movieTitle: '@(movieData?.Title ?? "")',
-                cinema: 'FPT Software Cinema',
-                date: dateSelect.value,
-                time: timeSelect.value,
-                timeText: timeSelect.options[timeSelect.selectedIndex].text
-            };
-
-            // Show confirmation
-            const message = `Đặt vé cho:\n• Phim: ${selectedData.movieTitle}\n• Rạp: ${selectedData.cinema}\n• Ngày: ${selectedData.date}\n• Suất: ${selectedData.timeText}\n\nTiếp tục đến trang chọn ghế?`;
-            
-            if (confirm(message)) {
-                // Redirect to seat selection page (you'll need to implement this route)
-                window.location.href = `/booking/seat-selection?movieId=${selectedData.movieId}&date=${selectedData.date}&time=${selectedData.time}`;
+        function openTrailer(url) {
+            if (url) {
+                window.open(url, '_blank');
             }
         }
 
-        // Scroll to booking section
-        function scrollToBooking() {
-            document.querySelector('.booking-section').scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'center'
-            });
+        function playTrailer() {
+            // Implement trailer play functionality
+            console.log('Play trailer clicked');
         }
-
-        // Trailer functions
-        function openTrailer(trailerUrl) {
-            const modal = document.getElementById('trailerModal');
-            const iframe = document.getElementById('trailerIframe');
-            
-            // Convert different URL formats to embeddable format
-            let embedUrl = trailerUrl;
-            
-            // Handle YouTube URLs
-            if (trailerUrl.includes('youtube.com/watch')) {
-                const videoId = trailerUrl.split('v=')[1]?.split('&')[0];
-                embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-            } else if (trailerUrl.includes('youtu.be/')) {
-                const videoId = trailerUrl.split('youtu.be/')[1]?.split('?')[0];
-                embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-            }
-            // Cloudinary URLs should work as-is
-            
-            iframe.src = embedUrl;
-            modal.classList.add('show');
-            
-            // Prevent body scroll
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeTrailer() {
-            const modal = document.getElementById('trailerModal');
-            const iframe = document.getElementById('trailerIframe');
-            
-            iframe.src = '';
-            modal.classList.remove('show');
-            
-            // Restore body scroll
-            document.body.style.overflow = 'auto';
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('trailerModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeTrailer();
-            }
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeTrailer();
-            }
-        });
-
-        // Search functionality
-        document.getElementById('searchButton').addEventListener('click', function() {
-            const searchInput = document.getElementById('movieSearchInput');
-            const query = searchInput.value.trim();
-            
-            if (query) {
-                window.location.href = `@Url.Action("SearchResults", "Movies")?query=${encodeURIComponent(query)}`;
-            }
-        });
-
-        document.getElementById('movieSearchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('searchButton').click();
-            }
-        });
     </script>
-}
+</body>
+</html>

@@ -85,20 +85,20 @@ namespace UI.Areas.BookingManagement.Models
         public decimal PricePerTicket { get; set; }
         public decimal TotalPrice { get; set; }
         public int TotalSeats { get; set; }
-        
+
         // Customer Info (từ User hiện tại)
         public string CustomerName { get; set; } = string.Empty;
         public string CustomerPhone { get; set; } = string.Empty;
         public string CustomerEmail { get; set; } = string.Empty;
         public string CustomerIdCard { get; set; } = string.Empty;
-        
+
         // Points/Promotion
         public int AvailablePoints { get; set; }
         public bool UsePoints { get; set; } = false;
         public int PointsToUse { get; set; } = 0;
         public decimal DiscountFromPoints { get; set; } = 0;
         public decimal FinalPrice { get; set; }
-        
+
         [Display(Name = "Ghi chú")]
         public string? Notes { get; set; }
     }
@@ -117,17 +117,17 @@ namespace UI.Areas.BookingManagement.Models
         public decimal TotalPrice { get; set; }
         public DateTime BookingTime { get; set; }
         public BookingStatus Status { get; set; }
-        
+
         // Customer Info
         public string CustomerName { get; set; } = string.Empty;
         public string CustomerPhone { get; set; } = string.Empty;
         public string CustomerEmail { get; set; } = string.Empty;
-        
+
         // Points Used
         public int PointsUsed { get; set; }
         public decimal PointsDiscount { get; set; }
         public int PointsEarned { get; set; }
-        
+
         public string? Notes { get; set; }
     }
 
@@ -156,4 +156,4 @@ namespace UI.Areas.BookingManagement.Models
         public int TotalResults { get; set; }
         public bool HasSearched { get; set; } = false;
     }
-} 
+}

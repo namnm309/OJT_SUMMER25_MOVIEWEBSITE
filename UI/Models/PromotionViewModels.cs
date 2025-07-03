@@ -4,7 +4,7 @@ namespace UI.Models
 {
     public class PromotionViewModel
     {
-        public string? Id { get; set; }
+        public string Id { get; set; }
 
         [Required(ErrorMessage = "Vui l?ng nh?p tên khuy?n m?i")]
         public string Title { get; set; }
@@ -21,6 +21,6 @@ namespace UI.Models
 
         public string Description { get; set; }
 
-        public string? ImageUrl { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

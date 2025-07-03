@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 namespace UI.Areas.MovieManagement.Controllers
 {
     [Area("MovieManagement")]
-    [Authorize(Roles = "Admin,Staff")] // Chỉ Admin và Staff mới được quản lý phim
+    [Authorize(Roles = "Admin,Staff")] 
     public class MoviesController : Controller
     {
         private readonly IApiService _apiService;
@@ -23,21 +23,21 @@ namespace UI.Areas.MovieManagement.Controllers
             _imageService = imageService;
         }
 
-        // Action để hiển thị trang quản lý phim
+        
         public async Task<IActionResult> Index(string? searchTerm, Guid? genreId, string? status)
         {
             ViewData["Title"] = "Quản lý phim";
 
             try
             {
-                // Get movies data
+                // Gọi API để lấy danh sách phim và thể loại từ backend
                 var moviesResult = await _apiService.GetAsync<JsonElement>("/api/v1/movie/View");
                 var genresResult = await _apiService.GetAsync<JsonElement>("/api/v1/movie/ViewGenre");
 
                 var movieDisplayList = new List<UI.Areas.MovieManagement.Models.MovieDisplayViewModel>();
                 var genresList = new List<UI.Areas.MovieManagement.Models.GenreViewModel>();
 
-                // Map movies data
+                // Xử lý dữ liệu phim trả về từ API
                 if (moviesResult.Success && moviesResult.Data.ValueKind != JsonValueKind.Undefined)
                 {
                     if (moviesResult.Data.TryGetProperty("data", out var dataProp))
@@ -78,7 +78,7 @@ namespace UI.Areas.MovieManagement.Controllers
                     }
                 }
 
-                // Map genres data
+                // Xử lý dữ liệu thể loại phim
                 if (genresResult.Success && genresResult.Data.ValueKind != JsonValueKind.Undefined)
                 {
                     if (genresResult.Data.TryGetProperty("data", out var genresDataProp))
@@ -107,7 +107,7 @@ namespace UI.Areas.MovieManagement.Controllers
                     }
                 }
 
-                // Apply filters
+                // Áp dụng các bộ lọc tìm kiếm
                 if (!string.IsNullOrEmpty(searchTerm))
                 {
                     movieDisplayList = movieDisplayList
@@ -129,7 +129,7 @@ namespace UI.Areas.MovieManagement.Controllers
                         .ToList();
                 }
 
-                // Create the final view model
+                // Tạo ViewModel cuối cùng để trả về cho View
                 var viewModel = new UI.Areas.MovieManagement.Models.MovieIndexViewModel
                 {
                     Movies = movieDisplayList,
@@ -150,7 +150,7 @@ namespace UI.Areas.MovieManagement.Controllers
                 _logger.LogError(ex, "Lỗi khi lấy danh sách phim");
                 TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tải danh sách phim";
                 
-                // Return empty view model on error
+                // Nếu có lỗi thì trả về ViewModel rỗng
                 var emptyViewModel = new UI.Areas.MovieManagement.Models.MovieIndexViewModel
                 {
                     Movies = new List<UI.Areas.MovieManagement.Models.MovieDisplayViewModel>(),
@@ -169,7 +169,6 @@ namespace UI.Areas.MovieManagement.Controllers
         {
             ViewData["Title"] = "Thêm phim mới";
             
-            // Get API base URL from configuration
             var configuration = HttpContext.RequestServices.GetRequiredService<IConfiguration>();
             ViewBag.ApiBaseUrl = configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5274";
             
@@ -184,7 +183,7 @@ namespace UI.Areas.MovieManagement.Controllers
                 
             try
             {
-                // Chuyển đổi từ MovieCreateViewModel sang MovieCreateDto
+                // Chuyển đổi dữ liệu từ form thành định dạng mà API có thể hiểu
                 var movieDto = new
                 {
                     Title = model.Title,
@@ -196,14 +195,14 @@ namespace UI.Areas.MovieManagement.Controllers
                     RunningTime = model.RunningTime,
                     Version = model.Version switch 
                     {
-                        "2D" => 1,    // TwoD = 1
-                        "3D" => 2,    // ThreeD = 2
-                        "4DX" => 3,   // FourDX = 3
-                        _ => 1        // Default to 2D
+                        "2D" => 1,    // Phim 2D thường
+                        "3D" => 2,    // Phim 3D
+                        "4DX" => 3,   // Phim 4DX có hiệu ứng đặc biệt
+                        _ => 1        // Mặc định là 2D
                     },
                     TrailerUrl = model.TrailerUrl,
                     Content = model.Content,
-                    GenreIds = model.GenreIds, // Sử dụng GenreIds từ form
+                    GenreIds = model.GenreIds, // Danh sách ID thể loại được chọn từ form
                     ShowTimes = model.ShowTimes?.Select(st => new {
                         RoomId = st.RoomId,
                         ShowDate = st.ShowDate
@@ -319,7 +318,7 @@ namespace UI.Areas.MovieManagement.Controllers
                 {
                     if (result.Data.TryGetProperty("data", out var dataProp))
                     {
-
+                        // Chuyển đổi dữ liệu JSON thành object để trả về cho frontend
                         var rawData = JsonSerializer.Deserialize<object>(dataProp.GetRawText());
                         return Json(new { success = true, data = rawData });
                     }
@@ -382,10 +381,10 @@ namespace UI.Areas.MovieManagement.Controllers
                 
                 string apiUrl = $"/api/v1/movie/ViewPagination?Page={page}&PageSize={pageSize}";
                 
-                // Add search term if provided
+                // Thêm từ khóa tìm kiếm vào URL nếu có
                 if (!string.IsNullOrEmpty(searchTerm))
                 {
-                    // Encode search term for URL
+                    // Mã hóa từ khóa tìm kiếm để tránh lỗi URL
                     apiUrl += $"&searchTerm={Uri.EscapeDataString(searchTerm)}";
                 }
                 
@@ -393,15 +392,15 @@ namespace UI.Areas.MovieManagement.Controllers
 
                 if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
-                    // Parse response - có thể là nested trong data property
+                    // Phân tích response từ API - có thể có cấu trúc lồng nhau
                     JsonElement dataElement = result.Data;
                     
-                    // Kiểm tra xem có property "data" không
+                    // Kiểm tra xem có thuộc tính "data" trong response không
                     if (result.Data.TryGetProperty("data", out var outerDataProp))
                     {
                         dataElement = outerDataProp;
                         
-                        // Nếu có cấu trúc phân trang đầy đủ, trả về nguyên dạng để FE xử lý
+                        // Nếu đã có cấu trúc phân trang đầy đủ thì trả về luôn
                         if (dataElement.TryGetProperty("data", out var _) && 
                             dataElement.TryGetProperty("total", out var _) && 
                             dataElement.TryGetProperty("page", out var _) && 
@@ -410,13 +409,13 @@ namespace UI.Areas.MovieManagement.Controllers
                             return Json(new { success = true, data = dataElement });
                         }
                         
-                        // Kiểm tra xem có property "data" trong level tiếp theo không
+                        // Kiểm tra cấu trúc dữ liệu sâu hơn một cấp
                         if (dataElement.TryGetProperty("data", out var innerDataProp))
                         {
                             var movies = new List<object>();
                             int totalItems = 0;
                             
-                            // Kiểm tra nếu có property "total" để lấy tổng số phim
+                            // Lấy tổng số phim nếu có thông tin này
                             if (dataElement.TryGetProperty("total", out var totalProp))
                             {
                                 totalItems = totalProp.GetInt32();
@@ -433,14 +432,14 @@ namespace UI.Areas.MovieManagement.Controllers
                                     }
                                 }
                                 
-                                // Nếu không có thông tin tổng số phim, lấy từ số lượng kết quả
+                                // Nếu API không trả về tổng số thì dùng số lượng hiện tại
                                 if (totalItems == 0)
                                 {
                                     totalItems = movies.Count;
                                 }
                             }
 
-                            // Trả về đúng cấu trúc phân trang
+                            // Tạo cấu trúc phân trang chuẩn để trả về
                             return Json(new { 
                                 success = true, 
                                 data = new { 
@@ -453,7 +452,7 @@ namespace UI.Areas.MovieManagement.Controllers
                         }
                     }
                     
-                    // Trường hợp data là array trực tiếp
+                    // Trường hợp dữ liệu là mảng phim trực tiếp
                     if (dataElement.ValueKind == JsonValueKind.Array)
                     {
                         var movies = new List<object>();
@@ -467,7 +466,7 @@ namespace UI.Areas.MovieManagement.Controllers
                             }
                         }
 
-                        // Trả về cấu trúc phân trang tạo mới
+                        // Tạo mới cấu trúc phân trang vì API không có
                         return Json(new { 
                             success = true, 
                             data = new { 
@@ -523,7 +522,7 @@ namespace UI.Areas.MovieManagement.Controllers
 
         private string GetJsonProperty(JsonElement element, string propertyName)
         {
-            // Try lowercase first, then original case
+            // Thử tìm theo các cách viết khác nhau (lowercase, camelCase, PascalCase)
             if (element.TryGetProperty(propertyName.ToLower(), out var prop) ||
                 element.TryGetProperty(propertyName, out prop) ||
                 element.TryGetProperty(char.ToUpper(propertyName[0]) + propertyName.Substring(1), out prop))
@@ -577,7 +576,7 @@ namespace UI.Areas.MovieManagement.Controllers
 
         private string GetPosterUrl(JsonElement movieElement)
         {
-            // Try to get primary image URL
+            // Ưu tiên lấy ảnh chính của phim
             if (movieElement.TryGetProperty("primaryImageUrl", out var primaryProp) ||
                 movieElement.TryGetProperty("PrimaryImageUrl", out primaryProp))
             {
@@ -585,7 +584,7 @@ namespace UI.Areas.MovieManagement.Controllers
                 if (!string.IsNullOrEmpty(url)) return url;
             }
 
-            // Try to get images array and find primary
+            // Tìm trong danh sách ảnh và ưu tiên ảnh được đánh dấu là chính
             if (movieElement.TryGetProperty("images", out var imagesProp) ||
                 movieElement.TryGetProperty("Images", out imagesProp))
             {
@@ -600,7 +599,7 @@ namespace UI.Areas.MovieManagement.Controllers
                         }
                     }
                     
-                    // Get first image if no primary found
+                    // Nếu không có ảnh chính thì lấy ảnh đầu tiên
                     if (imagesProp.GetArrayLength() > 0)
                     {
                         var firstImg = imagesProp.EnumerateArray().First();

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using UI.Areas.BookingManagement.Services; // Service quản lý đặt vé
 using UI.Models; // Model dữ liệu UI
 using System.Linq; // Hỗ trợ LINQ
@@ -54,9 +54,16 @@ namespace UI.Controllers
                 var datesResult = await _bookingService.GetShowDatesAsync(movieId);
                 if (datesResult.Success && datesResult.Data != null)
                 {
-                    // Format dates to "yyyy-MM-dd" for input type="date" compatibility
-                    var formattedDates = datesResult.Data.Select(d => d.ToString("yyyy-MM-dd")).ToList();
-                    return Json(new { success = true, dates = formattedDates });
+                    var dates = datesResult.Data as IEnumerable<DateTime>;
+                    if (dates != null)
+                    {
+                        var formattedDates = dates.Select(d => d.ToString("yyyy-MM-dd")).ToList();
+                        return Json(new { success = true, dates = formattedDates });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Dữ liệu ngày chiếu không hợp lệ." });
+                    }
                 }
                 return Json(new { success = false, message = datesResult.Message ?? "Không thể tải ngày chiếu." });
             }

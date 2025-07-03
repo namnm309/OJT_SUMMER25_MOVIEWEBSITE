@@ -45,6 +45,7 @@ body {
     display: flex;
     background: var(--dark-bg);
     padding-top: 80px; /* Tính cho header cố định */
+    flex-direction: column; /* Thêm để đảm bảo footer nằm dưới cùng */
 }
 
 /* Sidebar */
@@ -409,6 +410,13 @@ body {
     width: 100%;
 }
 
+/* Footer Styles */
+.cinema-footer {
+    margin-top: auto; /* Đảm bảo footer luôn ở cuối */
+    width: 100%;
+    z-index: 100;
+}
+
 /* Sidebar responsive */
 
 .sidebar-toggle {
@@ -454,6 +462,11 @@ body {
     
     .dashboard-main {
         margin-left: 0;
+    }
+    
+    .cinema-footer {
+        margin-left: 0;
+        width: 100%;
     }
     
     .sidebar-toggle {

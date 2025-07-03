@@ -27,9 +27,10 @@ namespace UI.Services
             {
                 try
                 {
-            Account account = new Account(cloudName, apiKey, apiSecret);
-            _cloudinary = new Cloudinary(account);
-        }
+                    Account account = new Account(cloudName, apiKey, apiSecret);
+                    _cloudinary = new Cloudinary(account);
+                    _logger.LogInformation("✅ Cloudinary configured successfully");
+                }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "❌ Failed to initialize Cloudinary - falling back to mock mode");

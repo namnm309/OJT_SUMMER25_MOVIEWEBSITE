@@ -1,4 +1,4 @@
-﻿@model UI.Models.SeatSelectionViewModel
+@model UI.Models.SeatSelectionViewModel
 @{
     ViewBag.Title = "Chọn Ghế";
 }
@@ -491,31 +491,325 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-               $(document).ready(function () {
+        $(document).ready(function () {
             var selectedSeats = [];
             var requiredSeats = parseInt($('#seatQuantity').val());
+            
+            // Load movie and showtime details from API
+            loadMovieAndShowtimeDetails();
+            
+            // Function to load movie and showtime details
+            function loadMovieAndShowtimeDetails() {
+                var showtimeId = $('#showtimeId').val();
+                console.log('Loading details for showtimeId:', showtimeId);
+                
+                // First, get showtime details
+                $.ajax({
+                    url: `https://localhost:7049/api/v1/booking-ticket/${showtimeId}/details`,
+                    success: function(response) {
+                        console.log('Showtime API response:', response);
+                        
+                        if (response && response.data) {
+                            var showtimeData = response.data;
+                            
+                            // Update showtime info
+                            if (showtimeData.showDate) {
+                                var showDate = new Date(showtimeData.showDate);
+                                $('.movie-meta p:contains("Ngày chiếu")').html(`<i class="fas fa-calendar-day"></i> Ngày chiếu: ${showDate.toLocaleDateString('vi-VN')}`);
+                            }
+                            
+                            // Get movie details if movieId is available
+                            if (showtimeData.movieId) {
+                                loadMovieDetails(showtimeData.movieId);
+                            }
+                        }
+                    },
+                    // Dòng 544 - Sửa error handler
+                    error: function(xhr, status, error) {
+                        console.error('Error loading showtime details:', {
+                            status: xhr.status,
+                            statusText: xhr.statusText,
+                            responseText: xhr.responseText,
+                            error: error,
+                            url: `https://localhost:7049/api/v1/booking-ticket/${showtimeId}/details`  // Sửa từ 7069 → 7049
+                        });
+                    }
+                
+                    // Dòng 554 - Sửa loadMovieDetails function
+                    function loadMovieDetails(movieId) {
+                        console.log('Loading movie details for movieId:', movieId);
+                        
+                        $.ajax({
+                            url: `https://localhost:7049/api/v1/movie/GetById?movieId=${movieId}`,  // Sửa từ 7069 → 7049
+                            type: 'GET',
+                            success: function(response) {
+                                console.log('Movie API response:', response);
+                                
+                                if (response && response.data) {
+                                    var movieData = response.data;
+                                    
+                                    // Update movie info
+                                    if (movieData.title) {
+                                        $('.movie-title').text(movieData.title);
+                                    }
+                                    
+                                    if (movieData.posterUrl) {
+                                        $('.movie-poster').attr('src', movieData.posterUrl);
+                                    }
+                                    
+                                    if (movieData.description) {
+                                        $('.movie-description').text(movieData.description);
+                                    }
+                                    
+                                    if (movieData.duration) {
+                                        $('.badge-genre:contains("phút")').text(`${movieData.duration} phút`);
+                                    }
+                                    
+                                    if (movieData.director && movieData.director.length > 0) {
+                                        var directors = movieData.director.join(', ');
+                                        if ($('.movie-meta p:contains("Đạo diễn")').length === 0) {
+                                            $('.movie-meta').append(`<p><i class="fas fa-user-tie"></i> Đạo diễn: ${directors}</p>`);
+                                        } else {
+                                            $('.movie-meta p:contains("Đạo diễn")').html(`<i class="fas fa-user-tie"></i> Đạo diễn: ${directors}`);
+                                        }
+                                    }
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error loading movie details:', error);
+                            }
+                        });
+                    }
+                    
+                    // Call updateSelectionDisplay and validateSelection on page load
+                    updateSelectionDisplay();
+                    validateSelection();
+                    
+                    // Update required seats when dropdown changes
+                    $('#seatQuantity').change(function() {
+                        requiredSeats = parseInt($(this).val());
+                        $('#requiredSeatsCount').text(requiredSeats);
+                        // Clear selected seats if the new required quantity is less than currently selected
+                                if (selectedSeats.length > requiredSeats) {
+                        // Deselect excess seats
+                        for (let i = selectedSeats.length - 1; i >= requiredSeats; i--) {
+                            const seatToDeselect = selectedSeats[i];
+                            $(`.seat[data-seat-id="${seatToDeselect.id}"]`).removeClass('seat-selected');
+                            selectedSeats.splice(i, 1);
+                        }
+                    }
+                            updateSelectionDisplay();
+                            validateSelection();
+                        });
 
-            // Call updateSelectionDisplay and validateSelection on page load
-            updateSelectionDisplay();
-            validateSelection(); // This is crucial for initial state validation and button enablement
+                        // Seat click handler
+                        $('.seat-available').click(function() {
+                            if ($(this).data('disabled')) return;
 
-            // Update required seats when dropdown changes
-            $('#seatQuantity').change(function() {
-                requiredSeats = parseInt($(this).val());
-                $('#requiredSeatsCount').text(requiredSeats);
-                // Clear selected seats if the new required quantity is less than currently selected
-                        if (selectedSeats.length > requiredSeats) {
-            // Deselect excess seats
-            for (let i = selectedSeats.length - 1; i >= requiredSeats; i--) {
-                const seatToDeselect = selectedSeats[i];
-                $(`.seat[data-seat-id="${seatToDeselect.id}"]`).removeClass('seat-selected');
-                selectedSeats.splice(i, 1);
+                            var seatId = $(this).data('seat-id');
+                            var seatCode = $(this).data('seat-code');
+                            var seatType = $(this).data('seat-type');
+                            var seatPrice = $(this).data('seat-price');
+
+                            if ($(this).hasClass('seat-selected')) {
+                                // Deselect seat
+                                $(this).removeClass('seat-selected');
+                                selectedSeats = selectedSeats.filter(function(seat) {
+                                    return seat.id !== seatId;
+                                });
+                            } else {
+                                // Select seat
+                                if (selectedSeats.length < requiredSeats) {
+                                    $(this).addClass('seat-selected');
+                                    selectedSeats.push({
+                                        id: seatId,
+                                        code: seatCode,
+                                        type: seatType,
+                                        price: seatPrice
+                                    });
+                                } else {
+                                    alert(`Bạn chỉ được chọn tối đa ${requiredSeats} ghế.`);
+                                }
+                            }
+
+                            updateSelectionDisplay();
+                            validateSelection();
+                        });
+
+                        function updateSelectionDisplay() {
+                            $('#selectedSeatsCount').text(selectedSeats.length);
+                            $('#requiredSeatsCount').text(requiredSeats);
+
+                            // Update selected seats list
+                            var selectedSeatsHtml = '';
+                            selectedSeats.forEach(function(seat) {
+                                selectedSeatsHtml += `<span class="seat-badge">${seat.code}</span>`;
+                            });
+
+                            $('#selectedSeatsList').html(selectedSeatsHtml || '<span class="text-muted">Chưa chọn ghế nào</span>');
+
+                            // Calculate total price
+                            var totalPrice = 0;
+                            selectedSeats.forEach(function(seat) {
+                                totalPrice += parseFloat(seat.price);
+                            });
+
+                            $('#totalPrice').text(totalPrice.toLocaleString('vi-VN'));
+
+                            // Enable/disable continue button based on client-side count
+                            // This is a preliminary check. The validateSelection will do the final server-side check.
+                            var isClientSideValid = selectedSeats.length === requiredSeats;
+                            $('#continueBtn').prop('disabled', !isClientSideValid);
+
+                            console.log('Selected seats (Client-side):', selectedSeats.length, 'Required:', requiredSeats, 'Disabled:', !isClientSideValid);
+                        }
+
+                        // Validate the selection with server
+                        function validateSelection() {
+                            var showtimeId = $('#showtimeId').val();
+
+                         if (selectedSeats.length !== requiredSeats) {
+                         $('#validationMessage').text('Vui lòng chọn đầy đủ số lượng ghế.');
+                         $('#continueBtn').prop('disabled', true);
+                         return;
+                }
+
+                            // Only validate with server if client-side selection count matches required quantity
+                            // This prevents unnecessary server calls if the client-side count is already off.
+                            if (selectedSeats.length !== requiredSeats) {
+                                 $('#validationMessage').text('Vui lòng chọn đầy đủ số lượng ghế.');
+                                 $('#continueBtn').prop('disabled', true);
+                                 return;
+                            }
+
+
+                            $.ajax({
+                                url: '@Url.Action("ValidateSeats", "SelectSeat")',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify({
+                                    ShowtimeId: showtimeId,
+                                    SelectedSeatIds: selectedSeats.map(seat => seat.id),
+                                    SeatQuantity: requiredSeats
+                                }),
+                                success: function(response) {
+                                    if (response.success) {
+                                        if (response.isValid) {
+                                            $('#validationMessage').text('');
+                                            $('#continueBtn').prop('disabled', false);
+                                        } else {
+                                            $('#validationMessage').text(response.message);
+                                            $('#continueBtn').prop('disabled', true);
+
+                                            // Deselect invalid seats
+                                            if (response.invalidSeatIds) {
+                                                $('.seat-selected').each(function() {
+                                                    var seatId = $(this).data('seat-id');
+                                                    if (response.invalidSeatIds.includes(seatId)) {
+                                                        $(this).removeClass('seat-selected').addClass('seat-unavailable');
+                                                        $(this).data('disabled', true);
+                                                        selectedSeats = selectedSeats.filter(seat => seat.id !== seatId);
+                                                    }
+                                                });
+                                                updateSelectionDisplay(); // Re-render after deselecting invalid seats
+                                            }
+                                        }
+                                    } else {
+                                        $('#validationMessage').text(response.message);
+                                        $('#continueBtn').prop('disabled', true);
+                                    }
+                                },
+                                error: function() {
+                                    $('#validationMessage').text('Đã xảy ra lỗi khi xác thực ghế. Vui lòng thử lại.');
+                                    $('#continueBtn').prop('disabled', true);
+                                }
+                            });
+                        }
+
+                        // Continue button click handler
+                        $('#continueBtn').click(function() {
+                            var showtimeId = $('#showtimeId').val();
+
+                            // Prepare data to submit
+                            var bookingData = {
+                                ShowtimeId: showtimeId,
+                                SelectedSeatIds: selectedSeats.map(seat => seat.id),
+                                SeatQuantity: requiredSeats
+                            };
+
+                            // Hiển thị loading
+                            var $btn = $(this);
+                            $btn.prop('disabled', true);
+                            $btn.html('<i class="fas fa-spinner fa-spin mr-2"></i>ĐANG XỬ LÝ...');
+
+                            // Gọi API validate (như một lần xác nhận cuối cùng)
+                            $.ajax({
+                                url: '@Url.Action("ValidateSeats", "SelectSeat")', // Re-validate one last time
+                                type: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify(bookingData),
+                                success: function(response) {
+                                    if (response.success && response.isValid) {
+                                        // Assuming successful booking would redirect or show a final confirmation.
+                                        // For demonstration, just update UI and clear selection.
+                                        $('#validationMessage').removeClass('text-danger')
+                                                   .addClass('text-success')
+                                                   .text('Đặt ghế thành công! Chuyển hướng đến trang thanh toán...');
+
+                                        $btn.prop('disabled', false)
+                                            .addClass('btn-success-state') // Add a success visual state
+                                            .html('<i class="fas fa-check mr-2"></i>THÀNH CÔNG');
+
+                                        // Disable all selected seats visually and functionally
+                                        selectedSeats.forEach(function(seat) {
+                                            $(`.seat[data-seat-id="${seat.id}"]`)
+                                                .removeClass('seat-selected seat-available')
+                                                .addClass('seat-unavailable')
+                                                .data('disabled', true);
+                                        });
+
+                                        // Clear selected seats array
+                                        selectedSeats = [];
+                                        updateSelectionDisplay(); // Update display to show 0 selected seats
+
+                                        // Redirect after a short delay for user to see success message
+                                        // setTimeout(function() {
+                                        //     window.location.href = '@Url.Action("Payment", "Booking")'; // Example redirect
+                                        // }, 2000);
+
+                                    } else {
+                                        $('#validationMessage').removeClass('text-success')
+                                                   .addClass('text-danger')
+                                                   .text(response.message || 'Có lỗi xảy ra khi đặt ghế');
+                                        $btn.prop('disabled', false)
+                                            .removeClass('btn-success-state')
+                                            .html('<i class="fas fa-arrow-right mr-2"></i>TIẾP TỤC');
+                                        // Potentially re-enable invalid seats if server indicates
+                                        if (response.invalidSeatIds) {
+                                            response.invalidSeatIds.forEach(function(invalidId) {
+                                                $(`.seat[data-seat-id="${invalidId}"]`)
+                                                    .removeClass('seat-unavailable') // Remove unavailable if it became so due to server check
+                                                    .addClass('seat-available')      // Make it available again
+                                                    .data('disabled', false);
+                                            });
+                                        }
+                                        updateSelectionDisplay(); // Re-render to reflect changes
+                                    }
+                                },
+                                error: function() {
+                                    $('#validationMessage').removeClass('text-success')
+                                               .addClass('text-danger')
+                                               .text('Đã xảy ra lỗi khi đặt ghế. Vui lòng thử lại.');
+                                    $btn.prop('disabled', false)
+                                        .removeClass('btn-success-state')
+                                        .html('<i class="fas fa-arrow-right mr-2"></i>TIẾP TỤC');
+                                }
+                            });
+                        });
+                    });
+                });
             }
-        }
-                updateSelectionDisplay();
-                validateSelection();
-            });
-
+            
             // Seat click handler
             $('.seat-available').click(function() {
                 if ($(this).data('disabled')) return;

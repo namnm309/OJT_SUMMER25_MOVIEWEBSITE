@@ -60,7 +60,7 @@ namespace UI.Controllers
                     RunningTime = 180,
                     ReleaseDate = new DateTime(2023, 7, 21),
                     Rating = 8.4f,
-                    Status = 2, // Đang chiếu
+                    Status = 2, // NowShowing
                     IsFeatured = true, // Phim nổi bật
                     IsRecommended = true, // Phim đề xuất
                     Genres = new List<GenreViewModel> 
@@ -129,7 +129,7 @@ namespace UI.Controllers
                     RunningTime = 155,
                     ReleaseDate = new DateTime(2021, 10, 22),
                     Rating = 8.0f,
-                    Status = 1, // Sắp chiếu
+                    Status = 1, // ComingSoon - sắp chiếu
                     IsFeatured = true, // Phim nổi bật
                     IsRecommended = true, // Phim đề xuất
                     Genres = new List<GenreViewModel> 

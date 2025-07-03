@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization; // Thêm dòng này
 using UI.Areas.BookingManagement.Models;
 using UI.Areas.BookingManagement.Services;
+using UI.Services;
+using UI.Models;
 
 namespace UI.Areas.BookingManagement.Controllers
 {
@@ -12,21 +16,23 @@ namespace UI.Areas.BookingManagement.Controllers
     {
         private readonly IBookingManagementUIService _bookingService;
         private readonly ILogger<BookingController> _logger;
+        private readonly IApiService _apiService;
 
-        public BookingController(IBookingManagementUIService bookingService, ILogger<BookingController> logger)
+        public BookingController(IBookingManagementUIService bookingService, ILogger<BookingController> logger, IApiService apiService)
         {
             _bookingService = bookingService;
             _logger = logger;
+            _apiService = apiService;
         }
 
         // T7: Search Movies
         [HttpGet]
-        public IActionResult SearchMovies(string searchTerm = "")
+        public async Task<IActionResult> SearchMovies(string searchTerm = "")
         {
             ViewData["Title"] = "Tìm kiếm phim";
-            
-            var model = new SearchMovieViewModel 
-            { 
+
+            var model = new SearchMovieViewModel
+            {
                 SearchTerm = searchTerm,
                 HasSearched = !string.IsNullOrEmpty(searchTerm)
             };
@@ -34,7 +40,7 @@ namespace UI.Areas.BookingManagement.Controllers
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 // Dummy data for search results
-                model.Results = GetDummyMovies().Where(m => 
+                model.Results = GetDummyMovies().Where(m =>
                     m.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                     m.Genre.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
                 ).ToList();
@@ -46,57 +52,224 @@ namespace UI.Areas.BookingManagement.Controllers
 
         // T8: Select Movie and Showtime
         [HttpGet]
-        public IActionResult SelectMovie()
+        public async Task<IActionResult> SelectMovie()
         {
-            ViewData["Title"] = "Chọn phim và suất chiếu";
-            
-            var model = new SelectMovieViewModel
+            var viewModel = new BookingDropdownViewModel();
+
+            try
             {
-                Movies = GetDummyMovies()
-            };
+                var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/View");
 
-            return View(model);
+                if (result.Success && result.Data.TryGetProperty("data", out var dataProp))
+                {
+                    // Log raw response để debug
+                    _logger.LogInformation("Raw API response: {Response}", dataProp.GetRawText());
+
+                    var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                        // Xóa dòng Converters
+                    });
+
+                    // Kiểm tra và log từng movie ID
+                    if (movies != null)
+                    {
+                        foreach (var movie in movies)
+                        {
+                            _logger.LogInformation("Movie: {Title}, ID: '{Id}', Length: {Length}",
+                                movie.Title, movie.Id, movie.Id?.Length ?? 0);
+                        }
+                    }
+
+                    viewModel.Movies = movies ?? new List<MovieViewModel>();
+                }
+                else
+                {
+                    _logger.LogWarning("API call failed or returned no data");
+                    viewModel.Movies = new List<MovieViewModel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading movies for booking");
+                viewModel.Movies = new List<MovieViewModel>();
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMovieDates(string movieId)
+        {
+            try
+            {
+                var result = await _apiService.GetAsync<dynamic>($"/api/v1/booking-ticket/dropdown/movies/{movieId}/dates");
+
+                if (result.Success)
+                {
+                    return Json(new { success = true, data = result.Data });
+                }
+
+                return Json(new { success = false, message = "Không thể lấy ngày chiếu" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting movie dates for movieId: {MovieId}", movieId);
+                return Json(new { success = false, message = "Có lỗi xảy ra khi lấy ngày chiếu" });
+            }
         }
 
         [HttpPost]
-        public IActionResult GetShowDates(Guid movieId)
+        public async Task<IActionResult> GetShowDates([FromBody] Guid movieId)
         {
-            var dates = GetDummyShowDates();
-            return Json(new { success = true, data = dates });
+            try
+            {
+                var response = await _bookingService.GetShowDatesAsync(movieId);
+
+                if (response?.Success == true && response.Data != null)
+                {
+                    // Convert dynamic data to DateTime list
+                    var dates = new List<DateTime>();
+
+                    if (response.Data is IEnumerable<object> dateObjects)
+                    {
+                        foreach (var dateObj in dateObjects)
+                        {
+                            if (DateTime.TryParse(dateObj.ToString(), out DateTime date))
+                            {
+                                dates.Add(date);
+                            }
+                        }
+                    }
+
+                    var formattedDates = dates.Select(d => d.ToString("yyyy-MM-dd")).ToList();
+                    return Json(new { success = true, data = formattedDates });
+                }
+
+                return Json(new { success = false, message = "Không thể tải ngày chiếu" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading show dates for movie {MovieId}", movieId);
+                return Json(new { success = false, message = "Có lỗi xảy ra khi tải ngày chiếu" });
+            }
         }
 
         [HttpPost]
-        public IActionResult GetShowTimes(Guid movieId, DateTime showDate)
+        public async Task<IActionResult> GetShowTimes([FromBody] GetShowTimesRequest request)
         {
-            var showTimes = GetDummyShowTimes(movieId, showDate);
-            return Json(new { success = true, data = showTimes });
+            try
+            {
+                var response = await _bookingService.GetShowTimesAsync(request.MovieId, request.ShowDate);
+
+                if (response?.Success == true && response.Data != null)
+                {
+                    // Convert dynamic data to ShowTimeOption list
+                    var showTimes = ConvertToShowTimeOptions(response.Data);
+                    return Json(new { success = true, data = showTimes });
+                }
+
+                return Json(new { success = false, message = "Không thể tải suất chiếu" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading show times for movie {MovieId} on {ShowDate}", request.MovieId, request.ShowDate);
+                return Json(new { success = false, message = "Có lỗi xảy ra khi tải suất chiếu" });
+            }
+        }
+
+        // Helper methods to convert API response to view models
+        private List<MovieOption> ConvertToMovieOptions(dynamic moviesData)
+        {
+            var movies = new List<MovieOption>();
+
+            try
+            {
+                if (moviesData is IEnumerable<object> movieList)
+                {
+                    foreach (dynamic movie in movieList)
+                    {
+                        movies.Add(new MovieOption
+                        {
+                            Id = Guid.TryParse(movie.id?.ToString(), out Guid id) ? id : Guid.NewGuid(),
+                            Title = movie.name?.ToString() ?? "Unknown Movie",  // Đổi từ movie.title thành movie.name
+                            Poster = movie.image?.ToString() ?? "/images/default-movie.jpg",  // Đổi từ movie.poster thành movie.image
+                            Duration = int.TryParse(movie.duration?.ToString(), out int duration) ? duration : 120,
+                            Genre = movie.genre?.ToString() ?? "Unknown Genre",
+                            Price = decimal.TryParse(movie.price?.ToString(), out decimal price) ? price : 85000,
+                            IsAvailable = bool.TryParse(movie.isAvailable?.ToString(), out bool available) ? available : true
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error converting movies data");
+            }
+
+            return movies;
+        }
+
+        private List<ShowTimeOption> ConvertToShowTimeOptions(dynamic showTimesData)
+        {
+            var showTimes = new List<ShowTimeOption>();
+
+            try
+            {
+                if (showTimesData is IEnumerable<object> showTimeList)
+                {
+                    foreach (dynamic showTime in showTimeList)
+                    {
+                        showTimes.Add(new ShowTimeOption
+                        {
+                            Id = Guid.TryParse(showTime.id?.ToString(), out Guid id) ? id : Guid.NewGuid(),
+                            MovieId = Guid.TryParse(showTime.movieId?.ToString(), out Guid movieId) ? movieId : Guid.Empty,
+                            CinemaRoomId = Guid.TryParse(showTime.cinemaRoomId?.ToString(), out Guid roomId) ? roomId : Guid.Empty,
+                            CinemaRoomName = showTime.cinemaRoomName?.ToString() ?? "Unknown Room",
+                            StartTime = DateTime.TryParse(showTime.startTime?.ToString(), out DateTime startTime) ? startTime : DateTime.Now,
+                            EndTime = DateTime.TryParse(showTime.endTime?.ToString(), out DateTime endTime) ? endTime : DateTime.Now.AddHours(2),
+                            Price = decimal.TryParse(showTime.price?.ToString(), out decimal price) ? price : 85000,
+                            AvailableSeats = int.TryParse(showTime.availableSeats?.ToString(), out int available) ? available : 0,
+                            TotalSeats = int.TryParse(showTime.totalSeats?.ToString(), out int total) ? total : 0
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error converting show times data");
+            }
+
+            return showTimes;
         }
 
         // T9: Select Seats
         [HttpGet]
-        public IActionResult SelectSeat(Guid showTimeId)
+        public async Task<IActionResult> SelectSeat(Guid showTimeId)
         {
             ViewData["Title"] = "Chọn ghế";
-            
+
             var model = GetDummySeatViewModel(showTimeId);
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult UpdateSelectedSeats([FromBody] List<Guid> seatIds)
+        public async Task<IActionResult> UpdateSelectedSeats([FromBody] List<Guid> seatIds)
         {
             // Tính toán giá
             var dummySeats = GetDummySeats();
             var selectedSeats = dummySeats.Where(s => seatIds.Contains(s.Id)).ToList();
             var totalPrice = selectedSeats.Sum(s => s.Price);
 
-            return Json(new { 
-                success = true, 
+            return Json(new
+            {
+                success = true,
                 totalPrice = totalPrice,
                 selectedCount = selectedSeats.Count,
-                seats = selectedSeats.Select(s => new { 
-                    id = s.Id, 
-                    seatNumber = s.SeatNumber, 
+                seats = selectedSeats.Select(s => new
+                {
+                    id = s.Id,
+                    seatNumber = s.SeatNumber,
                     price = s.Price,
                     type = s.Type.ToString()
                 })
@@ -105,13 +278,13 @@ namespace UI.Areas.BookingManagement.Controllers
 
         // T10: Confirm Booking
         [HttpGet]
-        public IActionResult ConfirmBooking(Guid showTimeId, string seatIds)
+        public async Task<IActionResult> ConfirmBooking(Guid showTimeId, string seatIds)
         {
             ViewData["Title"] = "Xác nhận đặt vé";
-            
+
             var seatIdList = seatIds.Split(',').Select(Guid.Parse).ToList();
             var model = GetDummyConfirmViewModel(showTimeId, seatIdList);
-            
+
             // Điền thông tin khách hàng từ Claims
             model.CustomerName = User.FindFirst("FullName")?.Value ?? User.Identity?.Name ?? "";
             model.CustomerEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? "";
@@ -123,7 +296,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmBooking(ConfirmBookingViewModel model)
+        public async Task<IActionResult> ConfirmBooking(ConfirmBookingViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -152,12 +325,12 @@ namespace UI.Areas.BookingManagement.Controllers
 
         // T11: Ticket Information
         [HttpGet]
-        public IActionResult TicketInfo(Guid bookingId)
+        public async Task<IActionResult> TicketInfo(Guid bookingId)
         {
             ViewData["Title"] = "Thông tin vé";
-            
+
             var model = GetDummyTicketInfo(bookingId);
-            
+
             // Kiểm tra xem có booking success từ TempData không
             if (TempData["BookingSuccess"] != null)
             {
@@ -286,7 +459,7 @@ namespace UI.Areas.BookingManagement.Controllers
         {
             var seats = new List<SeatInfo>();
             var random = new Random();
-            
+
             // Tạo 8 hàng ghế (A-H), mỗi hàng 10 ghế
             for (int row = 1; row <= 8; row++)
             {
@@ -295,7 +468,7 @@ namespace UI.Areas.BookingManagement.Controllers
                 {
                     var isVip = row >= 6; // Hàng F, G, H là VIP
                     var isOccupied = random.Next(0, 100) < 20; // 20% ghế đã có người
-                    
+
                     seats.Add(new SeatInfo
                     {
                         Id = Guid.NewGuid(),
@@ -308,7 +481,7 @@ namespace UI.Areas.BookingManagement.Controllers
                     });
                 }
             }
-            
+
             return seats;
         }
 
@@ -339,7 +512,7 @@ namespace UI.Areas.BookingManagement.Controllers
         private TicketInfoViewModel GetDummyTicketInfo(Guid bookingId)
         {
             var movie = GetDummyMovies().First();
-            
+
             return new TicketInfoViewModel
             {
                 BookingId = bookingId,
@@ -360,4 +533,4 @@ namespace UI.Areas.BookingManagement.Controllers
             };
         }
     }
-} 
+}

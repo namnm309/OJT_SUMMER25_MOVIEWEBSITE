@@ -121,8 +121,8 @@ namespace UI.Controllers
                     {
                         IsPersistent = model.RememberMe,
                         ExpiresUtc = model.RememberMe 
-                            ? DateTimeOffset.UtcNow.AddDays(7)  // 7 ngày cho tùy chọn "Ghi nhớ"
-                            : DateTimeOffset.UtcNow.AddMinutes(30)  // 30 phút cho phiên đăng nhập thường
+                            ? DateTimeOffset.UtcNow.AddDays(7)  // 7 days for "Remember me"
+                            : DateTimeOffset.UtcNow.AddMinutes(30)  // 30 minutes for regular session
                     };
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -199,13 +199,13 @@ namespace UI.Controllers
 
             try
             {
-                // Chuyển đổi giới tính từ chuỗi sang số (1=Nam, 2=Nữ)
-                int genderValue = 1; // Mặc định là Nam
+                // Chuyển đổi gender từ string sang enum UserGender
+                int genderValue = 1; // Mặc định là Male (1)
                 if (!string.IsNullOrEmpty(model.Gender))
                 {
                     if (model.Gender.Equals("Nữ", StringComparison.OrdinalIgnoreCase))
                     {
-                        genderValue = 2; // Nữ
+                        genderValue = 2; // Female
                     }
                 }
 
@@ -220,7 +220,7 @@ namespace UI.Controllers
                     identityCard = model.IdentityCard,
                     address = model.Address,
                     birthDate = model.BirthDate,
-                    gender = genderValue // Giá trị số tương ứng với enum UserGender
+                    gender = genderValue // Sử dụng giá trị số của enum
                 };
 
                 var result = await _apiService.PostAsync<JsonElement>("/api/user/register", registerData);
@@ -268,10 +268,10 @@ namespace UI.Controllers
             }
             catch
             {
-                // Ghi log lỗi nhưng vẫn tiếp tục đăng xuất
+                // Log error nhưng vẫn tiếp tục logout
             }
 
-            // Đăng xuất khỏi hệ thống xác thực UI
+            // Sign out từ UI authentication
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return RedirectToAction("Index", "Home");

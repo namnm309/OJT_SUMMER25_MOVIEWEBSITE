@@ -1,454 +1,731 @@
-@model SelectMovieViewModel
+@model UI.Models.BookingDropdownViewModel
 @{
-    ViewData["Title"] = "Chọn Phim và Suất Chiếu";
-    Layout = "_Layout";
+    ViewData["Title"] = "Chọn Phim";
 }
 
-<div class="booking-container">
-    <div class="booking-header text-center mb-5">
-        <h1 class="booking-title">Đặt Vé Xem Phim</h1>
-        <p class="booking-subtitle">Chọn phim và suất chiếu yêu thích</p>
-        
-        <!-- Booking Progress -->
-        <div class="booking-progress mt-4">
-            <div class="progress-step active">
-                <div class="step-circle">1</div>
-                <span>Chọn phim</span>
-            </div>
-            <div class="progress-line"></div>
-            <div class="progress-step">
-                <div class="step-circle">2</div>
-                <span>Chọn ghế</span>
-            </div>
-            <div class="progress-line"></div>
-            <div class="progress-step">
-                <div class="step-circle">3</div>
-                <span>Xác nhận</span>
-            </div>
+<div class="movie-selection-container">
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Chọn Phim Yêu Thích</h1>
+            <p class="hero-subtitle">Khám phá những bộ phim đang chiếu hot nhất</p>
         </div>
     </div>
-
-    <form id="selectMovieForm" class="booking-form">
-        <div class="row">
-            <!-- Movie Selection -->
-            <div class="col-lg-4 mb-4">
-                <div class="booking-card">
-                    <h3 class="card-title">
-                        <i class="fas fa-film"></i>
-                        Chọn Phim
-                    </h3>
-                    <select id="movieSelect" class="form-select" required>
-                        <option value="">-- Chọn phim --</option>
-                        @foreach (var movie in Model.Movies)
+    
+    <div class="container">
+        <!-- Main Content with 2 columns -->
+        <div class="main-content">
+            <!-- Left Column: Movies Grid -->
+            <div class="movies-column">
+                <div class="movies-section">
+                    <h2 class="section-title">Phim Đang Chiếu</h2>
+                    <div class="movies-grid" id="moviesGrid">
+                        @if (Model.Movies != null && Model.Movies.Any())
                         {
-                            <option value="@movie.Id" 
-                                    data-title="@movie.Title"
-                                    data-poster="@movie.Poster"
-                                    data-duration="@movie.Duration"
-                                    data-genre="@movie.Genre"
-                                    data-price="@movie.Price">
-                                @movie.Title (@movie.Duration phút)
-                            </option>
+                            @foreach (var movie in Model.Movies)
+                            {
+                                <div class="movie-card" data-movie-id="@movie.Id">
+                                    <div class="movie-poster">
+                                        <img src="@movie.PrimaryImageUrl" alt="@movie.Title" class="poster-image">
+                                        <div class="movie-overlay">
+                                            <div class="movie-rating">
+                                                @if (movie.Rating > 0)
+                                                {
+                                                    <span class="rating-badge">⭐ @movie.Rating</span>
+                                                }
+                                            </div>
+                                            <button class="select-btn">Chọn Phim</button>
+                                        </div>
+                                    </div>
+                                    <div class="movie-info">
+                                        <h3 class="movie-title">@movie.Title</h3>
+                                        <p class="movie-director">Đạo diễn: @movie.Director</p>
+                                        <p class="movie-duration">@movie.RunningTime phút</p>
+                                        <p class="movie-description">@(movie.Content?.Length > 120 ? movie.Content.Substring(0, 120) + "..." : movie.Content)</p>
+                                    </div>
+                                </div>
+                            }
                         }
-                    </select>
+                        else
+                        {
+                            <div class="no-movies">
+                                <i class="fas fa-film"></i>
+                                <p>Hiện tại chưa có phim nào để hiển thị</p>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
-
-            <!-- Date Selection -->
-            <div class="col-lg-4 mb-4">
-                <div class="booking-card">
-                    <h3 class="card-title">
-                        <i class="fas fa-calendar"></i>
-                        Chọn Ngày
-                    </h3>
-                    <select id="dateSelect" class="form-select" disabled required>
-                        <option value="">-- Chọn ngày chiếu --</option>
-                    </select>
+            
+            <!-- Right Column: Movie Details & Showtimes -->
+            <div class="details-column">
+                <!-- Default state -->
+                <div id="defaultState" class="default-state">
+                    <div class="empty-state">
+                        <i class="fas fa-hand-pointer"></i>
+                        <h3>Chọn một bộ phim</h3>
+                        <p>Vui lòng chọn phim từ danh sách bên trái để xem lịch chiếu</p>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Showtime Selection -->
-            <div class="col-lg-4 mb-4">
-                <div class="booking-card">
-                    <h3 class="card-title">
-                        <i class="fas fa-clock"></i>
-                        Chọn Suất Chiếu
-                    </h3>
-                    <select id="showtimeSelect" class="form-select" disabled required>
-                        <option value="">-- Chọn giờ chiếu --</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <!-- Movie Preview -->
-        <div id="moviePreview" class="movie-preview" style="display: none;">
-            <div class="row align-items-center">
-                <div class="col-md-3">
-                    <img id="previewPoster" src="" alt="Movie Poster" class="movie-poster">
-                </div>
-                <div class="col-md-9">
-                    <h3 id="previewTitle" class="movie-title"></h3>
-                    <div class="movie-details">
-                        <p><strong>Thể loại:</strong> <span id="previewGenre"></span></p>
-                        <p><strong>Thời lượng:</strong> <span id="previewDuration"></span> phút</p>
-                        <p><strong>Giá vé:</strong> <span id="previewPrice"></span> VNĐ</p>
+                
+                <!-- Selected Movie Info -->
+                <div id="selectedMovieDetails" class="selected-movie-details" style="display: none;">
+                    <div class="movie-header">
+                        <div id="selectedMovieInfo" class="selected-movie-info">
+                            <!-- Selected movie info will be displayed here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Movie Dates Section -->
+                    <div id="movieDatesSection" class="dates-section">
+                        <h3 class="subsection-title">Chọn Ngày Chiếu</h3>
+                        <div id="movieDates" class="dates-grid">
+                            <!-- Dates will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Movie Times Section -->
+                    <div id="movieTimesSection" class="times-section" style="display: none;">
+                        <h3 class="subsection-title">Chọn Suất Chiếu</h3>
+                        <div id="movieTimes" class="times-grid">
+                            <!-- Times will be loaded here -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Action Buttons -->
-        <div class="booking-actions text-center mt-4">
-            <button type="button" id="bookTicketBtn" class="btn btn-primary btn-lg" disabled>
-                <i class="fas fa-arrow-right"></i>
-                Tiếp tục chọn ghế
-            </button>
-        </div>
-    </form>
+    </div>
 </div>
 
 <style>
-    .booking-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-        background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
-        min-height: 100vh;
-        color: white;
-    }
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    .booking-header {
-        margin-bottom: 3rem;
-    }
+.movie-selection-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-    .booking-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #df2144;
-        margin-bottom: 0.5rem;
-    }
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3') center/cover;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+}
 
-    .booking-subtitle {
-        font-size: 1.2rem;
-        color: rgba(255,255,255,0.8);
-    }
+.hero-content {
+    max-width: 600px;
+    padding: 0 20px;
+}
 
-    /* Progress Steps */
-    .booking-progress {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        max-width: 500px;
-        margin: 0 auto;
-    }
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
 
-    .progress-step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: rgba(255,255,255,0.5);
-        transition: all 0.3s ease;
-    }
+.hero-subtitle {
+    font-size: 1.2rem;
+    font-weight: 300;
+    opacity: 0.9;
+}
 
-    .progress-step.active {
-        color: #df2144;
-    }
+/* Container */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
 
-    .step-circle {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
+/* Main Content Layout */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 40px;
+    align-items: start;
+}
 
-    .progress-step.active .step-circle {
-        background: #df2144;
-        color: white;
-    }
+/* Movies Column */
+.movies-column {
+    min-height: 600px;
+}
 
-    .progress-line {
-        width: 100px;
-        height: 2px;
-        background: rgba(255,255,255,0.2);
-        margin: 0 1rem;
-    }
+/* Details Column */
+.details-column {
+    position: sticky;
+    top: 20px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    min-height: 500px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
 
-    /* Cards */
-    .booking-card {
-        background: rgba(42, 42, 42, 0.9);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 15px;
-        padding: 2rem;
-        height: 100%;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-    }
+/* Default State */
+.default-state {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    .booking-card:hover {
-        border-color: rgba(223, 33, 68, 0.5);
-        box-shadow: 0 10px 30px rgba(223, 33, 68, 0.2);
-    }
+.empty-state {
+    text-align: center;
+    color: white;
+    opacity: 0.8;
+}
 
-    .card-title {
-        font-size: 1.3rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        color: #df2144;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    opacity: 0.6;
+}
 
-    .form-select {
-        background: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 10px;
-        color: white;
-        padding: 0.75rem 1rem;
+.empty-state h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.empty-state p {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Selected Movie Details */
+.selected-movie-details {
+    animation: fadeInUp 0.5s ease;
+}
+
+@@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.movie-header {
+    margin-bottom: 30px;
+}
+
+.selected-movie-info {
+    background: rgba(255,255,255,0.15);
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.subsection-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Movies Grid */
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+/* Movie Card */
+.movie-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.movie-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+}
+
+.movie-card.selected {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 0 0 3px #28a745, 0 15px 35px rgba(40,167,69,0.3);
+}
+
+/* Movie Poster */
+.movie-poster {
+    position: relative;
+    height: 350px;
+    overflow: hidden;
+}
+
+.poster-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover .poster-image {
+    transform: scale(1.05);
+}
+
+/* Movie Overlay */
+.movie-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.movie-card:hover .movie-overlay {
+    opacity: 1;
+}
+
+.movie-rating {
+    align-self: flex-end;
+}
+
+.rating-badge {
+    background: rgba(255,193,7,0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    backdrop-filter: blur(10px);
+}
+
+.select-btn {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: center;
+}
+
+.select-btn:hover {
+    background: linear-gradient(45deg, #218838, #1ea080);
+    transform: scale(1.05);
+}
+
+/* Movie Info */
+.movie-info {
+    padding: 20px;
+}
+
+.movie-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.movie-director {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.movie-duration {
+    color: #28a745;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.movie-description {
+    color: #777;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* No Movies */
+.no-movies {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: white;
+}
+
+.no-movies i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.7;
+}
+
+.no-movies p {
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+/* Dates and Times Sections */
+.dates-section, .times-section {
+    margin-bottom: 30px;
+}
+
+.dates-grid, .times-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+}
+
+.date-btn, .time-btn {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.2);
+    padding: 12px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    backdrop-filter: blur(5px);
+    font-size: 0.85rem;
+}
+
+.date-btn:hover, .time-btn:hover {
+    background: rgba(255,255,255,0.25);
+    border-color: rgba(255,255,255,0.4);
+    transform: translateY(-2px);
+}
+
+.date-btn.selected, .time-btn.selected {
+    background: #28a745;
+    border-color: #28a745;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40,167,69,0.4);
+}
+
+/* Loading State */
+.loading-state {
+    text-align: center;
+    color: white;
+    padding: 20px;
+    opacity: 0.8;
+}
+
+.loading-state i {
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+/* Responsive Design */
+@@media (max-width: 1200px) {
+    .main-content {
+        grid-template-columns: 1fr 350px;
+        gap: 30px;
+    }
+}
+
+@@media (max-width: 992px) {
+    .main-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .details-column {
+        position: static;
+        order: -1;
+    }
+}
+
+@@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.2rem;
+    }
+    
+    .hero-subtitle {
         font-size: 1rem;
     }
-
-    .form-select:focus {
-        background: rgba(255,255,255,0.15);
-        border-color: #df2144;
-        box-shadow: 0 0 0 0.2rem rgba(223, 33, 68, 0.25);
-        color: white;
+    
+    .movies-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
     }
-
-    .form-select option {
-        background: #2a2a2a;
-        color: white;
-    }
-
-    .form-select:disabled {
-        background: rgba(255,255,255,0.05);
-        color: rgba(255,255,255,0.5);
-    }
-
-    /* Movie Preview */
-    .movie-preview {
-        background: rgba(42, 42, 42, 0.9);
-        border: 1px solid rgba(223, 33, 68, 0.3);
-        border-radius: 15px;
-        padding: 2rem;
-        margin: 2rem 0;
-        backdrop-filter: blur(10px);
-    }
-
-    .movie-poster {
-        width: 100%;
-        max-width: 200px;
-        border-radius: 10px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-    .movie-title {
-        color: #df2144;
+    
+    .section-title {
         font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
     }
-
-    .movie-details p {
-        margin-bottom: 0.5rem;
-        font-size: 1.1rem;
+    
+    .details-column {
+        padding: 20px;
     }
+}
 
-    /* Action Buttons */
-    .booking-actions {
-        margin-top: 3rem;
+@@media (max-width: 480px) {
+    .movies-grid {
+        grid-template-columns: 1fr;
     }
-
-    .btn-primary {
-        background: linear-gradient(135deg, #df2144 0%, #ff4466 100%);
-        border: none;
-        border-radius: 50px;
-        padding: 1rem 3rem;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
+    
+    .hero-title {
+        font-size: 1.8rem;
     }
-
-    .btn-primary:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(223, 33, 68, 0.4);
+    
+    .dates-grid, .times-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     }
-
-    .btn-primary:disabled {
-        background: rgba(255,255,255,0.2);
-        color: rgba(255,255,255,0.5);
-        cursor: not-allowed;
-    }
-
-    /* Responsive */
-    @@media (max-width: 768px) {
-        .booking-container {
-            padding: 1rem;
-        }
-
-        .booking-title {
-            font-size: 2rem;
-        }
-
-        .progress-line {
-            width: 50px;
-        }
-
-        .booking-card {
-            padding: 1.5rem;
-        }
-    }
+}
 </style>
 
 <script>
+let selectedMovieId = null;
+let selectedDate = null;
+
 document.addEventListener('DOMContentLoaded', function() {
-    const movieSelect = document.getElementById('movieSelect');
-    const dateSelect = document.getElementById('dateSelect');
-    const showtimeSelect = document.getElementById('showtimeSelect');
-    const bookTicketBtn = document.getElementById('bookTicketBtn');
-    const moviePreview = document.getElementById('moviePreview');
-
-    // Movie selection handler
-    movieSelect.addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        
-        if (this.value) {
-            // Show movie preview
-            showMoviePreview(selectedOption);
-            
-            // Load dates
-            loadShowDates(this.value);
-        } else {
-            hideMoviePreview();
-            resetSelections();
-        }
-    });
-
-    // Date selection handler
-    dateSelect.addEventListener('change', function() {
-        if (this.value) {
-            loadShowTimes(movieSelect.value, this.value);
-        } else {
-            resetShowtimes();
-        }
-    });
-
-    // Showtime selection handler
-    showtimeSelect.addEventListener('change', function() {
-        checkFormComplete();
-    });
-
-    // Book ticket button
-    bookTicketBtn.addEventListener('click', function() {
-        if (movieSelect.value && dateSelect.value && showtimeSelect.value) {
-            const showtimeId = showtimeSelect.value;
-            window.location.href = `/BookingManagement/Booking/SelectSeat?showTimeId=${showtimeId}`;
-        }
-    });
-
-    function showMoviePreview(selectedOption) {
-        document.getElementById('previewPoster').src = selectedOption.dataset.poster;
-        document.getElementById('previewTitle').textContent = selectedOption.dataset.title;
-        document.getElementById('previewGenre').textContent = selectedOption.dataset.genre;
-        document.getElementById('previewDuration').textContent = selectedOption.dataset.duration;
-        document.getElementById('previewPrice').textContent = new Intl.NumberFormat('vi-VN').format(selectedOption.dataset.price);
-        
-        moviePreview.style.display = 'block';
+    console.log('Document ready fired');
+    console.log('Movie cards found:', document.querySelectorAll('.movie-card').length);
+    
+    // Movie card click handler
+    // Trong phần JavaScript, thêm validation cho movieId
+    document.querySelectorAll('.movie-card').forEach(function(card) {
+    card.addEventListener('click', function(e) {
+    e.preventDefault();
+    console.log('Movie card clicked!');
+    
+    const movieId = this.getAttribute('data-movie-id');
+    
+    // Thêm validation cho movieId
+    console.log('Raw movieId:', movieId);
+    console.log('MovieId length:', movieId ? movieId.length : 0);
+    
+    // Kiểm tra định dạng GUID (36 ký tự với dấu gạch ngang)
+    const guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    
+    if (!movieId || !guidRegex.test(movieId)) {
+    console.error('Invalid movieId format:', movieId);
+    alert('ID phim không hợp lệ. Vui lòng thử lại.');
+    return;
     }
-
-    function hideMoviePreview() {
-        moviePreview.style.display = 'none';
+    
+    const movieTitle = this.querySelector('.movie-title').textContent;
+    const moviePoster = this.querySelector('.poster-image').getAttribute('src');
+    const movieDirector = this.querySelector('.movie-director').textContent;
+    const movieDuration = this.querySelector('.movie-duration').textContent;
+    
+    console.log('Movie details:', { movieId, movieTitle, moviePoster, movieDirector, movieDuration });
+    
+    // Remove previous selection
+    document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('selected'));
+    this.classList.add('selected');
+    
+    selectedMovieId = movieId;
+    
+    // Hide default state and show movie details
+    console.log('Hiding default state...');
+    document.getElementById('defaultState').style.display = 'none';
+    console.log('Showing movie details...');
+    document.getElementById('selectedMovieDetails').style.display = 'block';
+    
+    // Update selected movie info
+    document.getElementById('selectedMovieInfo').innerHTML = `
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="${moviePoster}" alt="${movieTitle}" style="width: 60px; height: 90px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
+            <div style="text-align: left; flex: 1;">
+                <h4 style="margin-bottom: 6px; font-size: 1.1rem; font-weight: 600;">${movieTitle}</h4>
+                <p style="margin-bottom: 4px; opacity: 0.9; font-size: 0.9rem;">${movieDirector}</p>
+                <p style="opacity: 0.9; font-size: 0.9rem; color: #28a745;">${movieDuration}</p>
+            </div>
+        </div>
+    `;
+    
+    console.log('Loading movie dates for ID:', movieId);
+    loadMovieDates(movieId);
+    });
+    });
+    
+    function loadMovieDates(movieId) {
+        console.log('loadMovieDates called with:', movieId);
+        
+        // Show loading state
+        document.getElementById('movieDates').innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải ngày chiếu...</div>';
+        document.getElementById('movieDatesSection').style.display = 'block';
+        document.getElementById('movieTimesSection').style.display = 'none';
+        
+        // Sửa URL để sử dụng đường dẫn tuyệt đối tới backend API
+        const apiUrl = `https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`;
+        console.log('API URL:', apiUrl);
+        
+        fetch(apiUrl)
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('API Success:', data);
+                // Sửa từ data.Data thành data.data (chữ d viết thường)
+                if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+                    displayMovieDates(data.data);
+                } else {
+                    console.log('No dates found');
+                    document.getElementById('movieDates').innerHTML = '<div style="text-align: center; color: white; padding: 20px; opacity: 0.8;"><i class="fas fa-exclamation-triangle"></i><br>Không có ngày chiếu nào cho phim này.</div>';
+                }
+            })
+            .catch(error => {
+                console.error('API Error:', error);
+                document.getElementById('movieDates').innerHTML = '<div style="text-align: center; color: white; padding: 20px; opacity: 0.8;"><i class="fas fa-times-circle"></i><br>Có lỗi xảy ra khi tải ngày chiếu.</div>';
+            });
     }
-
-    function loadShowDates(movieId) {
-        fetch('/BookingManagement/Booking/GetShowDates', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
-            },
-            body: JSON.stringify(movieId)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                populateSelectOptions(dateSelect, data.data, 'Chọn ngày chiếu', (date) => {
-                    const d = new Date(date);
-                    return d.toLocaleDateString('vi-VN', { 
-                        weekday: 'long', 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    });
-                });
-                dateSelect.disabled = false;
-            }
-        })
-        .catch(error => {
-            console.error('Error loading show dates:', error);
+    
+    function displayMovieDates(dates) {
+        console.log('displayMovieDates called with:', dates);
+        
+        const datesHtml = dates.map(date => 
+            `<button class="date-btn" data-date="${date.code}">
+                <div style="font-size: 0.9rem; margin-bottom: 4px; font-weight: 600;">${date.text}</div>
+                <div style="font-size: 0.75rem; opacity: 0.8;">${getDayOfWeek(date.code)}</div>
+            </button>`
+        ).join('');
+        
+        document.getElementById('movieDates').innerHTML = datesHtml;
+        
+        // Date click handler
+        document.querySelectorAll('.date-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                console.log('Date clicked:', this.getAttribute('data-date'));
+                document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                selectedDate = this.getAttribute('data-date');
+                loadMovieTimes(selectedMovieId, selectedDate);
+            });
         });
     }
-
-    function loadShowTimes(movieId, showDate) {
-        fetch('/BookingManagement/Booking/GetShowTimes', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
-            },
-            body: JSON.stringify({ movieId: movieId, showDate: showDate })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                populateSelectOptions(showtimeSelect, data.data, 'Chọn giờ chiếu', (showtime) => {
-                    const startTime = new Date(showtime.startTime).toLocaleTimeString('vi-VN', { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                    });
-                    return `${startTime} - ${showtime.cinemaRoomName} (${showtime.availableSeats}/${showtime.totalSeats} ghế trống)`;
-                }, 'id');
-                showtimeSelect.disabled = false;
-            }
-        })
-        .catch(error => {
-            console.error('Error loading show times:', error);
-        });
-    }
-
-    function populateSelectOptions(selectElement, data, placeholder, textFormatter, valueProperty = null) {
-        selectElement.innerHTML = `<option value="">${placeholder}</option>`;
+    
+    function loadMovieTimes(movieId, date) {
+        console.log('loadMovieTimes called with:', { movieId, date });
         
-        data.forEach(item => {
-            const option = document.createElement('option');
-            option.value = valueProperty ? item[valueProperty] : item;
-            option.textContent = textFormatter ? textFormatter(item) : item;
-            selectElement.appendChild(option);
+        // Show loading state
+        document.getElementById('movieTimes').innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải suất chiếu...</div>';
+        document.getElementById('movieTimesSection').style.display = 'block';
+        
+        // Sửa để gọi trực tiếp API backend như loadMovieDates
+        const apiUrl = `https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(date + ' 10:00:00+07')}`;
+        console.log('API URL:', apiUrl);
+        
+        fetch(apiUrl)
+            .then(response => {
+                console.log('ShowTimes Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('ShowTimes Success:', data);
+                if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+                    displayMovieTimes(data.data);
+                } else {
+                    document.getElementById('movieTimes').innerHTML = '<div style="text-align: center; color: white; padding: 20px; opacity: 0.8;"><i class="fas fa-exclamation-triangle"></i><br>Không có suất chiếu nào cho ngày này.</div>';
+                }
+            })
+            .catch(error => {
+                console.error('ShowTimes Error:', error);
+                document.getElementById('movieTimes').innerHTML = '<div style="text-align: center; color: white; padding: 20px; opacity: 0.8;"><i class="fas fa-times-circle"></i><br>Có lỗi xảy ra khi tải suất chiếu.</div>';
+            });
+    }
+    
+    function displayMovieTimes(times) {
+        console.log('displayMovieTimes called with:', times);
+        
+        const timesHtml = times.map(time => 
+            `<button class="time-btn" data-showtime-id="${time.id}">
+                <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 4px;">${time.time}</div>
+                <div style="font-size: 0.7rem; opacity: 0.8; margin-bottom: 2px;">Phòng chiếu</div>
+                <div style="font-size: 0.65rem; opacity: 0.7;">Còn ghế trống</div>
+            </button>`
+        ).join('');
+        
+        document.getElementById('movieTimes').innerHTML = timesHtml;
+        
+        // Time click handler
+        document.querySelectorAll('.time-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                const showtimeId = this.getAttribute('data-showtime-id');
+                
+                // Show confirmation and redirect
+                setTimeout(() => {
+                    window.location.href = `/BookingManagement/Booking/SelectSeat?showtimeId=${showtimeId}`;
+                }, 500);
+            });
         });
     }
-
-    function resetSelections() {
-        dateSelect.innerHTML = '<option value="">-- Chọn ngày chiếu --</option>';
-        dateSelect.disabled = true;
-        resetShowtimes();
+    
+    // Helper functions
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        return `${day}/${month}`;
     }
-
-    function resetShowtimes() {
-        showtimeSelect.innerHTML = '<option value="">-- Chọn giờ chiếu --</option>';
-        showtimeSelect.disabled = true;
-        checkFormComplete();
-    }
-
-    function checkFormComplete() {
-        const isComplete = movieSelect.value && dateSelect.value && showtimeSelect.value;
-        bookTicketBtn.disabled = !isComplete;
+    
+    function getDayOfWeek(dateString) {
+        const date = new Date(dateString);
+        const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+        return days[date.getDay()];
     }
 });
-</script> 
+</script>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+}
+
+// Trong hàm click event của movie card
+$('.movie-card').on('click', function() {
+    const movieId = $(this).data('movie-id');
+    console.log('MovieId được lấy:', movieId); // Kiểm tra giá trị này
+    console.log('Độ dài movieId:', movieId.length); // Phải là 36 ký tự
+    
+    if (movieId) {
+        loadMovieTimes(movieId);
+    }
+});
