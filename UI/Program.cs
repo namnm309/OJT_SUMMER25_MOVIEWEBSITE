@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using UI.Services;
 
 namespace UI
 {
@@ -11,10 +10,10 @@ namespace UI
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            
+
             // Add HttpContextAccessor for accessing current HTTP context
             builder.Services.AddHttpContextAccessor();
-            
+
             // Add HttpClient for API calls với credential sharing
             builder.Services.AddHttpClient("ApiClient", client =>
             {
@@ -44,16 +43,22 @@ namespace UI
 
             builder.Services.AddAuthorization();
 
-            builder.Services.AddScoped<UI.Areas.BookingManagement.Services.IBookingManagementUIService, UI.Areas.BookingManagement.Services.BookingManagementUIService>();
-
             // Đăng ký ApiService
             builder.Services.AddScoped<UI.Services.IApiService, UI.Services.ApiService>();
-            
+
             // Đăng ký AuthUIService
             builder.Services.AddScoped<UI.Services.IAuthUIService, UI.Services.AuthUIService>();
 
-            //đăng ký cloudinary
-            builder.Services.AddTransient<IImageService, CloudinaryImageService>();
+            // Đăng ký ImageService (for movie/promotion management)
+            builder.Services.AddScoped<UI.Services.IImageService, UI.Services.CloudinaryImageService>();
+
+            // Đăng ký BookingManagementUIService
+            builder.Services.AddScoped<UI.Areas.BookingManagement.Services.IBookingManagementUIService,
+                          UI.Areas.BookingManagement.Services.BookingManagementUIService>();
+
+            // Đăng ký ShowtimeService
+            builder.Services.AddScoped<UI.Areas.ShowtimeManagement.Services.IShowtimeService,
+                          UI.Areas.ShowtimeManagement.Services.ShowtimeService>();
 
             var app = builder.Build();
 

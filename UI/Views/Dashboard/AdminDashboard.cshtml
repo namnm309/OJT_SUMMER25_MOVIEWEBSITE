@@ -5,6 +5,7 @@
 
 <!DOCTYPE html>
 <html lang="vi">
+    <!--Cấu hình css ở đây -->
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,260 +17,364 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Dashboard CSS -->
-    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <!-- New Dashboard CSS -->
+    <link rel="stylesheet" href="~/css/new-dashboard.css" />
 </head>
 <body>
-    <!-- Header -->
-    <header class="dashboard-header">
-        <div class="header-content">
-            <div class="brand-section">
-                <a href="@Url.Action("Index", "Home")" class="d-flex align-items-center text-decoration-none">
-                    <div class="brand-logo"></div>
-                    <div class="ms-3">
-                        <div class="brand-name">Cinema City</div>
-                        <div class="brand-subtitle">Rạp chiếu phim hiện đại</div>
-                    </div>
-                        </a>
-                    </div>
-            <nav class="nav-links">
-                <a href="@Url.Action("Index", "Home")" class="nav-link">Trang chủ</a>
-                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-link nav-link text-decoration-none">
-                        <i class="fas fa-sign-out-alt me-1"></i>Đăng xuất
-                    </button>
-                </form>
-            </nav>
-                    </div>
-    </header>
-
-    <!-- Dashboard Layout -->
-    <div class="dashboard-layout">
-        <!-- Sidebar Toggle Button (Mobile) -->
-        <button class="sidebar-toggle" onclick="toggleSidebar()">
-            <i class="fas fa-bars"></i>
-        </button>
-
+    <!-- New Dashboard Layout -->
+    <div class="new-dashboard-layout">
         <!-- Sidebar -->
-        <aside class="dashboard-sidebar">
-            <div class="sidebar-header">
-                <div class="user-profile">
-                    <div class="user-avatar-large">
-                        @ViewBag.UserName?.Substring(0, 1).ToUpper()
+        <aside class="new-dashboard-sidebar">
+            <!-- Sidebar Header -->
+            <div class="new-sidebar-header">
+                <a href="@Url.Action("Index", "Home")" class="new-sidebar-brand">
+                    <div class="new-brand-logo"></div>
+                    <div class="new-brand-text">
+                        <h2>Cinema City</h2>
+                        <p>Admin Panel</p>
                     </div>
-                    <div class="user-details">
-                        <h3>@ViewBag.FullName</h3>
-                        <span class="user-role-badge badge bg-danger">Admin</span>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <a asp-controller="Promotions" asp-action="Index" class="btn btn-outline-info w-100">
-                            <i class="fas fa-calendar-alt me-2"></i>Quản lý khuyến mãi
+                </a>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="new-sidebar-nav">
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Tổng quan</div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("AdminDashboard", "Dashboard")" class="new-nav-link active">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Dashboard</span>
                         </a>
                     </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Home")" class="new-nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Trang chủ</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Quản lý</div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-nav-link">
+                            <i class="fas fa-film"></i>
+                            <span>Quản lý phim</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span>Quản lý đặt vé</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Showtimes", new { area = "ShowtimeManagement" })" class="new-nav-link">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Quản lý lịch chiếu</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-nav-link">
+                            <i class="fas fa-gift"></i>
+                            <span>Quản lý khuyến mãi</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-star"></i>
+                            <span>Quản lý sự kiện</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Quản lý người dùng</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Hệ thống</div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Báo cáo</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Cài đặt</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            
+            <!-- User Profile in Sidebar -->
+            <div class="new-sidebar-user">
+                <div class="new-user-profile">
+                    <div class="new-user-avatar">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            @User.Identity.Name?.Substring(0, 1).ToUpper()
+                        }
+                        else
+                        {
+                            <span>A</span>
+                        }
+                    </div>
+                    <div class="new-user-info">
+                        <h4>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                @(User.Identity.Name?.Length > 12 ? User.Identity.Name.Substring(0, 12) + "..." : User.Identity.Name)
+                            }
+                            else
+                            {
+                                <span>Admin</span>
+                            }
+                        </h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+                <div class="new-user-actions">
+                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="new-user-action-btn">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="new-user-action-btn" style="border: none;">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
-
-            <nav class="sidebar-menu">
-                <!-- Main Menu -->
-                <div class="menu-section">
-                    <div class="menu-title">Menu Chính</div>
-                    <a href="@Url.Action("Index", "Dashboard")" class="menu-item active">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Dashboard
-                    </a>
-                    <a href="@Url.Action("Index", "Movies")" class="menu-item">
-                        <i class="fas fa-film"></i>
-                        Danh sách phim
-                    </a>
-                    <a href="@Url.Action("Index", "Events")" class="menu-item">
-                        <i class="fas fa-calendar-alt"></i>
-                        Sự kiện
-                    </a>
-                    <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="menu-item">
-                        <i class="fas fa-gift"></i>
-                        Khuyến mãi
-                    </a>
-                </div>
-
-                <!-- Management -->
-                <div class="menu-section">
-                    <div class="menu-title">Quản trị hệ thống</div>
-                    <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="menu-item">
-                        <i class="fas fa-users"></i>
-                        Quản lý thành viên
-                    </a>
-                    <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="menu-item">
-                        <i class="fas fa-video"></i>
-                        Quản lý phim
-                    </a>
-                    <a href="#" class="menu-item">
-                        <i class="fas fa-calendar-check"></i>
-                        Quản lý lịch chiếu
-                    </a>
-                    <a href="#" class="menu-item">
-                        <i class="fas fa-chart-line"></i>
-                        Báo cáo thống kê
-                    </a>
-        </div>
-
-                <!-- Personal -->
-                <div class="menu-section">
-                    <div class="menu-title">Cá nhân</div>
-                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="menu-item">
-                        <i class="fas fa-user-edit"></i>
-                        Chỉnh sửa hồ sơ
-                    </a>
-                    <a href="#" class="menu-item">
-                        <i class="fas fa-cog"></i>
-                        Cài đặt
-                    </a>
-    </div>
-            </nav>
         </aside>
 
-        <!-- Backdrop for mobile -->
-        <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
-
         <!-- Main Content -->
-        <main class="dashboard-main">
-            <div class="dashboard-container">
+        <main class="new-dashboard-main">
+            <div class="new-dashboard-content">
                 <!-- Page Header -->
-                <div class="page-header">
-                    <h1 class="page-title">
+                <div class="new-page-header animate-fade-in">
+                    <h1 class="new-page-title">
                         <i class="fas fa-crown"></i>
-                        Chào mừng Admin!
+                        Admin Dashboard
                     </h1>
-                    <p class="page-subtitle">Tổng quan quản trị hệ thống rạp chiếu phim</p>
-</div>
-
-<!-- System Stats -->
-                <div class="row mb-5">
-    <div class="col-md-3 mb-4">
-        <div class="dashboard-card stats-card">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon bg-primary">
-                        <i class="fas fa-users"></i>
+                    <p class="new-page-subtitle">Quản lý toàn bộ hệ thống Cinema City</p>
+                </div>
+                
+                <!-- Stats Grid -->
+                <div class="new-stats-grid animate-fade-in">
+                    <div class="new-stat-card">
+                        <div class="new-stat-header">
+                            <div class="new-stat-icon users">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="new-stat-value">@ViewBag.TotalUsers</div>
+                        <div class="new-stat-label">Tổng thành viên</div>
+                        <div class="new-stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+12% so với tháng trước</span>
+                        </div>
                     </div>
-                    <div class="ms-3">
-                                    <h5>@ViewBag.TotalUsers</h5>
-                                    <p>Tổng thành viên</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-md-3 mb-4">
-        <div class="dashboard-card stats-card">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon bg-success">
-                        <i class="fas fa-film"></i>
+                    <div class="new-stat-card">
+                        <div class="new-stat-header">
+                            <div class="new-stat-icon movies">
+                                <i class="fas fa-film"></i>
+                            </div>
+                        </div>
+                        <div class="new-stat-value">@ViewBag.TotalMovies</div>
+                        <div class="new-stat-label">Phim trong hệ thống</div>
+                        <div class="new-stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+5 phim mới</span>
+                        </div>
                     </div>
-                    <div class="ms-3">
-                                    <h5>@ViewBag.TotalMovies</h5>
-                                    <p>Phim trong hệ thống</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-md-3 mb-4">
-        <div class="dashboard-card stats-card">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon bg-warning">
-                        <i class="fas fa-ticket-alt"></i>
-                    </div>  
-                    <div class="ms-3">
-                                    <h5>@ViewBag.TotalBookings</h5>
-                                    <p>Vé đã đặt hôm nay</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3 mb-4">
-        <div class="dashboard-card stats-card">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon bg-info">
-                        <i class="fas fa-dollar-sign"></i>
+                    <div class="new-stat-card">
+                        <div class="new-stat-header">
+                            <div class="new-stat-icon tickets">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                        </div>
+                        <div class="new-stat-value">@ViewBag.TotalBookings</div>
+                        <div class="new-stat-label">Vé đã đặt hôm nay</div>
+                        <div class="new-stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+8% so với hôm qua</span>
+                        </div>
                     </div>
-                    <div class="ms-3">
-                                    <h5>@ViewBag.TodayRevenue</h5>
-                                    <p>Doanh thu hôm nay</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-                <!-- Quick Actions -->
-                <div class="row mb-5">
-                    <div class="col-12">
-        <div class="dashboard-card">
-                <h5 class="card-title">
-                                <i class="fas fa-bolt me-2"></i>Truy cập nhanh
-                </h5>
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <a asp-area="UserManagement" asp-controller="Members" asp-action="Index" class="btn btn-outline-primary w-100">
-                                        <i class="fas fa-users me-2"></i>
-                                        Quản lý thành viên
-                                    </a>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <a asp-area="MovieManagement" asp-controller="Movies" asp-action="Index" class="btn btn-outline-success w-100">
-                                        <i class="fas fa-film me-2"></i>
-                                        Quản lý phim
-                    </a>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <a asp-area="PromotionManagement" asp-controller="Promotions" asp-action="Index" class="btn btn-outline-warning w-100">
-                                        <i class="fas fa-gift me-2"></i>
-                                        Quản lý khuyến mãi
-                                    </a>
-                                </div>
+                    <div class="new-stat-card">
+                        <div class="new-stat-header">
+                            <div class="new-stat-icon revenue">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                        </div>
+                        <div class="new-stat-value">@ViewBag.TodayRevenue</div>
+                        <div class="new-stat-label">Doanh thu hôm nay</div>
+                        <div class="new-stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+15% so với hôm qua</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-                <!-- Notifications and Recent Activity -->
-                <div class="row">
-    <div class="col-md-6 mb-4">
-        <div class="dashboard-card">
-                <h5 class="card-title">
-                    <i class="fas fa-bell me-2"></i>Thông báo hệ thống
-                </h5>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    Hệ thống đang hoạt động bình thường
-                </div>
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    Có <strong>@ViewBag.PendingTasks</strong> nhiệm vụ cần xử lý
-                </div>
-            </div>
-        </div>
+                <!-- Content Grid -->
+                <div class="new-content-grid animate-slide-in">
+                    <!-- Main Panel -->
+                    <div class="new-content-card">
+                        <div class="new-card-header">
+                            <h3 class="new-card-title">
+                                <i class="fas fa-bolt"></i>
+                                Truy cập nhanh
+                            </h3>
+                        </div>
+                        <div class="new-quick-actions">
+                            <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-action-btn">
+                                <i class="fas fa-users"></i>
+                                <span>Quản lý thành viên</span>
+                            </a>
+                            <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-action-btn">
+                                <i class="fas fa-film"></i>
+                                <span>Quản lý phim</span>
+                            </a>
+                            <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-action-btn">
+                                <i class="fas fa-ticket-alt"></i>
+                                <span>Đặt vé</span>
+                            </a>
+                            <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-action-btn">
+                                <i class="fas fa-gift"></i>
+                                <span>Khuyến mãi</span>
+                            </a>
+                            <a href="#" class="new-action-btn">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Báo cáo</span>
+                            </a>
+                            <a href="#" class="new-action-btn">
+                                <i class="fas fa-cog"></i>
+                                <span>Cài đặt</span>
+                            </a>
+                        </div>
+                    </div>
 
-                    <div class="col-md-6 mb-4">
-                        <div class="dashboard-card">
-                            <h5 class="card-title">
-                                <i class="fas fa-history me-2"></i>Hoạt động gần đây
-                            </h5>
-                            <ul class="list-unstyled">
-                                <li class="mb-2">
-                                    <i class="fas fa-user-plus text-success me-2"></i>
-                                    <small class="text-muted">5 phút trước</small> - Thành viên mới đăng ký
-                                </li>
-                                <li class="mb-2">
-                                    <i class="fas fa-ticket-alt text-primary me-2"></i>
-                                    <small class="text-muted">15 phút trước</small> - Đặt vé thành công
-                                </li>
-                                <li class="mb-2">
-                                    <i class="fas fa-film text-warning me-2"></i>
-                                    <small class="text-muted">1 giờ trước</small> - Cập nhật lịch chiếu
-                                </li>
-                            </ul>
+                    <!-- Side Panel -->
+                    <div class="new-content-card">
+                        <div class="new-card-header">
+                            <h3 class="new-card-title">
+                                <i class="fas fa-history"></i>
+                                Hoạt động gần đây
+                            </h3>
+                        </div>
+                        <div class="new-activity-feed">
+                            <div class="new-activity-item">
+                                <div class="new-activity-icon success">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="new-activity-content">
+                                    <div class="new-activity-title">Thành viên mới đăng ký</div>
+                                    <div class="new-activity-time">5 phút trước</div>
+                                </div>
+                            </div>
+                            <div class="new-activity-item">
+                                <div class="new-activity-icon info">
+                                    <i class="fas fa-ticket-alt"></i>
+                                </div>
+                                <div class="new-activity-content">
+                                    <div class="new-activity-title">Đặt vé thành công</div>
+                                    <div class="new-activity-time">15 phút trước</div>
+                                </div>
+                            </div>
+                            <div class="new-activity-item">
+                                <div class="new-activity-icon warning">
+                                    <i class="fas fa-film"></i>
+                                </div>
+                                <div class="new-activity-content">
+                                    <div class="new-activity-title">Cập nhật lịch chiếu</div>
+                                    <div class="new-activity-time">1 giờ trước</div>
+                                </div>
+                            </div>
+                            <div class="new-activity-item">
+                                <div class="new-activity-icon success">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div class="new-activity-content">
+                                    <div class="new-activity-title">Thanh toán thành công</div>
+                                    <div class="new-activity-time">2 giờ trước</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Content Row -->
+                <div class="new-content-grid animate-slide-in" style="margin-top: 2rem;">
+                    <!-- System Status -->
+                    <div class="new-content-card">
+                        <div class="new-card-header">
+                            <h3 class="new-card-title">
+                                <i class="fas fa-server"></i>
+                                Trạng thái hệ thống
+                            </h3>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--content-secondary); border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
+                                    <span>Server Status</span>
+                                </div>
+                                <span style="color: var(--success); font-weight: 500;">Online</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--content-secondary); border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 10px; height: 10px; background: var(--success); border-radius: 50%;"></div>
+                                    <span>Database</span>
+                                </div>
+                                <span style="color: var(--success); font-weight: 500;">Connected</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--content-secondary); border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 10px; height: 10px; background: var(--warning); border-radius: 50%;"></div>
+                                    <span>Storage</span>
+                                </div>
+                                <span style="color: var(--warning); font-weight: 500;">85% Used</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="new-content-card">
+                        <div class="new-card-header">
+                            <h3 class="new-card-title">
+                                <i class="fas fa-bell"></i>
+                                Thông báo hệ thống
+                            </h3>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; gap: 0.75rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid var(--success);">
+                                <i class="fas fa-check-circle" style="color: var(--success); margin-top: 0.25rem;"></i>
+                                <div>
+                                    <div style="font-weight: 500; margin-bottom: 0.25rem;">Hệ thống đang hoạt động bình thường</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-muted);">Tất cả dịch vụ đang hoạt động ổn định</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.75rem; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 8px; border-left: 4px solid var(--warning);">
+                                <i class="fas fa-exclamation-triangle" style="color: var(--warning); margin-top: 0.25rem;"></i>
+                                <div>
+                                    <div style="font-weight: 500; margin-bottom: 0.25rem;">Có <strong>@ViewBag.PendingTasks</strong> nhiệm vụ cần xử lý</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-muted);">Vui lòng kiểm tra và xử lý</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.75rem; padding: 1rem; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border-left: 4px solid var(--primary-purple);">
+                                <i class="fas fa-info-circle" style="color: var(--primary-purple); margin-top: 0.25rem;"></i>
+                                <div>
+                                    <div style="font-weight: 500; margin-bottom: 0.25rem;">Backup dữ liệu hoàn tất</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-muted);">Lần backup cuối: hôm nay 03:00</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -277,52 +382,26 @@
         </main>
     </div>
 
-    <!-- Footer -->
-    <footer class="cinema-footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <p>&copy; @DateTime.Now.Year Cinema City. Tất cả quyền được bảo lưu.</p>
-    </div>
-</div> 
-    </footer>
-
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Toggle sidebar for mobile
-        function toggleSidebar() {
-            const layout = document.querySelector('.dashboard-layout');
-            layout.classList.toggle('sidebar-open');
-        }
-
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', function(event) {
-            const sidebar = document.querySelector('.dashboard-sidebar');
-            const toggle = document.querySelector('.sidebar-toggle');
-            const layout = document.querySelector('.dashboard-layout');
-            
-            if (window.innerWidth <= 991 && 
-                !sidebar.contains(event.target) && 
-                !toggle.contains(event.target) &&
-                layout.classList.contains('sidebar-open')) {
-                layout.classList.remove('sidebar-open');
-            }
-        });
-
         // Highlight active menu item based on current page
         document.addEventListener('DOMContentLoaded', function() {
-            const currentPath = window.location.pathname;
-            const menuItems = document.querySelectorAll('.menu-item');
+            const currentPath = window.location.pathname.toLowerCase();
+            const navLinks = document.querySelectorAll('.new-nav-link');
             
-            menuItems.forEach(item => {
-                if (item.getAttribute('href') === currentPath) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href')?.toLowerCase();
+                if (href && currentPath.includes(href)) {
+                    // Remove active from all links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    // Add active to current link
+                    link.classList.add('active');
                 }
             });
+            
         });
     </script>
 </body>

@@ -52,19 +52,22 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
             int page = query.Page <= 0 ? 1 : query.Page;
             int pageSize = query.PageSize <= 0 ? 10 : query.PageSize;
 
-            var room = await _cinemaRoomRepo.ListAsync();
+            var allRooms = await _cinemaRoomRepo.ListAsync();
+            int totalItems = allRooms.Count;
 
-            var pagedRoom = room
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            var pagedRooms = allRooms
+               .Skip((page - 1) * pageSize)
+               .Take(pageSize)
+               .ToList();
+
+            var result = _mapper.Map<List<CinemaRoomListDto>>(pagedRooms);
 
             var response = new
             {
-                Data = pagedRoom,
-                Total = room.Count,
-                Page = query.Page,
-                PageSize = query.PageSize,
+                Data = result,
+                Total = totalItems,
+                Page = page,
+                PageSize = pageSize,
             };
 
             return SuccessResp.Ok(response);
@@ -72,11 +75,21 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
 
         public async Task<IActionResult> GetSeatDetail(Guid Id)
         {
-            var room = await _cinemaRoomRepo.FoundOrThrowAsync(Id, "Room not found", "Seats");
+            var room = await _cinemaRoomRepo.FindByIdAsync(Id, "Seats");
+            if (room == null)
+                return ErrorResp.NotFound("Not Found");
 
-            var seat = _mapper.Map<List<SeatDetailDto>>(room.Seats);
+            var seats = await _seatRepo.WhereAsync(s => s.RoomId == Id);
 
-            return SuccessResp.Ok(seat);
+            var result = _mapper.Map<List<SeatDetailDto>>(room.Seats);
+
+            return SuccessResp.Ok(new
+            {
+                RoomId = room.Id,
+                RoomName = room.RoomName,
+                TotalSeats = room.TotalSeats,
+                Seats = result
+            });
         }
 
         public async Task<IActionResult> AddCinemaRoom(CinemaRoomCreateDto Dto)
@@ -97,7 +110,7 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
         {
             var room = string.IsNullOrWhiteSpace(keyword)
                 ? await _cinemaRoomRepo.ListAsync()
-                : await _cinemaRoomRepo.WhereAsync(r => r.RoomName.Contains(keyword));
+                : await _cinemaRoomRepo.WhereAsync(r => r.RoomName.ToLower().Contains(keyword.ToLower()));
 
             var result = _mapper.Map<List<CinemaRoomListDto>>(room);
 

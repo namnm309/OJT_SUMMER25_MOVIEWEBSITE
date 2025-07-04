@@ -40,6 +40,13 @@ namespace DomainLayer.Entities
         [Required]
         public MovieStatus Status { get; set; }
 
+        // Featured and Recommended flags
+        public bool IsFeatured { get; set; } = false;
+        public bool IsRecommended { get; set; } = false;
+        
+        // Movie rating
+        public double Rating { get; set; } = 0.0;
+
         // Navigation properties
         public virtual ICollection<MovieImage> MovieImages { get; set; } = new List<MovieImage>();
         public virtual ICollection<MovieGenre> MovieGenres { get; set; } = new List<MovieGenre>();

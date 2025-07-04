@@ -57,47 +57,7 @@ namespace ApplicationLayer.Services.MovieManagement
             return SuccessResp.Ok(result);
         }
 
-        //public async Task<MovieResponseDto?> GetByIdAsync(Guid movieId)
-        //{
-        //    var movie = await _movieRepo.FirstOrDefaultAsync(
-        //        m => m.Id == movieId,
-        //        "MovieImages", "MovieGenres.Genre"
-        //    );
-            
-        //    if (movie == null) return null;
-            
-        //    return new MovieResponseDto
-        //    {
-        //        Id = movie.Id,
-        //        Title = movie.Title,
-        //        ReleaseDate = movie.ReleaseDate ?? DateTime.Now,
-        //        ProductionCompany = movie.ProductionCompany,
-        //        RunningTime = movie.RunningTime,
-        //        Version = movie.Version?.ToString() ?? "TwoD",
-        //        Director = movie.Director,
-        //        Actors = movie.Actors,
-        //        Content = movie.Content,
-        //        TrailerUrl = movie.TrailerUrl,
-        //        Status = (int)movie.Status,
-        //        // Lấy hình ảnh primary
-        //        PrimaryImageUrl = movie.MovieImages?
-        //            .FirstOrDefault(img => img.IsPrimary)?.ImageUrl,
-        //        // Lấy tất cả hình ảnh
-        //        Images = movie.MovieImages?
-        //            .Select(img => new MovieImageDto
-        //            {
-        //                ImageUrl = img.ImageUrl,
-        //                Description = img.Description ?? "",
-        //                DisplayOrder = img.DisplayOrder,
-        //                IsPrimary = img.IsPrimary
-        //            }).ToList() ?? new List<MovieImageDto>(),
-        //        // Lấy danh sách thể loại
-        //        Genres = movie.MovieGenres?
-        //            .Select(mg => mg.Genre?.GenreName ?? "")
-        //            .Where(g => !string.IsNullOrEmpty(g))
-        //            .ToList() ?? new List<string>()
-        //    };
-        //}
+        // Phương thức GetByIdAsync cũ - hiện tại không sử dụng
 
         public async Task<IActionResult> CreateMovie(MovieCreateDto Dto)
         {
@@ -313,11 +273,20 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> SearchMovie(string? keyword)
         {
-            var movie = string.IsNullOrWhiteSpace(keyword)
-                ? await _movieRepo.ListAsync()
-                : await _movieRepo.WhereAsync(m => m.Title.Contains(keyword));
+            var movies = string.IsNullOrWhiteSpace(keyword)
+                ? await _movieRepo.ListAsync(
+                    nameof(Movie.MovieImages),
+                    nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
+                )
+                : await _movieRepo.WhereAsync(
+                    filter: m => m.Title.ToLower().Contains(keyword.ToLower()),
+                    navigationProperties: new[]
+                    {
+                        nameof(Movie.MovieImages),
+                        nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
+                    });
 
-            var result = _mapper.Map<List<MovieListDto>>(movie);
+            var result = _mapper.Map<List<MovieResponseDto>>(movies);
 
             return SuccessResp.Ok(result);
         }
@@ -360,6 +329,95 @@ namespace ApplicationLayer.Services.MovieManagement
 
             string status = genre.IsActive ? "Activated" : "De-Activated";
             return SuccessResp.Ok($"Genre has been {status} successfully");
+        }
+
+        public async Task<IActionResult> SetFeatured(Guid movieId, bool isFeatured)
+        {
+            var movie = await _movieRepo.FindByIdAsync(movieId);
+            if (movie == null)
+                return ErrorResp.NotFound("Movie not found");
+
+            movie.IsFeatured = isFeatured;
+            movie.UpdatedAt = DateTime.UtcNow;
+
+            await _movieRepo.UpdateAsync(movie);
+
+            string action = isFeatured ? "đã được đánh dấu là phim nổi bật" : "đã được bỏ khỏi danh sách phim nổi bật";
+            return SuccessResp.Ok($"Phim {movie.Title} {action}");
+        }
+
+        public async Task<IActionResult> SetRecommended(Guid movieId, bool isRecommended)
+        {
+            var movie = await _movieRepo.FindByIdAsync(movieId);
+            if (movie == null)
+                return ErrorResp.NotFound("Movie not found");
+
+            movie.IsRecommended = isRecommended;
+            movie.UpdatedAt = DateTime.UtcNow;
+
+            await _movieRepo.UpdateAsync(movie);
+
+            string action = isRecommended ? "đã được đánh dấu là phim đề xuất" : "đã được bỏ khỏi danh sách phim đề xuất";
+            return SuccessResp.Ok($"Phim {movie.Title} {action}");
+        }
+
+        public async Task<IActionResult> UpdateRating(Guid movieId, double rating)
+        {
+            var movie = await _movieRepo.FindByIdAsync(movieId);
+            if (movie == null)
+                return ErrorResp.NotFound("Movie not found");
+
+            movie.Rating = rating;
+            movie.UpdatedAt = DateTime.UtcNow;
+
+            await _movieRepo.UpdateAsync(movie);
+
+            return SuccessResp.Ok($"Đã cập nhật rating phim {movie.Title} thành {rating}/10");
+        }
+
+        public async Task<IActionResult> GetRecommended()
+        {
+            var movies = await _movieRepo.WhereAsync(
+                filter: m => m.IsRecommended == true,
+                orderBy: q => q.OrderByDescending(m => m.CreatedAt),
+                navigationProperties: new[]
+                {
+                    nameof(Movie.MovieImages),
+                    nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
+                });
+
+            var result = _mapper.Map<List<MovieResponseDto>>(movies);
+            return SuccessResp.Ok(result);
+        }
+
+        public async Task<IActionResult> GetComingSoon()
+        {
+            var movies = await _movieRepo.WhereAsync(
+                filter: m => m.Status == MovieStatus.ComingSoon,
+                orderBy: q => q.OrderByDescending(m => m.ReleaseDate),
+                navigationProperties: new[]
+                {
+                    nameof(Movie.MovieImages),
+                    nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
+                });
+
+            var result = _mapper.Map<List<MovieResponseDto>>(movies);
+            return SuccessResp.Ok(result);
+        }
+
+        public async Task<IActionResult> GetNowShowing()
+        {
+            var movies = await _movieRepo.WhereAsync(
+                filter: m => m.Status == MovieStatus.NowShowing,
+                orderBy: q => q.OrderByDescending(m => m.ReleaseDate),
+                navigationProperties: new[]
+                {
+                    nameof(Movie.MovieImages),
+                    nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
+                });
+
+            var result = _mapper.Map<List<MovieResponseDto>>(movies);
+            return SuccessResp.Ok(result);
         }
     }
 }

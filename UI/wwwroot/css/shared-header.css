@@ -1,0 +1,613 @@
+/* ===============================================
+   SHARED HEADER CSS - for all pages except Homepage
+   =============================================== */
+
+/* Bootstrap Override - Fix white background */
+:root {
+    --bs-body-bg: #000000 !important;
+    --bs-body-color: #ffffff !important;
+}
+
+body {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* Header Container */
+.shared-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(25, 25, 25, 0.98) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.shared-nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.shared-nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+    gap: 30px;
+}
+
+/* Brand Section */
+.shared-brand {
+    flex-shrink: 0;
+}
+
+.shared-brand-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    gap: 12px;
+}
+
+.shared-brand-link:hover {
+    transform: translateY(-1px);
+    color: inherit;
+    text-decoration: none;
+}
+
+.shared-brand-logo {
+    width: 40px;
+    height: 32px;
+    background: linear-gradient(135deg, #df2144 0%, #c01b3a 100%);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(223, 33, 68, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.shared-brand-logo::before {
+    content: '🎬';
+    font-size: 18px;
+    color: white;
+}
+
+.shared-brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.shared-brand-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.shared-brand-subtitle {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.2;
+}
+
+/* Navigation Links */
+.shared-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    justify-content: center;
+    max-width: 400px;
+}
+
+.shared-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.shared-nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.shared-nav-link:hover::before {
+    left: 100%;
+}
+
+.shared-nav-link:hover {
+    color: #ffffff;
+    background: rgba(223, 33, 68, 0.15);
+    transform: translateY(-2px);
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(223, 33, 68, 0.2);
+}
+
+.shared-nav-link i {
+    font-size: 16px;
+    width: 18px;
+    text-align: center;
+}
+
+/* Search Box */
+.shared-search-box {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 2px;
+    transition: all 0.3s ease;
+    max-width: 280px;
+    min-width: 200px;
+}
+
+.shared-search-box:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.shared-search-box:focus-within {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #df2144;
+    box-shadow: 0 0 0 3px rgba(223, 33, 68, 0.2);
+}
+
+.shared-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-size: 14px;
+    padding: 10px 16px;
+    placeholder-color: rgba(255, 255, 255, 0.5);
+}
+
+.shared-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.shared-search-btn {
+    background: linear-gradient(135deg, #df2144 0%, #c01b3a 100%);
+    border: none;
+    border-radius: 16px;
+    padding: 8px 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shared-search-btn:hover {
+    background: linear-gradient(135deg, #c01b3a 0%, #a61530 100%);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(223, 33, 68, 0.4);
+}
+
+.shared-search-btn i {
+    font-size: 14px;
+}
+
+/* User Section */
+.shared-user-section {
+    flex-shrink: 0;
+}
+
+/* User Dropdown */
+.shared-user-dropdown {
+    position: relative;
+}
+
+.shared-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 8px 16px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.shared-user-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.shared-user-btn i.fa-user-circle {
+    font-size: 20px;
+    color: #df2144;
+}
+
+.shared-user-btn i.fa-chevron-down {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.shared-user-btn[aria-expanded="true"] i.fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+.shared-user-name {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Dropdown Menu */
+.shared-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    min-width: 280px;
+    padding: 8px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.95);
+    transition: all 0.3s ease;
+    z-index: 1100;
+    list-style: none;
+    margin: 10px 0 0 0;
+}
+
+.shared-dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.shared-dropdown-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 8px;
+}
+
+.shared-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.shared-user-info i {
+    color: #df2144;
+    flex-shrink: 0;
+}
+
+.shared-user-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.shared-user-full-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.shared-user-email {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.shared-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.shared-dropdown-item:hover {
+    background: rgba(223, 33, 68, 0.1);
+    color: #ffffff;
+    text-decoration: none;
+    padding-left: 24px;
+}
+
+.shared-dropdown-item i {
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.shared-dropdown-divider {
+    margin: 8px 0;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shared-logout-form {
+    margin: 0;
+}
+
+.shared-logout-btn {
+    color: #ff6b6b !important;
+}
+
+.shared-logout-btn:hover {
+    background: rgba(255, 107, 107, 0.1) !important;
+    color: #ff8a8a !important;
+}
+
+/* Auth Buttons */
+.shared-auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.shared-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 16px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.shared-btn-register {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.shared-btn-register:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.shared-btn-login {
+    background: linear-gradient(135deg, #df2144 0%, #c01b3a 100%);
+    color: #ffffff;
+    border-color: #df2144;
+}
+
+.shared-btn-login:hover {
+    background: linear-gradient(135deg, #c01b3a 0%, #a61530 100%);
+    color: #ffffff;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(223, 33, 68, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .shared-nav-content {
+        gap: 20px;
+    }
+    
+    .shared-search-box {
+        min-width: 180px;
+    }
+    
+    .shared-nav-links {
+        gap: 4px;
+    }
+    
+    .shared-nav-link {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 992px) {
+    .shared-nav-content {
+        gap: 15px;
+        height: 65px;
+    }
+    
+    .shared-nav-links {
+        display: none;
+    }
+    
+    .shared-search-box {
+        min-width: 160px;
+        max-width: 200px;
+    }
+    
+    .shared-brand-name {
+        font-size: 16px;
+    }
+    
+    .shared-brand-subtitle {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .shared-nav-container {
+        padding: 0 15px;
+    }
+    
+    .shared-nav-content {
+        gap: 12px;
+        height: 60px;
+    }
+    
+    .shared-brand-text {
+        display: none;
+    }
+    
+    .shared-search-box {
+        min-width: 140px;
+        max-width: 160px;
+    }
+    
+    .shared-search-input {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+    
+    .shared-user-name {
+        display: none;
+    }
+    
+    .shared-btn span {
+        display: none;
+    }
+    
+    .shared-btn {
+        padding: 8px 12px;
+    }
+    
+    .shared-dropdown-menu {
+        min-width: 250px;
+        right: -10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .shared-nav-container {
+        padding: 0 10px;
+    }
+    
+    .shared-nav-content {
+        gap: 8px;
+        height: 55px;
+    }
+    
+    .shared-brand-logo {
+        width: 32px;
+        height: 28px;
+    }
+    
+    .shared-search-box {
+        min-width: 120px;
+        max-width: 140px;
+    }
+    
+    .shared-search-input::placeholder {
+        font-size: 12px;
+    }
+    
+    .shared-dropdown-menu {
+        min-width: 220px;
+        right: -15px;
+    }
+}
+
+/* Loading states */
+.shared-header.loading {
+    pointer-events: none;
+}
+
+.shared-header.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #df2144, transparent);
+    animation: loading-slide 2s ease-in-out infinite;
+}
+
+@keyframes loading-slide {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Accessibility improvements */
+.shared-nav-link:focus,
+.shared-search-btn:focus,
+.shared-user-btn:focus,
+.shared-dropdown-item:focus,
+.shared-btn:focus {
+    outline: 2px solid #df2144;
+    outline-offset: 2px;
+}
+
+/* Smooth transitions */
+* {
+    scroll-behavior: smooth;
+}
+
+/* Margin nội dung cho header cố định */
+body {
+    margin-top: 70px;
+}
+
+@media (max-width: 992px) {
+    body {
+        margin-top: 65px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        margin-top: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        margin-top: 55px;
+    }
+} 

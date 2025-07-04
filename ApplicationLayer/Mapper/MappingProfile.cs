@@ -1,5 +1,6 @@
 ﻿using ApplicationLayer.DTO.BookingTicketManagement;
 using ApplicationLayer.DTO.CinemaRoomManagement;
+using ApplicationLayer.DTO.EmployeeManagement;
 using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.DTO.PromotionManagement;
 using AutoMapper;
@@ -18,6 +19,12 @@ namespace ApplicationLayer.Mapper
         {
             //Movie
             CreateMap<MovieCreateDto, Movie>();
+            
+            //Movie Update - include new properties
+            CreateMap<MovieUpdateDto, Movie>()
+                .ForMember(dest => dest.MovieGenres, opt => opt.Ignore())
+                .ForMember(dest => dest.ShowTimes, opt => opt.Ignore())
+                .ForMember(dest => dest.MovieImages, opt => opt.Ignore());
 
             //Movie Image
             CreateMap<MovieImageDto, MovieImage>();
@@ -49,11 +56,7 @@ namespace ApplicationLayer.Mapper
                 });
 
 
-            //Update Movie
-            CreateMap<MovieUpdateDto, Movie>()
-                .ForMember(dest => dest.MovieGenres, opt => opt.Ignore())
-                .ForMember(dest => dest.ShowTimes, opt => opt.Ignore())
-                .ForMember(dest => dest.MovieImages, opt => opt.Ignore());
+
 
             // Add these to your existing MappingProfile class
             CreateMap<PromotionCreateDto, Promotion>();
@@ -75,6 +78,11 @@ namespace ApplicationLayer.Mapper
 
             //Booking
             CreateMap<Movie, MovieDropdownDto>();
+
+            //Employee
+            CreateMap<EmployeeCreateDto, Employee>();
+            CreateMap<Employee, EmployeeListDto>();
+            CreateMap<EmployeeUpdateDto, Employee>().ReverseMap();
         }
     }
 }

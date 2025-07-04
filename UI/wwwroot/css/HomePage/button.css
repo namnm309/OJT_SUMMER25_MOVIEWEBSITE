@@ -1,164 +1,119 @@
-﻿/* Button styles and interactions */
-
-/* Primary and Secondary Buttons */
-.btn-primary, .btn-secondary {
-    padding: 8px 24px;
+/* Updated button styles with booking pages color scheme */
+.btn-primary {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
     border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 500;
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    flex: 1;
-    justify-content: center;
+    gap: 0.5rem;
     text-decoration: none;
 }
 
-.btn-primary {
-    background: #df2144;
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
     color: white;
-    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.20);
 }
 
 .btn-secondary {
-    background: transparent;
-    border: 1px solid #df2144;
-    color: #df2144;
-}
-
-.btn-primary:hover {
-    background: #c01e3e;
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    backdrop-filter: blur(10px);
 }
 
 .btn-secondary:hover {
-    background: #df2144;
+    background: rgba(102, 126, 234, 0.2);
+    border-color: #667eea;
+    transform: translateY(-2px);
     color: white;
 }
 
-/* Navigation Buttons */
-.nav-btn {
-    background: #1e1e1e;
+.btn-login {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
     border: none;
-    border-radius: 24px;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: #df2144;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
     transition: all 0.3s ease;
 }
 
-    .nav-btn:hover {
-        background: #333;
-        transform: scale(1.1);
-    }
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    color: white;
+}
 
-/* Search Button */
+.btn-register {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-register:hover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: #667eea;
+    color: white;
+}
+
 .btn-search {
-    background: #df2144;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 36px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
     color: white;
-    font-size: 18px;
-    font-weight: 400;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.20);
     transition: all 0.3s ease;
 }
 
-    .btn-search:hover {
-        background: #c01e3e;
-        transform: translateY(-2px);
-    }
+.btn-search:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
 
-/* View All Button */
-.view-all-btn {
-    background: transparent;
-    border: 1px solid #df2144;
-    border-radius: 4px;
-    padding: 6px 16px;
-    color: #1eb7e8;
+.btn-load-more {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
-    gap: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 0 auto;
+    gap: 0.5rem;
 }
 
-    .view-all-btn:hover {
-        background: #df2144;
-        color: white;
-    }
-
-/* Banner Button */
-.btn-banner {
-    background: #df2144;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 24px;
-    color: white;
-    font-size: 16px;
-    font-weight: 400;
-    cursor: pointer;
-    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.20);
-    width: 100%;
-    transition: all 0.3s ease;
-}
-
-    .btn-banner:hover {
-        background: #c01e3e;
-        transform: translateY(-2px);
-    }
-
-/* Toggle Switch */
-.toggle-switch {
-    width: 50px;
-    height: 24px;
-    background: #4b4b4b;
-    border: 3px solid #df2144;
-    border-radius: 12px;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-    .toggle-switch.active {
-        background: #df2144;
-    }
-
-.toggle-circle {
-    width: 16px;
-    height: 16px;
-    background: #4b4b4b;
-    border-radius: 50%;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: all 0.3s ease;
-}
-
-.toggle-switch.active .toggle-circle {
-    background: #df2144;
-    transform: translateX(26px);
-}
-
-/* Toggle Item Labels */
-.toggle-item span {
-    color: white;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.sort-section label {
-    color: white;
-    font-size: 20px;
-    font-weight: 700;
+.btn-load-more:hover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: #667eea;
+    transform: translateY(-2px);
 }

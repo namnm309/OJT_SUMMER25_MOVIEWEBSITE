@@ -45,7 +45,7 @@ namespace InfrastructureLayer.Data
                 }
                 else
                 {
-                    // Update admin password if needed
+                    // Cập nhật mật khẩu admin nếu cần
                     Console.WriteLine("  Tài khoản admin đã tồn tại, đang cập nhật password...");
                     existingAdmin.Password = BCrypt.Net.BCrypt.HashPassword("admin123");
                     existingAdmin.UpdatedAt = DateTime.UtcNow;

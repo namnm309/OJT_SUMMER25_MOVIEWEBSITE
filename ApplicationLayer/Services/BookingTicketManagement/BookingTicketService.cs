@@ -1,4 +1,4 @@
-﻿using Application.ResponseCode;
+using Application.ResponseCode;
 using ApplicationLayer.DTO.BookingTicketManagement;
 using ApplicationLayer.DTO.UserManagement;
 using AutoMapper;
@@ -8,6 +8,7 @@ using DomainLayer.Exceptions;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+<<<<<<< HEAD
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,6 +16,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ApplicationLayer.Services.Helper;
+=======
+>>>>>>> origin/dev
 
 namespace ApplicationLayer.Services.BookingTicketManagement
 {
@@ -23,6 +26,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<IActionResult> GetAvailableMovies(); //Lấy danh sách phim
         Task<IActionResult> GetShowDatesByMovie(Guid movieId); //Lấy danh sách ngày chiếu cho phim
         Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate); //Lấy các giờ chiếu trong ngày
+<<<<<<< HEAD
         Task<IActionResult> ConfirmUserBooking(ConfirmBookingRequestDto request);
 
 
@@ -31,7 +35,13 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<(bool Success, String message)> CreateMemberAccount(CreateMemberAccountDto request);
         Task<IActionResult> ConfirmAdminBooking(ConfirmBookingRequestAdminDto request);
         Task<IActionResult> GetBookingDetails(string bookingCode);
+=======
+        Task<IActionResult> ConfirmBooking(ConfirmBookingRequestDto request);
+        Task<IActionResult> GetBookingDetailsAsync(Guid bookingId, Guid userId);
+
+>>>>>>> origin/dev
     }
+
     public class BookingTicketService : IBookingTicketService
     {
         private readonly IGenericRepository<Movie> _movieRepo;
@@ -42,12 +52,18 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         private readonly IGenericRepository<PointHistory> _pointHistoryRepo;
         private readonly ISeatRepository _seatRepository;
         private readonly IMapper _mapper;
+<<<<<<< HEAD
         private readonly IUserRepository _userRepository;
         private readonly IMailService _mailService;
+=======
+        private readonly IBookingRepository _bookingRepository;
+
+>>>>>>> origin/dev
         public BookingTicketService(
             IUserRepository userRepository,
             IGenericRepository<Movie> movieRepo,
             IGenericRepository<ShowTime> showtimeRepo,
+<<<<<<< HEAD
             IGenericRepository<Booking> bookingRepo,
             IGenericRepository<BookingDetail> bookingDetailRepo,
             IGenericRepository<Users> userRepo,
@@ -55,6 +71,13 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             ISeatRepository seatRepository,
             IMapper mapper,
             IMailService mailService)
+=======
+            IGenericRepository<Booking> bookingRepo, // Thêm
+            IGenericRepository<BookingDetail> bookingDetailRepo, // Thêm
+            ISeatRepository seatRepository, // Thêm
+            IMapper mapper,
+            IBookingRepository bookingRepository)
+>>>>>>> origin/dev
         {
             _userRepository = userRepository;
             _movieRepo = movieRepo;
@@ -65,7 +88,11 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             _pointHistoryRepo = pointHistoryRepo;
             _seatRepository = seatRepository;
             _mapper = mapper;
+<<<<<<< HEAD
             _mailService = mailService;
+=======
+            _bookingRepository = bookingRepository;
+>>>>>>> origin/dev
         }
 
 
@@ -83,18 +110,25 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
         public async Task<IActionResult> GetShowDatesByMovie(Guid movieId)
         {
-            var showtime = await _showtimeRepo.WhereAsync(s => s.MovieId == movieId);
-            if (showtime == null)
-                return ErrorResp.NotFound("Not Found");
+            var showtimes = await _showtimeRepo.WhereAsync(s => s.MovieId == movieId);
+            if (showtimes == null || !showtimes.Any())
+            {
+                return ErrorResp.NotFound("No show dates found for this movie.");
+            }
 
-            var date = showtime
+            var dates = showtimes
                 .Where(s => s.ShowDate.HasValue)
                 .Select(s => s.ShowDate.Value.Date)
-                .Distinct() // loại bỏ giá trị trùng lặp trong danh sách
-                .OrderBy(d => d) //sắp xếp danh sách tăng dần
+                .Distinct()
+                .OrderBy(d => d)
+                .Select(d => new
+                {
+                    Code = d.ToString("yyyy-MM-dd"),
+                    Text = d.ToString("dd/MM")
+                })
                 .ToList();
 
-            return SuccessResp.Ok(date);
+            return SuccessResp.Ok(dates);
         }
 
         public async Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate)
@@ -214,6 +248,44 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         {
             // Logic tạo mã booking duy nhất (ví dụ: kết hợp thời gian và random string)
             return "BK" + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + Guid.NewGuid().ToString().Substring(0, 4).ToUpper();
+
+        }
+
+        public async Task<IActionResult> GetBookingDetailsAsync(Guid bookingId, Guid userId)
+        {
+            // Get booking with details
+            var booking = await _bookingRepository.GetBookingWithDetailsAsync(bookingId, userId);
+            if (booking == null)
+            {
+                return ErrorResp.NotFound("Booking not found");
+            }
+
+            // Check if booking has all required data
+            if (booking.ShowTime?.Movie == null || booking.ShowTime?.Room == null ||
+                !booking.BookingDetails.Any() || booking.User == null)
+            {
+                return ErrorResp.BadRequest("Incomplete booking data. Please return and complete seat selection.");
+            }
+
+            // Map booking to DTO
+            var bookingDetailsDto = new BookingDetailsDto
+            {
+                BookingId = booking.Id,
+                BookingCode = booking.BookingCode,
+                MovieName = booking.ShowTime.Movie.Title,
+                RoomName = booking.ShowTime.Room.RoomName,
+                ShowDate = booking.ShowTime.ShowDate ?? DateTime.UtcNow,
+                SeatCodes = booking.BookingDetails.Select(bd => bd.Seat.SeatCode).ToList(),
+                UnitPrice = booking.BookingDetails.FirstOrDefault()?.Price ?? 0,
+                TotalPrice = booking.TotalPrice,
+                TotalSeats = booking.TotalSeats,
+                FullName = booking.User.FullName,
+                Email = booking.User.Email,
+                IdentityCard = booking.User.IdentityCard,
+                Phone = booking.User.Phone
+            };
+
+            return SuccessResp.Ok(bookingDetailsDto);
         }
 
         public async Task<IActionResult> CheckMember(CheckMemberRequestDto request)

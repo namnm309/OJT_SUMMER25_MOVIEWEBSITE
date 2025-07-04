@@ -25,5 +25,10 @@ namespace ApplicationLayer.DTO.MovieManagement
         public string? PrimaryImageUrl { get; set; }
         public List<MovieImageDto> Images { get; set; } = new();
         public List<GenreDto> Genres { get; set; } = new();
+        
+        // Featured, Recommended và Rating properties
+        public bool IsFeatured { get; set; } = false;
+        public bool IsRecommended { get; set; } = false;
+        public double Rating { get; set; } = 0.0;
     }
 }

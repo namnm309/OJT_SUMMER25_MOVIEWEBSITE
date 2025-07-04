@@ -1,4 +1,70 @@
-﻿/* Movie Cards Hover Effect Styles */
+/* Updated movie card styles with booking pages design */
+.movie-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+    border-color: #667eea;
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+}
+
+.movie-poster {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover .movie-poster {
+    transform: scale(1.05);
+}
+
+.movie-info {
+    padding: 1.5rem;
+}
+
+.movie-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.movie-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.genre-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.genre-tag {
+    background: rgba(102, 126, 234, 0.2);
+    color: #4fc3f7;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+/* Movie Cards Hover Effect Styles */
 .movie-card {
     position: relative;
     cursor: pointer;
@@ -280,7 +346,7 @@
 }
 
 /* Responsive */
-@@media (max-width: 768px) {
+@media (max-width: 768px) {
     .d-none.d-md-inline {
         display: none !important;
     }

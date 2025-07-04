@@ -10,18 +10,24 @@ namespace UI.Areas.BookingManagement.Services
         Task<ApiResponse<dynamic>> GetMoviesAsync();
         Task<ApiResponse<dynamic>> SearchMoviesAsync(string searchTerm);
 
+        // Thêm method bị thiếu cho dropdown
+        Task<ApiResponse<dynamic>> GetMoviesDropdownAsync();
+
         // T8: Select Movie and Showtime  
-        Task<ApiResponse<List<MovieDropdownDto>>> GetMoviesDropdownAsync();
-        Task<ApiResponse<List<DateTime>>> GetShowDatesAsync(Guid movieId); // Modified to return List<DateTime>
-        Task<ApiResponse<List<ShowtimeDropdownDto>>> GetShowTimesAsync(Guid movieId, DateTime showDate); // Modified to return List<ShowtimeDropdownDto>
+        Task<ApiResponse<dynamic>> GetShowDatesAsync(Guid movieId);
+        Task<ApiResponse<dynamic>> GetShowTimesAsync(Guid movieId, DateTime showDate);
 
         // T9: Select Seats
-        Task<ApiResponse<SeatSelectionViewModel>> GetAvailableSeatsAsync(Guid showTimeId);
-        Task<ApiResponse<SeatValidationResponse>> ValidateSeatsAsync(Guid showTimeId, List<Guid> seatIds);
+        Task<ApiResponse<dynamic>> GetSeatsAsync(Guid showTimeId);
+        Task<ApiResponse<dynamic>> SelectSeatsAsync(Guid showTimeId, List<Guid> seatIds);
+
+        // Thêm các method bị thiếu cho seat management
+        Task<ApiResponse<dynamic>> GetAvailableSeatsAsync(Guid showtimeId);
+        Task<ApiResponse<dynamic>> ValidateSeatsAsync(Guid showtimeId, List<Guid> seatIds);
 
         // T10: Confirm Booking
         Task<ApiResponse<dynamic>> ConfirmBookingAsync(BookingConfirmViewModel model);
-        
+
         // T11: Ticket Information
         Task<ApiResponse<dynamic>> GetBookingDetailAsync(Guid bookingId);
     }
@@ -55,6 +61,25 @@ namespace UI.Areas.BookingManagement.Services
             }
         }
 
+        // Thêm method này
+        public async Task<ApiResponse<dynamic>> GetMoviesDropdownAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Getting all movies from /api/v1/movie/View");
+                return await _apiService.GetAsync<dynamic>("api/v1/movie/View");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting movies");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể tải danh sách phim. Vui lòng thử lại."
+                };
+            }
+        }
+
         public async Task<ApiResponse<dynamic>> SearchMoviesAsync(string searchTerm)
         {
             try
@@ -73,49 +98,17 @@ namespace UI.Areas.BookingManagement.Services
             }
         }
 
-        //T8: Select Movie and Showtime ------------------------------------------------------------
-        public async Task<ApiResponse<List<MovieDropdownDto>>> GetMoviesDropdownAsync() // Renamed for clarity
+        public async Task<ApiResponse<dynamic>> GetShowDatesAsync(Guid movieId)
         {
             try
             {
-                _logger.LogInformation("Getting available movies for booking dropdown");
-                // Specify the full path as per your API structure (e.g., /api/v1/booking-ticket/dropdown/movies)
-                var result = await _apiService.GetAsync<ApiResponseData<List<MovieDropdownDto>>>("/api/v1/booking-ticket/dropdown/movies");
-
-                if (result.Success && result.Data != null)
-                {
-                    return new ApiResponse<List<MovieDropdownDto>> { Success = true, Data = result.Data.Data, Message = result.Data.Message };
-                }
-                return new ApiResponse<List<MovieDropdownDto>> { Success = false, Message = result.Message ?? "Failed to retrieve movies." };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting movies list for dropdown");
-                return new ApiResponse<List<MovieDropdownDto>>
-                {
-                    Success = false,
-                    Message = "Không thể tải danh sách phim. Vui lòng thử lại."
-                };
-            }
-        }
-
-        public async Task<ApiResponse<List<DateTime>>> GetShowDatesAsync(Guid movieId)
-        {
-            try
-            {
-                _logger.LogInformation("Getting show dates for movie: {MovieId}", movieId);
-                var result = await _apiService.GetAsync<ApiResponseData<List<DateTime>>>($"/api/v1/booking-ticket/dropdown/movies/{movieId}/dates");
-
-                if (result.Success && result.Data != null)
-                {
-                    return new ApiResponse<List<DateTime>> { Success = true, Data = result.Data.Data, Message = result.Data.Message };
-                }
-                return new ApiResponse<List<DateTime>> { Success = false, Message = result.Message ?? "Failed to retrieve show dates." };
+                _logger.LogInformation("Getting show dates for movie: {MovieId} from /api/v1/booking-ticket/dropdown/movies/{MovieId}/dates", movieId);
+                return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/dropdown/movies/{movieId}/dates");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting show dates");
-                return new ApiResponse<List<DateTime>>
+                return new ApiResponse<dynamic>
                 {
                     Success = false,
                     Message = "Không thể tải lịch chiếu. Vui lòng thử lại."
@@ -123,137 +116,62 @@ namespace UI.Areas.BookingManagement.Services
             }
         }
 
-        public async Task<ApiResponse<List<ShowtimeDropdownDto>>> GetShowTimesAsync(Guid movieId, DateTime showDate)
+        public async Task<ApiResponse<dynamic>> GetShowTimesAsync(Guid movieId, DateTime showDate)
         {
             try
             {
-                _logger.LogInformation("Getting show times for movie: {MovieId} on {ShowDate}", movieId, showDate);
-                // Ensure date format matches API expectation (ISO 8601, typically "yyyy-MM-ddTHH:mm:ssZ" for UTC or "yyyy-MM-dd" for date only)
-                // Based on your API, it expects "2023-04-30T00:00:00Z" for the 'date' query parameter.
-                var formattedDate = showDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
-
-                var result = await _apiService.GetAsync<ApiResponseData<List<ShowtimeDropdownDto>>>($"/api/v1/booking-ticket/dropdown/movies/{movieId}/times?date={Uri.EscapeDataString(formattedDate)}");
-
-                if (result.Success && result.Data != null)
-                {
-                    return new ApiResponse<List<ShowtimeDropdownDto>> { Success = true, Data = result.Data.Data, Message = result.Data.Message };
-                }
-                return new ApiResponse<List<ShowtimeDropdownDto>> { Success = false, Message = result.Message ?? "Failed to retrieve showtimes." };
+                _logger.LogInformation("Getting show times for movie: {MovieId} on {ShowDate} from /api/v1/booking-ticket/dropdown/movies/{MovieId}/times", movieId, showDate);
+                // Tự động thêm thời gian 10:00:00+07 vào ngày
+                var dateParam = showDate.ToString("yyyy-MM-dd") + " 10:00:00+07";
+                return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/dropdown/movies/{movieId}/times?date={Uri.EscapeDataString(dateParam)}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting show times");
-                return new ApiResponse<List<ShowtimeDropdownDto>>
+                return new ApiResponse<dynamic>
                 {
                     Success = false,
                     Message = "Không thể tải suất chiếu. Vui lòng thử lại."
                 };
             }
         }
-        // T9 ----------------------------------------------------------------------------------------------------- 
 
-        public async Task<ApiResponse<SeatSelectionViewModel>> GetAvailableSeatsAsync(Guid showTimeId)
+        public async Task<ApiResponse<dynamic>> GetSeatsAsync(Guid showTimeId)
         {
             try
             {
-                _logger.LogInformation("Getting available seats for showtime: {ShowTimeId}", showTimeId);
-
-                // Get seats
-                var seatsResult = await _apiService.GetAsync<ApiResponseData<SeatSelectionViewModel>>(
-                    $"/api/v1/booking-ticket/available?showTimeId={showTimeId}");
-
-                // Get showtime details
-                var detailsResult = await _apiService.GetAsync<ApiResponseData<ShowtimeDetailsDto>>(
-                    $"/api/v1/booking-ticket/{showTimeId}/details");
-
-                if (seatsResult.Success && seatsResult.Data != null &&
-                    detailsResult.Success && detailsResult.Data != null)
-                {
-                    var model = seatsResult.Data.Data;
-                    model.ShowtimeId = showTimeId;
-                    model.ShowDate = detailsResult.Data.Data.ShowDate;
-
-                    // Lấy thông tin chi tiết phim
-                    var movieResult = await _apiService.GetAsync<ApiResponseData<MovieDetailDto>>(
-                        $"/api/v1/movie/GetById?movieId={detailsResult.Data.Data.MovieId}");
-
-                    if (movieResult.Success && movieResult.Data != null)
-                    {
-                        var movie = movieResult.Data.Data;
-                        model.MovieTitle = movie.Title;
-                        model.MovieDescription = movie.Content;
-                        model.MovieDirector = movie.Director;
-                        model.MovieActors = movie.Actors;
-                        model.MovieRunningTime = movie.RunningTime;
-                        model.MoviePrimaryImageUrl = movie.PrimaryImageUrl;
-                        model.MovieGenres = movie.Genres?.Select(g => g.Name).ToList();
-                    }
-
-                    return new ApiResponse<SeatSelectionViewModel>
-                    {
-                        Success = true,
-                        Data = model,
-                        Message = seatsResult.Data.Message
-                    };
-                }
-
-                return new ApiResponse<SeatSelectionViewModel>
-                {
-                    Success = false,
-                    Message = seatsResult.Message ?? "Failed to retrieve seat information."
-                };
+                _logger.LogInformation("Getting seats for showtime: {ShowTimeId}", showTimeId);
+                return await _apiService.GetAsync<dynamic>($"showtimes/{showTimeId}/seats");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting available seats");
-                return new ApiResponse<SeatSelectionViewModel>
+                _logger.LogError(ex, "Error getting seats");
+                return new ApiResponse<dynamic>
                 {
                     Success = false,
-                    Message = "Không thể tải thông tin ghế. Vui lòng thử lại."
+                    Message = "Không thể tải sơ đồ ghế. Vui lòng thử lại."
                 };
             }
         }
 
-        public async Task<ApiResponse<SeatValidationResponse>> ValidateSeatsAsync(Guid showTimeId, List<Guid> seatIds)
+        public async Task<ApiResponse<dynamic>> SelectSeatsAsync(Guid showTimeId, List<Guid> seatIds)
         {
             try
             {
-                _logger.LogInformation("Validating {SeatCount} seats for showtime: {ShowTimeId}", seatIds.Count, showTimeId);
-
-                var result = await _apiService.PostAsync<ApiResponseData<SeatValidationResponse>>(
-                    $"/api/v1/booking-ticket/validate?showTimeId={showTimeId}",
-                    seatIds);
-
-                if (result.Success && result.Data != null)
-                {
-                    return new ApiResponse<SeatValidationResponse>
-                    {
-                        Success = true,
-                        Data = result.Data.Data,
-                        Message = result.Data.Message
-                    };
-                }
-
-                return new ApiResponse<SeatValidationResponse>
-                {
-                    Success = false,
-                    Message = result.Message ?? "Failed to validate seats."
-                };
+                _logger.LogInformation("Selecting {SeatCount} seats for showtime: {ShowTimeId}", seatIds.Count, showTimeId);
+                var request = new { ShowTimeId = showTimeId, SeatIds = seatIds };
+                return await _apiService.PostAsync<dynamic>("booking/select-seats", request);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error validating seats");
-                return new ApiResponse<SeatValidationResponse>
+                _logger.LogError(ex, "Error selecting seats");
+                return new ApiResponse<dynamic>
                 {
                     Success = false,
-                    Message = "Không thể xác thực ghế. Vui lòng thử lại."
+                    Message = "Không thể chọn ghế. Vui lòng thử lại."
                 };
             }
         }
-
-
-
-
 
         public async Task<ApiResponse<dynamic>> ConfirmBookingAsync(BookingConfirmViewModel model)
         {
@@ -291,6 +209,43 @@ namespace UI.Areas.BookingManagement.Services
             }
         }
 
-       
+        // Thêm implementation cho GetAvailableSeatsAsync
+        public async Task<ApiResponse<dynamic>> GetAvailableSeatsAsync(Guid showtimeId)
+        {
+            try
+            {
+                _logger.LogInformation("Getting available seats for showtime: {ShowtimeId}", showtimeId);
+                return await _apiService.GetAsync<dynamic>($"api/v1/seat/GetByShowTimeId?showTimeId={showtimeId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting available seats");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể tải thông tin ghế. Vui lòng thử lại."
+                };
+            }
+        }
+
+        // Thêm implementation cho ValidateSeatsAsync
+        public async Task<ApiResponse<dynamic>> ValidateSeatsAsync(Guid showtimeId, List<Guid> seatIds)
+        {
+            try
+            {
+                _logger.LogInformation("Validating {SeatCount} seats for showtime: {ShowtimeId}", seatIds.Count, showtimeId);
+                var request = new { ShowtimeId = showtimeId, SeatIds = seatIds };
+                return await _apiService.PostAsync<dynamic>("api/v1/booking/validate-seats", request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error validating seats");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể xác thực ghế. Vui lòng thử lại."
+                };
+            }
+        }
     }
-} 
+}

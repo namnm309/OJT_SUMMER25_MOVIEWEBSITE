@@ -674,3 +674,8 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 </body>
 </html>
+<!-- Thay thế phần header hiện tại bằng: -->
+@Html.Partial("_Header")
+
+<!-- Và thêm CSS files cần thiết vào head: -->
+<link rel="stylesheet" href="~/css/Shared/_header.css" />

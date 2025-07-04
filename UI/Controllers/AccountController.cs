@@ -127,36 +127,31 @@ namespace UI.Controllers
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
                     
-                    // Xử lý chuyển hướng dựa trên vai trò người dùng
+                    // Lấy redirectUrl từ API response
+                    userElement.TryGetProperty("redirectUrl", out var redirectUrlProp);
+                    var redirectUrl = redirectUrlProp.ValueKind == JsonValueKind.String 
+                        ? redirectUrlProp.GetString() 
+                        : null;
+
+                    // Lấy role để có thể dùng làm fallback nếu cần
                     string role = roleProp.ToString().ToLower();
                     
-                    // Nếu là AJAX request
-                    if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
-                    {
-                        return Json(new { success = true, role = role });
-                    }
-                    
-                    // Redirect dựa trên returnUrl hoặc vai trò
-                    if (!string.IsNullOrEmpty(model.ReturnUrl))
-                    {
-                        return Redirect(model.ReturnUrl);
-                    }
-                    else if (role == "admin")
-                    {
-                        return RedirectToAction("Index", "Dashboard");
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
+                    // Luôn trả về JSON cho AJAX request từ trang Login
+                    // Frontend sẽ quyết định chuyển hướng đi đâu
+                    return new JsonResult(new { 
+                        success = true, 
+                        role = role, 
+                        redirectUrl = redirectUrl 
+                    });
                 }
                 else
                 {
-                    if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                    var message = "Đăng nhập không thành công.";
+                    if (result.Data.TryGetProperty("message", out var messageProp))
                     {
-                        return Json(new { success = false, message = result.Message });
+                        message = messageProp.GetString() ?? message;
                     }
-                    ModelState.AddModelError("", result.Message);
+                    return new JsonResult(new { success = false, message = message });
                 }
             }
             catch (Exception ex)
@@ -168,7 +163,7 @@ namespace UI.Controllers
                 ModelState.AddModelError("", $"An error occurred: {ex.Message}");
             }
 
-            return Json(new { success = false, message = "Login failed" });
+            return View(model);
         }
 
         [HttpGet]

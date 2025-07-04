@@ -1,0 +1,876 @@
+@using UI.Areas.MovieManagement.Models
+@model MovieCreateViewModel
+@{
+    ViewData["Title"] = "Thêm phim mới";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cinema City</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    
+
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(223, 33, 68, 0.3);
+        }
+
+        .page-title {
+            color: #ffffff;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .page-title i {
+            color: #df2144;
+            margin-right: 1rem;
+        }
+
+        .form-card {
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-section {
+            background: #252525;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .form-section-title {
+            color: #df2144;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-section-title i {
+            margin-right: 0.5rem;
+        }
+
+        .form-label {
+            color: #ffffff;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: #0a0a0a;
+            border-color: #df2144;
+            color: #ffffff;
+            box-shadow: 0 0 0 0.25rem rgba(223, 33, 68, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: #666;
+        }
+
+        .btn-primary {
+            background: #df2144;
+            border-color: #df2144;
+        }
+
+        .btn-primary:hover {
+            background: #ff2951;
+            border-color: #ff2951;
+        }
+
+        .btn-outline-secondary {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-outline-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #ffffff;
+        }
+
+        .poster-preview {
+            background: #0a0a0a;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .poster-preview img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 0.5rem;
+        }
+
+        .image-upload-area {
+            background: #0a0a0a;
+            border: 2px dashed #df2144;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .image-upload-area:hover {
+            background: rgba(223, 33, 68, 0.1);
+        }
+
+        .showtime-item {
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-add-showtime {
+            background: transparent;
+            border: 1px solid #df2144;
+            color: #df2144;
+        }
+
+        .btn-add-showtime:hover {
+            background: #df2144;
+            color: #ffffff;
+        }
+
+        .btn-remove {
+            background: transparent;
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .btn-remove:hover {
+            background: #dc3545;
+            color: #ffffff;
+        }
+
+        /* Select2 Dark Theme */
+        .select2-container--bootstrap-5 .select2-selection {
+            background: #0a0a0a !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff;
+        }
+        
+        .select2-container--bootstrap-5 .select2-selection__rendered {
+            color: #ffffff !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
+            background: #df2144;
+            border-color: #df2144;
+            color: #ffffff;
+        }
+        
+        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove {
+            color: #ffffff;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            background: #1a1a1a;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .select2-container--bootstrap-5 .select2-search__field {
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option {
+            color: #ffffff;
+        }
+        
+        .select2-container--bootstrap-5 .select2-results__option--selectable {
+            color: #ffffff;
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--highlighted[aria-selected] {
+            background: #df2144;
+            color: #ffffff;
+        }
+        
+        .select2-container--bootstrap-5 .select2-results__option[aria-selected="true"] {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        .validation-summary-errors {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .text-danger {
+            color: #ff6b6b !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="page-title">
+                    <i class="fas fa-plus-circle"></i>
+                    @ViewData["Title"]
+        </h1>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Quay lại
+        </a>
+    </div>
+        </div>
+
+        <form asp-action="Create" method="post" id="createMovieForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger validation-summary-errors"></div>
+
+                <div class="row">
+                <div class="col-lg-8">
+                    <!-- Thông tin cơ bản -->
+                    <div class="form-card">
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="fas fa-info-circle"></i>
+                                Thông tin cơ bản
+                            </h5>
+                            
+                        <div class="mb-3">
+                                <label asp-for="Title" class="form-label">Tên phim</label>
+                            <input asp-for="Title" class="form-control" placeholder="Nhập tên phim" required />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="ReleaseDate" class="form-label">Ngày phát hành</label>
+                                    <input asp-for="ReleaseDate" class="form-control" type="date" required />
+                                    <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="EndDate" class="form-label">Ngày kết thúc</label>
+                                    <input asp-for="EndDate" class="form-control" type="date" required />
+                                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="ProductionCompany" class="form-label">Hãng sản xuất</label>
+                                    <input asp-for="ProductionCompany" class="form-control" placeholder="Nhập hãng sản xuất" />
+                                    <span asp-validation-for="ProductionCompany" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Director" class="form-label">Đạo diễn</label>
+                                    <input asp-for="Director" class="form-control" placeholder="Nhập tên đạo diễn" />
+                                    <span asp-validation-for="Director" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="RunningTime" class="form-label">Thời lượng (phút)</label>
+                                    <input asp-for="RunningTime" class="form-control" type="number" min="1" placeholder="VD: 120" required />
+                                    <span asp-validation-for="RunningTime" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Version" class="form-label">Phiên bản</label>
+                                    <select asp-for="Version" class="form-select" required>
+                                        <option value="">-- Chọn phiên bản --</option>
+                                        <option value="2D">2D</option>
+                                        <option value="3D">3D</option>
+                                    </select>
+                                    <span asp-validation-for="Version" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thông tin chi tiết -->
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="fas fa-film"></i>
+                                Thông tin chi tiết
+                            </h5>
+
+                        <div class="mb-3">
+                                <label asp-for="Actors" class="form-label">Diễn viên</label>
+                                <textarea asp-for="Actors" class="form-control" rows="2" placeholder="Nhập danh sách diễn viên, ngăn cách bởi dấu phẩy"></textarea>
+                            <span asp-validation-for="Actors" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                                <label asp-for="TrailerUrl" class="form-label">URL Trailer</label>
+                                <div class="input-group">
+                                    <input asp-for="TrailerUrl" id="trailerUrlInput" class="form-control" placeholder="URL sẽ được tạo sau khi tải lên" readonly />
+                                    <button class="btn btn-outline-secondary" type="button" id="upload_widget_trailer">
+                                        <i class="fas fa-cloud-upload-alt me-2"></i>Tải lên Trailer
+                                    </button>
+                                </div>
+                            <span asp-validation-for="TrailerUrl" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                                <label asp-for="Content" class="form-label">Nội dung phim</label>
+                                <textarea asp-for="Content" class="form-control" rows="4" placeholder="Mô tả nội dung phim..."></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                                <label class="form-label">Thể loại</label>
+                                <select name="Genres" id="genreSelect" class="form-select" multiple="multiple" required>
+                                    <!-- Will be populated by JavaScript -->
+                                </select>
+                                <small class="text-muted">Chọn một hoặc nhiều thể loại</small>
+                        </div>
+
+                        <!-- Cài đặt đặc biệt -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input asp-for="IsFeatured" class="form-check-input" type="checkbox" />
+                                    <label asp-for="IsFeatured" class="form-check-label">
+                                        <i class="fas fa-star text-warning me-2"></i>Phim nổi bật (Hero banner)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input asp-for="IsRecommended" class="form-check-input" type="checkbox" />
+                                    <label asp-for="IsRecommended" class="form-check-label">
+                                        <i class="fas fa-thumbs-up text-primary me-2"></i>Phim đề xuất
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Rating" class="form-label">Điểm đánh giá</label>
+                            <input asp-for="Rating" class="form-control" type="number" min="0" max="10" step="0.1" placeholder="VD: 8.5" />
+                            <small class="text-muted">Từ 0.0 đến 10.0</small>
+                            <span asp-validation-for="Rating" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                        <!-- Lịch chiếu -->
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="fas fa-calendar-alt"></i>
+                                Lịch chiếu
+                            </h5>
+
+                            <div id="showtimesList">
+                                <div class="showtime-item" data-index="0">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Phòng chiếu</label>
+                                            <select name="ShowTimes[0].RoomId" class="form-select room-select" required>
+                                                <option value="">-- Chọn phòng --</option>
+                                                <!-- Will be populated by JavaScript -->
+                                            </select>
+                                    </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Ngày giờ chiếu</label>
+                                            <input type="datetime-local" name="ShowTimes[0].ShowDate" class="form-control" required />
+                                </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-add-showtime" id="addShowtime">
+                                <i class="fas fa-plus me-2"></i>Thêm lịch chiếu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Upload hình ảnh -->
+                    <div class="form-card">
+                        <div class="form-section">
+                            <h5 class="form-section-title">
+                                <i class="fas fa-image"></i>
+                                Hình ảnh phim
+                            </h5>
+
+                                    <div class="poster-preview mb-3">
+                                <img id="posterPreview" src="https://via.placeholder.com/300x450/1a1a1a/666666?text=Poster+Phim" alt="Poster preview" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                <label asp-for="ImageUrl" class="form-label">URL hình ảnh chính</label>
+                                <div class="input-group">
+                                    <input asp-for="ImageUrl" id="imageUrlInput" class="form-control" placeholder="URL sẽ được tạo sau khi tải lên" required readonly />
+                                    <button class="btn btn-outline-secondary" type="button" id="upload_widget_poster">
+                                        <i class="fas fa-cloud-upload-alt me-2"></i>Tải lên Poster
+                                    </button>
+                                </div>
+                                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                                    </div>
+
+                            <div class="image-upload-area" id="additionalImages">
+                                <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                                <p class="mb-0">Thêm hình ảnh khác (tùy chọn)</p>
+                                <small class="text-muted">Click để thêm URL hình ảnh</small>
+                            </div>
+
+                            <div id="additionalImagesList" class="mt-3">
+                                <!-- Additional images will be added here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- Nút hành động -->
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg px-5">
+                        <i class="fas fa-save me-2"></i>Lưu phim
+                    </button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-5 ms-3">
+                        <i class="fas fa-times me-2"></i>Hủy
+                    </a>
+                </div>
+            </form>
+        </div>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>  
+
+    <script>
+        $(document).ready(function () {
+            let showtimeIndex = 1;
+            let genres = [];
+            let cinemaRooms = [];
+
+            // Set default dates (chỉ cho release/end date)
+            var today = new Date();
+            var todayStr = today.toISOString().split('T')[0];
+            var nextMonthStr = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate()).toISOString().split('T')[0];
+
+            // Set default values if empty
+            if (!$('#ReleaseDate').val()) {
+                $('#ReleaseDate').val(todayStr);
+            }
+            if (!$('#EndDate').val()) {
+                $('#EndDate').val(nextMonthStr);
+            }
+
+            // KHÔNG set giá trị mặc định cho datetime-local để user tự chọn
+
+            // Initialize Select2 for genres
+            $('#genreSelect').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Chọn thể loại phim',
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Helper function to extract data from API response
+            function extractDataFromResponse(response, dataName = 'data') {
+                console.log(`=== ${dataName.toUpperCase()} RESPONSE DEBUG ===`);
+                console.log('Response type:', typeof response);
+                console.log('Response is array:', Array.isArray(response));
+                console.log('Full response:', response);
+
+                if (Array.isArray(response)) {
+                    console.log(`${dataName} is direct array with ${response.length} items`);
+                    return response;
+                }
+
+                if (response && response.data && response.data.data && Array.isArray(response.data.data)) {
+                    console.log(`${dataName} found in response.data.data with ${response.data.data.length} items`);
+                    return response.data.data;
+                }
+
+                if (response && response.data && Array.isArray(response.data)) {
+                    console.log(`${dataName} found in response.data with ${response.data.length} items`);
+                    return response.data;
+                }
+
+                if (response && response.success && response.data && response.data.data && Array.isArray(response.data.data)) {
+                    console.log(`${dataName} found in response.success.data.data with ${response.data.data.length} items`);
+                    return response.data.data;
+                }
+
+                console.error(`No valid ${dataName} array found in response`);
+                console.log('Available properties:', Object.keys(response || {}));
+                return [];
+            }
+
+            // Load genres from API
+            $.ajax({
+                url: '@Url.Action("GetGenres", "Movies", new { area = "MovieManagement" })',
+                method: 'GET',
+                success: function (response) {
+                    console.log('Full genres response:', response);
+
+                    let genresData = [];
+                    if (response && response.data && response.data.data && Array.isArray(response.data.data)) {
+                        genresData = response.data.data;
+                    }
+                    else if (response && response.data && Array.isArray(response.data)) {
+                        genresData = response.data;
+                    }
+                    else if (Array.isArray(response)) {
+                        genresData = response;
+                    }
+
+                    console.log('Extracted genres data:', genresData);
+
+                    if (genresData.length > 0) {
+                        genres = genresData;
+                        $('#genreSelect').empty();
+
+                        genres.forEach(function (genre) {
+                            console.log('Adding genre:', genre.name, 'ID:', genre.id);
+                            var option = new Option(genre.name, genre.id, false, false);
+                            $('#genreSelect').append(option);
+                        });
+
+                        $('#genreSelect').trigger('change');
+                        console.log(`Successfully loaded ${genres.length} genres`);
+                    } else {
+                        console.error('No genres found in response');
+                        alert('Không tìm thấy dữ liệu thể loại phim.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Failed to load genres:', error);
+                    alert('Không thể tải danh sách thể loại. Vui lòng kiểm tra kết nối với server.');
+                }
+            });
+
+            // Load cinema rooms from API
+            $.ajax({
+                url: '@Url.Action("GetCinemaRooms", "Movies", new { area = "MovieManagement" })',
+                method: 'GET',
+                success: function (response) {
+                    console.log('Full cinema rooms response:', response);
+
+                    let roomsData = [];
+                    if (response && response.data && response.data.data && Array.isArray(response.data.data)) {
+                        roomsData = response.data.data;
+                    }
+                    else if (response && response.data && Array.isArray(response.data)) {
+                        roomsData = response.data;
+                    }
+                    else if (Array.isArray(response)) {
+                        roomsData = response;
+                    }
+
+                    console.log('Extracted rooms data:', roomsData);
+
+                    if (roomsData.length > 0) {
+                        cinemaRooms = roomsData;
+                        updateRoomSelects();
+                        console.log(`Successfully loaded ${cinemaRooms.length} cinema rooms`);
+                    } else {
+                        console.error('No cinema rooms found in response');
+                        alert('Không tìm thấy dữ liệu phòng chiếu.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Failed to load cinema rooms:', error);
+                    alert('Không thể tải danh sách phòng chiếu. Vui lòng kiểm tra kết nối với server.');
+                }
+            });
+
+            // Update all room selects with cinema rooms
+            function updateRoomSelects() {
+                $('.room-select').each(function () {
+                    var selectedValue = $(this).val();
+                    $(this).empty().append('<option value="">-- Chọn phòng --</option>');
+                    cinemaRooms.forEach(room => {
+                        $(this).append(new Option(`${room.roomName} (${room.totalSeats} ghế)`, room.id));
+                    });
+                    if (selectedValue) {
+                        $(this).val(selectedValue);
+                    }
+                });
+            }
+
+            // Preview poster image
+            $('#ImageUrl').on('input', function () {
+                var imageUrl = $(this).val();
+                if (imageUrl) {
+                    $('#posterPreview').attr('src', imageUrl);
+                } else {
+                    $('#posterPreview').attr('src', 'https://via.placeholder.com/300x450/1a1a1a/666666?text=Poster+Phim');
+                }
+            });
+
+            // Add showtime KHÔNG có giá trị mặc định
+            $('#addShowtime').click(function () {
+                var newShowtime = `
+                    <div class="showtime-item" data-index="${showtimeIndex}">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phòng chiếu</label>
+                                <select name="ShowTimes[${showtimeIndex}].RoomId" class="form-select room-select" required>
+                                    <option value="">-- Chọn phòng --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày giờ chiếu</label>
+                                <div class="input-group">
+                                    <input type="datetime-local" name="ShowTimes[${showtimeIndex}].ShowDate" class="form-control" required />
+                                    <button type="button" class="btn btn-remove" onclick="removeShowtime(${showtimeIndex})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                $('#showtimesList').append(newShowtime);
+                updateRoomSelects();
+                showtimeIndex++;
+            });
+
+            // Remove showtime
+            window.removeShowtime = function (index) {
+                $(`[data-index="${index}"]`).remove();
+            };
+
+            // Add additional image
+            let imageIndex = 1;
+            $('#additionalImages').click(function () {
+                var imageUrl = prompt('Nhập URL hình ảnh:');
+                if (imageUrl) {
+                    var imageHtml = `
+                        <div class="mb-2" id="image-${imageIndex}">
+                            <div class="input-group">
+                                <input type="hidden" name="Images[${imageIndex}].ImageUrl" value="${imageUrl}" />
+                                <input type="hidden" name="Images[${imageIndex}].IsPrimary" value="false" />
+                                <input type="hidden" name="Images[${imageIndex}].DisplayOrder" value="${imageIndex + 1}" />
+                                <input type="text" class="form-control" value="${imageUrl}" readonly />
+                                <button type="button" class="btn btn-remove" onclick="removeImage(${imageIndex})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    $('#additionalImagesList').append(imageHtml);
+                    imageIndex++;
+                }
+            });
+
+            // Remove additional image
+            window.removeImage = function (index) {
+                $(`#image-${index}`).remove();
+            };
+
+            // Validation cho datetime chỉ để kiểm tra không được để trống và phải là thời gian tương lai
+            $(document).on('change', 'input[type="datetime-local"]', function () {
+                var selectedTime = new Date($(this).val());
+                var now = new Date();
+
+                if (selectedTime < now) {
+                    alert('Thời gian chiếu không thể là thời gian trong quá khứ!');
+                    $(this).focus(); // Focus lại để user chọn lại
+                }
+            });
+
+            // Form submission
+            $('#createMovieForm').on('submit', function (e) {
+                // Validate showtimes
+                var hasValidShowtime = false;
+                var hasInvalidTime = false;
+                var now = new Date();
+
+                $('input[name^="ShowTimes"][name$=".ShowDate"]').each(function () {
+                    if ($(this).val()) {
+                        hasValidShowtime = true;
+                        var showTime = new Date($(this).val());
+                        if (showTime < now) {
+                            hasInvalidTime = true;
+                        }
+                    }
+                });
+
+                if (!hasValidShowtime) {
+                    e.preventDefault();
+                    alert('Vui lòng thêm ít nhất một lịch chiếu');
+                    return false;
+                }
+
+                if (hasInvalidTime) {
+                    e.preventDefault();
+                    alert('Có lịch chiếu trong quá khứ, vui lòng kiểm tra lại!');
+                    return false;
+                }
+
+                // Add primary image to Images array
+                var primaryImageUrl = $('#ImageUrl').val();
+                if (primaryImageUrl) {
+                    $(this).append(`
+                        <input type="hidden" name="Images[0].ImageUrl" value="${primaryImageUrl}" />
+                        <input type="hidden" name="Images[0].IsPrimary" value="true" />
+                        <input type="hidden" name="Images[0].DisplayOrder" value="1" />
+                    `);
+                }
+
+                // Convert genre select to GenreIds
+                var selectedGenres = $('#genreSelect').val();
+                if (selectedGenres && selectedGenres.length > 0) {
+                    selectedGenres.forEach((genreId, index) => {
+                        $(this).append(`<input type="hidden" name="GenreIds[${index}]" value="${genreId}" />`);
+                    });
+                } else {
+                    e.preventDefault();
+                    alert('Vui lòng chọn ít nhất một thể loại phim');
+                    return false;
+                }
+            });
+
+            // Cloudinary Upload Widget for Trailer
+            var myWidget = cloudinary.createUploadWidget({
+                cloudName: 'swp391image',
+                uploadPreset: 'ml_default', // Bạn có thể cần tạo một upload preset trong Cloudinary
+                sources: ["local", "url", "camera", "google_drive", "dropbox"],
+                multiple: false,
+                cropping: false,
+                resourceType: 'video', // Chỉ cho phép tải lên video
+                folder: 'trailers', // Tự động lưu vào thư mục 'trailers'
+                clientAllowedFormats: ["mp4", "mov", "avi", "mkv", "webm"],
+                theme: "dark",
+                styles: {
+                    palette: {
+                        window: "#1A1A1A",
+                        sourceBg: "#0A0A0A",
+                        windowBorder: "#DF2144",
+                        tabIcon: "#FFFFFF",
+                        inactiveTabIcon: "#8E9FBF",
+                        menuIcons: "#FFFFFF",
+                        link: "#DF2144",
+                        action: "#DF2144",
+                        inProgress: "#DF2144",
+                        complete: "#53ad9d",
+                        error: "#c43737",
+                        textDark: "#000000",
+                        textLight: "#FFFFFF"
+                    },
+                    fonts: {
+                        default: null,
+                        "'Inter', sans-serif": {
+                            url: "https://fonts.googleapis.com/css?family=Inter",
+                            active: true
+                        }
+                    }
+                }
+            }, (error, result) => { 
+                if (!error && result && result.event === "success") { 
+                    console.log('Tải trailer thành công! ', result.info); 
+                    $('#trailerUrlInput').val(result.info.secure_url);
+                }
+            });
+
+            document.getElementById("upload_widget_trailer").addEventListener("click", function(){
+                myWidget.open();
+            }, false);
+
+            // Cloudinary Upload Widget for Poster
+            var posterWidget = cloudinary.createUploadWidget({
+                cloudName: 'swp391image',
+                uploadPreset: 'ml_default',
+                sources: ["local", "url", "google_drive", "dropbox"],
+                multiple: false,
+                cropping: true,
+                croppingAspectRatio: 2/3,
+                resourceType: 'image',
+                folder: 'posters',
+                clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
+                theme: "dark",
+                 styles: {
+                    palette: {
+                        window: "#1A1A1A",
+                        sourceBg: "#0A0A0A",
+                        windowBorder: "#DF2144",
+                        tabIcon: "#FFFFFF",
+                        inactiveTabIcon: "#8E9FBF",
+                        menuIcons: "#FFFFFF",
+                        link: "#DF2144",
+                        action: "#DF2144",
+                        inProgress: "#DF2144",
+                        complete: "#53ad9d",
+                        error: "#c43737",
+                        textDark: "#000000",
+                        textLight: "#FFFFFF"
+                    },
+                    fonts: {
+                        default: null,
+                        "'Inter', sans-serif": {
+                            url: "https://fonts.googleapis.com/css?family=Inter",
+                            active: true
+                        }
+                    }
+                }
+            }, (error, result) => { 
+                if (!error && result && result.event === "success") { 
+                    console.log('Tải poster thành công! ', result.info); 
+                    $('#imageUrlInput').val(result.info.secure_url);
+                    $('#posterPreview').attr('src', result.info.secure_url);
+                }
+            });
+
+            document.getElementById("upload_widget_poster").addEventListener("click", function(){
+                posterWidget.open();
+            }, false);
+
+            // Update poster preview when URL is pasted
+            $('#imageUrlInput').on('input', function() {
+                var imageUrl = $(this).val();
+                if (imageUrl) {
+                    $('#posterPreview').attr('src', imageUrl);
+                } else {
+                    $('#posterPreview').attr('src', 'https://via.placeholder.com/300x450/1a1a1a/666666?text=Poster+Phim');
+                }
+            });
+
+        });
+    </script>
+</body>
+</html> 

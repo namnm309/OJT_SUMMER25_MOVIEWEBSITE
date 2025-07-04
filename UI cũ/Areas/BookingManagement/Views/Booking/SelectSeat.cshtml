@@ -1,0 +1,205 @@
+@model SelectSeatViewModel
+@{
+    ViewData["Title"] = "Chọn Ghế";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid bg-dark text-white min-vh-100 py-4">
+    <div class="text-center mb-4">
+        <h1 class="text-danger">Chọn Ghế Ngồi</h1>
+        <p class="text-muted">@Model.MovieTitle - @Model.CinemaRoom - @Model.ShowTime.ToString("dd/MM/yyyy HH:mm")</p>
+    </div>
+
+    <div class="row">
+        <!-- Seat Map -->
+        <div class="col-lg-8">
+            <div class="text-center mb-4">
+                <div class="bg-danger text-white py-2 px-5 rounded-pill d-inline-block">
+                    <strong>MÀN HÌNH</strong>
+                </div>
+            </div>
+            
+            <div class="seat-map bg-secondary p-4 rounded" id="seatMap">
+                @{
+                    var seatsByRow = Model.Seats.GroupBy(s => s.Row).OrderBy(g => g.Key);
+                }
+                
+                @foreach (var rowGroup in seatsByRow)
+                {
+                    <div class="d-flex justify-content-center align-items-center mb-2">
+                        <span class="text-danger fw-bold me-3">@((char)('A' + rowGroup.Key - 1))</span>
+                        
+                        @foreach (var seat in rowGroup.OrderBy(s => s.Column))
+                        {
+                            var seatClass = "seat btn btn-sm me-1";
+                            if (seat.IsOccupied) 
+                                seatClass += " btn-dark disabled";
+                            else if (seat.Type == SeatType.VIP) 
+                                seatClass += " btn-warning";
+                            else 
+                                seatClass += " btn-success";
+                            
+                            <button type="button" class="@seatClass" 
+                                    data-seat-id="@seat.Id"
+                                    data-seat-number="@seat.SeatNumber"
+                                    data-seat-price="@seat.Price"
+                                    data-seat-type="@seat.Type.ToString()"
+                                    title="Ghế @seat.SeatNumber - @String.Format("{0:N0}", seat.Price) VNĐ"
+                                    @(seat.IsOccupied ? "disabled" : "")>
+                                @seat.Column.ToString("D2")
+                            </button>
+                        }
+                        
+                        <span class="text-danger fw-bold ms-3">@((char)('A' + rowGroup.Key - 1))</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Legend -->
+            <div class="d-flex justify-content-center mt-4 flex-wrap">
+                <div class="me-4 mb-2">
+                    <button class="btn btn-success btn-sm me-2" disabled></button>
+                    <span>Ghế thường</span>
+                </div>
+                <div class="me-4 mb-2">
+                    <button class="btn btn-warning btn-sm me-2" disabled></button>
+                    <span>Ghế VIP</span>
+                </div>
+                <div class="me-4 mb-2">
+                    <button class="btn btn-danger btn-sm me-2" disabled></button>
+                    <span>Ghế đã chọn</span>
+                </div>
+                <div class="mb-2">
+                    <button class="btn btn-dark btn-sm me-2" disabled></button>
+                    <span>Ghế đã bán</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Summary -->
+        <div class="col-lg-4">
+            <div class="bg-secondary p-4 rounded">
+                <h4 class="text-danger mb-3">Thông tin đặt vé</h4>
+                
+                <div class="mb-3">
+                    <h6>Số ghế đã chọn: <span id="seatCount" class="text-danger">0</span></h6>
+                    <small class="text-muted">Tối đa @Model.MaxSeats ghế</small>
+                </div>
+
+                <div class="mb-3">
+                    <h6>Ghế đã chọn:</h6>
+                    <div id="selectedSeatsList" class="text-warning">
+                        Chưa chọn ghế nào
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h5>Tổng tiền: <span id="totalPrice" class="text-success">0 VNĐ</span></h5>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-light" onclick="history.back()">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </button>
+                    <button type="button" class="btn btn-danger" id="continueBtn" disabled>
+                        <i class="fas fa-arrow-right"></i> Tiếp tục
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .seat {
+        width: 35px;
+        height: 35px;
+        margin: 2px;
+        font-size: 0.7rem;
+        border-radius: 8px;
+    }
+    
+    .seat:hover:not(:disabled) {
+        transform: scale(1.1);
+    }
+    
+    .seat.selected {
+        background-color: #dc3545 !important;
+        border-color: #dc3545 !important;
+        color: white !important;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const seats = document.querySelectorAll('.seat:not([disabled])');
+    const seatCountElement = document.getElementById('seatCount');
+    const selectedSeatsListElement = document.getElementById('selectedSeatsList');
+    const totalPriceElement = document.getElementById('totalPrice');
+    const continueBtn = document.getElementById('continueBtn');
+    
+    let selectedSeats = [];
+    let maxSeats = @Model.MaxSeats;
+
+    seats.forEach(seat => {
+        seat.addEventListener('click', function() {
+            const seatId = this.dataset.seatId;
+            const seatNumber = this.dataset.seatNumber;
+            const seatPrice = parseFloat(this.dataset.seatPrice);
+            const seatType = this.dataset.seatType;
+
+            if (this.classList.contains('selected')) {
+                // Deselect
+                this.classList.remove('selected');
+                this.classList.add(seatType === 'VIP' ? 'btn-warning' : 'btn-success');
+                this.classList.remove('btn-danger');
+                
+                selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+            } else {
+                // Select (if under limit)
+                if (selectedSeats.length < maxSeats) {
+                    this.classList.add('selected');
+                    this.classList.remove('btn-warning', 'btn-success');
+                    this.classList.add('btn-danger');
+                    
+                    selectedSeats.push({
+                        id: seatId,
+                        number: seatNumber,
+                        price: seatPrice,
+                        type: seatType
+                    });
+                } else {
+                    alert(`Bạn chỉ có thể chọn tối đa ${maxSeats} ghế.`);
+                }
+            }
+            
+            updateDisplay();
+        });
+    });
+
+    continueBtn.addEventListener('click', function() {
+        if (selectedSeats.length > 0) {
+            const seatIds = selectedSeats.map(s => s.id).join(',');
+            const showTimeId = '@Model.ShowTimeId';
+            window.location.href = `/BookingManagement/Booking/ConfirmBooking?showTimeId=${showTimeId}&seatIds=${seatIds}`;
+        }
+    });
+
+    function updateDisplay() {
+        seatCountElement.textContent = selectedSeats.length;
+        
+        if (selectedSeats.length === 0) {
+            selectedSeatsListElement.innerHTML = 'Chưa chọn ghế nào';
+        } else {
+            selectedSeatsListElement.innerHTML = selectedSeats.map(seat => 
+                `<span class="badge bg-danger me-1">${seat.number}</span>`
+            ).join('');
+        }
+
+        const total = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
+        totalPriceElement.textContent = new Intl.NumberFormat('vi-VN').format(total) + ' VNĐ';
+        
+        continueBtn.disabled = selectedSeats.length === 0;
+    }
+});
+</script> 

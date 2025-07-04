@@ -1,6 +1,9 @@
 ﻿using ApplicationLayer.DTO.BookingTicketManagement;
 using ApplicationLayer.Services.BookingTicketManagement;
+﻿using ApplicationLayer.Services.BookingTicketManagement;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ControllerLayer.Controllers
 {
@@ -27,14 +30,14 @@ namespace ControllerLayer.Controllers
         }
 
         [HttpGet("dropdown/movies/{movieId}/dates")]
-        public async Task<IActionResult> GetShowDates(Guid movieId) //Lấy danh sách ngày chiếu cho phim
+        public async Task<IActionResult> GetShowDates(Guid movieId) // Lấy danh sách ngày chiếu theo phim
         {
             _logger.LogInformation("Get ShowDates");
             return await _bookingTicketService.GetShowDatesByMovie(movieId);
         } 
 
         [HttpGet("dropdown/movies/{movieId}/times")]
-        public async Task<IActionResult> GetShowTimes(Guid movieId, [FromQuery] DateTime date) //Lấy các giờ chiếu
+        public async Task<IActionResult> GetShowTimes(Guid movieId, [FromQuery] DateTime date) // Lấy giờ chiếu theo phim và ngày
         {
             _logger.LogInformation("Get ShowTimes");
             return await _bookingTicketService.GetShowTimesByMovieAndDate(movieId, date);
@@ -58,7 +61,7 @@ namespace ControllerLayer.Controllers
             return await _seatService.ValidateSelectedSeats(showTimeId, seatIds);
         }
 
-        [HttpGet("{showTimeId}/details")] // New endpoint
+        [HttpGet("{showTimeId}/details")] // Endpoint lấy chi tiết suất chiếu
         public async Task<IActionResult> GetShowTimeDetails(Guid showTimeId)
         {
             _logger.LogInformation("Getting details for showtime: {ShowTimeId}", showTimeId);
@@ -69,7 +72,7 @@ namespace ControllerLayer.Controllers
         public async Task<IActionResult> ConfirmBooking([FromBody] ConfirmBookingRequestDto request)
         {
             _logger.LogInformation("Confirming booking for ShowtimeId: {ShowTimeId}, UserId: {UserId}",
-                request.ShowtimeId, request.UserId); // Log UserID nếu có
+                request.ShowtimeId, request.UserId); // Ghi log thông tin người dùng
 
             return await _bookingTicketService.ConfirmUserBooking(request);
         }
@@ -110,5 +113,20 @@ namespace ControllerLayer.Controllers
             _logger.LogInformation("Getting booking details for code: {BookingCode}", bookingCode);
             return await _bookingTicketService.GetBookingDetails(bookingCode);
         }
+
+        [HttpGet("{bookingId}/details")]
+        [Authorize(Roles = "Member")]
+        public async Task<IActionResult> GetBookingDetails(Guid bookingId)
+        {
+            // Get user ID from claims
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+            {
+                return Unauthorized("User not authenticated");
+            }
+
+            return await _bookingTicketService.GetBookingDetailsAsync(bookingId, userId);
+        }
+
     }
 }

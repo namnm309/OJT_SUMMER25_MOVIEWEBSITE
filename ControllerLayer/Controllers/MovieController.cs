@@ -97,6 +97,47 @@ namespace ControllerLayer.Controllers
             return await _movieService.ChangeStatusGenre(Id);
         }
 
+        [HttpPatch("SetFeatured")]
+        public async Task<IActionResult> SetFeatured([FromQuery] Guid movieId, [FromQuery] bool isFeatured)
+        {
+            _logger.LogInformation("Set Featured Movie: {MovieId} to {IsFeatured}", movieId, isFeatured);
+            return await _movieService.SetFeatured(movieId, isFeatured);
+        }
+
+        [HttpPatch("SetRecommended")]
+        public async Task<IActionResult> SetRecommended([FromQuery] Guid movieId, [FromQuery] bool isRecommended)
+        {
+            _logger.LogInformation("Set Recommended Movie: {MovieId} to {IsRecommended}", movieId, isRecommended);
+            return await _movieService.SetRecommended(movieId, isRecommended);
+        }
+
+        [HttpPatch("UpdateRating")]
+        public async Task<IActionResult> UpdateRating([FromQuery] Guid movieId, [FromQuery] double rating)
+        {
+            _logger.LogInformation("Update Rating Movie: {MovieId} to {Rating}", movieId, rating);
+            return await _movieService.UpdateRating(movieId, rating);
+        }
+
+        [HttpGet("GetRecommended")]
+        public async Task<IActionResult> GetRecommended()
+        {
+            _logger.LogInformation("Get Recommended Movies");
+            return await _movieService.GetRecommended();
+        }
+
+        [HttpGet("GetComingSoon")]
+        public async Task<IActionResult> GetComingSoon()
+        {
+            _logger.LogInformation("Get Coming Soon Movies");
+            return await _movieService.GetComingSoon();
+        }
+
+        [HttpGet("GetNowShowing")]
+        public async Task<IActionResult> GetNowShowing()
+        {
+            _logger.LogInformation("Get Now Showing Movies");
+            return await _movieService.GetNowShowing();
+        }
 
     }
 }

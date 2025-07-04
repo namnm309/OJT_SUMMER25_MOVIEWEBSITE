@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Quản lý thành viên";
+    ViewData["Title"] = "Quản lý người dùng";
     Layout = null;
 }
 
@@ -8,427 +8,1274 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Cinema City</title>
+    <title>@ViewData["Title"] - Cinema Management</title>
     
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Dashboard CSS -->
-    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/new-dashboard.css" />
+    
+    <style>
+        /* User Management Specific Styles */
+        .user-management-content {
+            padding: 2rem;
+        }
+        
+        /* Page Header */
+        .user-page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .user-page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .user-page-subtitle {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        /* Loading States */
+        .loading-spinner {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+        
+        .loading-spinner i {
+            font-size: 2rem;
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+        }
+        
+        .loading-spinner p {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+
+        
+        /* Controls Section */
+        .user-controls {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .user-search-box {
+            position: relative;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .user-search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            z-index: 2;
+        }
+        
+        .user-search-input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 1px solid var(--content-border);
+            border-radius: 8px;
+            background: var(--content-secondary);
+            color: var(--text-dark);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .user-search-input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: var(--content-bg);
+            outline: none;
+        }
+
+        .user-search-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .btn-add-user {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-add-user:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+
+
+        
+        /* User Table Container */
+        .user-table-container {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .user-table-container.loading {
+            opacity: 0.7;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .loading-spinner-small {
+            color: var(--primary-purple);
+            font-size: 1.5rem;
+        }
+        
+        /* User Table */
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-dark);
+        }
+
+        .user-table thead {
+            background: var(--content-secondary);
+        }
+        
+        .user-table thead th {
+            padding: 16px 12px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--content-border);
+            text-align: left;
+        }
+        
+        .user-table tbody tr {
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            transition: background-color 0.2s ease;
+        }
+
+        .user-table tbody tr:hover {
+            background: var(--content-secondary);
+        }
+        
+        .user-table tbody td {
+            padding: 16px 12px;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+
+        /* Loading overlay styles */
+        .user-table-container.loading {
+            position: relative;
+            transition: opacity 0.2s ease;
+            opacity: 0.7;
+        }
+        
+
+        
+        /* Pagination Styles */
+        .user-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            margin-top: 1.5rem;
+        }
+
+        .pagination-info {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-pagination {
+            padding: 8px 12px;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn-pagination:hover:not(:disabled) {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .btn-pagination:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-numbers {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-number {
+            padding: 8px 12px;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .page-number:hover {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .page-number.active {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .pagination-size {
+            position: relative;
+        }
+        
+        .pagination-size select {
+            padding: 8px 12px;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+        
+        .mini-loading {
+            margin-left: 8px;
+            color: var(--primary-purple);
+        }
+        
+
+        
+
+        
+        /* User Avatar */
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* User Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            max-width: 200px;
+        }
+
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-details h6 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .user-details small {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Role Badges */
+        .role-admin {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .role-staff {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .role-member {
+            background: #27ae60;
+            color: white;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background-color: var(--content-bg);
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--content-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--content-hover);
+            color: var(--text-dark);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        @@keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-view {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .btn-view:hover {
+            background-color: #1976d2;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+        
+        .btn-edit {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .btn-edit:hover {
+            background-color: #f57c00;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 124, 0, 0.3);
+        }
+        
+        .btn-delete {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .btn-delete:hover {
+            background-color: #d32f2f;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+        }
+        
+        .btn-toggle {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .btn-toggle:hover {
+            background-color: #7b1fa2;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(123, 31, 162, 0.3);
+        }
+        
+        /* Ripple Effect */
+        .btn-action {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-action::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s;
+            transform: translate(-50%, -50%);
+        }
+        
+        .btn-action:active::before {
+            width: 100px;
+            height: 100px;
+            top: 50%;
+            left: 50%;
+        }
+        
+        /* Modal Styles */
+        .modal-content {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            border: none;
+        }
+        
+        .modal-header .btn-close {
+            filter: invert(1);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .modal-footer {
+            border: none;
+            padding: 1rem 2rem 2rem;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.75rem;
+        }
+        
+        .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        /* Animation */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .user-page-title {
+                font-size: 1.5rem;
+            }
+            
+            .user-controls-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .user-search-box {
+                min-width: auto;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            
+            .user-pagination {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <!-- Header -->
-    <header class="dashboard-header">
-        <div class="header-content">
-            <div class="brand-section">
-                <a href="@Url.Action("Index", "Home")" class="d-flex align-items-center text-decoration-none">
-                    <div class="brand-logo"></div>
-                    <div class="ms-3">
-                        <div class="brand-name">Cinema City</div>
-                        <div class="brand-subtitle">Rạp chiếu phim hiện đại</div>
+    <!-- New Dashboard Layout -->
+    <div class="new-dashboard-container">
+        <!-- Sidebar -->
+        <aside class="new-dashboard-sidebar">
+            <!-- Sidebar Header -->
+            <div class="new-sidebar-header">
+                <a href="@Url.Action("Index", "Home")" class="new-sidebar-brand">
+                    <div class="new-brand-logo"></div>
+                    <div class="new-brand-text">
+                        <h2>Cinema City</h2>
+                        <p>Admin Panel</p>
                     </div>
                 </a>
             </div>
-            <nav class="nav-links">
-                <a href="@Url.Action("Index", "Home")" class="nav-link">Trang chủ</a>
-                <a href="@Url.Action("Index", "Movies")" class="nav-link">Phim</a>
-                <a href="@Url.Action("Index", "Events")" class="nav-link">Sự kiện</a>
-                <a href="@Url.Action("Index", "Dashboard", new { area = "" })" class="nav-link active">Dashboard</a>
-                
-                <div class="user-menu">
-                    <div class="user-info">
-                        <div class="user-avatar">
-                            @User.Identity?.Name?.Substring(0, 1).ToUpper()
-                        </div>
-                        <span class="user-name">@User.Identity?.Name</span>
+            
+            <!-- Navigation -->
+            <nav class="new-sidebar-nav">
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Tổng quan</div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("AdminDashboard", "Dashboard")" class="new-nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Home")" class="new-nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Trang chủ</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Quản lý</div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-nav-link">
+                            <i class="fas fa-film"></i>
+                            <span>Quản lý phim</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span>Quản lý đặt vé</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Quản lý lịch chiếu</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-nav-link">
+                            <i class="fas fa-gift"></i>
+                            <span>Quản lý khuyến mãi</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-star"></i>
+                            <span>Quản lý sự kiện</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-nav-link active">
+                            <i class="fas fa-users"></i>
+                            <span>Quản lý người dùng</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Hệ thống</div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Báo cáo</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Cài đặt</span>
+                        </a>
                     </div>
                 </div>
             </nav>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="dashboard-container">
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1 class="page-title">
-                <i class="fas fa-users"></i>
-                Quản lý thành viên
-            </h1>
-            <p class="page-subtitle">Danh sách và quản lý tất cả thành viên trong hệ thống</p>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-12">
-                <a href="@Url.Action("Index", "Dashboard", new { area = "" })" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Quay lại Dashboard
-                </a>
-            </div>
-        </div>
-
-        <!-- Search and Filters -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="dashboard-card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fas fa-search me-2"></i>Tìm kiếm và lọc
-                        </h5>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="searchName" class="form-label">Tìm theo tên</label>
-                                    <input type="text" class="form-control" id="searchName" placeholder="Nhập tên thành viên...">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label for="filterRole" class="form-label">Vai trò</label>
-                                    <select class="form-select" id="filterRole">
-                                        <option value="">Tất cả vai trò</option>
-                                        <option value="Member">Thành viên</option>
-                                        <option value="Staff">Nhân viên</option>
-                                        <option value="Admin">Quản trị viên</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label for="filterStatus" class="form-label">Trạng thái</label>
-                                    <select class="form-select" id="filterStatus">
-                                        <option value="">Tất cả trạng thái</option>
-                                        <option value="true">Hoạt động</option>
-                                        <option value="false">Không hoạt động</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="mb-3">
-                                    <label class="form-label">&nbsp;</label>
-                                    <button type="button" class="btn btn-primary w-100" onclick="searchMembers()">
-                                        <i class="fas fa-search me-1"></i>Tìm kiếm
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+             
+            <!-- User Profile in Sidebar -->
+            <div class="new-sidebar-user">
+                <div class="new-user-profile">
+                    <div class="new-user-avatar">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            @User.Identity.Name?.Substring(0, 1).ToUpper()
+                        }
+                        else
+                        {
+                            <span>A</span>
+                        }
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Stats -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="dashboard-card stats-card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon bg-primary">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h5 class="card-title mb-0" id="totalMembers">-</h5>
-                                <p class="card-text text-muted small mb-0">Tổng thành viên</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="dashboard-card stats-card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon bg-success">
-                                <i class="fas fa-user-check"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h5 class="card-title mb-0" id="activeMembers">-</h5>
-                                <p class="card-text text-muted small mb-0">Đang hoạt động</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="dashboard-card stats-card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon bg-warning">
-                                <i class="fas fa-user-tie"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h5 class="card-title mb-0" id="staffMembers">-</h5>
-                                <p class="card-text text-muted small mb-0">Nhân viên</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="dashboard-card stats-card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon bg-info">
-                                <i class="fas fa-calendar-plus"></i>
-                            </div>
-                            <div class="ms-3">
-                                <h5 class="card-title mb-0" id="newMembers">-</h5>
-                                <p class="card-text text-muted small mb-0">Mới tuần này</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Error display -->
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-triangle me-2"></i>
-                @TempData["ErrorMessage"]
-            </div>
-        }
-
-        <!-- Members Table -->
-        <div class="row">
-            <div class="col-12">
-                <div class="dashboard-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-list me-2"></i>Danh sách thành viên
-                            </h5>
-                            @if(User.IsInRole("Admin"))
+                    <div class="new-user-info">
+                        <h4>
+                            @if (User.Identity?.IsAuthenticated == true)
                             {
-                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMemberModal">
-                                    <i class="fas fa-plus me-1"></i>Thêm thành viên mới
-                                </button>
+                                @(User.Identity.Name?.Length > 12 ? User.Identity.Name.Substring(0, 12) + "..." : User.Identity.Name)
                             }
+                            else
+                            {
+                                <span>Admin</span>
+                            }
+                        </h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+                <div class="new-user-actions">
+                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="new-user-action-btn">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="new-user-action-btn" style="border: none;">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="new-dashboard-main">
+            <!-- Content -->
+            <div class="new-dashboard-content">
+                <!-- Page Header -->
+                <div class="user-page-header">
+                    <h1 class="user-page-title">
+                        <i class="fas fa-users"></i>
+                        Quản lý người dùng
+                    </h1>
+                    <p class="user-page-subtitle">Quản lý thông tin và quyền hạn của người dùng trong hệ thống</p>
+                </div>
+            
+                <div class="container-fluid">
+                    <!-- Controls Section -->
+                    <div class="user-controls">
+                        <div class="user-controls-header">
+                            <div class="user-search-box">
+                                <i class="fas fa-search user-search-icon"></i>
+                                <input type="text" class="user-search-input" placeholder="Tìm kiếm người dùng theo tên..." id="userSearch">
+                            </div>
+                            <button class="btn-add-user" onclick="openAddUserModal()">
+                                <i class="fas fa-plus"></i>
+                                Thêm người dùng mới
+                            </button>
                         </div>
-
-                        <div class="table-responsive">
-                            <table class="table table-hover" id="membersTable">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Tên đăng nhập</th>
-                                        <th>Họ tên</th>
-                                        <th>Email</th>
-                                        <th>Vai trò</th>
-                                        <th>Trạng thái</th>
-                                        <th>Ngày tạo</th>
+                    </div>
+                
+                    <!-- Users Table Container -->
+                    <div class="user-table-container">
+                        <div class="loading-spinner" id="loadingSpinner">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Đang tải...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Đang tải dữ liệu người dùng...</p>
+                        </div>
+                        
+                        <table class="user-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>AVATAR</th>
+                                    <th>THÔNG TIN NGƯỜI DÙNG</th>
+                                    <th>VAI TRÒ</th>
+                                    <th>TRẠNG THÁI</th>
+                                    <th>NGÀY TẠO</th>
+                                    @if(User.IsInRole("Admin"))
+                                    {
+                                        <th>HÀNH ĐỘNG</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                            @if (ViewBag.Members != null && ViewBag.Members.Length > 0)
+                            {
+                                @foreach (var member in ViewBag.Members)
+                                {
+                                    <tr class="fade-in">
+                                        <td>
+                                            <div class="user-info">
+                                                <div class="user-avatar">
+                                                    @member.GetProperty("fullName").ToString().Substring(0, 1).ToUpper()
+                                                </div>
+                                                <div>
+                                                    <div class="user-name">@member.GetProperty("fullName").ToString()</div>
+                                                    <div class="user-email">@@member.GetProperty("username").ToString()</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>@member.GetProperty("email").ToString()</td>
+                                        <td>
+                                            @{
+                                                var role = member.GetProperty("role").ToString();
+                                            }
+                                            @if(role == "Admin")
+                                            {
+                                                <span class="badge role-admin">Quản trị viên</span>
+                                            }
+                                            else if(role == "Staff")
+                                            {
+                                                <span class="badge role-staff">Nhân viên</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge role-member">Thành viên</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="status-badge status-active">Hoạt động</span>
+                                        </td>
+                                        <td>
+                                            @{
+                                                var createdAt = member.GetProperty("createdAt").ToString();
+                                                if (DateTime.TryParse(createdAt, out DateTime created))
+                                                {
+                                                    @created.ToString("dd/MM/yyyy")
+                                                }
+                                                else
+                                                {
+                                                    @createdAt
+                                                }
+                                            }
+                                        </td>
                                         @if(User.IsInRole("Admin"))
                                         {
-                                            <th>Thao tác</th>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <button type="button" class="action-btn btn-view btn-action" 
+                                                            onclick="viewUser('@member.GetProperty("userId").ToString()')" 
+                                                            title="Xem chi tiết">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button type="button" class="action-btn btn-edit btn-action" 
+                                                            onclick="editUser('@member.GetProperty("userId").ToString()')" 
+                                                            title="Chỉnh sửa">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button type="button" class="action-btn btn-toggle btn-action" 
+                                                            onclick="toggleUserStatus('@member.GetProperty("userId").ToString()', false)" 
+                                                            title="Thay đổi trạng thái">
+                                                        <i class="fas fa-user-slash"></i>
+                                                    </button>
+                                                    <button type="button" class="action-btn btn-delete btn-action" 
+                                                            onclick="deleteUser('@member.GetProperty("userId").ToString()')" 
+                                                            title="Xóa">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
                                         }
                                     </tr>
-                                </thead>
-                                <tbody id="membersTableBody">
-                                    @if (ViewBag.Members != null && ViewBag.Members.Length > 0)
-                                    {
-                                        @foreach (var member in ViewBag.Members)
-                                        {
-                                            <tr>
-                                                <td>@member.GetProperty("userId").ToString()</td>
-                                                <td>
-                                                    <strong>@member.GetProperty("username").ToString()</strong>
-                                                </td>
-                                                <td>@member.GetProperty("fullName").ToString()</td>
-                                                <td>@member.GetProperty("email").ToString()</td>
-                                                <td>
-                                                    @{
-                                                        var role = member.GetProperty("role").ToString();
-                                                    }
-                                                    @if(role == "Admin")
-                                                    {
-                                                        <span class="badge bg-danger">Quản trị viên</span>
-                                                    }
-                                                    else if(role == "Staff")
-                                                    {
-                                                        <span class="badge bg-warning">Nhân viên</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="badge bg-info">Thành viên</span>
-                                                    }
-                                                </td>
-                                                <td>
-                                                    <span class="badge bg-success">Hoạt động</span>
-                                                </td>
-                                                <td>
-                                                    @{
-                                                        var createdAt = member.GetProperty("createdAt").ToString();
-                                                        if (DateTime.TryParse(createdAt, out DateTime created))
-                                                        {
-                                                            @created.ToString("dd/MM/yyyy")
-                                                        }
-                                                        else
-                                                        {
-                                                            @createdAt
-                                                        }
-                                                    }
-                                                </td>
-                                                @if(User.IsInRole("Admin"))
-                                                {
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary me-1" 
-                                                                onclick="viewMember('@member.GetProperty("userId").ToString()')" title="Xem chi tiết">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-outline-warning me-1" 
-                                                                onclick="editMember('@member.GetProperty("userId").ToString()')" title="Chỉnh sửa">
-                                                            <i class="fas fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-outline-secondary" 
-                                                                onclick="toggleMemberStatus('@member.GetProperty("userId").ToString()', false)" title="Vô hiệu hóa">
-                                                            <i class="fas fa-user-slash"></i>
-                                                        </button>
-                                                    </td>
-                                                }
-                                            </tr>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="8" class="text-center text-muted">
-                                                <i class="fas fa-info-circle me-2"></i>
-                                                Không có dữ liệu thành viên để hiển thị
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-5">
+                                        <i class="fas fa-users fa-3x mb-3 d-block"></i>
+                                        <h5>Không có dữ liệu người dùng</h5>
+                                        <p>Hiện tại chưa có người dùng nào trong hệ thống.</p>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                        
                         <!-- Pagination -->
-                        <nav aria-label="Phân trang" class="mt-3">
-                            <ul class="pagination justify-content-center" id="pagination">
-                                <!-- Pagination will be generated by JavaScript -->
-                            </ul>
-                        </nav>
+                        <div class="user-pagination">
+                            <div class="pagination-info">
+                                <span id="paginationInfo">Đang tải...</span>
+                            </div>
+                            <div class="pagination-controls">
+                                <button id="prevPageBtn" class="btn-pagination" disabled>❮ Trước</button>
+                                <div id="pageNumbers" class="page-numbers"></div>
+                                <button id="nextPageBtn" class="btn-pagination" disabled>Sau ❯</button>
+                            </div>
+                            <div class="pagination-size">
+                                <select id="pageSizeSelect" class="form-select">
+                                    <option value="10">10 / trang</option>
+                                    <option value="25">25 / trang</option>
+                                    <option value="50">50 / trang</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </main>
+    </div>
+    
+    <!-- Add User Modal -->
+    @if(User.IsInRole("Admin"))
+    {
+        <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addUserModalLabel">
+                            <i class="fas fa-user-plus me-2"></i>Thêm người dùng mới
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addUserForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Tên đăng nhập <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="newUsername" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Họ tên <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="newFullName" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" id="newEmail" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Số điện thoại</label>
+                                        <input type="tel" class="form-control" id="newPhone">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Mật khẩu <span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control" id="newPassword" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Vai trò <span class="text-danger">*</span></label>
+                                        <select class="form-select" id="newRole" required>
+                                            <option value="">Chọn vai trò</option>
+                                            <option value="Member">Thành viên</option>
+                                            <option value="Staff">Nhân viên</option>
+                                            <option value="Admin">Quản trị viên</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Hủy
+                        </button>
+                        <button type="button" class="btn btn-add-user" onclick="addUser()">
+                            <i class="fas fa-save me-1"></i>Thêm người dùng
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="cinema-footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <p>&copy; @DateTime.Now.Year Cinema City. Tất cả quyền được bảo lưu.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-    @section Scripts {
-        <script>
-            // Initialize page
-            document.addEventListener('DOMContentLoaded', function() {
-                updateStats();
-                initializeTable();
-            });
-
-            // Search members
-            function searchMembers() {
-                const name = document.getElementById('searchName').value;
-                const role = document.getElementById('filterRole').value;
-                const status = document.getElementById('filterStatus').value;
-                
-                // TODO: Implement API call to search members
-                console.log('Searching with:', { name, role, status });
-            }
-
-            // Update statistics
-            function updateStats() {
-                if (typeof ViewBag !== 'undefined' && ViewBag.Members) {
-                    const members = @Html.Raw(Json.Serialize(ViewBag.Members ?? new object[0]));
-                    
-                    document.getElementById('totalMembers').textContent = members.length;
-                    document.getElementById('activeMembers').textContent = members.filter(m => m.isActive).length;
-                    document.getElementById('staffMembers').textContent = members.filter(m => m.role === 'Staff' || m.role === 'Admin').length;
-                    
-                    // New members this week (placeholder)
-                    document.getElementById('newMembers').textContent = Math.floor(Math.random() * 10);
-                } else {
-                    document.getElementById('totalMembers').textContent = '0';
-                    document.getElementById('activeMembers').textContent = '0';
-                    document.getElementById('staffMembers').textContent = '0';
-                    document.getElementById('newMembers').textContent = '0';
-                }
-            }
-
-            // Initialize table features
-            function initializeTable() {
-                // TODO: Add sorting, pagination, etc.
-            }
-
-            // View member details
-            function viewMember(id) {
-                // TODO: Show member details modal
-                alert('Xem chi tiết thành viên ID: ' + id);
-            }
-
-            // Edit member
-            function editMember(id) {
-                // TODO: Show edit member modal
-                alert('Chỉnh sửa thành viên ID: ' + id);
-            }
-
-            // Toggle member status
-            function toggleMemberStatus(id, newStatus) {
-                if (confirm('Bạn có chắc chắn muốn thay đổi trạng thái của thành viên này?')) {
-                    // TODO: API call to toggle status
-                    alert('Đổi trạng thái thành viên ID: ' + id + ' thành ' + (newStatus ? 'hoạt động' : 'không hoạt động'));
-                }
-            }
-
-            // Add new member (Admin only)
-            function addMember() {
-                const form = document.getElementById('addMemberForm');
-                const formData = new FormData(form);
-                
-                // Basic validation
-                const username = document.getElementById('newUsername').value;
-                const email = document.getElementById('newEmail').value;
-                const fullName = document.getElementById('newFullName').value;
-                const password = document.getElementById('newPassword').value;
-                const role = document.getElementById('newRole').value;
-                
-                if (!username || !email || !fullName || !password || !role) {
-                    alert('Vui lòng điền đầy đủ thông tin!');
-                    return;
-                }
-                
-                // TODO: API call to add member
-                alert('Thêm thành viên mới: ' + fullName);
-                
-                // Close modal and reset form
-                const modal = bootstrap.Modal.getInstance(document.getElementById('addMemberModal'));
-                modal.hide();
-                form.reset();
-            }
-
-            // Auto-hide alerts after 5 seconds
-            setTimeout(function() {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    if (alert.classList.contains('alert-danger') || alert.classList.contains('alert-success')) {
-                        alert.style.transition = 'opacity 0.5s';
-                        alert.style.opacity = '0';
-                        setTimeout(() => alert.remove(), 500);
-                    }
-                });
-            }, 5000);
-        </script>
     }
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTable();
+            hideLoadingSpinner();
+            
+            // Add event listener for search input
+            const searchInput = document.getElementById('userSearch');
+            if (searchInput) {
+                searchInput.addEventListener('keyup', searchUsers);
+            }
+        });
+        
+        // Hide loading spinner
+        function hideLoadingSpinner() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+        
+        // Search users
+        function searchUsers() {
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTableBody tr');
+            
+            rows.forEach(row => {
+                const userName = row.querySelector('.user-name')?.textContent.toLowerCase() || '';
+                const userEmail = row.querySelector('.user-email')?.textContent.toLowerCase() || '';
+                const phoneNumber = row.cells[1]?.textContent.toLowerCase() || '';
+                
+                if (userName.includes(searchTerm) || userEmail.includes(searchTerm) || phoneNumber.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        // Open add user modal
+        function openAddUserModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+            modal.show();
+        }
+        
+        // Filter by role
+        function filterByRole() {
+            const selectedRole = document.getElementById('roleFilter').value;
+            const rows = document.querySelectorAll('#usersTableBody tr');
+            
+            rows.forEach(row => {
+                const roleCell = row.cells[2];
+                if (!roleCell) return;
+                
+                const roleBadge = roleCell.querySelector('.badge');
+                if (!roleBadge) return;
+                
+                let roleValue = '';
+                if (roleBadge.classList.contains('role-admin')) roleValue = 'Admin';
+                else if (roleBadge.classList.contains('role-staff')) roleValue = 'Staff';
+                else if (roleBadge.classList.contains('role-member')) roleValue = 'Member';
+                
+                if (!selectedRole || roleValue === selectedRole) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        // Filter by status
+        function filterByStatus() {
+            const selectedStatus = document.getElementById('statusFilter').value;
+            const rows = document.querySelectorAll('#usersTableBody tr');
+            
+            rows.forEach(row => {
+                const statusCell = row.cells[3];
+                if (!statusCell) return;
+                
+                const statusBadge = statusCell.querySelector('.status-badge');
+                if (!statusBadge) return;
+                
+                let statusValue = '';
+                if (statusBadge.classList.contains('status-active')) statusValue = 'Active';
+                else if (statusBadge.classList.contains('status-inactive')) statusValue = 'Inactive';
+                
+                if (!selectedStatus || statusValue === selectedStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        // Show loading spinner
+        function showLoadingSpinner() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+        
+        // Initialize table features
+        function initializeTable() {
+            // Add fade-in animation to existing rows
+            const rows = document.querySelectorAll('#usersTableBody tr');
+            rows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.classList.add('fade-in');
+                }, index * 100);
+            });
+        }
+        
+        // View user details
+        function viewUser(id) {
+            // TODO: Show user details modal
+            alert('Xem chi tiết người dùng ID: ' + id);
+        }
+        
+        // Edit user
+        function editUser(id) {
+            // TODO: Show edit user modal
+            alert('Chỉnh sửa người dùng ID: ' + id);
+        }
+        
+        // Toggle user status
+        function toggleUserStatus(id, newStatus) {
+            if (confirm('Bạn có chắc chắn muốn thay đổi trạng thái của người dùng này?')) {
+                // TODO: API call to toggle status
+                alert('Đổi trạng thái người dùng ID: ' + id + ' thành ' + (newStatus ? 'hoạt động' : 'không hoạt động'));
+            }
+        }
+        
+        // Delete user
+        function deleteUser(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa người dùng này? Hành động này không thể hoàn tác!')) {
+                // TODO: API call to delete user
+                alert('Xóa người dùng ID: ' + id);
+            }
+        }
+        
+        // Add new user (Admin only)
+        function addUser() {
+            const form = document.getElementById('addUserForm');
+            const formData = new FormData(form);
+            
+            // Basic validation
+            const username = document.getElementById('newUsername').value;
+            const email = document.getElementById('newEmail').value;
+            const fullName = document.getElementById('newFullName').value;
+            const password = document.getElementById('newPassword').value;
+            const role = document.getElementById('newRole').value;
+            
+            if (!username || !email || !fullName || !password || !role) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Vui lòng nhập email hợp lệ!');
+                return;
+            }
+            
+            // Password validation
+            if (password.length < 6) {
+                alert('Mật khẩu phải có ít nhất 6 ký tự!');
+                return;
+            }
+            
+            // TODO: API call to add user
+            alert('Thêm người dùng mới: ' + fullName);
+            
+            // Close modal and reset form
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+            modal.hide();
+            form.reset();
+        }
+        
+        // Change page size
+        function changePageSize() {
+            const pageSize = document.getElementById('pageSize').value;
+            console.log('Page size changed to:', pageSize);
+            // TODO: Implement page size change
+        }
+        
+        // Toggle sidebar function
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.new-dashboard-sidebar');
+            const main = document.querySelector('.new-dashboard-main');
+            
+            sidebar.classList.toggle('collapsed');
+            main.classList.toggle('expanded');
+        }
+        
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                if (alert.classList.contains('alert-danger') || alert.classList.contains('alert-success')) {
+                    alert.style.transition = 'opacity 0.5s';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                }
+            });
+        }, 5000);
+    </script>
 </body>
 </html>

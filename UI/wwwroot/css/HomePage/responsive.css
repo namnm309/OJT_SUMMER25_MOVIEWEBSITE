@@ -72,10 +72,6 @@
         gap: 8px;
     }
 
-    .search-box {
-        max-width: 100%;
-    }
-
     .nav-links {
         font-size: 12px;
     }
@@ -139,22 +135,12 @@
         gap: 16px;
     }
 
-    .search-section,
-    .recommended-section {
-        padding: 0 15px;
-    }
 }
 
 /* Large screen adjustments */
 @media (min-width: 1400px) {
     .hero-section {
         padding: 50px 120px;
-    }
-
-    .search-section,
-    .recommended-section,
-    .featured-banner {
-        max-width: 1400px;
     }
 
     .movies-grid {
