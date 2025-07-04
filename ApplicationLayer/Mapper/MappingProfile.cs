@@ -1,6 +1,7 @@
 ﻿using ApplicationLayer.DTO.BookingTicketManagement;
 using ApplicationLayer.DTO.CinemaRoomManagement;
 using ApplicationLayer.DTO.EmployeeManagement;
+using ApplicationLayer.DTO.JWT;
 using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.DTO.PromotionManagement;
 using AutoMapper;
@@ -81,6 +82,16 @@ namespace ApplicationLayer.Mapper
             CreateMap<EmployeeCreateDto, Employee>();
             CreateMap<Employee, EmployeeListDto>();
             CreateMap<EmployeeUpdateDto, Employee>().ReverseMap();
+
+            //Auth - User
+            CreateMap<RegisterReq, Users>();
+            CreateMap<Users, UserDto>()
+                .ForMember(dest => dest.IdentityCard, opt => opt.MapFrom(src => src.IdentityCard))
+                .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Score))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive));
+
+            CreateMap<Users, LoginResp>();
+            CreateMap<EditUserReq, Users>().ReverseMap();
         }
     }
 }

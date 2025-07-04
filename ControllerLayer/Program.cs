@@ -8,6 +8,16 @@ using ApplicationLayer.Services.PromotionManagement;
 using ApplicationLayer.Services.CinemaRoomManagement;
 using ApplicationLayer.Services.BookingTicketManagement;
 using ApplicationLayer.Services.EmployeeManagement;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using ApplicationLayer.Services.JWT;
+using InfrastructureLayer.Core.JWT;
+using InfrastructureLayer.Core.Crypto;
+using Microsoft.OpenApi.Models;
+using InfrastructureLayer.Core.Mail;
+using InfrastructureLayer.Core.Cache;
+using StackExchange.Redis;
 
 namespace ControllerLayer
 {
@@ -48,10 +58,66 @@ namespace ControllerLayer
                           .AllowAnyHeader();
                 });
             });
-            
+
+            // JWT Token
+            var jwtSecret = builder.Configuration["Jwt:Secret"]
+                ?? "ea8cf10696dc45a8b7b5f15758ae3ef238b440cfa1f84b449af315d515de6f95";
+            var key = Encoding.ASCII.GetBytes(jwtSecret);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "JWT System API", Version = "v1" });
+
+                // Add a bearer token to Swagger
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer"
+                });
+
+                // Require the bearer token for all API operations
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                  {
+                      new OpenApiSecurityScheme
+                      {
+                          Reference = new OpenApiReference
+                          {
+                              Type = ReferenceType.SecurityScheme,
+                              Id = "Bearer"
+                          }
+                      },
+                      new string[] {}
+                  }
+                });
+
+                //File upload support
+                c.SupportNonNullableReferenceTypes();
+            });
 
             // Cấu hình DbContext
             builder.Services.AddDbContext<MovieContext>(options =>
@@ -62,7 +128,22 @@ namespace ControllerLayer
 
             // Đăng ký Generic Repository Pattern
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            
+
+            // Đăng ký Redis
+            builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection") ?? throw new ArgumentNullException("RedisConnection")));
+
+
+            // Đăng ký của phần CORE {Cache, Crypto, Jwt, Mail}
+            builder.Services.AddSingleton<IJwtService, JwtService>();
+
+            builder.Services.AddSingleton<ICryptoService, CryptoService>();
+
+            builder.Services.AddScoped<ICacheService, CacheService>();
+
+            var smtpUsername = builder.Configuration.GetValue<string>("SMTPEmail") ?? "smtp_email";
+            var smtpPassword = builder.Configuration.GetValue<string>("SMTPPassword") ?? "smtp_password";
+            builder.Services.AddSingleton<IMailService>(new MailService("smtp.gmail.com", 587, smtpUsername, smtpPassword));
+
             // Đăng ký Repository và Services
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
@@ -80,6 +161,8 @@ namespace ControllerLayer
 
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
             // Cấu hình Authentication với Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -94,6 +177,9 @@ namespace ControllerLayer
                 });
 
             builder.Services.AddAuthorization();
+
+            //
+            builder.Services.AddHttpContextAccessor();
 
             //===================================================================================================================================================
 

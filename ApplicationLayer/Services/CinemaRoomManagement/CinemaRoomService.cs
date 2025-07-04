@@ -20,7 +20,8 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
         public Task<IActionResult> GetSeatDetail(Guid Id);
         public Task<IActionResult> AddCinemaRoom(CinemaRoomCreateDto Dto);
         public Task<IActionResult> SearchCinemaRoom(string? keyword);
-        public Task<IActionResult> ViewSeat(Guid roomId);
+        public Task<IActionResult> ViewSeatTrue(Guid roomId);
+        public Task<IActionResult> ViewSeatFalse(Guid roomId);
         public Task<IActionResult> UpdateSeatTypes(UpdateSeatTypesRequest request);
 
     }
@@ -117,13 +118,32 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
             return SuccessResp.Ok(result);
         }
 
-        public async Task<IActionResult> ViewSeat(Guid roomId)
+        // Ghế đặt rồi (true)
+        public async Task<IActionResult> ViewSeatTrue(Guid roomId)
         {
             var room = await _cinemaRoomRepo.FindByIdAsync(roomId);
             if (room == null)
                 return ErrorResp.NotFound("Cinema room not found");
 
-            var seat = await _seatRepo.WhereAsync(s => s.RoomId == roomId && s.IsActive);
+            var seat = await _seatRepo.WhereAsync(s => s.RoomId == roomId && s.IsActive == true);
+
+            var result = _mapper.Map<List<SeatViewDto>>(seat);
+
+            return SuccessResp.Ok(new
+            {
+                RoomName = room.RoomName,
+                Seat = result
+            });
+        }
+
+        // Ghế đặt rồi (False)
+        public async Task<IActionResult> ViewSeatFalse(Guid roomId)
+        {
+            var room = await _cinemaRoomRepo.FindByIdAsync(roomId);
+            if (room == null)
+                return ErrorResp.NotFound("Cinema room not found");
+
+            var seat = await _seatRepo.WhereAsync(s => s.RoomId == roomId && s.IsActive == false);
 
             var result = _mapper.Map<List<SeatViewDto>>(seat);
 

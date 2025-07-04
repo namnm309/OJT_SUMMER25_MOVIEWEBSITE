@@ -54,11 +54,20 @@ namespace ControllerLayer.Controllers
         }
 
         //admin
-        [HttpGet("rooms/{roomId}/seats")]
-        public async Task<IActionResult> ViewSeats(Guid roomId)
+        // Đặt rồi - True
+        [HttpGet("rooms-True/{roomId}/seats")]
+        public async Task<IActionResult> ViewSeatsTrue(Guid roomId)
         {
             _logger.LogInformation("View Seats");
-            return await _cinemaRoomService.ViewSeat(roomId);
+            return await _cinemaRoomService.ViewSeatTrue(roomId);
+        }
+
+        // Chưa đặt - False
+        [HttpGet("rooms-False/{roomId}/seats")]
+        public async Task<IActionResult> ViewSeatsFalse(Guid roomId)
+        {
+            _logger.LogInformation("View Seats");
+            return await _cinemaRoomService.ViewSeatFalse(roomId);
         }
 
         //admin
