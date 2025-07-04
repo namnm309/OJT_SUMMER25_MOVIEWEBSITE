@@ -61,18 +61,25 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
         public async Task<IActionResult> GetShowDatesByMovie(Guid movieId)
         {
-            var showtime = await _showtimeRepo.WhereAsync(s => s.MovieId == movieId);
-            if (showtime == null)
-                return ErrorResp.NotFound("Not Found");
+            var showtimes = await _showtimeRepo.WhereAsync(s => s.MovieId == movieId);
+            if (showtimes == null || !showtimes.Any())
+            {
+                return ErrorResp.NotFound("No show dates found for this movie.");
+            }
 
-            var date = showtime
+            var dates = showtimes
                 .Where(s => s.ShowDate.HasValue)
                 .Select(s => s.ShowDate.Value.Date)
-                .Distinct() // loại bỏ giá trị trùng lặp trong danh sách
-                .OrderBy(d => d) //sắp xếp danh sách tăng dần
+                .Distinct()
+                .OrderBy(d => d)
+                .Select(d => new
+                {
+                    Code = d.ToString("yyyy-MM-dd"),
+                    Text = d.ToString("dd/MM")
+                })
                 .ToList();
 
-            return SuccessResp.Ok(date);
+            return SuccessResp.Ok(dates);
         }
 
         public async Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate)
