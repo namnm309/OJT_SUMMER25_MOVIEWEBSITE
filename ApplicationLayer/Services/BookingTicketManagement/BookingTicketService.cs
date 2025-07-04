@@ -8,16 +8,6 @@ using DomainLayer.Exceptions;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-<<<<<<< HEAD
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ApplicationLayer.Services.Helper;
-=======
->>>>>>> origin/dev
 
 namespace ApplicationLayer.Services.BookingTicketManagement
 {
@@ -26,7 +16,6 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<IActionResult> GetAvailableMovies(); //Lấy danh sách phim
         Task<IActionResult> GetShowDatesByMovie(Guid movieId); //Lấy danh sách ngày chiếu cho phim
         Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate); //Lấy các giờ chiếu trong ngày
-<<<<<<< HEAD
         Task<IActionResult> ConfirmUserBooking(ConfirmBookingRequestDto request);
 
 
@@ -35,11 +24,9 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<(bool Success, String message)> CreateMemberAccount(CreateMemberAccountDto request);
         Task<IActionResult> ConfirmAdminBooking(ConfirmBookingRequestAdminDto request);
         Task<IActionResult> GetBookingDetails(string bookingCode);
-=======
         Task<IActionResult> ConfirmBooking(ConfirmBookingRequestDto request);
         Task<IActionResult> GetBookingDetailsAsync(Guid bookingId, Guid userId);
 
->>>>>>> origin/dev
     }
 
     public class BookingTicketService : IBookingTicketService
@@ -52,18 +39,14 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         private readonly IGenericRepository<PointHistory> _pointHistoryRepo;
         private readonly ISeatRepository _seatRepository;
         private readonly IMapper _mapper;
-<<<<<<< HEAD
         private readonly IUserRepository _userRepository;
         private readonly IMailService _mailService;
-=======
         private readonly IBookingRepository _bookingRepository;
 
->>>>>>> origin/dev
         public BookingTicketService(
             IUserRepository userRepository,
             IGenericRepository<Movie> movieRepo,
             IGenericRepository<ShowTime> showtimeRepo,
-<<<<<<< HEAD
             IGenericRepository<Booking> bookingRepo,
             IGenericRepository<BookingDetail> bookingDetailRepo,
             IGenericRepository<Users> userRepo,
@@ -71,13 +54,11 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             ISeatRepository seatRepository,
             IMapper mapper,
             IMailService mailService)
-=======
             IGenericRepository<Booking> bookingRepo, // Thêm
             IGenericRepository<BookingDetail> bookingDetailRepo, // Thêm
             ISeatRepository seatRepository, // Thêm
             IMapper mapper,
             IBookingRepository bookingRepository)
->>>>>>> origin/dev
         {
             _userRepository = userRepository;
             _movieRepo = movieRepo;
@@ -88,11 +69,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             _pointHistoryRepo = pointHistoryRepo;
             _seatRepository = seatRepository;
             _mapper = mapper;
-<<<<<<< HEAD
             _mailService = mailService;
-=======
             _bookingRepository = bookingRepository;
->>>>>>> origin/dev
         }
 
 
