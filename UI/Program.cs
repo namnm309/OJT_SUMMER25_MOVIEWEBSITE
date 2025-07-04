@@ -56,6 +56,10 @@ namespace UI
             builder.Services.AddScoped<UI.Areas.BookingManagement.Services.IBookingManagementUIService,
                           UI.Areas.BookingManagement.Services.BookingManagementUIService>();
 
+            // Đăng ký ShowtimeService
+            builder.Services.AddScoped<UI.Areas.ShowtimeManagement.Services.IShowtimeService,
+                          UI.Areas.ShowtimeManagement.Services.ShowtimeService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

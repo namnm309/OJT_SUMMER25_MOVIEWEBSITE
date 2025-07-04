@@ -1,0 +1,749 @@
+@model UI.Areas.ShowtimeManagement.Models.ShowtimePageViewModel
+@{
+    ViewData["Title"] = "Quản lý lịch chiếu";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cinema City</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- New Dashboard CSS -->
+    <link rel="stylesheet" href="~/css/new-dashboard.css" />
+    <!-- Showtime Management CSS -->
+    <style>
+        /* Showtime specific styles */
+        .showtime-header {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-pink) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .showtime-filters {
+            background: var(--content-primary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-item label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .week-navigator {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--content-primary);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .week-info {
+            flex: 1;
+            text-align: center;
+        }
+
+        .week-info h4 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .week-info p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Timeline styles */
+        .showtime-timeline {
+            background: var(--content-primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .timeline-header {
+            display: grid;
+            grid-template-columns: 120px repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .timeline-day {
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        .timeline-day.today {
+            background: var(--primary-purple);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .timeline-body {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .timeline-room {
+            display: grid;
+            grid-template-columns: 120px repeat(7, 1fr);
+            gap: 0.5rem;
+            min-height: 80px;
+            align-items: stretch;
+        }
+
+        .room-label {
+            background: var(--content-secondary);
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .room-schedule {
+            position: relative;
+            background: var(--content-secondary);
+            border-radius: 8px;
+            padding: 0.5rem;
+            min-height: 80px;
+        }
+
+        .showtime-block {
+            position: absolute;
+            background: var(--primary-purple);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .showtime-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            z-index: 10;
+        }
+
+        .showtime-block.vip {
+            background: var(--warning);
+        }
+
+        .showtime-block.imax {
+            background: var(--danger);
+        }
+
+        /* List view styles */
+        .showtime-list {
+            background: var(--content-primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .showtime-table {
+            width: 100%;
+        }
+
+        .showtime-table th {
+            background: var(--content-secondary);
+            padding: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            border: none;
+        }
+
+        .showtime-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .movie-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .movie-poster {
+            width: 40px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .occupancy-bar {
+            width: 100px;
+            height: 8px;
+            background: var(--content-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .occupancy-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s ease;
+        }
+
+        .occupancy-fill.high {
+            background: var(--danger);
+        }
+
+        .occupancy-fill.medium {
+            background: var(--warning);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            border: none;
+            background: var(--content-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background: var(--primary-purple);
+            color: white;
+        }
+
+        .btn-icon.delete:hover {
+            background: var(--danger);
+        }
+
+        /* Modal styles */
+        .modal-content {
+            background: var(--content-primary);
+            border: none;
+            border-radius: 16px;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-pink) 100%);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            border: none;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            background: var(--content-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: var(--content-secondary);
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+            color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .filter-group {
+                flex-direction: column;
+            }
+
+            .filter-item {
+                width: 100%;
+            }
+
+            .timeline-header, .timeline-room {
+                grid-template-columns: 80px 1fr;
+            }
+
+            .timeline-day:not(:first-child) {
+                display: none;
+            }
+
+            .room-schedule:not(:nth-child(2)) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- New Dashboard Layout -->
+    <div class="new-dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="new-dashboard-sidebar">
+            <!-- Sidebar Header -->
+            <div class="new-sidebar-header">
+                <a href="@Url.Action("Index", "Home")" class="new-sidebar-brand">
+                    <div class="new-brand-logo"></div>
+                    <div class="new-brand-text">
+                        <h2>Cinema City</h2>
+                        <p>@(User.IsInRole("Admin") || User.IsInRole("2") ? "Admin Panel" : "Staff Panel")</p>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="new-sidebar-nav">
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Tổng quan</div>
+                    <div class="new-nav-item">
+                        <a href="@(User.IsInRole("Admin") || User.IsInRole("2") ? Url.Action("AdminDashboard", "Dashboard") : Url.Action("StaffDashboard", "Dashboard"))" class="new-nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Home")" class="new-nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Trang chủ</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Quản lý</div>
+                    @if (User.IsInRole("Admin") || User.IsInRole("2"))
+                    {
+                        <div class="new-nav-item">
+                            <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-nav-link">
+                                <i class="fas fa-film"></i>
+                                <span>Quản lý phim</span>
+                            </a>
+                        </div>
+                    }
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span>Quản lý đặt vé</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Showtimes", new { area = "ShowtimeManagement" })" class="new-nav-link active">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Quản lý lịch chiếu</span>
+                        </a>
+                    </div>
+                    @if (User.IsInRole("Admin") || User.IsInRole("2"))
+                    {
+                        <div class="new-nav-item">
+                            <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-nav-link">
+                                <i class="fas fa-gift"></i>
+                                <span>Quản lý khuyến mãi</span>
+                            </a>
+                        </div>
+                        <div class="new-nav-item">
+                            <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-nav-link">
+                                <i class="fas fa-users"></i>
+                                <span>Quản lý người dùng</span>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </nav>
+            
+            <!-- User Profile in Sidebar -->
+            <div class="new-sidebar-user">
+                <div class="new-user-profile">
+                    <div class="new-user-avatar">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            @User.Identity.Name?.Substring(0, 1).ToUpper()
+                        }
+                        else
+                        {
+                            <span>U</span>
+                        }
+                    </div>
+                    <div class="new-user-info">
+                        <h4>@User.Identity?.Name</h4>
+                        <p>@(User.IsInRole("Admin") || User.IsInRole("2") ? "Administrator" : "Staff")</p>
+                    </div>
+                </div>
+                <div class="new-user-actions">
+                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="new-user-action-btn">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="new-user-action-btn" style="border: none;">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="new-dashboard-main">
+            <div class="new-dashboard-content">
+                <!-- Page Header -->
+                <div class="showtime-header animate-fade-in">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="mb-2">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                Quản lý lịch chiếu
+                            </h1>
+                            <p class="mb-0 opacity-75">Quản lý và sắp xếp lịch chiếu phim trong rạp</p>
+                        </div>
+                        <button class="btn btn-light" onclick="openCreateModal()">
+                            <i class="fas fa-plus me-2"></i>
+                            Thêm lịch chiếu
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="showtime-filters animate-fade-in">
+                    <div class="filter-group">
+                        <div class="filter-item">
+                            <label>Phim</label>
+                            <select class="form-select" id="movieFilter">
+                                <option value="">Tất cả phim</option>
+                                @foreach (var movie in Model.Movies)
+                                {
+                                    <option value="@movie.Id">@movie.Title</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label>Phòng chiếu</label>
+                            <select class="form-select" id="roomFilter">
+                                <option value="">Tất cả phòng</option>
+                                @foreach (var room in Model.CinemaRooms)
+                                {
+                                    <option value="@room.Id">@room.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label>Chế độ xem</label>
+                            <select class="form-select" id="viewMode">
+                                <option value="timeline">Timeline</option>
+                                <option value="list">Danh sách</option>
+                            </select>
+                        </div>
+                        <div class="filter-item" style="flex: 0; margin-top: 1.75rem;">
+                            <button class="btn btn-primary" onclick="applyFilters()">
+                                <i class="fas fa-filter me-2"></i>
+                                Lọc
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Week Navigator -->
+                <div class="week-navigator animate-slide-in">
+                    <button class="btn btn-outline-primary" onclick="changeWeek(-1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="week-info">
+                        <h4>Tuần @Model.CurrentWeek.WeekNumber</h4>
+                        <p>@Model.CurrentWeek.StartDate.ToString("dd/MM/yyyy") - @Model.CurrentWeek.EndDate.ToString("dd/MM/yyyy")</p>
+                    </div>
+                    <button class="btn btn-outline-primary" onclick="changeWeek(1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button class="btn btn-primary ms-2" onclick="goToToday()">
+                        Hôm nay
+                    </button>
+                </div>
+
+                <!-- Timeline View -->
+                <div class="showtime-timeline animate-slide-in" id="timelineView">
+                    <div class="timeline-header">
+                        <div></div>
+                        @foreach (var day in Model.CurrentWeek.GetDaysOfWeek())
+                        {
+                            <div class="timeline-day @(day.Date == DateTime.Today ? "today" : "")">
+                                <div class="fw-bold">@day.ToString("ddd")</div>
+                                <div>@day.ToString("dd/MM")</div>
+                            </div>
+                        }
+                    </div>
+                    <div class="timeline-body">
+                        @foreach (var room in Model.CinemaRooms)
+                        {
+                            <div class="timeline-room">
+                                <div class="room-label">
+                                    @room.Name
+                                    <span class="badge bg-secondary ms-2">@room.TotalSeats ghế</span>
+                                </div>
+                                @foreach (var day in Model.CurrentWeek.GetDaysOfWeek())
+                                {
+                                    <div class="room-schedule" data-room="@room.Id" data-date="@day.ToString("yyyy-MM-dd")">
+                                        @{
+                                            var dayShowtimes = Model.Showtimes
+                                                .Where(s => s.CinemaRoomId == room.Id && s.ShowDate.Date == day.Date)
+                                                .OrderBy(s => s.StartTime)
+                                                .ToList();
+                                        }
+                                        @foreach (var showtime in dayShowtimes)
+                                        {
+                                            var topPosition = ((showtime.StartTime.TotalMinutes - 540) / 780) * 100; // 9AM = 540 min, 10PM = 1320 min
+                                            var height = (showtime.MovieDuration / 780.0) * 100;
+                                            var occupancyRate = (double)showtime.BookedSeats / showtime.TotalSeats * 100;
+                                            
+                                            <div class="showtime-block @(room.RoomType.ToLower())"
+                                                 style="top: @topPosition%; height: @height%;"
+                                                 data-showtime-id="@showtime.Id"
+                                                 onclick="editShowtime('@showtime.Id')"
+                                                 title="@showtime.MovieTitle - @showtime.StartTime.ToString(@"hh\:mm")">
+                                                <div>@showtime.StartTime.ToString(@"hh\:mm")</div>
+                                                <div class="fw-bold">@showtime.MovieTitle</div>
+                                                <div>@occupancyRate.ToString("0")% đã đặt</div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- List View -->
+                <div class="showtime-list animate-slide-in" id="listView" style="display: none;">
+                    <table class="showtime-table">
+                        <thead>
+                            <tr>
+                                <th>Phim</th>
+                                <th>Phòng chiếu</th>
+                                <th>Ngày chiếu</th>
+                                <th>Giờ chiếu</th>
+                                <th>Giá vé</th>
+                                <th>Tình trạng ghế</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var showtime in Model.Showtimes.OrderBy(s => s.ShowDate).ThenBy(s => s.StartTime))
+                            {
+                                var occupancyRate = (double)showtime.BookedSeats / showtime.TotalSeats * 100;
+                                var occupancyClass = occupancyRate > 80 ? "high" : (occupancyRate > 50 ? "medium" : "low");
+                                
+                                <tr>
+                                    <td>
+                                        <div class="movie-info">
+                                            @if (!string.IsNullOrEmpty(showtime.MoviePoster))
+                                            {
+                                                <img src="@showtime.MoviePoster" alt="@showtime.MovieTitle" class="movie-poster">
+                                            }
+                                            <div>
+                                                <div class="fw-bold">@showtime.MovieTitle</div>
+                                                <div class="text-muted small">@showtime.MovieDuration phút</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@showtime.CinemaRoomName</td>
+                                    <td>@showtime.ShowDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@showtime.StartTime.ToString(@"hh\:mm") - @showtime.EndTime.ToString(@"hh\:mm")</td>
+                                    <td>@showtime.Price.ToString("N0") ₫</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="occupancy-bar">
+                                                <div class="occupancy-fill @occupancyClass" style="width: @occupancyRate%"></div>
+                                            </div>
+                                            <span>@showtime.BookedSeats/@showtime.TotalSeats</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-icon" onclick="editShowtime('@showtime.Id')" title="Sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon delete" onclick="deleteShowtime('@showtime.Id')" title="Xóa">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div class="modal fade" id="showtimeModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Thêm lịch chiếu mới</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let currentWeekStart = new Date('@Model.CurrentWeek.StartDate.ToString("yyyy-MM-dd")');
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // View mode change
+            document.getElementById('viewMode').addEventListener('change', function() {
+                const timelineView = document.getElementById('timelineView');
+                const listView = document.getElementById('listView');
+                
+                if (this.value === 'timeline') {
+                    timelineView.style.display = 'block';
+                    listView.style.display = 'none';
+                } else {
+                    timelineView.style.display = 'none';
+                    listView.style.display = 'block';
+                }
+            });
+        });
+
+        // Week navigation
+        function changeWeek(direction) {
+            currentWeekStart.setDate(currentWeekStart.getDate() + (direction * 7));
+            loadWeekData();
+        }
+
+        function goToToday() {
+            currentWeekStart = new Date();
+            currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay() + 1); // Monday
+            loadWeekData();
+        }
+
+        function loadWeekData() {
+            $.get('@Url.Action("GetWeeklyData", "Showtimes")', { startDate: currentWeekStart.toISOString() }, function(response) {
+                if (response.success) {
+                    // Update timeline with new data
+                    updateTimeline(response.data);
+                }
+            });
+        }
+
+        function updateTimeline(showtimes) {
+            // Implementation to update timeline view with new showtime data
+            console.log('Updating timeline with', showtimes);
+        }
+
+        // CRUD operations
+        function openCreateModal() {
+            $('#modalTitle').text('Thêm lịch chiếu mới');
+            $.get('@Url.Action("Create", "Showtimes")', function(html) {
+                $('#modalBody').html(html);
+                $('#showtimeModal').modal('show');
+            });
+        }
+
+        function editShowtime(id) {
+            $('#modalTitle').text('Chỉnh sửa lịch chiếu');
+            $.get('@Url.Action("Edit", "Showtimes")/' + id, function(html) {
+                $('#modalBody').html(html);
+                $('#showtimeModal').modal('show');
+            });
+        }
+
+        function deleteShowtime(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa lịch chiếu này?')) {
+                $.post('@Url.Action("Delete", "Showtimes")/' + id, { __RequestVerificationToken: $('[name=__RequestVerificationToken]').val() }, function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert('Lỗi: ' + response.message);
+                    }
+                });
+            }
+        }
+
+        function saveShowtime() {
+            const form = $('#showtimeForm');
+            if (form.valid()) {
+                $.post(form.attr('action'), form.serialize(), function(response) {
+                    if (response.success) {
+                        $('#showtimeModal').modal('hide');
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert('Lỗi: ' + response.message);
+                    }
+                });
+            }
+        }
+
+        function applyFilters() {
+            const movieId = $('#movieFilter').val();
+            const roomId = $('#roomFilter').val();
+            
+            // Apply filters to the current view
+            console.log('Applying filters:', { movieId, roomId });
+        }
+    </script>
+</body>
+</html> 

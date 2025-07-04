@@ -61,8 +61,12 @@
 
 						<div class="genre-section">
 							<h3>Thể loại</h3>
-							<p id="movieGenre">@(Model.FeaturedMovie.Genres != null && Model.FeaturedMovie.Genres.Any() ? string.Join(", ", Model.FeaturedMovie.Genres.Select(g => g.Name)) : "Chưa phân loại")</p>
-						</div>
+							<p id="movieGenre" style="@(Model.FeaturedMovie.Genres != null && Model.FeaturedMovie.Genres.Any() ? "" : "display:none")">
+								@(Model.FeaturedMovie.Genres != null && Model.FeaturedMovie.Genres.Any()
+															? string.Join(", ", Model.FeaturedMovie.Genres.Select(g => g.Name))
+															: "")
+						</p>
+					</div>
 
 						<div class="ratings-section">
 							<div class="rating-item">
@@ -651,23 +655,14 @@
 		// Truyền dữ liệu phim từ Model vào JavaScript
 		window.heroMoviesData = @Html.Raw(JsonSerializer.Serialize((Model?.HeroMovies ?? new List<MovieViewModel>()).Select(movie => new
 			{
-
 				id = movie.Id,
-
 				title = movie.Title,
-
 				titleVn = movie.Director ?? "Đạo diễn",
-
 				plot = movie.Content ?? "Chưa có thông tin nội dung.",
-
 				genre = (movie.Genres != null && movie.Genres.Any()) ? string.Join(", ", movie.Genres.Select(g => g.Name)) : "Chưa phân loại",
-
 				duration = $"{movie.RunningTime} phút",
-
 				background = GetMovieImageUrl(movie),
-
 				trailerUrl = movie.TrailerUrl ?? ""
-
 			})));
 
 		// 🔍 DEBUG: Kiểm tra data source

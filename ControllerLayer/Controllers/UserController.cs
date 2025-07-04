@@ -151,10 +151,10 @@ namespace ControllerLayer.Controllers
         {
             return role switch
             {
-                UserRole.Admin => "/admin/dashboard",
-                UserRole.Staff => "/staff/dashboard", 
-                UserRole.Member => "/member/dashboard",
-                _ => "/home"
+                UserRole.Admin => "/Dashboard/AdminDashboard",
+                UserRole.Staff => "/Dashboard/StaffDashboard", 
+                UserRole.Member => "/Dashboard/MemberDashboard",
+                _ => "/Home/Index"
             };
         }
     }
