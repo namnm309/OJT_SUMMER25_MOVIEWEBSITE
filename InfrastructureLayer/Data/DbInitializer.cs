@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +23,14 @@ namespace InfrastructureLayer.Database
             {
                 Console.WriteLine("Applying  Migrations...");
                 dbContext.Database.Migrate();
+            }
+
+            // Seed data regardless of migrations
+            if (dbContext != null)
+            {
+                Console.WriteLine("Seeding database data...");
+                DataSeeder.SeedData(dbContext).Wait();
+                Console.WriteLine("Database seeding completed.");
             }
 
             return application;

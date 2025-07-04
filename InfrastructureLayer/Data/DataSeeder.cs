@@ -7,6 +7,11 @@ namespace InfrastructureLayer.Data
 {
     public static class DataSeeder
     {
+        public static async Task SeedData(MovieContext context)
+        {
+            await SeedAdminUser(context);
+        }
+        
         public static async Task SeedAdminUser(MovieContext context)
         {
             try
@@ -64,4 +69,4 @@ namespace InfrastructureLayer.Data
             }
         }
     }
-} 
+}
