@@ -65,5 +65,17 @@ namespace InfrastructureLayer.Repository
             return await _context.Users
                 .AnyAsync(u => u.Email == email && u.IsActive);
         }
+
+        public async Task<bool> IsPhoneExistsAsync(string phone)
+        {
+            return await _context.Users
+                .AnyAsync(u => u.Phone == phone && u.IsActive);
+        }
+
+        public async Task<bool> IsIdentityCardExistsAsync(string identityCard)
+        {
+            return await _context.Users
+                .AnyAsync(u => u.IdentityCard == identityCard && u.IsActive);
+        }
     }
 } 

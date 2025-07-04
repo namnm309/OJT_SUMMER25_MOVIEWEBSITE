@@ -69,7 +69,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     SeatType = s.SeatType.ToString(),
                     RowIndex = s.RowIndex,
                     ColumnIndex = s.ColumnIndex,
-                    IsAvailable = s.IsActive && !bookedSeatIds.Contains(s.Id), // Ghế available khi IsActive=true và chưa được đặt
+                    IsAvailable = s.IsActive && !bookedSeatIds.Contains(s.Id),
                     Price = s.PriceSeat,
 
                 }).ToList();
@@ -110,7 +110,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 }
 
                 // Lấy tất cả các ghế được chọn
-                var selectedSeatsEntities = await _seatRepository.GetSeatsByIdsAsync(seatIds); // Thêm phương thức này vào ISeatRepository/SeatRepository
+                var selectedSeatsEntities = await _seatRepository.GetSeatsByIdsAsync(seatIds); 
 
                 if (selectedSeatsEntities.Count != seatIds.Count)
                 {

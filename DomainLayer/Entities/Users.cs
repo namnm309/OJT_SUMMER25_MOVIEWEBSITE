@@ -64,6 +64,6 @@ namespace DomainLayer.Entities
         public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public virtual ICollection<PointHistory> PointHistories { get; set; } = new List<PointHistory>();
 
-
+        
     }
 }

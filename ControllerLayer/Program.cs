@@ -8,6 +8,7 @@ using ApplicationLayer.Services.PromotionManagement;
 using ApplicationLayer.Services.CinemaRoomManagement;
 using ApplicationLayer.Services.BookingTicketManagement;
 using ApplicationLayer.Mappings;
+using ApplicationLayer.Services.Helper;
 
 namespace ControllerLayer
 {
@@ -81,6 +82,12 @@ namespace ControllerLayer
 
             builder.Services.AddScoped<ISeatRepository, SeatRepository>();
             builder.Services.AddScoped<ISeatService, SeatService>();
+
+            builder.Services.AddScoped<IMailService>(provider =>
+    new MailService("smtp.gmail.com", 587, "phucan0147@gmail.com", "kgwg vpwi voer ziag"));
+
+            // Thêm vào Program.cs
+            builder.Services.AddAutoMapper(typeof(BookingProfile));
 
             // Cấu hình Authentication với Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

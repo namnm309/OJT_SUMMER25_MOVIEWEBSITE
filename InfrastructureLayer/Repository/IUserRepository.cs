@@ -12,5 +12,8 @@ namespace InfrastructureLayer.Repository
         Task<Users> UpdateAsync(Users user);
         Task<bool> IsUsernameExistsAsync(string username);
         Task<bool> IsEmailExistsAsync(string email);
+
+        Task<bool> IsIdentityCardExistsAsync(string identityCard);
+        Task<bool> IsPhoneExistsAsync(string phone);
     }
 } 
