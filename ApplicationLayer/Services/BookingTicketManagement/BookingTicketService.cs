@@ -1,11 +1,15 @@
 using Application.ResponseCode;
 using ApplicationLayer.DTO.BookingTicketManagement;
+using ApplicationLayer.DTO.UserManagement;
 using AutoMapper;
 using DomainLayer.Entities;
 using DomainLayer.Enum;
 using DomainLayer.Exceptions;
 using InfrastructureLayer.Repository;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using ApplicationLayer.Services.Helper;
+using System.Text;
 
 namespace ApplicationLayer.Services.BookingTicketManagement
 {
@@ -14,7 +18,15 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<IActionResult> GetAvailableMovies(); //Lấy danh sách phim
         Task<IActionResult> GetShowDatesByMovie(Guid movieId); //Lấy danh sách ngày chiếu cho phim
         Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate); //Lấy các giờ chiếu trong ngày
-        Task<IActionResult> ConfirmBooking(ConfirmBookingRequestDto request);
+        Task<IActionResult> ConfirmUserBooking(ConfirmBookingRequestDto request);
+
+
+        Task<IActionResult> CheckMember(CheckMemberRequestDto request);
+
+        Task<(bool Success, String message)> CreateMemberAccount(CreateMemberAccountDto request);
+        Task<IActionResult> ConfirmAdminBooking(ConfirmBookingRequestAdminDto request);
+        Task<IActionResult> GetBookingDetails(string bookingCode);
+        
         Task<IActionResult> GetBookingDetailsAsync(Guid bookingId, Guid userId);
 
     }
@@ -23,29 +35,42 @@ namespace ApplicationLayer.Services.BookingTicketManagement
     {
         private readonly IGenericRepository<Movie> _movieRepo;
         private readonly IGenericRepository<ShowTime> _showtimeRepo;
-        private readonly IGenericRepository<Booking> _bookingRepo; // Thêm
-        private readonly IGenericRepository<BookingDetail> _bookingDetailRepo; // Thêm
-        private readonly ISeatRepository _seatRepository; // Thêm để truy cập logic ghế đã có
+        private readonly IGenericRepository<Booking> _bookingRepo;
+        private readonly IGenericRepository<BookingDetail> _bookingDetailRepo;
+        private readonly IGenericRepository<Users> _userRepo;
+        private readonly IGenericRepository<PointHistory> _pointHistoryRepo;
+        private readonly ISeatRepository _seatRepository;
         private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
+        private readonly IMailService _mailService;
         private readonly IBookingRepository _bookingRepository;
 
         public BookingTicketService(
+            IUserRepository userRepository,
             IGenericRepository<Movie> movieRepo,
             IGenericRepository<ShowTime> showtimeRepo,
-            IGenericRepository<Booking> bookingRepo, // Thêm
-            IGenericRepository<BookingDetail> bookingDetailRepo, // Thêm
-            ISeatRepository seatRepository, // Thêm
+            IGenericRepository<Booking> bookingRepo,
+            IGenericRepository<BookingDetail> bookingDetailRepo,
+            IGenericRepository<Users> userRepo,
+            IGenericRepository<PointHistory> pointHistoryRepo,
+            ISeatRepository seatRepository,
             IMapper mapper,
+            IMailService mailService,
             IBookingRepository bookingRepository)
         {
+            _userRepository = userRepository;
             _movieRepo = movieRepo;
             _showtimeRepo = showtimeRepo;
-            _bookingRepo = bookingRepo; // Gán
-            _bookingDetailRepo = bookingDetailRepo; // Gán
-            _seatRepository = seatRepository; // Gán
+            _bookingRepo = bookingRepo;
+            _bookingDetailRepo = bookingDetailRepo;
+            _userRepo = userRepo;
+            _pointHistoryRepo = pointHistoryRepo;
+            _seatRepository = seatRepository;
             _mapper = mapper;
+            _mailService = mailService;
             _bookingRepository = bookingRepository;
         }
+
 
 
         public async Task<IActionResult> GetAvailableMovies()
@@ -61,18 +86,25 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
         public async Task<IActionResult> GetShowDatesByMovie(Guid movieId)
         {
-            var showtime = await _showtimeRepo.WhereAsync(s => s.MovieId == movieId);
-            if (showtime == null)
-                return ErrorResp.NotFound("Not Found");
+            var showtimes = await _showtimeRepo.WhereAsync(s => s.MovieId == movieId);
+            if (showtimes == null || !showtimes.Any())
+            {
+                return ErrorResp.NotFound("No show dates found for this movie.");
+            }
 
-            var date = showtime
+            var dates = showtimes
                 .Where(s => s.ShowDate.HasValue)
                 .Select(s => s.ShowDate.Value.Date)
-                .Distinct() // loại bỏ giá trị trùng lặp trong danh sách
-                .OrderBy(d => d) //sắp xếp danh sách tăng dần
+                .Distinct()
+                .OrderBy(d => d)
+                .Select(d => new
+                {
+                    Code = d.ToString("yyyy-MM-dd"),
+                    Text = d.ToString("dd/MM")
+                })
                 .ToList();
 
-            return SuccessResp.Ok(date);
+            return SuccessResp.Ok(dates);
         }
 
         public async Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate)
@@ -92,7 +124,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             return SuccessResp.Ok(timeList);
         }
 
-        public async Task<IActionResult> ConfirmBooking(ConfirmBookingRequestDto request)
+        public async Task<IActionResult> ConfirmUserBooking(ConfirmBookingRequestDto request)
         {
             try
             {
@@ -101,15 +133,6 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 var showTime = await _showtimeRepo.FoundOrThrowAsync(request.ShowtimeId, "ShowTime not found.");
                 var movie = await _movieRepo.FoundOrThrowAsync(showTime.MovieId, "Movie not found.");
                 // Bạn có thể lấy thông tin User từ UserId trong request, hoặc từ context nếu đã xác thực
-                // Ví dụ: var user = await _userRepo.FoundOrThrowAsync(request.UserId, "User not found.");
-
-                // 2. Validate ghế một lần nữa để đảm bảo không có ghế nào bị đặt trong lúc chờ xác nhận
-                // (Lưu ý: Bạn đã có ValidateSelectedSeats trong SeatService, nhưng nó cập nhật IsActive của ghế.
-                //  Chức năng này nên chỉ để kiểm tra lại, và việc cập nhật IsActive nên diễn ra sau khi booking thành công.)
-                //  Hoặc bạn có thể sử dụng một cơ chế khóa/đặt chỗ tạm thời.
-                //  Hiện tại, hàm ValidateSelectedSeats của bạn đã thay đổi IsActive của ghế.
-                //  Nếu IsActive được thay đổi trong bước ValidateSelectedSeats, thì ở đây chỉ cần kiểm tra lại.
-                //  Nếu IsActive chưa được thay đổi, thì cần cơ chế để "khóa" ghế trước khi xác nhận cuối cùng.
 
                 // Kiểm tra lại các ghế đã chọn có còn trống không
                 var bookedSeatIdsForShowTime = await _seatRepository.GetBookedSeatIdsForShowTimeAsync(request.ShowtimeId);
@@ -120,7 +143,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                         // AC-05: Nếu quá trình gửi thất bại...
                         return ErrorResp.BadRequest($"Seat with ID {seatId} is already booked.");
                     }
-                    // Kiểm tra IsActive của ghế (đảm bảo ghế không bị vô hiệu hóa vì lý do khác)
+
                     var seat = await _seatRepository.GetByIdAsync(seatId); // GetByIdAsync của bạn kiểm tra IsActive
                     if (seat == null)
                     {
@@ -240,6 +263,337 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
             return SuccessResp.Ok(bookingDetailsDto);
         }
+
+        public async Task<IActionResult> CheckMember(CheckMemberRequestDto request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.MemberId) && string.IsNullOrEmpty(request.IdentityNumber))
+                {
+                    return ErrorResp.BadRequest("Vui lòng cung cấp ID thành viên hoặc số CMND");
+                }
+
+                Users? member = null;
+
+                // Tìm bằng MemberId (Guid)
+                if (!string.IsNullOrEmpty(request.MemberId))
+                {
+                    if (Guid.TryParse(request.MemberId, out var memberId))
+                    {
+                        member = await _userRepo.FirstOrDefaultAsync(u =>
+                            u.Id == memberId &&
+                            u.Role == UserRole.Member);
+                    }
+                    else
+                    {
+                        return ErrorResp.BadRequest("ID thành viên không hợp lệ");
+                    }
+                }
+
+                // Tìm bằng CMND nếu chưa tìm thấy
+                if (member == null && !string.IsNullOrEmpty(request.IdentityNumber))
+                {
+                    member = await _userRepo.FirstOrDefaultAsync(u =>
+                        u.IdentityCard == request.IdentityNumber &&
+                        u.Role == UserRole.Member);
+                }
+
+                if (member == null)
+                {
+                    return ErrorResp.NotFound("Không tìm thấy thành viên nào!"); 
+                }  
+
+                // Sử dụng AutoMapper
+                var memberInfo = _mapper.Map<MemberInfoDto>(member);
+                return SuccessResp.Ok(memberInfo);
+            }
+            catch (Exception ex)
+            {
+                return ErrorResp.InternalServerError("Lỗi hệ thống khi kiểm tra thành viên");
+            }
+        }
+
+        public async Task<(bool Success, String message)> CreateMemberAccount(CreateMemberAccountDto request)
+        {
+            try
+            {
+                if (await _userRepository.IsPhoneExistsAsync(request.PhoneNumber))
+                {
+                    return (false, "Số điện thoại đã tồn tại");
+                }
+
+                if (await _userRepository.IsEmailExistsAsync(request.Email))
+                {
+                    return (false, "Email đã tồn tại");
+                }
+
+                if (await _userRepository.IsIdentityCardExistsAsync(request.IdentityCard))
+                {
+                    return (false, "CMND/CCCD đã tồn tại");
+                }
+                //var password = GenerateRandomPassword(8, true, true, true, true);
+                var password = "123456";
+                // Tạo người dùng mới
+                var  newUsers = new Users
+                {
+                    Username = request.Email,
+                    Password = HashPassword(password),
+                    Email = request.Email,
+                    FullName = "",
+                    Phone = request.PhoneNumber,
+                    IdentityCard = request.IdentityCard,
+                    Address = "",
+                    BirthDate = DateTime.UtcNow,
+                    Gender = UserGender.Male
+                };
+
+                await _userRepository.CreateAsync(newUsers);
+
+                string subject = "Thông tin đăng nhập hệ thống Cinema City";
+                string htmlMessage = $@"
+                    <h3>Chào {request.Email},</h3>
+                    <p>Bạn đã đăng ký tài khoản thành công.</p>
+                    <p><strong>Tên đăng nhập:</strong> {request.Email}</p>
+                    <p><strong>Mật khẩu:</strong> {password}</p>
+                    <p>Vui lòng đăng nhập và thay đổi mật khẩu sau lần đăng nhập đầu tiên.</p>
+                    <br/>
+                    <p>Trân trọng,<br/>Cinema City</p>
+                ";
+
+                // 4. Gửi email
+                await _mailService.SendEmailAsync(request.Email, subject, htmlMessage);
+
+                return (true, "Resgiter Successfully");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Lỗi hệ thống: {ex.Message}");
+            }
+        }
+
+        public async Task<IActionResult> ConfirmAdminBooking(ConfirmBookingRequestAdminDto request)
+        {
+            try
+            {
+                // Validate seats
+                var seatValidation = await ValidateSelectedSeats(request.ShowTimeId, request.SeatIds);
+                if (seatValidation is not OkObjectResult okResult || !(okResult.Value is bool isValid) || !isValid)
+                {
+                    return seatValidation;
+                }
+
+                // Get showtime and movie info
+                var showTime = await _showtimeRepo.FoundOrThrowAsync(request.ShowTimeId, "ShowTime not found");
+                var movie = await _movieRepo.FoundOrThrowAsync(showTime.MovieId, "Movie not found");
+
+                // Calculate total price
+                var seats = await _seatRepository.GetSeatsByIdsAsync(request.SeatIds);
+                var totalPrice = seats.Sum(s => s.PriceSeat);
+
+                // Handle member points if applicable
+                double pointsUsed = 0;
+                double remainingPoints = 0;
+                Users? member = null;
+
+                if (!string.IsNullOrEmpty(request.MemberId))
+                {
+                    member = await _userRepo.FoundOrThrowAsync(Guid.Parse(request.MemberId), "Member not found");
+
+                    if (request.PointsUsed.HasValue && request.PointsUsed > 0)
+                    {
+                        if (member.Score < request.PointsUsed.Value)
+                        {
+                            return ErrorResp.BadRequest("Điểm thành viên không đủ để đổi thành vé");
+                        }
+
+                        pointsUsed = request.PointsUsed.Value;
+                        remainingPoints = member.Score - pointsUsed;
+
+                        // Apply discount (example: 100 points = 10,000 VND discount)
+                        var discount = (decimal)(pointsUsed / 100) * 10000;
+                        totalPrice = Math.Max(0, totalPrice - discount);
+                    }
+                }
+
+                // Create booking
+                var booking = new Booking
+                {
+                    BookingCode = GenerateBookingCode(),
+                    BookingDate = DateTime.UtcNow,
+                    TotalPrice = totalPrice,
+                    Status = BookingStatus.Confirmed,
+                    TotalSeats = request.SeatIds.Count,
+                    UserId = member?.Id ?? Guid.Empty,
+                    ShowTimeId = request.ShowTimeId,
+                    ConvertedTickets = request.ConvertedTickets,
+                    PointsUsed = pointsUsed
+                };
+
+                await _bookingRepo.CreateAsync(booking);
+
+                // Create booking details
+                var bookingDetails = seats.Select(seat => new BookingDetail
+                {
+                    BookingId = booking.Id,
+                    SeatId = seat.Id,
+                    Price = seat.PriceSeat
+                }).ToList();
+
+                await _bookingDetailRepo.CreateRangeAsync(bookingDetails);
+
+                // Update member points if applicable
+                if (member != null && pointsUsed > 0)
+                {
+                    member.Score = remainingPoints;
+                    await _userRepo.UpdateAsync(member);
+
+                    // Record point history
+                    var pointHistory = new PointHistory
+                    {
+                        Points = pointsUsed,
+                        Type = PointType.Used,
+                        Description = $"Used for booking {booking.BookingCode}",
+                        IsUsed = true,
+                        UserId = member.Id,
+                        BookingId = booking.Id
+                    };
+                    await _pointHistoryRepo.CreateAsync(pointHistory);
+                }
+
+                // Prepare response
+                var response = new BookingConfirmationDto
+                {
+                    BookingCode = booking.BookingCode,
+                    MovieTitle = movie.Title,
+                    CinemaRoom = showTime.Room?.RoomName ?? "Unknown",
+                    ShowDate = showTime.ShowDate?.ToString("dd/MM/yyyy") ?? "",
+                    ShowTime = showTime.ShowDate?.ToString("HH:mm") ?? "",
+                    Seats = seats.Select(s => new SeatSelectionDto
+                    {
+                        Id = s.Id,
+                        SeatCode = s.SeatCode,
+                        Price = s.PriceSeat
+                    }).ToList(),
+                    SubTotal = seats.Sum(s => s.PriceSeat),
+                    Discount = seats.Sum(s => s.PriceSeat) - totalPrice,
+                    Total = totalPrice,
+                    PointsUsed = pointsUsed,
+                    RemainingPoints = remainingPoints,
+                    PaymentMethod = request.PaymentMethod,
+                    BookingDate = booking.BookingDate.ToString("dd/MM/yyyy HH:mm:ss")
+                };
+
+                return SuccessResp.Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return ErrorResp.InternalServerError(ex.Message);
+            }
+        }
+
+
+        public async Task<IActionResult> GetBookingDetails(string bookingCode)
+        {
+            try
+            {
+                var booking = await _bookingRepo.FirstOrDefaultAsync(
+                    b => b.BookingCode == bookingCode,
+                    "User,ShowTime,ShowTime.Movie,ShowTime.Room,BookingDetails,BookingDetails.Seat");
+
+                if (booking == null)
+                {
+                    return ErrorResp.NotFound("Booking not found");
+                }
+
+                var response = new
+                {
+                    bookingCode = booking.BookingCode,
+                    status = booking.Status.ToString(),
+                    movieTitle = booking.ShowTime?.Movie?.Title,
+                    cinemaRoom = booking.ShowTime?.Room?.RoomName,
+                    showDate = booking.ShowTime?.ShowDate?.ToString("dd/MM/yyyy"),
+                    showTime = booking.ShowTime?.ShowDate?.ToString("HH:mm"),
+                    seats = booking.BookingDetails?.Select(bd => bd.Seat?.SeatCode).ToList(),
+                    totalPrice = booking.TotalPrice,
+                    memberInfo = booking.User == null ? null : new
+                    {
+                        memberId = booking.User.Id,
+                        fullName = booking.User.FullName
+                    },
+                    bookingDate = booking.BookingDate.ToString("dd/MM/yyyy HH:mm:ss"),
+
+                };
+
+                return SuccessResp.Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return ErrorResp.InternalServerError(ex.Message);
+            }
+        }
+
+        private async Task<IActionResult> ValidateSelectedSeats(Guid showTimeId, List<Guid> seatIds)
+        {
+            if (seatIds == null || seatIds.Count == 0)
+                return ErrorResp.BadRequest("Vui lòng chọn ít nhất 1 ghế");
+
+            if (seatIds.Count > 8)
+                return ErrorResp.BadRequest("Tối đa 8 ghế mỗi lần đặt");
+
+            var showTime = await _showtimeRepo.FindByIdAsync(showTimeId, "Room");
+            if (showTime == null)
+                return ErrorResp.NotFound("Không tìm thấy suất chiếu");
+
+            var seats = await _seatRepository.GetSeatsByIdsAsync(seatIds);
+            if (seats.Count != seatIds.Count)
+                return ErrorResp.BadRequest("Một số ghế đã chọn không tồn tại");
+
+            var bookedSeatIds = await _seatRepository.GetBookedSeatIdsForShowTimeAsync(showTimeId);
+            var alreadyBooked = seats.Where(s => bookedSeatIds.Contains(s.Id)).ToList();
+
+            if (alreadyBooked.Any())
+            {
+                var bookedCodes = alreadyBooked.Select(s => s.SeatCode);
+                return ErrorResp.BadRequest($"Ghế {string.Join(", ", bookedCodes)} đã được đặt");
+            }
+
+            return SuccessResp.Ok(true);
+        }
+    
+
+    public static string GenerateRandomPassword(int length = 8, bool includeUppercase = true, bool includeLowercase = true, bool includeNumbers = true, bool includeSpecialChars = true)
+        {
+            const string UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string LOWER = "abcdefghijklmnopqrstuvwxyz";
+            const string DIGITS = "0123456789";
+            const string SPECIAL = "!@#$%^&*()-_=+[]{};:,.<>?/";
+
+            StringBuilder characterSet = new StringBuilder();
+            if (includeUppercase) characterSet.Append(UPPER);
+            if (includeLowercase) characterSet.Append(LOWER);
+            if (includeNumbers) characterSet.Append(DIGITS);
+            if (includeSpecialChars) characterSet.Append(SPECIAL);
+
+            if (characterSet.Length == 0)
+                throw new ArgumentException("Phải chọn ít nhất một loại ký tự để tạo mật khẩu.");
+
+            StringBuilder password = new StringBuilder();
+            Random rand = new Random();
+
+            for (int i = 0; i < length; i++)
+            {
+                int index = rand.Next(characterSet.Length);
+                password.Append(characterSet[index]);
+            }
+
+            return password.ToString();
+        }
+
+        public string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
+        
     }
 }
-

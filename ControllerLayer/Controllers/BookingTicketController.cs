@@ -68,13 +68,50 @@ namespace ControllerLayer.Controllers
             return await _seatService.GetShowTimeDetails(showTimeId);
         }
 
-        [HttpPost("confirm")]
+        [HttpPost("confirm-user-booking")]
         public async Task<IActionResult> ConfirmBooking([FromBody] ConfirmBookingRequestDto request)
         {
             _logger.LogInformation("Confirming booking for ShowtimeId: {ShowTimeId}, UserId: {UserId}",
                 request.ShowtimeId, request.UserId); // Ghi log thông tin người dùng
 
-            return await _bookingTicketService.ConfirmBooking(request);
+            return await _bookingTicketService.ConfirmUserBooking(request);
+        }
+
+        [HttpPost("check-member")]
+        public async Task<IActionResult> CheckMember([FromBody] CheckMemberRequestDto request)
+        {
+            _logger.LogInformation("Checking member with request: {@Request}", request);
+            return await _bookingTicketService.CheckMember(request);
+        }
+
+        [HttpPost("create-member-account")]
+        public async Task<IActionResult> CreateMemberAccount([FromBody] CreateMemberAccountDto request)
+        {
+            _logger.LogInformation("Creating member account with request: {@Request}", request);
+            var result = await _bookingTicketService.CreateMemberAccount(request);
+
+            if (result.Success)
+            {
+                return Ok(new { Message = result.message });
+            }
+            else
+            {
+                return BadRequest(new { Message = result.message });
+            }
+        }
+
+        [HttpPost("confirm-Admin-booking")]
+        public async Task<IActionResult> ConfirmAdminBooking([FromBody] ConfirmBookingRequestAdminDto request)
+        {
+            _logger.LogInformation("Confirming booking with request: {@Request}", request);
+            return await _bookingTicketService.ConfirmAdminBooking(request);
+        }
+
+        [HttpGet("booking/{bookingCode}")]
+        public async Task<IActionResult> GetBookingDetails(string bookingCode)
+        {
+            _logger.LogInformation("Getting booking details for code: {BookingCode}", bookingCode);
+            return await _bookingTicketService.GetBookingDetails(bookingCode);
         }
 
         [HttpGet("{bookingId}/details")]
