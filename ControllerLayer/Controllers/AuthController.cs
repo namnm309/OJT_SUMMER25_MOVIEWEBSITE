@@ -36,7 +36,7 @@ namespace ControllerLayer.Controllers
 
         [Protected]
         [HttpGet("View")]
-        public async Task<IActionResult> View()
+        public new async Task<IActionResult> View()
         {
             _logger.LogInformation("View");
             return await _authService.ViewUser();

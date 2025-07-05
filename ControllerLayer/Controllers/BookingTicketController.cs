@@ -1,5 +1,4 @@
 ﻿using ApplicationLayer.DTO.BookingTicketManagement;
-using ApplicationLayer.Services.BookingTicketManagement;
 ﻿using ApplicationLayer.Services.BookingTicketManagement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -61,7 +60,7 @@ namespace ControllerLayer.Controllers
             return await _seatService.ValidateSelectedSeats(showTimeId, seatIds);
         }
 
-        [HttpGet("{showTimeId}/details")] // Endpoint lấy chi tiết suất chiếu
+        [HttpGet("showtime/{showTimeId}/details")] // Endpoint lấy chi tiết suất chiếu
         public async Task<IActionResult> GetShowTimeDetails(Guid showTimeId)
         {
             _logger.LogInformation("Getting details for showtime: {ShowTimeId}", showTimeId);
@@ -114,9 +113,9 @@ namespace ControllerLayer.Controllers
             return await _bookingTicketService.GetBookingDetails(bookingCode);
         }
 
-        [HttpGet("{bookingId}/details")]
+        [HttpGet("member-booking/{bookingId}/details")]
         [Authorize(Roles = "Member")]
-        public async Task<IActionResult> GetBookingDetails(Guid bookingId)
+        public async Task<IActionResult> GetMemberBookingDetails(Guid bookingId)
         {
             // Get user ID from claims
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

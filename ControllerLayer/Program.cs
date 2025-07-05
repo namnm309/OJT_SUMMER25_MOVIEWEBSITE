@@ -46,7 +46,12 @@ namespace ControllerLayer
             {
                 options.AddPolicy("AllowUI", policy =>
                 {
-                    policy.WithOrigins("https://localhost:7069", "http://localhost:7069", "http://localhost:5073", "https://localhost:5073", "http://localhost:5000", "https://localhost:5001")
+                    policy.WithOrigins("https://localhost:7069",
+                        "http://localhost:7069",
+                        "http://localhost:5073",
+                        "https://localhost:5073",
+                        "http://localhost:5000",
+                        "https://localhost:5001")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials(); // Cho phép chia sẻ cookie giữa UI và API
@@ -143,10 +148,7 @@ namespace ControllerLayer
 
             builder.Services.AddScoped<ICacheService, CacheService>();
 
-            var smtpUsername = builder.Configuration.GetValue<string>("SMTPEmail") ?? "smtp_email";
-            var smtpPassword = builder.Configuration.GetValue<string>("SMTPPassword") ?? "smtp_password";
-            builder.Services.AddSingleton<IMailService>(new MailService("smtp.gmail.com", 587, smtpUsername, smtpPassword));
-
+            
             // Đăng ký Repository và Services
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
@@ -166,15 +168,17 @@ namespace ControllerLayer
             builder.Services.AddScoped<ISeatRepository, SeatRepository>();
             builder.Services.AddScoped<ISeatService, SeatService>();
 
-            builder.Services.AddScoped<IMailService>(provider =>
-    new MailService("smtp.gmail.com", 587, "phucan0147@gmail.com", "kgwg vpwi voer ziag"));
+            //Cấu hình mail của Ân
+            builder.Services.AddScoped<ApplicationLayer.Services.Helper.IMailService>(provider =>
+            new ApplicationLayer.Services.Helper.MailService("smtp.gmail.com", 587, "phucan0147@gmail.com", "kgwg vpwi voer ziag"));
 
             // Thêm vào Program.cs
             builder.Services.AddAutoMapper(typeof(BookingProfile));
 
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
-            builder.Services.AddScoped<IAuthService, AuthService>();
+            // Tạm comment AuthService vì cần mail service
+            // builder.Services.AddScoped<IAuthService, AuthService>();
 
             // Cấu hình Authentication với Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -197,6 +201,8 @@ namespace ControllerLayer
             //===================================================================================================================================================
 
             var app = builder.Build();
+
+            // Đã đăng ký Mail service ở trên rồi
 
             // Tự động tạo database và khởi tạo dữ liệu mẫu
             using (var scope = app.Services.CreateScope())
