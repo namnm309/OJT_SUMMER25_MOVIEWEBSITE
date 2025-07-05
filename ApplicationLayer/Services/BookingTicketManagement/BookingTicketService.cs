@@ -8,6 +8,8 @@ using DomainLayer.Exceptions;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using ApplicationLayer.Services.Helper;
+using System.Text;
 
 namespace ApplicationLayer.Services.BookingTicketManagement
 {
@@ -24,7 +26,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<(bool Success, String message)> CreateMemberAccount(CreateMemberAccountDto request);
         Task<IActionResult> ConfirmAdminBooking(ConfirmBookingRequestAdminDto request);
         Task<IActionResult> GetBookingDetails(string bookingCode);
-        Task<IActionResult> ConfirmBooking(ConfirmBookingRequestDto request);
+        
         Task<IActionResult> GetBookingDetailsAsync(Guid bookingId, Guid userId);
 
     }
@@ -53,11 +55,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             IGenericRepository<PointHistory> pointHistoryRepo,
             ISeatRepository seatRepository,
             IMapper mapper,
-            IMailService mailService)
-            IGenericRepository<Booking> bookingRepo, // Thêm
-            IGenericRepository<BookingDetail> bookingDetailRepo, // Thêm
-            ISeatRepository seatRepository, // Thêm
-            IMapper mapper,
+            IMailService mailService,
             IBookingRepository bookingRepository)
         {
             _userRepository = userRepository;
@@ -302,8 +300,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
                 if (member == null)
                 {
-                    return ErrorResp.NotFound("Không tìm thấy thành viên nào!");
-                }
+                    return ErrorResp.NotFound("Không tìm thấy thành viên nào!"); 
+                }  
 
                 // Sử dụng AutoMapper
                 var memberInfo = _mapper.Map<MemberInfoDto>(member);
@@ -595,5 +593,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         {
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
+
+        
     }
 }
