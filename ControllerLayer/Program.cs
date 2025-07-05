@@ -8,9 +8,6 @@ using ApplicationLayer.Services.PromotionManagement;
 using ApplicationLayer.Services.CinemaRoomManagement;
 using ApplicationLayer.Services.BookingTicketManagement;
 using ApplicationLayer.Services.EmployeeManagement;
-<<<<<<< HEAD
-using ApplicationLayer.Mappings;
-=======
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -21,7 +18,7 @@ using Microsoft.OpenApi.Models;
 using InfrastructureLayer.Core.Mail;
 using InfrastructureLayer.Core.Cache;
 using StackExchange.Redis;
->>>>>>> origin/PhatNTH
+using ApplicationLayer.Mappings;
 
 namespace ControllerLayer
 {
@@ -32,6 +29,8 @@ namespace ControllerLayer
             var builder = WebApplication.CreateBuilder(args);
 
             // Đăng ký các service và cấu hình ứng dụng
+
+            //===================================================================================================================================================
 
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
@@ -185,14 +184,11 @@ namespace ControllerLayer
 
             builder.Services.AddAuthorization();
 
-<<<<<<< HEAD
-=======
             //
             builder.Services.AddHttpContextAccessor();
 
             //===================================================================================================================================================
 
->>>>>>> origin/PhatNTH
             var app = builder.Build();
 
             // Tự động tạo database và khởi tạo dữ liệu mẫu
