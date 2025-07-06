@@ -1680,6 +1680,20 @@
         async function loadDashboardData() {
             try {
                 const response = await fetch('/ShowtimeManagement/Showtimes/GetDashboardStats');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    showNotification(data.message || 'Không thể tải dữ liệu dashboard', 'error');
+                    return;
+                }
+                
+                // Process successful data
+                // ... existing code to handle successful response
                 const result = await response.json();
                 
                 if (result.success) {
@@ -1690,7 +1704,7 @@
                 }
             } catch (error) {
                 console.error('Error loading dashboard data:', error);
-                showNotification('Lỗi khi tải dữ liệu', 'error');
+                showNotification('Lỗi khi tải dữ liệu dashboard: ' + error.message, 'error');
             }
         }
 
@@ -1851,6 +1865,10 @@
                 showNotification('Đang xuất dữ liệu...', 'info');
                 
                 const response = await fetch('/ShowtimeManagement/Showtimes/ExportToExcel');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const result = await response.json();
                 
                 if (result.success) {
@@ -1863,7 +1881,8 @@
                     showNotification(result.message || 'Không thể xuất file', 'error');
                 }
             } catch (error) {
-                showNotification('Lỗi khi xuất dữ liệu', 'error');
+                console.error('Error exporting data:', error);
+                showNotification('Lỗi khi xuất dữ liệu: ' + error.message, 'error');
             }
         }
 

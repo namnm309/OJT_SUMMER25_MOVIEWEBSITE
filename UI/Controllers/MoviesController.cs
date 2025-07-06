@@ -229,5 +229,49 @@ namespace UI.Controllers
 
             return View("SearchResults", new List<MovieViewModel>());
         }
+
+        // API endpoint for AJAX calls to get movie details
+        [HttpGet]
+        public async Task<IActionResult> GetMovieDetails(Guid movieId)
+        {
+            try
+            {
+                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/movie/GetById?movieId={movieId}");
+                
+                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    return Json(new { success = true, data = result.Data });
+                }
+                
+                return Json(new { success = false, message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting movie details for movieId: {MovieId}", movieId);
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi tải thông tin phim" });
+            }
+        }
+
+        // API endpoint for AJAX calls to get showtimes
+        [HttpGet]
+        public async Task<IActionResult> GetShowtimes(Guid movieId, string date)
+        {
+            try
+            {
+                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/booking-ticket/dropdown/movies/{movieId}/times?date={Uri.EscapeDataString(date)}");
+                
+                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    return Json(new { success = true, data = result.Data });
+                }
+                
+                return Json(new { success = false, message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting showtimes for movieId: {MovieId}, date: {Date}", movieId, date);
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi tải lịch chiếu" });
+            }
+        }
     }
 }

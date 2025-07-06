@@ -1,4 +1,4 @@
-﻿using ApplicationLayer.DTO.BookingTicketManagement;
+using ApplicationLayer.DTO.BookingTicketManagement;
 using ApplicationLayer.DTO.CinemaRoomManagement;
 using ApplicationLayer.DTO.EmployeeManagement;
 using ApplicationLayer.DTO.JWT;
@@ -78,7 +78,17 @@ namespace ApplicationLayer.Mapper
             CreateMap<Seat, SeatViewDto>();
 
             //Booking
-            CreateMap<Movie, MovieDropdownDto>();
+            CreateMap<Movie, MovieDropdownDto>()
+                .ForMember(dest => dest.PrimaryImageUrl, 
+                    opt => opt.MapFrom(src => src.MovieImages.FirstOrDefault(img => img.IsPrimary) != null 
+                        ? src.MovieImages.FirstOrDefault(img => img.IsPrimary)!.ImageUrl 
+                        : src.MovieImages.FirstOrDefault() != null 
+                            ? src.MovieImages.FirstOrDefault()!.ImageUrl 
+                            : null))
+                .ForMember(dest => dest.Genre,
+                    opt => opt.MapFrom(src => string.Join(", ", src.MovieGenres.Select(mg => mg.Genre.GenreName))))
+                .ForMember(dest => dest.Duration,
+                    opt => opt.MapFrom(src => src.RunningTime));
 
             //Employee
             CreateMap<EmployeeCreateDto, Employee>();

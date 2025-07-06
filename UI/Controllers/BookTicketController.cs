@@ -54,16 +54,9 @@ namespace UI.Controllers
                 var datesResult = await _bookingService.GetShowDatesAsync(movieId);
                 if (datesResult.Success && datesResult.Data != null)
                 {
-                    var dates = datesResult.Data as IEnumerable<DateTime>;
-                    if (dates != null)
-                    {
-                        var formattedDates = dates.Select(d => d.ToString("yyyy-MM-dd")).ToList();
-                        return Json(new { success = true, dates = formattedDates });
-                    }
-                    else
-                    {
-                        return Json(new { success = false, message = "Dữ liệu ngày chiếu không hợp lệ." });
-                    }
+                    // API trả về dạng { Code: "yyyy-MM-dd", Text: "dd/MM" }
+                    // Trả về nguyên dạng cho client xử lý
+                    return Json(new { success = true, dates = datesResult.Data });
                 }
                 return Json(new { success = false, message = datesResult.Message ?? "Không thể tải ngày chiếu." });
             }

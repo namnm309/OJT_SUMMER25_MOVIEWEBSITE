@@ -1,0 +1,415 @@
+@{
+    Layout = null;
+}
+
+<div class="step3-container">
+    <h5 class="mb-4">Bước 3: Xác nhận và thanh toán</h5>
+    
+    <div class="row">
+        <!-- Thông tin đặt vé -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">Thông tin đặt vé</h6>
+                </div>
+                <div class="card-body">
+                    <div id="bookingDetails"></div>
+                </div>
+            </div>
+            
+            <!-- Thông tin khách hàng -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">Thông tin khách hàng</h6>
+                </div>
+                <div class="card-body">
+                    <form id="customerForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="customerPhone" class="form-label">Số điện thoại *</label>
+                                <div class="input-group">
+                                    <input type="tel" class="form-control" id="customerPhone" required>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="searchCustomer()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="customerName" class="form-label">Họ và tên *</label>
+                                <input type="text" class="form-control" id="customerName" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="customerEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="customerEmail">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="customerGender" class="form-label">Giới tính</label>
+                                <select class="form-select" id="customerGender">
+                                    <option value="">-- Chọn giới tính --</option>
+                                    <option value="Male">Nam</option>
+                                    <option value="Female">Nữ</option>
+                                    <option value="Other">Khác</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerAddress" class="form-label">Địa chỉ</label>
+                            <input type="text" class="form-control" id="customerAddress">
+                        </div>
+                        
+                        <!-- Điểm thưởng -->
+                        <div class="points-section" id="pointsSection" style="display: none;">
+                            <div class="alert alert-info">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Điểm thưởng hiện có: <span id="currentPoints">0</span> điểm</strong>
+                                        <br><small>1 điểm = 1,000 VNĐ</small>
+                                    </div>
+                                    <div>
+                                        <label for="usePoints" class="form-label">Sử dụng điểm:</label>
+                                        <input type="number" class="form-control" id="usePoints" min="0" max="0" value="0" onchange="calculateTotal()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tóm tắt đơn hàng -->
+        <div class="col-md-4">
+            <div class="card sticky-top">
+                <div class="card-header">
+                    <h6 class="mb-0">Tóm tắt đơn hàng</h6>
+                </div>
+                <div class="card-body">
+                    <div id="orderSummary"></div>
+                    
+                    <hr>
+                    
+                    <div class="payment-method mb-3">
+                        <label class="form-label">Phương thức thanh toán</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="cash" value="cash" checked>
+                            <label class="form-check-label" for="cash">
+                                <i class="fas fa-money-bill-wave me-2"></i>Tiền mặt
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="vnpay" value="vnpay">
+                            <label class="form-check-label" for="vnpay">
+                                <i class="fab fa-cc-visa me-2"></i>VNPay (Sắp có)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="total-section">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tạm tính:</span>
+                            <span id="subtotal">0 VNĐ</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2" id="pointsDiscount" style="display: none;">
+                            <span>Giảm giá (điểm):</span>
+                            <span id="discountAmount">0 VNĐ</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <strong>Tổng cộng:</strong>
+                            <strong id="finalTotal">0 VNĐ</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation buttons -->
+    <div class="d-flex justify-content-between mt-4">
+        <button type="button" class="btn btn-secondary" onclick="prevStep(3)">
+            <i class="fas fa-arrow-left me-2"></i>Quay lại
+        </button>
+        <button type="button" class="btn btn-success btn-lg" onclick="confirmBooking()">
+            <i class="fas fa-check me-2"></i>Xác nhận đặt vé
+        </button>
+    </div>
+</div>
+
+<style>
+.card {
+    border-left: 4px solid #007bff;
+}
+
+.total-section {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.payment-method .form-check {
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.payment-method .form-check:hover {
+    background-color: #f8f9fa;
+}
+
+.payment-method .form-check-input:checked + .form-check-label {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.points-section .alert {
+    border-left: 4px solid #17a2b8;
+}
+
+.sticky-top {
+    top: 1rem;
+}
+</style>
+
+<script>
+let showtimeData = null;
+let selectedSeats = [];
+let customerData = null;
+let subtotalAmount = 0;
+let discountAmount = 0;
+let finalAmount = 0;
+
+$(document).ready(function() {
+    // Load data from previous steps
+    loadPreviousData();
+    
+    // Disable VNPay for now
+    $('#vnpay').prop('disabled', true);
+    
+    // Calculate initial total
+    calculateTotal();
+});
+
+function loadPreviousData() {
+    // Load showtime data
+    const storedShowtime = sessionStorage.getItem('selectedShowtime');
+    if (storedShowtime) {
+        showtimeData = JSON.parse(storedShowtime);
+    }
+    
+    // Load selected seats
+    const storedSeats = sessionStorage.getItem('selectedSeats');
+    if (storedSeats) {
+        selectedSeats = JSON.parse(storedSeats);
+    }
+    
+    if (!showtimeData || !selectedSeats.length) {
+        alert('Không tìm thấy thông tin đặt vé. Vui lòng bắt đầu lại.');
+        loadStep(1);
+        return;
+    }
+    
+    displayBookingDetails();
+    displayOrderSummary();
+}
+
+function displayBookingDetails() {
+    const details = `
+        <div class="row">
+            <div class="col-md-6">
+                <strong>Phim:</strong><br>
+                ${showtimeData.movieTitle}
+            </div>
+            <div class="col-md-6">
+                <strong>Ngày chiếu:</strong><br>
+                ${formatDate(showtimeData.showDate)}
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <strong>Giờ chiếu:</strong><br>
+                ${formatTime(showtimeData.startTime)}
+            </div>
+            <div class="col-md-6">
+                <strong>Phòng:</strong><br>
+                ${showtimeData.roomName}
+            </div>
+        </div>
+        <div class="mt-3">
+            <strong>Ghế đã chọn:</strong><br>
+            ${selectedSeats.map(seat => `<span class="badge bg-primary me-1">${seat.code}</span>`).join('')}
+        </div>
+    `;
+    $('#bookingDetails').html(details);
+}
+
+function displayOrderSummary() {
+    let summaryHtml = '';
+    
+    selectedSeats.forEach(seat => {
+        summaryHtml += `
+            <div class="d-flex justify-content-between mb-2">
+                <span>Ghế ${seat.code} (${seat.type})</span>
+                <span>${seat.price.toLocaleString('vi-VN')} VNĐ</span>
+            </div>
+        `;
+    });
+    
+    $('#orderSummary').html(summaryHtml);
+    
+    subtotalAmount = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
+    $('#subtotal').text(subtotalAmount.toLocaleString('vi-VN') + ' VNĐ');
+}
+
+function searchCustomer() {
+    const phone = $('#customerPhone').val().trim();
+    if (!phone) {
+        alert('Vui lòng nhập số điện thoại');
+        return;
+    }
+    
+    // Search for existing customer
+    $.ajax({
+        url: 'https://localhost:7049/api/User/members',
+        method: 'GET',
+        success: function(response) {
+            if (response.success && response.data) {
+                const customer = response.data.find(member => member.phoneNumber === phone);
+                if (customer) {
+                    // Fill customer data
+                    $('#customerName').val(customer.fullName || '');
+                    $('#customerEmail').val(customer.email || '');
+                    $('#customerGender').val(customer.gender || '');
+                    $('#customerAddress').val(customer.address || '');
+                    
+                    customerData = customer;
+                    
+                    // Show points section
+                    $('#currentPoints').text(customer.points || 0);
+                    $('#usePoints').attr('max', customer.points || 0);
+                    $('#pointsSection').show();
+                    
+                    alert('Đã tìm thấy thông tin khách hàng!');
+                } else {
+                    alert('Không tìm thấy khách hàng. Vui lòng nhập thông tin mới.');
+                    clearCustomerForm();
+                }
+            }
+        },
+        error: function() {
+            alert('Lỗi khi tìm kiếm khách hàng');
+        }
+    });
+}
+
+function clearCustomerForm() {
+    $('#customerName').val('');
+    $('#customerEmail').val('');
+    $('#customerGender').val('');
+    $('#customerAddress').val('');
+    $('#pointsSection').hide();
+    customerData = null;
+}
+
+function calculateTotal() {
+    const usePoints = parseInt($('#usePoints').val()) || 0;
+    discountAmount = usePoints * 1000; // 1 point = 1,000 VND
+    finalAmount = subtotalAmount - discountAmount;
+    
+    if (usePoints > 0) {
+        $('#pointsDiscount').show();
+        $('#discountAmount').text('-' + discountAmount.toLocaleString('vi-VN') + ' VNĐ');
+    } else {
+        $('#pointsDiscount').hide();
+    }
+    
+    $('#finalTotal').text(finalAmount.toLocaleString('vi-VN') + ' VNĐ');
+}
+
+function confirmBooking() {
+    // Validate form
+    const phone = $('#customerPhone').val().trim();
+    const name = $('#customerName').val().trim();
+    
+    if (!phone || !name) {
+        alert('Vui lòng nhập đầy đủ thông tin khách hàng');
+        return;
+    }
+    
+    const paymentMethod = $('input[name="paymentMethod"]:checked').val();
+    const usePoints = parseInt($('#usePoints').val()) || 0;
+    
+    // Prepare booking data
+    const bookingData = {
+        showtimeId: showtimeData.id,
+        seatIds: selectedSeats.map(seat => seat.id),
+        customerInfo: {
+            phoneNumber: phone,
+            fullName: name,
+            email: $('#customerEmail').val().trim(),
+            gender: $('#customerGender').val(),
+            address: $('#customerAddress').val().trim()
+        },
+        usePoints: usePoints,
+        paymentMethod: paymentMethod,
+        totalAmount: finalAmount
+    };
+    
+    // Show confirmation
+    if (confirm(`Xác nhận đặt vé với tổng tiền ${finalAmount.toLocaleString('vi-VN')} VNĐ?`)) {
+        submitBooking(bookingData);
+    }
+}
+
+function submitBooking(bookingData) {
+    // Show loading
+    const confirmBtn = $('button[onclick="confirmBooking()"]');
+    const originalText = confirmBtn.html();
+    confirmBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
+    
+    $.ajax({
+        url: 'https://localhost:7049/api/v1/booking-ticket/confirm-admin',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(bookingData),
+        success: function(response) {
+            if (response.success) {
+                alert('Đặt vé thành công!');
+                
+                // Clear session storage
+                sessionStorage.removeItem('selectedShowtime');
+                sessionStorage.removeItem('selectedSeats');
+                
+                // Redirect back to dashboard
+                window.location.href = '@Url.Action("Index", "Dashboard")';
+            } else {
+                alert('Lỗi: ' + (response.message || 'Không thể đặt vé'));
+            }
+        },
+        error: function(xhr) {
+            let errorMessage = 'Lỗi khi đặt vé';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            alert(errorMessage);
+        },
+        complete: function() {
+            // Restore button
+            confirmBtn.prop('disabled', false).html(originalText);
+        }
+    });
+}
+
+function formatTime(timeString) {
+    return new Date('1970-01-01T' + timeString).toLocaleTimeString('vi-VN', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString('vi-VN');
+}
+</script>

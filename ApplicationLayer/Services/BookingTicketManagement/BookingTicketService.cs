@@ -75,7 +75,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
         public async Task<IActionResult> GetAvailableMovies()
         {
-            var movie = await _movieRepo.WhereAsync(m => m.Status == MovieStatus.NowShowing);
+            var movie = await _movieRepo.WhereAsync(m => m.Status == MovieStatus.NowShowing, "MovieImages", "MovieGenres.Genre");
             if (movie == null)
                 return ErrorResp.NotFound("Movie Not Found");
 

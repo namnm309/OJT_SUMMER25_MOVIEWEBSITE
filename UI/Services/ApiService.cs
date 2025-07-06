@@ -181,7 +181,7 @@ namespace UI.Services
                     var apiResponseElement = JsonSerializer.Deserialize<JsonElement>(responseContent);
                     _logger.LogDebug("API Response Element Type: {Type}", apiResponseElement.ValueKind);
                     
-                    // Kiểm tra API response format { success, data/user, message }
+                    // Kiểm tra API response format { success, data/user, message } (UI format)
                     if (apiResponseElement.TryGetProperty("success", out var successProp))
                     {
                         var success = successProp.GetBoolean();
@@ -231,6 +231,51 @@ namespace UI.Services
                                 if (typeof(T) == typeof(bool) || typeof(T) == typeof(object))
                                 {
                                     return ApiResponse<T>.SuccessResult((T)(object)(success), message);
+                                }
+                                
+                                return ApiResponse<T>.ErrorResult($"Success response without data: {message}", response.StatusCode);
+                            }
+                        }
+                        else
+                        {
+                            return ApiResponse<T>.ErrorResult(message, response.StatusCode);
+                        }
+                    }
+                    // Kiểm tra API response format { code, data, message } (Backend format)
+                    else if (apiResponseElement.TryGetProperty("code", out var codeProp))
+                    {
+                        var code = codeProp.GetInt32();
+                        var message = apiResponseElement.TryGetProperty("message", out var msgProp) 
+                            ? msgProp.GetString() ?? "Success" 
+                            : "Success";
+                            
+                        _logger.LogDebug("Backend API Code: {Code}, Message: {Message}", code, message);
+                            
+                        if (code >= 200 && code < 300) // Success codes
+                        {
+                            // Kiểm tra xem có property data không
+                            if (apiResponseElement.TryGetProperty("data", out var dataProp))
+                            {
+                                _logger.LogDebug("Found 'data' property with type: {Type}", dataProp.ValueKind);
+                                try
+                                {
+                                    var data = JsonSerializer.Deserialize<T>(dataProp.GetRawText(), _jsonOptions);
+                                    return ApiResponse<T>.SuccessResult(data!, message);
+                                }
+                                catch (JsonException ex)
+                                {
+                                    _logger.LogError(ex, "Failed to deserialize 'data' property: {Content}", dataProp.GetRawText());
+                                    return ApiResponse<T>.ErrorResult($"Failed to parse data: {ex.Message}", response.StatusCode);
+                                }
+                            }
+                            else
+                            {
+                                _logger.LogWarning("Success response without data property");
+                                
+                                // Nếu T là kiểu bool hoặc object, có thể trả về success mà không cần data
+                                if (typeof(T) == typeof(bool) || typeof(T) == typeof(object))
+                                {
+                                    return ApiResponse<T>.SuccessResult((T)(object)(true), message);
                                 }
                                 
                                 return ApiResponse<T>.ErrorResult($"Success response without data: {message}", response.StatusCode);

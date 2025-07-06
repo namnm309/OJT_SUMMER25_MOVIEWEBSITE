@@ -48,7 +48,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Getting available movies for booking");
-                return await _apiService.GetAsync<dynamic>("movies");
+                return await _apiService.GetAsync<dynamic>("api/v1/booking-ticket/dropdown/movies");
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Searching movies with term: {SearchTerm}", searchTerm);
-                return await _apiService.GetAsync<dynamic>($"movies/search?term={Uri.EscapeDataString(searchTerm)}");
+                return await _apiService.GetAsync<dynamic>($"api/v1/movie/Search?keyword={Uri.EscapeDataString(searchTerm)}");
             }
             catch (Exception ex)
             {
@@ -102,7 +102,6 @@ namespace UI.Areas.BookingManagement.Services
         {
             try
             {
-                _logger.LogInformation("Getting show dates for movie: {MovieId} from /api/v1/booking-ticket/dropdown/movies/{MovieId}/dates", movieId);
                 return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/dropdown/movies/{movieId}/dates");
             }
             catch (Exception ex)
@@ -120,9 +119,9 @@ namespace UI.Areas.BookingManagement.Services
         {
             try
             {
-                _logger.LogInformation("Getting show times for movie: {MovieId} on {ShowDate} from /api/v1/booking-ticket/dropdown/movies/{MovieId}/times", movieId, showDate);
-                // Tự động thêm thời gian 10:00:00+07 vào ngày
-                var dateParam = showDate.ToString("yyyy-MM-dd") + " 10:00:00+07";
+                _logger.LogInformation("Getting show times for movie: {MovieId} on {ShowDate} from /api/v1/booking-ticket/times", movieId, showDate);
+                // Format date as yyyy-MM-dd for the API
+                var dateParam = showDate.ToString("yyyy-MM-dd");
                 return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/dropdown/movies/{movieId}/times?date={Uri.EscapeDataString(dateParam)}");
             }
             catch (Exception ex)
@@ -141,7 +140,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Getting seats for showtime: {ShowTimeId}", showTimeId);
-                return await _apiService.GetAsync<dynamic>($"showtimes/{showTimeId}/seats");
+                return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/available?showTimeId={showTimeId}");
             }
             catch (Exception ex)
             {
@@ -159,8 +158,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Selecting {SeatCount} seats for showtime: {ShowTimeId}", seatIds.Count, showTimeId);
-                var request = new { ShowTimeId = showTimeId, SeatIds = seatIds };
-                return await _apiService.PostAsync<dynamic>("booking/select-seats", request);
+                return await _apiService.PostAsync<dynamic>($"api/v1/booking-ticket/validate?showTimeId={showTimeId}", seatIds);
             }
             catch (Exception ex)
             {
@@ -215,7 +213,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Getting available seats for showtime: {ShowtimeId}", showtimeId);
-                return await _apiService.GetAsync<dynamic>($"api/v1/seat/GetByShowTimeId?showTimeId={showtimeId}");
+                return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/available?showTimeId={showtimeId}");
             }
             catch (Exception ex)
             {
@@ -234,8 +232,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Validating {SeatCount} seats for showtime: {ShowtimeId}", seatIds.Count, showtimeId);
-                var request = new { ShowtimeId = showtimeId, SeatIds = seatIds };
-                return await _apiService.PostAsync<dynamic>("api/v1/booking/validate-seats", request);
+                return await _apiService.PostAsync<dynamic>($"api/v1/booking-ticket/validate?showTimeId={showtimeId}", seatIds);
             }
             catch (Exception ex)
             {

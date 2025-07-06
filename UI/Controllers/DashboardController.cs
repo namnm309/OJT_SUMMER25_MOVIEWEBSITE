@@ -152,5 +152,30 @@ namespace UI.Controllers
         {
             return View();
         }
+
+        // Booking Ticket Actions
+        [Authorize(Roles = "Admin,Staff,2,3")]
+        public IActionResult BookTicket()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin,Staff,2,3")]
+        public IActionResult BookTicketStep1()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin,Staff,2,3")]
+        public IActionResult BookTicketStep2()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin,Staff,2,3")]
+        public IActionResult BookTicketStep3()
+        {
+            return View();
+        }
     }
 }
