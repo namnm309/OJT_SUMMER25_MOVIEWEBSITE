@@ -122,31 +122,55 @@ class BookTicketDashboard {
             const datesResponse = await fetch(`/BookingManagement/BookingTicket/GetShowDates?movieId=${movieId}`);
             const datesData = await datesResponse.json();
             
+            console.log('Dates API Response:', datesData);
+            
             if (datesData.success && datesData.data && datesData.data.length > 0) {
                 // For each date, get the showtimes
                 const showDatesWithTimes = [];
                 
                 for (const dateItem of datesData.data) {
                     try {
-                        // Convert date string to proper format for API call
-                        const showDate = new Date(dateItem.code + 'T10:00:00+07:00');
-                        console.log('Loading times for date:', dateItem.code, 'formatted date:', showDate.toISOString());
+                        console.log(`Fetching showtimes for movieId: ${movieId}, date: ${dateItem.code}`);
                         
-                        const timesResponse = await fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(dateItem.code)}`);
+                        const timesResponse = await fetch(`/BookingManagement/BookingTicket/GetShowTimes?movieId=${movieId}&showDate=${encodeURIComponent(dateItem.code)}`);
                         const timesData = await timesResponse.json();
                         
-                        console.log('Times API response for date', dateItem.code, ':', timesData);
-                        
-                        if (timesData.success && timesData.data) {
-                            console.log('Adding showtimes for date:', dateItem.code, 'showtimes:', timesData.data);
-                            showDatesWithTimes.push({
-                                date: dateItem.text,
-                                dateCode: dateItem.code,
-                                showtimes: timesData.data
-                            });
+                        console.log(`Times API response for date ${dateItem.code}:`, timesData);
+                        console.error('DEBUG: Raw showtimes data', {
+                            movieId: movieId,
+                            rawData: timesData,
+                            success: timesData.success,
+                            dataType: typeof timesData.data,
+                            dataContent: JSON.stringify(timesData.data)
+                        });
+
+                        // Mở rộng điều kiện kiểm tra
+                        if (timesData.success) {
+                            const showtimes = Array.isArray(timesData.data) 
+                                ? timesData.data 
+                                : (timesData.data?.showtimes || []);
+                            
+                            console.log('Processed showtimes:', showtimes);
+                            
+                            if (showtimes.length > 0) {
+                                showDatesWithTimes.push({
+                                    date: dateItem.text,
+                                    dateCode: dateItem.code,
+                                    showtimes: showtimes.map(time => ({
+                                        id: time.id,
+                                        startTime: time.time || time.startTime
+                                    }))
+                                });
+                            } else {
+                                console.warn(`No showtimes found for date: ${dateItem.code}`);
+                                showDatesWithTimes.push({
+                                    date: dateItem.text,
+                                    dateCode: dateItem.code,
+                                    showtimes: []
+                                });
+                            }
                         } else {
-                            console.log('No showtimes found for date:', dateItem.code, 'API response:', timesData);
-                            // Add date without showtimes to show the date is available
+                            console.warn(`Invalid showtimes data for date: ${dateItem.code}`);
                             showDatesWithTimes.push({
                                 date: dateItem.text,
                                 dateCode: dateItem.code,
@@ -155,7 +179,6 @@ class BookTicketDashboard {
                         }
                     } catch (timeError) {
                         console.error('Error loading times for date:', dateItem.code, timeError);
-                        // Add date without showtimes to show the date is available
                         showDatesWithTimes.push({
                             date: dateItem.text,
                             dateCode: dateItem.code,
@@ -164,6 +187,7 @@ class BookTicketDashboard {
                     }
                 }
                 
+                console.log('Final showDatesWithTimes:', showDatesWithTimes);
                 this.displayShowtimes(showDatesWithTimes);
             } else {
                 console.error('Error loading show dates:', datesData.message);
@@ -194,25 +218,30 @@ class BookTicketDashboard {
         }
 
         showDates.forEach(dateGroup => {
+            // Chuyển đổi ngày từ định dạng YYYY-MM-DD sang định dạng đầy đủ
+            const fullDate = this.formatFullDate(dateGroup.dateCode);
+            
             const dateSection = $(`
                 <div class="showtime-date">
-                    <h6>${this.formatDate(dateGroup.date)}</h6>
+                    <h6>${fullDate}</h6>
                     <div class="showtime-list"></div>
                 </div>
             `);
 
             const showtimeList = dateSection.find('.showtime-list');
             
-            // Add safety check for showtimes array
             if (dateGroup.showtimes && Array.isArray(dateGroup.showtimes) && dateGroup.showtimes.length > 0) {
                 dateGroup.showtimes.forEach(showtime => {
                     const showtimeBtn = $(`
                         <button class="btn btn-outline-primary btn-sm showtime-btn" data-showtime-id="${showtime.id}">
-                            ${this.formatTime(showtime.startTime)}
+                            ${showtime.startTime}
                         </button>
                     `);
 
-                    showtimeBtn.on('click', () => this.selectShowtime(showtime));
+                    showtimeBtn.on('click', () => this.selectShowtime({
+                        id: showtime.id,
+                        startTime: showtime.startTime
+                    }));
                     showtimeList.append(showtimeBtn);
                 });
             } else {
@@ -658,9 +687,40 @@ class BookTicketDashboard {
         // You can implement a toast notification here
         alert('Thành công: ' + message);
     }
+
+    // Thêm phương thức mới để định dạng giờ
+    formatTimeFromString(timeString) {
+        // Giả sử timeString ở định dạng "HH:mm"
+        return timeString;
+    }
+
+    // Phương thức mới để format ngày đầy đủ
+    formatFullDate(dateString) {
+        // dateString có dạng 'YYYY-MM-DD'
+        const [year, month, day] = dateString.split('-');
+        const daysOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+        
+        // Tạo đối tượng Date để lấy thứ
+        const date = new Date(dateString);
+        const dayOfWeek = daysOfWeek[date.getDay()];
+
+        return `${dayOfWeek}, ${day}/${month}/${year}`;
+    }
 }
 
 // Initialize when document is ready
 $(document).ready(function() {
     new BookTicketDashboard();
+});
+
+console.log('DEBUG: Detailed Showtime Processing', {
+    rawShowtime: showtimes,
+    processedShowtimes: showtimes.map(time => ({
+        id: time.id,
+        originalTime: time.time,
+        originalFullDate: time.fullDate,
+        parsedDate: new Date(time.fullDate),
+        localeDateString: new Date(time.fullDate).toLocaleString('vi-VN'),
+        localTimeString: new Date(time.fullDate).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+    }))
 });

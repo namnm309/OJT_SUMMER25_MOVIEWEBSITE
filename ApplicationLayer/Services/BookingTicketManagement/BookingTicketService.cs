@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using ApplicationLayer.Services.Helper;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace ApplicationLayer.Services.BookingTicketManagement
 {
@@ -44,6 +45,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         private readonly IUserRepository _userRepository;
         private readonly IMailService _mailService;
         private readonly IBookingRepository _bookingRepository;
+        private readonly ILogger<BookingTicketService> _logger;
 
         public BookingTicketService(
             IUserRepository userRepository,
@@ -56,7 +58,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             ISeatRepository seatRepository,
             IMapper mapper,
             IMailService mailService,
-            IBookingRepository bookingRepository)
+            IBookingRepository bookingRepository,
+            ILogger<BookingTicketService> logger)
         {
             _userRepository = userRepository;
             _movieRepo = movieRepo;
@@ -69,6 +72,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             _mapper = mapper;
             _mailService = mailService;
             _bookingRepository = bookingRepository;
+            _logger = logger;
         }
 
 
@@ -111,15 +115,17 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         {
             var showtime = await _showtimeRepo.WhereAsync(s =>
                 s.MovieId == movieId &&
-                s.ShowDate.HasValue &&
-                s.ShowDate.Value.Date == selectedDate.Date);
+                s.ShowDate.HasValue);
 
             var timeList = showtime
                 .Select(s => new
                 {
                     s.Id,
-                    Time = s.ShowDate.Value.ToString("HH:mm")
-                }).ToList();
+                    Time = s.ShowDate.Value.ToLocalTime().ToString("HH:mm"),
+                    FullDate = s.ShowDate.Value.ToLocalTime()
+                })
+                .Where(s => s.FullDate.Date == selectedDate.Date)
+                .ToList();
 
             return SuccessResp.Ok(timeList);
         }

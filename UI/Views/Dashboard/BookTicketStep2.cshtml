@@ -2,409 +2,292 @@
     Layout = null;
 }
 
-<div class="step2-container">
-    <h5 class="mb-4">Bước 2: Chọn ghế ngồi</h5>
-    
-    <!-- Thông tin suất chiếu -->
-    <div class="showtime-info mb-4">
-        <div class="card">
-            <div class="card-body">
-                <div id="showtimeDetails"></div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Sơ đồ ghế -->
-    <div class="seat-map-container">
-        <div class="screen-indicator mb-4">
-            <div class="screen">MÀN HÌNH</div>
-        </div>
-        
-        <div id="seatMap" class="seat-map">
-            <!-- Seat map will be loaded here -->
-        </div>
-        
-        <!-- Chú thích -->
-        <div class="seat-legend mt-4">
-            <div class="legend-item">
-                <div class="seat-demo available"></div>
-                <span>Ghế trống</span>
-            </div>
-            <div class="legend-item">
-                <div class="seat-demo selected"></div>
-                <span>Ghế đã chọn</span>
-            </div>
-            <div class="legend-item">
-                <div class="seat-demo occupied"></div>
-                <span>Ghế đã đặt</span>
-            </div>
-            <div class="legend-item">
-                <div class="seat-demo vip"></div>
-                <span>Ghế VIP</span>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Thông tin ghế đã chọn -->
-    <div class="selected-seats-info mt-4" id="selectedSeatsInfo" style="display: none;">
+<div class="row">
+    <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h6 class="mb-0">Ghế đã chọn</h6>
+                <h5>Sơ đồ ghế</h5>
             </div>
             <div class="card-body">
-                <div id="selectedSeatsList"></div>
-                <div class="total-price mt-3">
-                    <strong>Tổng tiền: <span id="totalPrice">0</span> VNĐ</strong>
+                <div class="screen mb-4">
+                    SCREEN
+                </div>
+                <div id="seatMap" class="seat-map-container">
+                    <!-- Ghế sẽ được load động -->
+                </div>
+                <div class="seat-legend mt-4">
+                    <div class="legend-item">
+                        <div class="legend-color bg-success"></div>
+                        <span>Ghế trống</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color bg-danger"></div>
+                        <span>Ghế đã đặt</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color bg-warning"></div>
+                        <span>Ghế VIP</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Navigation buttons -->
-    <div class="d-flex justify-content-between mt-4">
-        <button type="button" class="btn btn-secondary" onclick="prevStep(2)">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Chi tiết đặt vé</h5>
+            </div>
+            <div class="card-body">
+                <div id="selectedMovieInfo" class="mb-3">
+                    <!-- Thông tin phim được chọn -->
+                </div>
+                <div id="selectedSeats" class="selection-summary">
+                    <p class="text-muted">Chưa có ghế nào được chọn</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12 d-flex justify-content-between">
+        <button class="btn btn-secondary" onclick="prevStep(2)">
             <i class="fas fa-arrow-left me-2"></i>Quay lại
         </button>
-        <button type="button" class="btn btn-primary" id="nextBtn" disabled onclick="goToStep3()">
-            Tiếp theo<i class="fas fa-arrow-right ms-2"></i>
+        <button class="btn btn-primary" id="nextToPayment" disabled>
+            Tiếp tục <i class="fas fa-arrow-right ms-2"></i>
         </button>
     </div>
 </div>
 
+<script>
+$(document).ready(function() {
+    // Lấy thông tin phim và suất chiếu từ localStorage
+    const selectedMovie = JSON.parse(localStorage.getItem('selectedMovie'));
+    const selectedShowtime = JSON.parse(localStorage.getItem('selectedShowtime'));
+
+    // Hiển thị thông tin phim
+    if (selectedMovie) {
+        $('#selectedMovieInfo').html(`
+            <div class="movie-details">
+                <h6>${selectedMovie.title}</h6>
+                <p>Suất chiếu: ${selectedShowtime.time}</p>
+            </div>
+        `);
+    }
+
+    // Load ghế
+    function loadSeats() {
+        $.ajax({
+            url: `/api/v1/booking-ticket/available?showTimeId=${selectedShowtime.id}`,
+            method: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    displaySeats(response.data.seats);
+                } else {
+                    console.error('Lỗi tải ghế:', response.message);
+                    $('#seatMap').html('<p class="text-muted">Không thể tải sơ đồ ghế</p>');
+                }
+            },
+            error: function(xhr) {
+                console.error('Lỗi kết nối:', xhr);
+            }
+        });
+    }
+
+    // Hiển thị ghế
+    function displaySeats(seats) {
+        const seatMap = $('#seatMap');
+        seatMap.empty();
+
+        if (!seats || seats.length === 0) {
+            seatMap.html('<p class="text-muted">Không có dữ liệu ghế</p>');
+            return;
+        }
+
+        // Nhóm ghế theo hàng
+        const seatRows = {};
+        seats.forEach(seat => {
+            const rowName = seat.seatCode.match(/[A-Z]+/)[0];
+            if (!seatRows[rowName]) {
+                seatRows[rowName] = [];
+            }
+            seatRows[rowName].push({
+                ...seat,
+                rowName: rowName,
+                seatNumber: seat.seatCode.match(/\d+/)[0]
+            });
+        });
+
+        // Hiển thị ghế
+        Object.keys(seatRows).sort().forEach(rowName => {
+            const row = $(`<div class="seat-row"><span class="row-label">${rowName}</span></div>`);
+            
+            seatRows[rowName].sort((a, b) => a.seatNumber - b.seatNumber).forEach(seat => {
+                const seatElement = $(`
+                    <div class="seat ${!seat.isAvailable ? 'seat-unavailable' : 'seat-available'} 
+                         ${seat.seatType === 'VIP' ? 'seat-vip' : 'seat-normal'}" 
+                         data-seat-id="${seat.id}" 
+                         data-seat-name="${seat.seatCode}"
+                         data-seat-price="${seat.price}">
+                        ${seat.seatNumber}
+                    </div>
+                `);
+
+                if (seat.isAvailable) {
+                    seatElement.on('click', function() {
+                        toggleSeat(seat, seatElement);
+                    });
+                }
+
+                row.append(seatElement);
+            });
+
+            seatMap.append(row);
+        });
+    }
+
+    // Chọn/bỏ chọn ghế
+    const selectedSeats = [];
+    function toggleSeat(seat, seatElement) {
+        const seatId = seat.id;
+        const seatIndex = selectedSeats.findIndex(s => s.id === seatId);
+
+        if (seatIndex > -1) {
+            // Bỏ chọn ghế
+            selectedSeats.splice(seatIndex, 1);
+            seatElement.removeClass('seat-selected');
+        } else {
+            // Chọn ghế
+            selectedSeats.push(seat);
+            seatElement.addClass('seat-selected');
+        }
+
+        updateSelectedSeats();
+    }
+
+    // Cập nhật danh sách ghế đã chọn
+    function updateSelectedSeats() {
+        const selectedSeatsContainer = $('#selectedSeats');
+        
+        if (selectedSeats.length === 0) {
+            selectedSeatsContainer.html('<p class="text-muted">Chưa có ghế nào được chọn</p>');
+            $('#nextToPayment').prop('disabled', true);
+            return;
+        }
+
+        let html = '<div class="selected-seats-list">';
+        let totalPrice = 0;
+
+        selectedSeats.forEach(seat => {
+            html += `
+                <div class="selected-seat-item">
+                    <span class="seat-name">${seat.seatCode}</span>
+                    <span class="seat-price">${formatCurrency(seat.price)}</span>
+                </div>
+            `;
+            totalPrice += seat.price;
+        });
+
+        html += `
+            <div class="selected-seats-total">
+                <strong>Tổng: ${formatCurrency(totalPrice)}</strong>
+            </div>
+        </div>`;
+
+        selectedSeatsContainer.html(html);
+        $('#nextToPayment').prop('disabled', false);
+
+        // Lưu ghế đã chọn vào localStorage
+        localStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
+    }
+
+    // Validate ghế
+    function validateSeats() {
+        if (selectedSeats.length === 0) {
+            alert('Vui lòng chọn ít nhất một ghế');
+            return false;
+        }
+
+        return true;
+    }
+
+    // Sự kiện chuyển sang bước thanh toán
+    $('#nextToPayment').on('click', function() {
+        if (validateSeats()) {
+            nextStep(2);
+        }
+    });
+
+    // Định dạng tiền tệ
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(amount);
+    }
+
+    // Khởi tạo
+    loadSeats();
+});
+</script>
+
 <style>
-.screen-indicator {
-    text-align: center;
-}
-
-.screen {
-    background: linear-gradient(to bottom, #f8f9fa, #dee2e6);
-    border: 2px solid #6c757d;
-    border-radius: 20px;
-    padding: 10px 40px;
-    display: inline-block;
-    font-weight: bold;
-    color: #495057;
-}
-
-.seat-map {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
 .seat-row {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    justify-content: center;
+    margin-bottom: 10px;
 }
 
 .row-label {
     width: 30px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: bold;
-    color: #6c757d;
+    margin-right: 10px;
 }
 
 .seat {
-    width: 35px;
-    height: 35px;
-    border: 2px solid #dee2e6;
-    border-radius: 8px;
-    cursor: pointer;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    position: relative;
+    border-radius: 5px;
+    margin: 0 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.seat.available {
-    background-color: #f8f9fa;
-    border-color: #28a745;
-    color: #28a745;
-}
-
-.seat.available:hover {
-    background-color: #e7f3ff;
-    border-color: #007bff;
-}
-
-.seat.selected {
-    background-color: #007bff;
-    border-color: #007bff;
+.seat-available {
+    background-color: #28a745;
     color: white;
 }
 
-.seat.occupied {
+.seat-unavailable {
     background-color: #dc3545;
-    border-color: #dc3545;
     color: white;
     cursor: not-allowed;
+    opacity: 0.7;
 }
 
-.seat.vip {
-    background-color: #ffc107;
-    border-color: #ffc107;
-    color: #212529;
+.seat-vip {
+    border: 2px solid #ffc107;
 }
 
-.seat.vip.selected {
-    background-color: #ff6b35;
-    border-color: #ff6b35;
-    color: white;
-}
-
-.seat-legend {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.seat-demo {
-    width: 20px;
-    height: 20px;
-    border: 2px solid;
-    border-radius: 4px;
-}
-
-.seat-demo.available {
-    background-color: #f8f9fa;
-    border-color: #28a745;
-}
-
-.seat-demo.selected {
+.seat-selected {
     background-color: #007bff;
-    border-color: #007bff;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0,123,255,0.5);
 }
 
-.seat-demo.occupied {
-    background-color: #dc3545;
-    border-color: #dc3545;
-}
-
-.seat-demo.vip {
-    background-color: #ffc107;
-    border-color: #ffc107;
-}
-
-.showtime-info .card {
-    border-left: 4px solid #007bff;
-}
-
-.selected-seats-info .card {
-    border-left: 4px solid #28a745;
-}
-
-.total-price {
-    font-size: 1.2rem;
-    color: #007bff;
-    text-align: right;
+.screen {
+    background-color: #6c757d;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
 }
 </style>
-
-<script>
-let selectedSeats = [];
-let seatPrices = {
-    'Normal': 80000,
-    'VIP': 120000
-};
-let showtimeData = null;
-
-$(document).ready(function() {
-    // Load showtime data from previous step
-    const storedShowtime = sessionStorage.getItem('selectedShowtime');
-    if (storedShowtime) {
-        showtimeData = JSON.parse(storedShowtime);
-        displayShowtimeInfo();
-        loadSeats();
-    } else {
-        alert('Không tìm thấy thông tin suất chiếu. Vui lòng quay lại bước 1.');
-        prevStep(2);
-    }
-});
-
-function displayShowtimeInfo() {
-    const details = `
-        <div class="row">
-            <div class="col-md-3">
-                <strong>Phim:</strong><br>
-                ${showtimeData.movieTitle}
-            </div>
-            <div class="col-md-3">
-                <strong>Ngày chiếu:</strong><br>
-                ${formatDate(showtimeData.showDate)}
-            </div>
-            <div class="col-md-3">
-                <strong>Giờ chiếu:</strong><br>
-                ${formatTime(showtimeData.startTime)}
-            </div>
-            <div class="col-md-3">
-                <strong>Phòng:</strong><br>
-                ${showtimeData.roomName}
-            </div>
-        </div>
-    `;
-    $('#showtimeDetails').html(details);
-}
-
-function loadSeats() {
-    $.ajax({
-        url: `https://localhost:7049/api/v1/booking-ticket/${showtimeData.id}/available-seats`,
-        method: 'GET',
-        success: function(response) {
-            if (response.success && response.data) {
-                renderSeatMap(response.data);
-            } else {
-                alert('Lỗi khi tải sơ đồ ghế');
-            }
-        },
-        error: function() {
-            alert('Lỗi khi tải sơ đồ ghế');
-        }
-    });
-}
-
-function renderSeatMap(seats) {
-    const seatMap = $('#seatMap');
-    seatMap.empty();
-    
-    // Group seats by row
-    const seatsByRow = {};
-    seats.forEach(seat => {
-        if (!seatsByRow[seat.rowIndex]) {
-            seatsByRow[seat.rowIndex] = [];
-        }
-        seatsByRow[seat.rowIndex].push(seat);
-    });
-    
-    // Sort rows and render
-    Object.keys(seatsByRow).sort((a, b) => parseInt(a) - parseInt(b)).forEach(rowIndex => {
-        const row = seatsByRow[rowIndex];
-        row.sort((a, b) => parseInt(a.columnIndex) - parseInt(b.columnIndex));
-        
-        const rowElement = $('<div class="seat-row"></div>');
-        
-        // Add row label
-        const rowLabel = String.fromCharCode(65 + parseInt(rowIndex) - 1); // A, B, C...
-        rowElement.append(`<div class="row-label">${rowLabel}</div>`);
-        
-        // Add seats
-        row.forEach(seat => {
-            const seatClass = getSeatClass(seat);
-            const seatElement = `
-                <div class="seat ${seatClass}" 
-                     data-seat-id="${seat.id}"
-                     data-seat-code="${seat.seatCode}"
-                     data-seat-type="${seat.seatType}"
-                     data-is-booked="${seat.isBooked}"
-                     onclick="toggleSeat(this)">
-                    ${seat.columnIndex}
-                </div>
-            `;
-            rowElement.append(seatElement);
-        });
-        
-        seatMap.append(rowElement);
-    });
-}
-
-function getSeatClass(seat) {
-    if (seat.isBooked) {
-        return 'occupied';
-    } else if (seat.seatType === 'VIP') {
-        return 'vip available';
-    } else {
-        return 'available';
-    }
-}
-
-function toggleSeat(seatElement) {
-    const $seat = $(seatElement);
-    const isBooked = $seat.data('is-booked') === 'True' || $seat.data('is-booked') === true;
-    
-    if (isBooked) {
-        return; // Cannot select booked seats
-    }
-    
-    const seatId = $seat.data('seat-id');
-    const seatCode = $seat.data('seat-code');
-    const seatType = $seat.data('seat-type');
-    
-    if ($seat.hasClass('selected')) {
-        // Deselect seat
-        $seat.removeClass('selected');
-        selectedSeats = selectedSeats.filter(seat => seat.id !== seatId);
-    } else {
-        // Select seat (max 8 seats)
-        if (selectedSeats.length >= 8) {
-            alert('Chỉ được chọn tối đa 8 ghế');
-            return;
-        }
-        
-        $seat.addClass('selected');
-        selectedSeats.push({
-            id: seatId,
-            code: seatCode,
-            type: seatType,
-            price: seatPrices[seatType] || seatPrices['Normal']
-        });
-    }
-    
-    updateSelectedSeatsInfo();
-}
-
-function updateSelectedSeatsInfo() {
-    if (selectedSeats.length === 0) {
-        $('#selectedSeatsInfo').hide();
-        $('#nextBtn').prop('disabled', true);
-        return;
-    }
-    
-    const seatsList = selectedSeats.map(seat => 
-        `<span class="badge bg-primary me-2">${seat.code} (${seat.type})</span>`
-    ).join('');
-    
-    const totalPrice = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
-    
-    $('#selectedSeatsList').html(seatsList);
-    $('#totalPrice').text(totalPrice.toLocaleString('vi-VN'));
-    $('#selectedSeatsInfo').show();
-    $('#nextBtn').prop('disabled', false);
-}
-
-function formatTime(timeString) {
-    return new Date('1970-01-01T' + timeString).toLocaleTimeString('vi-VN', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
-
-function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString('vi-VN');
-}
-
-function goToStep3() {
-    if (selectedSeats.length === 0) {
-        alert('Vui lòng chọn ít nhất 1 ghế');
-        return;
-    }
-    
-    // Store selected seats for next step
-    sessionStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
-    
-    // Go to next step
-    nextStep(2);
-}
-</script>

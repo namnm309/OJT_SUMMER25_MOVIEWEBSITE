@@ -2,231 +2,195 @@
     Layout = null;
 }
 
-<div class="step1-container">
-    <h5 class="mb-4">Bước 1: Chọn phim và suất chiếu</h5>
-    
-    <form id="step1Form">
-        <div class="row">
-            <!-- Chọn ngày chiếu -->
-            <div class="col-md-4 mb-3">
-                <label for="showDate" class="form-label">Ngày chiếu</label>
-                <input type="date" class="form-control" id="showDate" required>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Chọn phim</h5>
             </div>
-            
-            <!-- Chọn phim -->
-            <div class="col-md-8 mb-3">
-                <label for="movieSelect" class="form-label">Chọn phim</label>
-                <select class="form-select" id="movieSelect" required>
-                    <option value="">-- Chọn phim --</option>
-                </select>
+            <div class="card-body">
+                <div class="row" id="movieList">
+                    <!-- Danh sách phim sẽ được load động -->
+                </div>
             </div>
         </div>
-        
-        <!-- Danh sách suất chiếu -->
-        <div class="showtimes-section" id="showtimesSection" style="display: none;">
-            <h6 class="mb-3">Suất chiếu có sẵn:</h6>
-            <div id="showtimesList" class="showtimes-grid">
-                <!-- Showtimes will be loaded here -->
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Suất chiếu</h5>
+            </div>
+            <div class="card-body" id="showtimeSelection">
+                <!-- Danh sách suất chiếu sẽ được load động -->
+                <p class="text-muted">Vui lòng chọn phim</p>
             </div>
         </div>
-        
-        <!-- Thông tin đã chọn -->
-        <div class="selected-info" id="selectedInfo" style="display: none;">
-            <div class="alert alert-info">
-                <h6>Thông tin đã chọn:</h6>
-                <div id="selectedDetails"></div>
-            </div>
-        </div>
-        
-        <!-- Navigation buttons -->
-        <div class="d-flex justify-content-between mt-4">
-            <button type="button" class="btn btn-secondary" disabled>
-                <i class="fas fa-arrow-left me-2"></i>Quay lại
-            </button>
-            <button type="button" class="btn btn-primary" id="nextBtn" disabled onclick="goToStep2()">
-                Tiếp theo<i class="fas fa-arrow-right ms-2"></i>
-            </button>
-        </div>
-    </form>
+    </div>
 </div>
 
-<style>
-.showtimes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-}
-
-.showtime-card {
-    border: 2px solid #dee2e6;
-    border-radius: 8px;
-    padding: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-}
-
-.showtime-card:hover {
-    border-color: #007bff;
-    background-color: #f8f9fa;
-}
-
-.showtime-card.selected {
-    border-color: #007bff;
-    background-color: #e7f3ff;
-}
-
-.showtime-time {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #007bff;
-}
-
-.showtime-room {
-    font-size: 0.9rem;
-    color: #6c757d;
-    margin-top: 0.5rem;
-}
-
-.showtime-seats {
-    font-size: 0.8rem;
-    color: #28a745;
-    margin-top: 0.25rem;
-}
-</style>
+<div class="row mt-3">
+    <div class="col-12 text-end">
+        <button class="btn btn-primary" id="nextToSeats" disabled>
+            Tiếp tục <i class="fas fa-arrow-right ms-2"></i>
+        </button>
+    </div>
+</div>
 
 <script>
-let selectedShowtime = null;
-
 $(document).ready(function() {
-    // Set default date to today
-    const today = new Date().toISOString().split('T')[0];
-    $('#showDate').val(today);
-    
-    // Load movies when date changes
-    $('#showDate').on('change', loadMovies);
-    
-    // Load showtimes when movie changes
-    $('#movieSelect').on('change', loadShowtimes);
-    
-    // Load initial movies
+    // Load danh sách phim
+    function loadMovies() {
+        $.ajax({
+            url: '/api/v1/booking-ticket/dropdown/movies',
+            method: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    const movieList = $('#movieList');
+                    movieList.empty();
+                    
+                    response.data.forEach(movie => {
+                        const movieCard = `
+                            <div class="col-md-4 mb-3">
+                                <div class="card movie-card" data-movie-id="${movie.id}">
+                                    <img src="${movie.posterUrl || '/images/default-movie.jpg'}" class="card-img-top" alt="${movie.title}">
+                                    <div class="card-body">
+                                        <h6 class="card-title">${movie.title}</h6>
+                                        <p class="card-text text-muted">${movie.genre || 'Chưa phân loại'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        movieList.append(movieCard);
+                    });
+
+                    // Xử lý sự kiện chọn phim
+                    $('.movie-card').on('click', function() {
+                        $('.movie-card').removeClass('selected');
+                        $(this).addClass('selected');
+                        
+                        const movieId = $(this).data('movie-id');
+                        loadShowtimes(movieId);
+                    });
+                } else {
+                    console.error('Lỗi tải danh sách phim:', response.message);
+                }
+            },
+            error: function(xhr) {
+                console.error('Lỗi kết nối:', xhr);
+            }
+        });
+    }
+
+    // Load suất chiếu theo phim
+    function loadShowtimes(movieId) {
+        // Lấy danh sách ngày
+        $.ajax({
+            url: `/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`,
+            method: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    const showtimeSelection = $('#showtimeSelection');
+                    showtimeSelection.empty();
+
+                    response.data.forEach(dateGroup => {
+                        const dateSection = $(`
+                            <div class="showtime-date mb-3">
+                                <h6>${dateGroup.text}</h6>
+                                <div class="showtime-list" data-date="${dateGroup.code}"></div>
+                            </div>
+                        `);
+
+                        // Lấy suất chiếu cho ngày này
+                        $.ajax({
+                            url: `/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${dateGroup.code}`,
+                            method: 'GET',
+                            success: function(timesResponse) {
+                                const showtimeList = dateSection.find('.showtime-list');
+                                
+                                if (timesResponse.success && timesResponse.data.length > 0) {
+                                    timesResponse.data.forEach(showtime => {
+                                        const showtimeBtn = $(`
+                                            <button class="btn btn-outline-primary btn-sm me-2 mb-2 showtime-btn" 
+                                                    data-showtime-id="${showtime.id}">
+                                                ${showtime.time}
+                                            </button>
+                                        `);
+
+                                        showtimeBtn.on('click', function() {
+                                            $('.showtime-btn').removeClass('active');
+                                            $(this).addClass('active');
+                                            $('#nextToSeats').prop('disabled', false);
+                                        });
+
+                                        showtimeList.append(showtimeBtn);
+                                    });
+                                } else {
+                                    showtimeList.html('<p class="text-muted small">Không có suất chiếu</p>');
+                                }
+                            },
+                            error: function(xhr) {
+                                console.error('Lỗi tải suất chiếu:', xhr);
+                            }
+                        });
+
+                        showtimeSelection.append(dateSection);
+                    });
+                } else {
+                    console.error('Lỗi tải ngày chiếu:', response.message);
+                }
+            },
+            error: function(xhr) {
+                console.error('Lỗi kết nối:', xhr);
+            }
+        });
+    }
+
+    // Sự kiện chuyển sang bước chọn ghế
+    $('#nextToSeats').on('click', function() {
+        const selectedMovie = $('.movie-card.selected');
+        const selectedShowtime = $('.showtime-btn.active');
+
+        if (selectedMovie.length && selectedShowtime.length) {
+            const movieId = selectedMovie.data('movie-id');
+            const showtimeId = selectedShowtime.data('showtime-id');
+            
+            // Lưu thông tin vào localStorage để truyền giữa các bước
+            localStorage.setItem('selectedMovie', JSON.stringify({
+                id: movieId,
+                title: selectedMovie.find('.card-title').text()
+            }));
+            localStorage.setItem('selectedShowtime', JSON.stringify({
+                id: showtimeId,
+                time: selectedShowtime.text().trim()
+            }));
+
+            // Chuyển sang bước chọn ghế
+            nextStep(1);
+        }
+    });
+
+    // Khởi tạo
     loadMovies();
 });
-
-function loadMovies() {
-    const showDate = $('#showDate').val();
-    if (!showDate) return;
-    
-    $.ajax({
-        url: 'https://localhost:7049/api/v1/booking-ticket/movies',
-        method: 'GET',
-        success: function(response) {
-            const movieSelect = $('#movieSelect');
-            movieSelect.empty().append('<option value="">-- Chọn phim --</option>');
-            
-            if (response.success && response.data) {
-                response.data.forEach(movie => {
-                    movieSelect.append(`<option value="${movie.id}">${movie.title}</option>`);
-                });
-            }
-        },
-        error: function() {
-            alert('Lỗi khi tải danh sách phim');
-        }
-    });
-}
-
-function loadShowtimes() {
-    const movieId = $('#movieSelect').val();
-    const showDate = $('#showDate').val();
-    
-    if (!movieId || !showDate) {
-        $('#showtimesSection').hide();
-        return;
-    }
-    
-    $.ajax({
-        url: `https://localhost:7049/api/v1/booking-ticket/${movieId}/${showDate}/showtimes`,
-        method: 'GET',
-        success: function(response) {
-            const showtimesList = $('#showtimesList');
-            showtimesList.empty();
-            
-            if (response.success && response.data && response.data.length > 0) {
-                response.data.forEach(showtime => {
-                    const showtimeCard = `
-                        <div class="showtime-card" onclick="selectShowtime('${showtime.id}', '${showtime.startTime}', '${showtime.roomName}', ${showtime.availableSeats})">
-                            <div class="showtime-time">${formatTime(showtime.startTime)}</div>
-                            <div class="showtime-room">${showtime.roomName}</div>
-                            <div class="showtime-seats">${showtime.availableSeats} ghế trống</div>
-                        </div>
-                    `;
-                    showtimesList.append(showtimeCard);
-                });
-                $('#showtimesSection').show();
-            } else {
-                showtimesList.append('<div class="text-center text-muted">Không có suất chiếu nào</div>');
-                $('#showtimesSection').show();
-            }
-        },
-        error: function() {
-            alert('Lỗi khi tải danh sách suất chiếu');
-        }
-    });
-}
-
-function selectShowtime(showtimeId, startTime, roomName, availableSeats) {
-    // Remove previous selection
-    $('.showtime-card').removeClass('selected');
-    
-    // Add selection to clicked card
-    event.target.closest('.showtime-card').classList.add('selected');
-    
-    // Store selected showtime
-    selectedShowtime = {
-        id: showtimeId,
-        startTime: startTime,
-        roomName: roomName,
-        availableSeats: availableSeats,
-        movieTitle: $('#movieSelect option:selected').text(),
-        showDate: $('#showDate').val()
-    };
-    
-    // Show selected info
-    const selectedDetails = `
-        <strong>Phim:</strong> ${selectedShowtime.movieTitle}<br>
-        <strong>Ngày:</strong> ${formatDate(selectedShowtime.showDate)}<br>
-        <strong>Giờ chiếu:</strong> ${formatTime(selectedShowtime.startTime)}<br>
-        <strong>Phòng:</strong> ${selectedShowtime.roomName}<br>
-        <strong>Ghế trống:</strong> ${selectedShowtime.availableSeats}
-    `;
-    
-    $('#selectedDetails').html(selectedDetails);
-    $('#selectedInfo').show();
-    $('#nextBtn').prop('disabled', false);
-}
-
-function formatTime(timeString) {
-    return new Date('1970-01-01T' + timeString).toLocaleTimeString('vi-VN', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
-
-function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString('vi-VN');
-}
-
-function goToStep2() {
-    if (!selectedShowtime) {
-        alert('Vui lòng chọn suất chiếu');
-        return;
-    }
-    
-    // Store data for next step
-    sessionStorage.setItem('selectedShowtime', JSON.stringify(selectedShowtime));
-    
-    // Go to next step
-    nextStep(1);
-}
 </script>
+
+<style>
+.movie-card {
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+}
+
+.movie-card.selected {
+    border: 2px solid #007bff;
+    box-shadow: 0 0 10px rgba(0,123,255,0.3);
+}
+
+.showtime-btn.active {
+    background-color: #007bff;
+    color: white;
+}
+</style>
