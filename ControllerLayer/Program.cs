@@ -221,7 +221,7 @@ namespace ControllerLayer
                 }
 
                 // Seed dữ liệu admin mặc định
-                await DataSeeder.SeedAdminUser(context);
+                // await DataSeeder.SeedAdminUser(context);
             }
 
             // Configure the HTTP request pipeline.

@@ -18,11 +18,25 @@ namespace InfrastructureLayer.Database
             using var serviceScope = application.ApplicationServices.CreateScope();
             var dbContext = serviceScope.ServiceProvider.GetService<MovieContext>();
 
-            // only call this method when there are pending migrations
-            if (dbContext != null && dbContext.Database.GetPendingMigrations().Any())
+            if (dbContext != null)
             {
-                Console.WriteLine("Applying  Migrations...");
-                dbContext.Database.Migrate();
+                // Apply pending migrations
+                if (dbContext.Database.GetPendingMigrations().Any())
+                {
+                    Console.WriteLine("Applying Migrations...");
+                    dbContext.Database.Migrate();
+                }
+
+                // Seed data
+                try
+                {
+                    DataSeeder.SeedAdminUser(dbContext).Wait();
+                    DataSeeder.SeedSampleData(dbContext).Wait();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error seeding data: {ex.Message}");
+                }
             }
 
             return application;

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InfrastructureLayer.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20250707041849_AddPriceSeatToSeat")]
-    partial class AddPriceSeatToSeat
+    [Migration("20250707065710_ConsolidateChanges")]
+    partial class ConsolidateChanges
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

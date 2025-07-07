@@ -5,7 +5,7 @@
 namespace InfrastructureLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class AddGenderAndIdentityCardInEmployee : Migration
+    public partial class ConsolidateChanges : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

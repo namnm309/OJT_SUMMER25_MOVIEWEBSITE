@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using InfrastructureLayer.Data;
 
 namespace ControllerLayer.Controllers
 {
@@ -13,12 +14,29 @@ namespace ControllerLayer.Controllers
         private readonly IBookingTicketService _bookingTicketService;
         private readonly ISeatService _seatService;
         private readonly ILogger<BookingTicketController> _logger;
+        private readonly MovieContext _context;
 
-        public BookingTicketController(IBookingTicketService bookingTicketService, ISeatService seatService, ILogger<BookingTicketController> logger)
+        public BookingTicketController(IBookingTicketService bookingTicketService, ISeatService seatService, ILogger<BookingTicketController> logger, MovieContext context)
         {
             _bookingTicketService = bookingTicketService;
             _seatService = seatService;
             _logger = logger;
+            _context = context;
+        }
+
+        [HttpGet("test-seed-data")]
+        public async Task<IActionResult> TestSeedData()
+        {
+            try
+            {
+                await DataSeeder.SeedAdminUser(_context);
+                await DataSeeder.SeedSampleData(_context);
+                return Ok(new { message = "✅ Dữ liệu mẫu đã được tạo thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = $"❌ Lỗi: {ex.Message}" });
+            }
         }
 
         [HttpGet("dropdown/movies")]

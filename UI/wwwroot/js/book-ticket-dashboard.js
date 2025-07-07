@@ -122,35 +122,19 @@ class BookTicketDashboard {
             const datesResponse = await fetch(`/BookingManagement/BookingTicket/GetShowDates?movieId=${movieId}`);
             const datesData = await datesResponse.json();
             
-            console.log('Dates API Response:', datesData);
-            
             if (datesData.success && datesData.data && datesData.data.length > 0) {
                 // For each date, get the showtimes
                 const showDatesWithTimes = [];
                 
                 for (const dateItem of datesData.data) {
                     try {
-                        console.log(`Fetching showtimes for movieId: ${movieId}, date: ${dateItem.code}`);
-                        
                         const timesResponse = await fetch(`/BookingManagement/BookingTicket/GetShowTimes?movieId=${movieId}&showDate=${encodeURIComponent(dateItem.code)}`);
                         const timesData = await timesResponse.json();
-                        
-                        console.log(`Times API response for date ${dateItem.code}:`, timesData);
-                        console.error('DEBUG: Raw showtimes data', {
-                            movieId: movieId,
-                            rawData: timesData,
-                            success: timesData.success,
-                            dataType: typeof timesData.data,
-                            dataContent: JSON.stringify(timesData.data)
-                        });
 
-                        // Mở rộng điều kiện kiểm tra
                         if (timesData.success) {
                             const showtimes = Array.isArray(timesData.data) 
                                 ? timesData.data 
                                 : (timesData.data?.showtimes || []);
-                            
-                            console.log('Processed showtimes:', showtimes);
                             
                             if (showtimes.length > 0) {
                                 showDatesWithTimes.push({
@@ -162,7 +146,6 @@ class BookTicketDashboard {
                                     }))
                                 });
                             } else {
-                                console.warn(`No showtimes found for date: ${dateItem.code}`);
                                 showDatesWithTimes.push({
                                     date: dateItem.text,
                                     dateCode: dateItem.code,
@@ -170,7 +153,6 @@ class BookTicketDashboard {
                                 });
                             }
                         } else {
-                            console.warn(`Invalid showtimes data for date: ${dateItem.code}`);
                             showDatesWithTimes.push({
                                 date: dateItem.text,
                                 dateCode: dateItem.code,
@@ -178,7 +160,6 @@ class BookTicketDashboard {
                             });
                         }
                     } catch (timeError) {
-                        console.error('Error loading times for date:', dateItem.code, timeError);
                         showDatesWithTimes.push({
                             date: dateItem.text,
                             dateCode: dateItem.code,
@@ -187,14 +168,11 @@ class BookTicketDashboard {
                     }
                 }
                 
-                console.log('Final showDatesWithTimes:', showDatesWithTimes);
                 this.displayShowtimes(showDatesWithTimes);
             } else {
-                console.error('Error loading show dates:', datesData.message);
                 this.displayShowtimes([]);
             }
         } catch (error) {
-            console.error('Error loading showtimes:', error);
             this.displayShowtimes([]);
             this.showError('Không thể tải lịch chiếu. Vui lòng thử lại.');
         } finally {
@@ -203,22 +181,18 @@ class BookTicketDashboard {
     }
 
     displayShowtimes(showDates) {
-        console.log('displayShowtimes called with data:', showDates);
         const showtimeSelection = $('#showtimeSelection');
         if (!showtimeSelection.length) {
-            console.error('showtimeSelection element not found!');
             return;
         }
         showtimeSelection.empty();
 
         if (!showDates || showDates.length === 0) {
-            console.log('No showDates data, displaying empty message');
             showtimeSelection.html('<p class="text-muted">Không có lịch chiếu</p>');
             return;
         }
 
         showDates.forEach(dateGroup => {
-            // Chuyển đổi ngày từ định dạng YYYY-MM-DD sang định dạng đầy đủ
             const fullDate = this.formatFullDate(dateGroup.dateCode);
             
             const dateSection = $(`
@@ -245,7 +219,7 @@ class BookTicketDashboard {
                     showtimeList.append(showtimeBtn);
                 });
             } else {
-                showtimeList.html('<p class="text-muted small">Không có suất chiếu cho ngày này.</p>');
+                showtimeList.html('<p class="text-muted">Không có suất chiếu</p>');
             }
 
             showtimeSelection.append(dateSection);
@@ -259,26 +233,29 @@ class BookTicketDashboard {
         $('.showtime-btn').removeClass('active');
         $(`.showtime-btn[data-showtime-id="${showtime.id}"]`).addClass('active');
         
-        // Enable next button
-        $('#nextBtn').prop('disabled', false);
+        // Auto advance to step 2 and load seats
+        setTimeout(() => {
+            this.currentStep = 2;
+            this.updateStepDisplay();
+            this.loadSeats(showtime.id);
+        }, 500); // Small delay for better UX
     }
 
     async loadSeats(showtimeId) {
         try {
-            this.showLoading();
-            const response = await fetch(`/BookingManagement/BookingTicket/GetSeats?showTimeId=${showtimeId}`);
+            const url = `/BookingManagement/BookingTicket/GetSeats?showTimeId=${showtimeId}`;
+            
+            const response = await fetch(url);
+            
             const data = await response.json();
             
             if (data.success) {
                 this.displaySeats(data.data);
             } else {
-                this.showError('Không thể tải sơ đồ ghế');
+                this.showError('Không thể tải sơ đồ ghế: ' + data.message);
             }
         } catch (error) {
-            console.error('Error loading seats:', error);
             this.showError('Có lỗi xảy ra khi tải sơ đồ ghế');
-        } finally {
-            this.hideLoading();
         }
     }
 
@@ -286,29 +263,53 @@ class BookTicketDashboard {
         const seatMap = $('#seatMap');
         seatMap.empty();
 
-        if (!seats || seats.length === 0) {
+        // Kiểm tra nếu có nested structure (RoomName + Seats)
+        let seatData = seats;
+        if (seats && seats.seats) {
+            seatData = seats.seats;
+        } else if (seats && seats.data && seats.data.seats) {
+            seatData = seats.data.seats;
+        } else if (Array.isArray(seats)) {
+            seatData = seats;
+        }
+
+        if (!seatData || seatData.length === 0) {
             seatMap.html('<p class="text-muted">Không có dữ liệu ghế</p>');
             return;
         }
 
-        // Group seats by row
+        // Group seats by row (extract row from seatCode)
         const seatRows = {};
-        seats.forEach(seat => {
-            if (!seatRows[seat.rowName]) {
-                seatRows[seat.rowName] = [];
+        seatData.forEach((seat, index) => {
+            // Extract row letter from seatCode (e.g., "A1" -> "A")
+            const rowName = seat.seatCode ? seat.seatCode.charAt(0) : 'A';
+            if (!seatRows[rowName]) {
+                seatRows[rowName] = [];
             }
-            seatRows[seat.rowName].push(seat);
+            
+            // Transform backend data to frontend format
+            const transformedSeat = {
+                id: seat.id,
+                rowName: rowName,
+                seatNumber: seat.seatCode ? seat.seatCode.slice(1) : '1', // Extract number part
+                seatCode: seat.seatCode,
+                seatType: seat.seatType,
+                isBooked: !seat.isAvailable, // Backend: isAvailable, Frontend: isBooked
+                price: seat.price || 0
+            };
+            
+            seatRows[rowName].push(transformedSeat);
         });
 
         // Display seats
         Object.keys(seatRows).sort().forEach(rowName => {
             const row = $(`<div class="seat-row"><span class="row-label">${rowName}</span></div>`);
             
-            seatRows[rowName].sort((a, b) => a.seatNumber - b.seatNumber).forEach(seat => {
+            seatRows[rowName].sort((a, b) => parseInt(a.seatNumber) - parseInt(b.seatNumber)).forEach(seat => {
                 const seatElement = $(`
                     <div class="seat ${seat.isBooked ? 'occupied' : 'available'} ${seat.seatType === 'VIP' ? 'vip' : ''}" 
                          data-seat-id="${seat.id}" 
-                         data-seat-name="${seat.rowName}${seat.seatNumber}"
+                         data-seat-name="${seat.seatCode}"
                          data-seat-price="${seat.price}">
                         ${seat.seatNumber}
                     </div>
@@ -357,7 +358,7 @@ class BookTicketDashboard {
         this.selectedSeats.forEach(seat => {
             html += `
                 <div class="selected-seat-item">
-                    <span class="seat-name">${seat.rowName}${seat.seatNumber}</span>
+                    <span class="seat-name">${seat.seatCode}</span>
                     <span class="seat-price">${this.formatCurrency(seat.price)}</span>
                 </div>
             `;
@@ -455,7 +456,7 @@ class BookTicketDashboard {
                 <h6>Chi tiết đơn hàng</h6>
                 <p><strong>Phim:</strong> ${this.selectedMovie.title}</p>
                 <p><strong>Suất chiếu:</strong> ${this.formatTime(this.selectedShowtime.startTime)}</p>
-                <p><strong>Ghế:</strong> ${this.selectedSeats.map(s => s.rowName + s.seatNumber).join(', ')}</p>
+                <p><strong>Ghế:</strong> ${this.selectedSeats.map(s => s.seatCode).join(', ')}</p>
                 
                 <hr>
                 
@@ -711,16 +712,4 @@ class BookTicketDashboard {
 // Initialize when document is ready
 $(document).ready(function() {
     new BookTicketDashboard();
-});
-
-console.log('DEBUG: Detailed Showtime Processing', {
-    rawShowtime: showtimes,
-    processedShowtimes: showtimes.map(time => ({
-        id: time.id,
-        originalTime: time.time,
-        originalFullDate: time.fullDate,
-        parsedDate: new Date(time.fullDate),
-        localeDateString: new Date(time.fullDate).toLocaleString('vi-VN'),
-        localTimeString: new Date(time.fullDate).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
-    }))
 });
