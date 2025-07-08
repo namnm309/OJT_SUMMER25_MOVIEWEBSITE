@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="~/css/book-ticket.css" />
     <!-- Book Ticket Fix CSS -->
     <link rel="stylesheet" href="~/css/book-ticket-fix.css" />
+    
 </head>
 <body>
     <!-- Dashboard Layout -->
@@ -30,7 +31,7 @@
         <aside class="new-dashboard-sidebar">
             <!-- Sidebar Header -->
             <div class="new-sidebar-header">
-                <a href="@Url.Action("Index","Home")" class="new-sidebar-brand">
+                <a href="@Url.Action("Index","Home", new { area = "" })" class="new-sidebar-brand">
                     <div class="new-brand-logo"></div>
                     <div class="new-brand-text">
                         <h2>Cinema City</h2>
@@ -44,13 +45,13 @@
                 <div class="new-nav-section">
                     <div class="new-nav-section-title">Tổng quan</div>
                     <div class="new-nav-item">
-                        <a href="@Url.Action("AdminDashboard", "Dashboard")" class="new-nav-link">
+                        <a href="@Url.Action("AdminDashboard", "Dashboard", new { area = "" })" class="new-nav-link">
                             <i class="fas fa-chart-line"></i>
                             <span>Dashboard</span>
                         </a>
                     </div>
                     <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Home")" class="new-nav-link">
+                        <a href="@Url.Action("Index", "Home", new { area = "" })" class="new-nav-link">
                             <i class="fas fa-home"></i>
                             <span>Trang chủ</span>
                         </a>
@@ -163,12 +164,12 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">
-                                <a href="@Url.Action("Index", "Home")" style="color: rgba(255, 255, 255, 0.8);">
+                                <a href="@Url.Action("Index", "Home", new { area = "" })" style="color: rgba(255, 255, 255, 0.8);">
                                     <i class="fas fa-home"></i> Trang chủ
                                 </a>
                             </li>
                             <li class="breadcrumb-item">
-                                <a href="@Url.Action("AdminDashboard", "Dashboard")" style="color: rgba(255, 255, 255, 0.8);">
+                                <a href="@Url.Action("AdminDashboard", "Dashboard", new { area = "" })" style="color: rgba(255, 255, 255, 0.8);">
                                     Dashboard
                                 </a>
                             </li>
