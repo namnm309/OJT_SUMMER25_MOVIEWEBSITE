@@ -74,6 +74,12 @@ namespace ControllerLayer.Controllers
             return await _bookingTicketService.ConfirmUserBooking(request);
         }
 
+        [HttpPost("confirm-user-booking-v2")]
+        public async Task<IActionResult> ConfirmBookingV2([FromBody] ConfirmBookingRequestDto request)
+        {
+            return await _bookingTicketService.ConfirmUserBookingV2(request);
+        }
+
         [HttpPost("check-member")]
         public async Task<IActionResult> CheckMember([FromBody] CheckMemberRequestDto request)
         {

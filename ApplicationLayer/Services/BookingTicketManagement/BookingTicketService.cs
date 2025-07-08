@@ -6,6 +6,7 @@ using DomainLayer.Entities;
 using DomainLayer.Enum;
 using DomainLayer.Exceptions;
 using InfrastructureLayer.Repository;
+using InfrastructureLayer.Data;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using ApplicationLayer.Services.Helper;
@@ -21,6 +22,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<IActionResult> GetShowDatesByMovie(Guid movieId); //Lấy danh sách ngày chiếu cho phim
         Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate); //Lấy các giờ chiếu trong ngày
         Task<IActionResult> ConfirmUserBooking(ConfirmBookingRequestDto request);
+        Task<IActionResult> ConfirmUserBookingV2(ConfirmBookingRequestDto request);
 
         Task<IActionResult> CheckMember(CheckMemberRequestDto request);
 
@@ -50,6 +52,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         private readonly IBookingRepository _bookingRepository;
         private readonly ILogger<BookingTicketService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly MovieContext _context;
 
         public BookingTicketService(
             IUserRepository userRepository,
@@ -64,7 +67,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             IMailService mailService,
             IBookingRepository bookingRepository,
             ILogger<BookingTicketService> logger,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            MovieContext context)
         {
             _userRepository = userRepository;
             _movieRepo = movieRepo;
@@ -79,6 +83,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             _bookingRepository = bookingRepository;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
+            _context = context;
         }
 
 
@@ -230,6 +235,162 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 // Ghi log lỗi nếu cần
                 _logger.LogError(ex, "Lỗi xảy ra trong quá trình xử lý");
                 // AC-05: Nếu quá trình gửi thất bại. Vui lòng thử lại sau.
+                return ErrorResp.InternalServerError("Đặt vé thất bại. Vui lòng thử lại sau.");
+            }
+        }
+
+        public async Task<IActionResult> ConfirmUserBookingV2(ConfirmBookingRequestDto request)
+        {
+            try
+            {
+                // Bước 1: Validate thông tin đầu vào
+                if (request.SeatIds == null || !request.SeatIds.Any())
+                {
+                    return ErrorResp.BadRequest("Vui lòng chọn ít nhất một ghế.");
+                }
+
+                if (request.TotalPrice <= 0)
+                {
+                    return ErrorResp.BadRequest("Tổng tiền phải lớn hơn 0.");
+                }
+
+                // Bước 2: Kiểm tra thông tin ShowTime
+                var showTime = await _showtimeRepo.FirstOrDefaultAsync(
+                    st => st.Id == request.ShowtimeId,
+                    "Movie", "Room"
+                );
+
+                if (showTime == null)
+                {
+                    return ErrorResp.NotFound("Không tìm thấy suất chiếu.");
+                }
+
+                // Kiểm tra suất chiếu có hợp lệ (chưa diễn ra)
+                if (showTime.ShowDate < DateTime.UtcNow)
+                {
+                    return ErrorResp.BadRequest("Suất chiếu đã qua. Không thể đặt vé.");
+                }
+
+                // Bước 3: Kiểm tra thông tin User
+                var user = await _userRepo.FindByIdAsync(request.UserId);
+                if (user == null)
+                {
+                    return ErrorResp.NotFound("Không tìm thấy thông tin người dùng.");
+                }
+
+                // Bước 4: Kiểm tra tính hợp lệ của ghế
+                var selectedSeats = await _seatRepository.GetSeatsByIdsAsync(request.SeatIds);
+                var bookedSeatIds = await _seatRepository.GetBookedSeatIdsForShowTimeAsync(request.ShowtimeId);
+
+                foreach (var seatId in request.SeatIds)
+                {
+                    // Kiểm tra ghế có tồn tại
+                    var seat = selectedSeats.FirstOrDefault(s => s.Id == seatId);
+                    if (seat == null)
+                    {
+                        return ErrorResp.BadRequest($"Ghế với ID {seatId} không tồn tại.");
+                    }
+
+                    // Kiểm tra ghế có thuộc phòng chiếu và còn hoạt động
+                    if (seat.RoomId != showTime.RoomId || !seat.IsActive)
+                    {
+                        return ErrorResp.BadRequest($"Ghế {seat.SeatCode} không khả dụng hoặc không thuộc phòng chiếu này.");
+                    }
+
+                    // Kiểm tra ghế đã được đặt chưa
+                    if (bookedSeatIds.Contains(seatId))
+                    {
+                        return ErrorResp.BadRequest($"Ghế {seat.SeatCode} đã được đặt.");
+                    }
+                }
+
+                // Bước 5: Tính toán lại tổng tiền để đảm bảo tính chính xác
+                var calculatedTotalPrice = selectedSeats.Sum(s => s.PriceSeat);
+                if (Math.Abs(calculatedTotalPrice - request.TotalPrice) > 0.01m)
+                {
+                    _logger.LogWarning("Tổng tiền không khớp. Calculated: {Calculated}, Request: {Request}", 
+                        calculatedTotalPrice, request.TotalPrice);
+                    // Có thể chọn cách xử lý: dùng giá tính toán hoặc báo lỗi
+                    // return ErrorResp.BadRequest($"Tổng tiền không chính xác. Giá thực tế: {calculatedTotalPrice:C}");
+                }
+
+                // Bước 6: Tạo Booking trong transaction
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    // Tạo booking record
+                    var booking = new Booking
+                    {
+                        BookingCode = GenerateBookingCode(),
+                        BookingDate = DateTime.UtcNow,
+                        TotalPrice = calculatedTotalPrice,
+                        Status = BookingStatus.Confirmed,
+                        TotalSeats = request.SeatIds.Count,
+                        UserId = request.UserId,
+                        ShowTimeId = request.ShowtimeId,
+                        FullName = request.FullName,
+                        Email = request.Email,
+                        PhoneNumber = request.PhoneNumber,
+                        IdentityCardNumber = request.IdentityCard
+                    };
+
+                    await _bookingRepo.CreateAsync(booking);
+
+                    // Tạo booking details và cập nhật trạng thái ghế
+                    var bookingDetails = new List<BookingDetail>();
+                    foreach (var seat in selectedSeats)
+                    {
+                        bookingDetails.Add(new BookingDetail
+                        {
+                            BookingId = booking.Id,
+                            SeatId = seat.Id,
+                            Price = seat.PriceSeat
+                        });
+
+                        // Đánh dấu ghế không khả dụng
+                        seat.IsActive = false;
+                    }
+
+                    // Cập nhật tất cả ghế cùng lúc
+                    await _seatRepository.UpdateSeatsAsync(selectedSeats);
+
+                    await _bookingDetailRepo.CreateRangeAsync(bookingDetails);
+
+                    // Commit transaction
+                    await transaction.CommitAsync();
+
+                    // Bước 7: Chuẩn bị response
+                    var response = new BookingConfirmationSuccessDto
+                    {
+                        BookingCode = booking.BookingCode,
+                        MovieTitle = showTime.Movie.Title,
+                        CinemaRoomName = showTime.Room.RoomName,
+                        ShowDate = showTime.ShowDate?.ToString("dd/MM/yyyy") ?? "",
+                        ShowTime = showTime.ShowDate?.ToString("HH:mm") ?? "",
+                        BookedSeats = selectedSeats.Select(s => new SeatBookingDto
+                        {
+                            SeatId = s.Id,
+                            SeatCode = s.SeatCode
+                        }).ToList(),
+                        TotalPrice = calculatedTotalPrice,
+                        FullName = request.FullName,
+                        Email = request.Email,
+                        IdentityCard = request.IdentityCard,
+                        PhoneNumber = request.PhoneNumber
+                    };
+
+                    _logger.LogInformation("Đặt vé thành công. BookingCode: {BookingCode}", booking.BookingCode);
+                    return SuccessResp.Ok(response);
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi xử lý đặt vé: {Message}", ex.Message);
                 return ErrorResp.InternalServerError("Đặt vé thất bại. Vui lòng thử lại sau.");
             }
         }

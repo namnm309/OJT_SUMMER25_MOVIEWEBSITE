@@ -12,11 +12,13 @@ class BookTicketDashboard {
         this.init();
     }
 
+    // tạo các method sử dụng  
     init() {
         this.bindEvents();
         this.loadMovies();
     }
 
+    // gán click, keypress, change events cho các nút và input
     bindEvents() {
         // Navigation buttons
         $('#nextBtn').on('click', () => this.nextStep());
@@ -52,6 +54,7 @@ class BookTicketDashboard {
         $('input[name="paymentMethod"]').on('change', () => this.updateOrderSummary());
     }
 
+    // api /BookingManagement/BookingTicket/GetMovies
     async loadMovies() {
         try {
             this.showLoading();
@@ -71,6 +74,7 @@ class BookTicketDashboard {
         }
     }
 
+    //dropdown moivie để chọn 
     displayMovies(movies) {
         const movieSelect = $('#movieSelect');
         const selectedMovieInfo = $('#selectedMovieInfo');
@@ -106,6 +110,7 @@ class BookTicketDashboard {
         });
     }
 
+    // chọn dropdown xong thì show poster, tên, thể loại, thời lượng phim
     displaySelectedMovieInfo(movie) {
         const selectedMovieInfo = $('#selectedMovieInfo');
         selectedMovieInfo.html(`
@@ -125,6 +130,7 @@ class BookTicketDashboard {
         selectedMovieInfo.show();
     }
 
+    // lưu phim đã chọn và tải lịch chiếu
     async selectMovie(movie) {
         this.selectedMovie = movie;
         
@@ -132,6 +138,9 @@ class BookTicketDashboard {
         await this.loadShowtimes(movie.id);
     }
 
+    //lấy ngày chiếu và giờ chiếu của phim 
+    // api /BookingManagement/BookingTicket/GetShowDates?movieId=${movieId}` 
+    // api /BookingManagement/BookingTicket/GetShowTimes?movieId=${movieId}&showDate=${encodeURIComponent(dateItem.code)}`
     async loadShowtimes(movieId) {
         try {
             this.showLoading();
@@ -197,6 +206,7 @@ class BookTicketDashboard {
         }
     }
 
+    // tạo các nút giờ chiếu theo từng ngày
     displayShowtimes(showDates) {
         const showtimeSelection = $('#showtimeSelection');
         if (!showtimeSelection.length) {
@@ -243,6 +253,7 @@ class BookTicketDashboard {
         });
     }
 
+    // lưu suất chiếu và => step 2 chọn ghế
     selectShowtime(showtime) {
         this.selectedShowtime = showtime;
         
@@ -258,6 +269,8 @@ class BookTicketDashboard {
         }, 500); // Small delay for better UX
     }
 
+    // lấy danh sách ghế của suất chiếu và show sơ đồ ghế
+    // api /BookingManagement/BookingTicket/GetSeats?showTimeId=${showtimeId}`
     async loadSeats(showtimeId) {
         try {
             const url = `/BookingManagement/BookingTicket/GetSeats?showTimeId=${showtimeId}`;
@@ -276,6 +289,7 @@ class BookTicketDashboard {
         }
     }
 
+    // show sơ đồ ghế theo hàng, hiển thị trạng thái ghế , khó siu cấp
     displaySeats(seats) {
         const seatMap = $('#seatMap');
         seatMap.empty();
@@ -342,7 +356,8 @@ class BookTicketDashboard {
             seatMap.append(row);
         });
     }
-
+ 
+    // thêm/xóa ghế khỏi danh sách đã chọn
     toggleSeat(seat, seatElement) {
         const seatId = seat.id;
         const seatIndex = this.selectedSeats.findIndex(s => s.id === seatId);
@@ -359,7 +374,8 @@ class BookTicketDashboard {
 
         this.updateSelectedSeats();
     }
-
+    
+    // hiển thị danh sách ghế đã chọn và tính tổng tiền
     updateSelectedSeats() {
         const selectedSeatsContainer = $('#selectedSeats');
         
@@ -439,7 +455,8 @@ class BookTicketDashboard {
             this.showSearchError('Có lỗi xảy ra khi tìm kiếm khách hàng');
         }
     }
-
+    
+    //Ẩn và xóa nội dung thông báo tìm kiếm
     clearSearchMessage() {
         $('#searchMessage').hide().removeClass('alert alert-success alert-danger').empty();
     }
@@ -633,6 +650,7 @@ class BookTicketDashboard {
         `);
     }
 
+    //Validate và chuyển sang bước tiếp theo (1→2→3)
     nextStep() {
         if (this.currentStep < 3) {
             // Validate current step
@@ -742,10 +760,10 @@ class BookTicketDashboard {
             <div class="modal fade" id="bookingConfirmModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Xác Nhận Đặt Vé</h5>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
+                                    <div class="modal-header">
+                <h5 class="modal-title">Xác Nhận Đặt Vé</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
                         <div class="modal-body">
                             <!-- Booking Information (Read-only) -->
                             <div class="row mb-3">
@@ -811,7 +829,7 @@ class BookTicketDashboard {
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                             <button type="button" class="btn btn-primary" id="finalConfirmBtn">Xác Nhận Đặt Vé</button>
                         </div>
                     </div>
@@ -826,8 +844,9 @@ class BookTicketDashboard {
         // Bind events for score conversion
         this.bindScoreConversionEvents(bookingDetail);
 
-        // Show modal
-        $('#bookingConfirmModal').modal('show');
+        // Show modal - Bootstrap 5 way
+        const modal = new bootstrap.Modal(document.getElementById('bookingConfirmModal'));
+        modal.show();
         this.hideLoading();
     }
 
@@ -914,8 +933,9 @@ class BookTicketDashboard {
             this.hideLoading();
 
             if (result.success && result.data) {
-                // Hide confirmation modal
-                $('#bookingConfirmModal').modal('hide');
+                // Hide confirmation modal - Bootstrap 5 way
+                const confirmModal = bootstrap.Modal.getInstance(document.getElementById('bookingConfirmModal'));
+                confirmModal.hide();
                 
                 // Display success result
                 this.displayBookingSuccess(result.data);
@@ -941,9 +961,7 @@ class BookTicketDashboard {
                     <div class="modal-content">
                         <div class="modal-header bg-success text-white">
                             <h5 class="modal-title">Đặt Vé Thành Công!</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="text-center mb-3">
@@ -974,7 +992,7 @@ class BookTicketDashboard {
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="closeSuccessModal" data-bs-dismiss="modal" data-dismiss="modal">Đóng</button>
+                            <button type="button" class="btn btn-primary" id="closeSuccessModal" data-bs-dismiss="modal">Đóng</button>
                         </div>
                     </div>
                 </div>
@@ -987,34 +1005,35 @@ class BookTicketDashboard {
         // Add modal to body
         $('body').append(successModal);
         
+        // Show modal - Bootstrap 5 way
+        const successModalInstance = new bootstrap.Modal(document.getElementById('bookingSuccessModal'));
+        successModalInstance.show();
+        
         // Add manual close event handlers for better compatibility
-        $('#bookingSuccessModal').on('click', '[data-dismiss="modal"], [data-bs-dismiss="modal"], #closeSuccessModal', function() {
-            $('#bookingSuccessModal').modal('hide');
+        $('#bookingSuccessModal').on('click', '[data-bs-dismiss="modal"], #closeSuccessModal', function() {
+            successModalInstance.hide();
         });
         
         // Close on backdrop click
         $('#bookingSuccessModal').on('click', function(e) {
             if (e.target === this) {
-                $('#bookingSuccessModal').modal('hide');
+                successModalInstance.hide();
             }
         });
         
         // Close on escape key
         $(document).on('keydown.successModal', function(e) {
             if (e.keyCode === 27) { // Escape key
-                $('#bookingSuccessModal').modal('hide');
+                successModalInstance.hide();
                 $(document).off('keydown.successModal');
             }
         });
         
         // Clean up when modal is hidden
-        $('#bookingSuccessModal').on('hidden.bs.modal hidden', function() {
+        $('#bookingSuccessModal').on('hidden.bs.modal', function() {
             $(this).remove();
             $(document).off('keydown.successModal');
         });
-        
-        // Show modal
-        $('#bookingSuccessModal').modal('show');
     }
 
     resetBookingForm() {
@@ -1145,8 +1164,9 @@ class BookTicketDashboard {
             $('#newCustomerPhone').val(searchTerm);
         }
         
-        // Show modal
-        $('#createCustomerModal').modal('show');
+        // Show modal - Bootstrap 5 way
+        const modal = new bootstrap.Modal(document.getElementById('createCustomerModal'));
+        modal.show();
     }
 
     async createCustomer() {
@@ -1169,7 +1189,9 @@ class BookTicketDashboard {
             const result = await response.json();
 
             if (result.success) {
-                $('#createCustomerModal').modal('hide');
+                // Hide modal - Bootstrap 5 way
+                const modal = bootstrap.Modal.getInstance(document.getElementById('createCustomerModal'));
+                modal.hide();
                 this.showSuccess('Tạo khách hàng thành công');
                 
                 // Auto search the new customer
