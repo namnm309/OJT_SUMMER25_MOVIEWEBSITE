@@ -18,12 +18,39 @@ namespace InfrastructureLayer.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     RoomName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     TotalSeats = table.Column<int>(type: "integer", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_cinema_rooms", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbl_employees",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FullName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    IdentityCard = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Gender = table.Column<int>(type: "integer", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Address = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "date", nullable: false),
+                    Position = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Salary = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    HireDate = table.Column<DateTime>(type: "date", nullable: false),
+                    ProfileImageUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    UserId = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_employees", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -48,8 +75,8 @@ namespace InfrastructureLayer.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    ReleaseDate = table.Column<DateTime>(type: "date", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "date", nullable: true),
+                    ReleaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ProductionCompany = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     RunningTime = table.Column<int>(type: "integer", maxLength: 50, nullable: false),
                     Version = table.Column<int>(type: "integer", nullable: true),
@@ -58,6 +85,9 @@ namespace InfrastructureLayer.Migrations
                     TrailerUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     Content = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false),
+                    IsFeatured = table.Column<bool>(type: "boolean", nullable: false),
+                    IsRecommended = table.Column<bool>(type: "boolean", nullable: false),
+                    Rating = table.Column<double>(type: "double precision", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -193,11 +223,7 @@ namespace InfrastructureLayer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ShowDate = table.Column<DateTime>(type: "date", nullable: false),
-                    StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    ShowDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     MovieId = table.Column<Guid>(type: "uuid", nullable: false),
                     RoomId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -225,6 +251,10 @@ namespace InfrastructureLayer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FullName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    IdentityCardNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     BookingCode = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     BookingDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "numeric", nullable: false),
@@ -290,6 +320,7 @@ namespace InfrastructureLayer.Migrations
                     Points = table.Column<double>(type: "double precision", nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    IsUsed = table.Column<bool>(type: "boolean", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     BookingId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -389,6 +420,9 @@ namespace InfrastructureLayer.Migrations
         {
             migrationBuilder.DropTable(
                 name: "tbl_booking_details");
+
+            migrationBuilder.DropTable(
+                name: "tbl_employees");
 
             migrationBuilder.DropTable(
                 name: "tbl_movie_genres");

@@ -151,5 +151,39 @@ namespace ApplicationLayer.Services.UserManagement
 
         // Method MapToUserResponseDto đã được thay thế bằng AutoMapper
         // Không cần manual mapping nữa! 🎉
+
+        public async Task<CustomerSearchDto?> SearchCustomerAsync(string searchTerm)
+        {
+            try 
+            {
+                // Tìm kiếm theo số điện thoại hoặc email
+                var user = await _userRepository.SearchCustomerAsync(searchTerm);
+                
+                if (user == null) return null;
+
+                // Tìm tổng số vé đã đặt
+                var totalBookings = await _userRepository.GetTotalBookingsAsync(user.Id);
+                
+                // Tìm ngày đặt vé cuối cùng
+                var lastBookingDate = await _userRepository.GetLastBookingDateAsync(user.Id);
+
+                // Mapping thủ công vì AutoMapper có thể không map được hết
+                return new CustomerSearchDto 
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    Email = user.Email ?? string.Empty,
+                    PhoneNumber = user.Phone ?? string.Empty,
+                    Points = (int)Math.Round(user.Score),
+                    TotalBookings = totalBookings,
+                    LastBookingDate = lastBookingDate
+                };
+            }
+            catch (Exception)
+            {
+                // Log lỗi nếu cần
+                return null;
+            }
+        }
     }
 } 

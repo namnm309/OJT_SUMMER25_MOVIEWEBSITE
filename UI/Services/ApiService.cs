@@ -27,8 +27,6 @@ namespace UI.Services
         {
             try
             {
-                _logger.LogInformation("🚀 GET Request: {Endpoint}", endpoint);
-                
                 var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
                 AddAuthenticationHeaders(request);
                 
@@ -37,7 +35,7 @@ namespace UI.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "❌ GET Request failed: {Endpoint}", endpoint);
+                _logger.LogError(ex, "GET Request failed: {Endpoint}", endpoint);
                 return ApiResponse<T>.ErrorResult($"Request failed: {ex.Message}", HttpStatusCode.InternalServerError);
             }
         }
@@ -156,9 +154,6 @@ namespace UI.Services
         private async Task<ApiResponse<T>> ProcessResponse<T>(HttpResponseMessage response)
         {
             var responseContent = await response.Content.ReadAsStringAsync();
-            
-            _logger.LogInformation("📥 Response Status: {StatusCode}, Content: {Content}", 
-                response.StatusCode, responseContent);
 
             if (response.IsSuccessStatusCode)
             {
@@ -179,7 +174,6 @@ namespace UI.Services
                     
                     // Parse response
                     var apiResponseElement = JsonSerializer.Deserialize<JsonElement>(responseContent);
-                    _logger.LogDebug("API Response Element Type: {Type}", apiResponseElement.ValueKind);
                     
                     // Kiểm tra API response format { success, data/user, message } (UI format)
                     if (apiResponseElement.TryGetProperty("success", out var successProp))
@@ -189,14 +183,11 @@ namespace UI.Services
                             ? msgProp.GetString() ?? "Success" 
                             : "Success";
                             
-                        _logger.LogDebug("API Success: {Success}, Message: {Message}", success, message);
-                            
                         if (success)
                         {
-                            // Kiểm tra xem có property data không
+                            // Kiểm tra xem có property data không (lowercase - UI format)
                             if (apiResponseElement.TryGetProperty("data", out var dataProp))
                             {
-                                _logger.LogDebug("Found 'data' property with type: {Type}", dataProp.ValueKind);
                                 try
                                 {
                                     var data = JsonSerializer.Deserialize<T>(dataProp.GetRawText(), _jsonOptions);
@@ -208,10 +199,23 @@ namespace UI.Services
                                     return ApiResponse<T>.ErrorResult($"Failed to parse data: {ex.Message}", response.StatusCode);
                                 }
                             }
+                            // Kiểm tra xem có property Data không (capital D - Backend format)
+                            else if (apiResponseElement.TryGetProperty("Data", out var dataPropCapital))
+                            {
+                                try
+                                {
+                                    var data = JsonSerializer.Deserialize<T>(dataPropCapital.GetRawText(), _jsonOptions);
+                                    return ApiResponse<T>.SuccessResult(data!, message);
+                                }
+                                catch (JsonException ex)
+                                {
+                                    _logger.LogError(ex, "Failed to deserialize 'Data' property: {Content}", dataPropCapital.GetRawText());
+                                    return ApiResponse<T>.ErrorResult($"Failed to parse Data: {ex.Message}", response.StatusCode);
+                                }
+                            }
                             // Kiểm tra xem có property user không (đặc biệt cho login)
                             else if (apiResponseElement.TryGetProperty("user", out var userProp))
                             {
-                                _logger.LogDebug("Found 'user' property with type: {Type}", userProp.ValueKind);
                                 try
                                 {
                                     var userData = JsonSerializer.Deserialize<T>(userProp.GetRawText(), _jsonOptions);
@@ -249,14 +253,11 @@ namespace UI.Services
                             ? msgProp.GetString() ?? "Success" 
                             : "Success";
                             
-                        _logger.LogDebug("Backend API Code: {Code}, Message: {Message}", code, message);
-                            
                         if (code >= 200 && code < 300) // Success codes
                         {
-                            // Kiểm tra xem có property data không
+                            // Kiểm tra xem có property data không (lowercase - UI format)
                             if (apiResponseElement.TryGetProperty("data", out var dataProp))
                             {
-                                _logger.LogDebug("Found 'data' property with type: {Type}", dataProp.ValueKind);
                                 try
                                 {
                                     var data = JsonSerializer.Deserialize<T>(dataProp.GetRawText(), _jsonOptions);
@@ -266,6 +267,20 @@ namespace UI.Services
                                 {
                                     _logger.LogError(ex, "Failed to deserialize 'data' property: {Content}", dataProp.GetRawText());
                                     return ApiResponse<T>.ErrorResult($"Failed to parse data: {ex.Message}", response.StatusCode);
+                                }
+                            }
+                            // Kiểm tra xem có property Data không (capital D - Backend format)
+                            else if (apiResponseElement.TryGetProperty("Data", out var dataPropCapital))
+                            {
+                                try
+                                {
+                                    var data = JsonSerializer.Deserialize<T>(dataPropCapital.GetRawText(), _jsonOptions);
+                                    return ApiResponse<T>.SuccessResult(data!, message);
+                                }
+                                catch (JsonException ex)
+                                {
+                                    _logger.LogError(ex, "Failed to deserialize 'Data' property: {Content}", dataPropCapital.GetRawText());
+                                    return ApiResponse<T>.ErrorResult($"Failed to parse Data: {ex.Message}", response.StatusCode);
                                 }
                             }
                             else
@@ -287,12 +302,27 @@ namespace UI.Services
                         }
                     }
                     
-                    // Fallback: không có API format, parse trực tiếp
-                    _logger.LogDebug("Fallback: No standard API format, attempting direct deserialization");
+                    // Fallback: không có API format, parse trực tiếp (cho Backend API responses)
                     try
                     {
+                        // Nếu T là dynamic, trả về JsonElement
+                        if (typeof(T) == typeof(object) || typeof(T).Name == "Object")
+                        {
+                            return ApiResponse<T>.SuccessResult((T)(object)apiResponseElement, "Success");
+                        }
+                        
                         var result = JsonSerializer.Deserialize<T>(responseContent, _jsonOptions);
-                        return ApiResponse<T>.SuccessResult(result!, "Success");
+                        
+                        // Kiểm tra null safety
+                        if (result != null)
+                        {
+                            return ApiResponse<T>.SuccessResult(result, "Success");
+                        }
+                        else
+                        {
+                            _logger.LogWarning("Deserialization returned null result");
+                            return ApiResponse<T>.ErrorResult("Response data is null", response.StatusCode);
+                        }
                     }
                     catch (JsonException ex)
                     {

@@ -587,6 +587,11 @@ namespace InfrastructureLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Points")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 

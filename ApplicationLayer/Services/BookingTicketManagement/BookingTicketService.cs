@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using ApplicationLayer.Services.Helper;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 
 namespace ApplicationLayer.Services.BookingTicketManagement
 {
@@ -21,7 +22,6 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate); //Lấy các giờ chiếu trong ngày
         Task<IActionResult> ConfirmUserBooking(ConfirmBookingRequestDto request);
 
-
         Task<IActionResult> CheckMember(CheckMemberRequestDto request);
 
         Task<(bool Success, String message)> CreateMemberAccount(CreateMemberAccountDto request);
@@ -30,6 +30,9 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         
         Task<IActionResult> GetBookingDetailsAsync(Guid bookingId, Guid userId);
 
+        // New methods for score conversion booking
+        Task<IActionResult> GetBookingConfirmationDetailAsync(Guid showTimeId, List<Guid> seatIds, string memberId);
+        Task<IActionResult> ConfirmBookingWithScoreAsync(BookingConfirmWithScoreRequestDto request);
     }
 
     public class BookingTicketService : IBookingTicketService
@@ -46,6 +49,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         private readonly IMailService _mailService;
         private readonly IBookingRepository _bookingRepository;
         private readonly ILogger<BookingTicketService> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public BookingTicketService(
             IUserRepository userRepository,
@@ -59,7 +63,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             IMapper mapper,
             IMailService mailService,
             IBookingRepository bookingRepository,
-            ILogger<BookingTicketService> logger)
+            ILogger<BookingTicketService> logger,
+            IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
             _movieRepo = movieRepo;
@@ -73,6 +78,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             _mailService = mailService;
             _bookingRepository = bookingRepository;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -221,6 +227,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             }
             catch (Exception ex)
             {
+                // Ghi log lỗi nếu cần
+                _logger.LogError(ex, "Lỗi xảy ra trong quá trình xử lý");
                 // AC-05: Nếu quá trình gửi thất bại. Vui lòng thử lại sau.
                 return ErrorResp.InternalServerError("Đặt vé thất bại. Vui lòng thử lại sau.");
             }
@@ -345,7 +353,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     Username = request.Email,
                     Password = HashPassword(password),
                     Email = request.Email,
-                    FullName = "",
+                    FullName = request.FullName,
                     Phone = request.PhoneNumber,
                     IdentityCard = request.IdentityCard,
                     Address = "",
@@ -600,6 +608,250 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
 
-        
+        public async Task<IActionResult> GetBookingConfirmationDetailAsync(Guid showTimeId, List<Guid> seatIds, string memberId)
+        {
+            try
+            {
+                // 1. Validate showtime and movie
+                var showTime = await _showtimeRepo.FoundOrThrowAsync(showTimeId, "ShowTime not found.");
+                var movie = await _movieRepo.FoundOrThrowAsync(showTime.MovieId, "Movie not found.");
+
+                // 2. Validate member
+                var member = await _userRepo.FirstOrDefaultAsync(u => u.Id.ToString() == memberId);
+                if (member == null)
+                    return ErrorResp.NotFound("Member not found");
+
+                // 3. Validate and calculate seat pricing
+                var seatDetails = new List<SeatDetailForConfirmDto>();
+                decimal totalPrice = 0;
+
+                foreach (var seatId in seatIds)
+                {
+                    var seat = await _seatRepository.GetByIdAsync(seatId);
+                    if (seat == null)
+                        return ErrorResp.BadRequest($"Seat {seatId} not found");
+
+                    seatDetails.Add(new SeatDetailForConfirmDto
+                    {
+                        Id = seat.Id,
+                        SeatCode = seat.SeatCode,
+                        Price = seat.PriceSeat
+                    });
+
+                    totalPrice += seat.PriceSeat;
+                }
+
+                // 4. Calculate score conversion capabilities (AC-02, AC-03)
+                const double SCORE_PER_TICKET = 100.0; // Define your business rule
+                int maxTicketsFromScore = (int)(member.Score / SCORE_PER_TICKET);
+                bool canConvertScore = maxTicketsFromScore > 0 && seatDetails.Count > 0;
+
+                // 5. Build response DTO (AC-01)
+                var confirmationDetail = new BookingConfirmationDetailDto
+                {
+                    // Booking Information (Read-only fields)
+                    BookingId = Guid.NewGuid().ToString(), // Temporary ID for display
+                    MovieName = movie.Title,
+                    Screen = showTime.Room?.RoomName ?? "Screen 1", // Get from relationship if available
+                    Date = showTime.ShowDate?.ToString("dd/MM/yyyy") ?? "",
+                    Time = showTime.ShowDate?.ToString("HH:mm") ?? "",
+                    Seat = string.Join(", ", seatDetails.Select(s => s.SeatCode)),
+                    Price = totalPrice,
+                    Total = totalPrice,
+
+                    // Member Information (Read-only fields)
+                    MemberId = member.Id.ToString(),
+                    FullName = member.FullName ?? "",
+                    MemberScore = member.Score,
+                    IdentityCard = member.IdentityCard ?? "",
+                    PhoneNumber = member.Phone ?? "",
+
+                    // Additional calculation info
+                    SeatDetails = seatDetails,
+                    CanConvertScore = canConvertScore,
+                    MaxTicketsFromScore = Math.Min(maxTicketsFromScore, seatDetails.Count),
+                    ScorePerTicket = SCORE_PER_TICKET
+                };
+
+                return SuccessResp.Ok(confirmationDetail);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting booking confirmation detail");
+                return ErrorResp.InternalServerError("Error retrieving booking details");
+            }
+        }
+
+        public async Task<IActionResult> ConfirmBookingWithScoreAsync(BookingConfirmWithScoreRequestDto request)
+        {
+            try
+            {
+                // 1. Validate showtime and movie
+                var showTime = await _showtimeRepo.FoundOrThrowAsync(request.ShowTimeId, "ShowTime not found.");
+                var movie = await _movieRepo.FoundOrThrowAsync(showTime.MovieId, "Movie not found.");
+
+                // 2. Validate member
+                var member = await _userRepo.FirstOrDefaultAsync(u => u.Id.ToString() == request.MemberId);
+                if (member == null)
+                    return ErrorResp.NotFound("Member not found");
+
+                // 3. Validate and calculate seat pricing
+                var seatDetails = new List<SeatDetailForConfirmDto>();
+                decimal totalPrice = 0;
+
+                foreach (var seatId in request.SeatIds)
+                {
+                    var seat = await _seatRepository.GetByIdAsync(seatId);
+                    if (seat == null)
+                        return ErrorResp.BadRequest($"Seat {seatId} not found");
+
+                    // Check if seat is still available
+                    var bookedSeats = await _seatRepository.GetBookedSeatIdsForShowTimeAsync(request.ShowTimeId);
+                    if (bookedSeats.Contains(seatId))
+                        return ErrorResp.BadRequest($"Seat {seat.SeatCode} is already booked");
+
+                    seatDetails.Add(new SeatDetailForConfirmDto
+                    {
+                        Id = seat.Id,
+                        SeatCode = seat.SeatCode,
+                        Price = seat.PriceSeat
+                    });
+
+                    totalPrice += seat.PriceSeat;
+                }
+
+                // 4. Handle score conversion logic (AC-02, AC-03, AC-04)
+                const double SCORE_PER_TICKET = 100.0;
+                decimal scoreDiscount = 0;
+                double scoreToDeduct = 0;
+                int actualTicketsConverted = 0;
+
+                if (request.UseScoreConversion && request.TicketsToConvert > 0)
+                {
+                    // AC-03: Check if score is sufficient
+                    double requiredScore = request.TicketsToConvert * SCORE_PER_TICKET;
+                    if (member.Score < requiredScore)
+                    {
+                        return ErrorResp.BadRequest("Not enough score to convert into ticket");
+                    }
+
+                    // Validate tickets to convert doesn't exceed available seats
+                    if (request.TicketsToConvert > request.SeatIds.Count)
+                    {
+                        return ErrorResp.BadRequest("Cannot convert more tickets than seats selected");
+                    }
+
+                    // AC-04: Calculate conversion if score is sufficient
+                    actualTicketsConverted = request.TicketsToConvert;
+                    scoreToDeduct = actualTicketsConverted * SCORE_PER_TICKET;
+                    
+                    // Calculate discount (assume 1 ticket = price of cheapest seat)
+                    var cheapestSeatPrice = seatDetails.Min(s => s.Price);
+                    scoreDiscount = actualTicketsConverted * cheapestSeatPrice;
+                }
+
+                // 5. Calculate final total
+                decimal finalTotal = Math.Max(0, totalPrice - scoreDiscount);
+
+                // 6. Create booking (AC-05: Finalize booking regardless of score usage)
+                var newBooking = new Booking
+                {
+                    BookingCode = GenerateBookingCode(),
+                    BookingDate = DateTime.UtcNow,
+                    TotalPrice = finalTotal,
+                    Status = BookingStatus.Confirmed,
+                    TotalSeats = request.SeatIds.Count,
+                    UserId = Guid.Parse(request.MemberId),
+                    ShowTimeId = request.ShowTimeId,
+                    
+                    // Required fields from member data
+                    FullName = member.FullName ?? "Unknown",
+                    Email = member.Email ?? "unknown@example.com",
+                    PhoneNumber = member.Phone ?? "0000000000",
+                    IdentityCardNumber = member.IdentityCard ?? "000000000000",
+                    
+                    // Score conversion fields
+                    ConvertedTickets = actualTicketsConverted > 0 ? actualTicketsConverted : null,
+                    PointsUsed = scoreToDeduct > 0 ? scoreToDeduct : null
+                };
+
+                await _bookingRepo.CreateAsync(newBooking);
+
+                // 7. Create booking details for each seat
+                var bookingDetails = new List<BookingDetail>();
+                foreach (var seatDetail in seatDetails)
+                {
+                    var seat = await _seatRepository.GetByIdAsync(seatDetail.Id);
+                    
+                    bookingDetails.Add(new BookingDetail
+                    {
+                        BookingId = newBooking.Id,
+                        SeatId = seatDetail.Id,
+                        Price = seatDetail.Price
+                    });
+
+                    // Mark seat as unavailable
+                    seat.IsActive = false;
+                    await _seatRepository.UpdateSeatAsync(seat);
+                }
+                await _bookingDetailRepo.CreateRangeAsync(bookingDetails);
+
+                // 8. Update member score if conversion was used (AC-04)
+                double remainingScore = member.Score;
+                if (actualTicketsConverted > 0)
+                {
+                    member.Score -= scoreToDeduct;
+                    await _userRepo.UpdateAsync(member);
+                    remainingScore = member.Score;
+
+                    // Create point history record
+                    await _pointHistoryRepo.CreateAsync(new PointHistory
+                    {
+                        UserId = member.Id,
+                        Points = -scoreToDeduct,
+                        Type = PointType.Used,
+                        Description = $"Converted {actualTicketsConverted} tickets from {scoreToDeduct} points",
+                        IsUsed = true,
+                        BookingId = newBooking.Id
+                    });
+                }
+
+                // 9. Build success response
+                var successResponse = new BookingConfirmSuccessDto
+                {
+                    BookingCode = newBooking.BookingCode,
+                    MovieTitle = movie.Title,
+                    CinemaRoom = showTime.Room?.RoomName ?? "Screen 1",
+                    ShowDate = showTime.ShowDate?.ToString("dd/MM/yyyy") ?? "",
+                    ShowTime = showTime.ShowDate?.ToString("HH:mm") ?? "",
+                    Seats = seatDetails,
+
+                    // Financial summary
+                    SubTotal = totalPrice,
+                    ScoreDiscount = scoreDiscount,
+                    Total = finalTotal,
+
+                    // Score usage details
+                    ScoreUsed = actualTicketsConverted > 0,
+                    TicketsConvertedFromScore = actualTicketsConverted,
+                    ScoreDeducted = scoreToDeduct,
+                    RemainingScore = remainingScore,
+
+                    // Other info
+                    PaymentMethod = request.PaymentMethod,
+                    BookingDate = DateTime.UtcNow.ToString("dd/MM/yyyy HH:mm"),
+                    Message = actualTicketsConverted > 0 
+                        ? $"Booking confirmed! {actualTicketsConverted} tickets converted from {scoreToDeduct} points."
+                        : "Booking confirmed successfully!"
+                };
+
+                return SuccessResp.Ok(successResponse);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error confirming booking with score conversion");
+                return ErrorResp.InternalServerError("Error processing booking confirmation");
+            }
+        }
     }
 }

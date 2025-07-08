@@ -15,5 +15,9 @@ namespace InfrastructureLayer.Repository
 
         Task<bool> IsIdentityCardExistsAsync(string identityCard);
         Task<bool> IsPhoneExistsAsync(string phone);
+
+        Task<Users?> SearchCustomerAsync(string searchTerm);
+        Task<int> GetTotalBookingsAsync(Guid userId);
+        Task<DateTime?> GetLastBookingDateAsync(Guid userId);
     }
 } 

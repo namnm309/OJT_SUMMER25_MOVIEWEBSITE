@@ -272,16 +272,6 @@
                                                     <span>Ghế VIP</span>
                                                 </div>
                                             </div>
-                                            
-                                            <!-- Debug buttons -->
-                                            <div class="mt-3">
-                                                <button type="button" class="btn btn-warning btn-sm" id="testSeedData">
-                                                    <i class="fas fa-database"></i> Test Seed Data
-                                                </button>
-                                                <button type="button" class="btn btn-info btn-sm" id="testGetSeats">
-                                                    <i class="fas fa-chair"></i> Test Get Seats
-                                                </button>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -315,10 +305,23 @@
                                                     <button class="btn btn-primary" type="button" id="searchCustomer">
                                                         <i class="fas fa-search"></i> Tìm kiếm
                                                     </button>
+                                                    <button class="btn btn-success" type="button" id="createCustomer">
+                                                        <i class="fas fa-user-plus"></i> Tạo mới
+                                                    </button>
                                                 </div>
+                                                <!-- Thông báo tìm kiếm -->
+                                                <div id="searchMessage" class="mt-2" style="display: none;"></div>
                                             </div>
                                             <div class="customer-info" id="customerInfo" style="display: none;">
                                                 <!-- Customer info will be displayed here -->
+                                            </div>
+                                            
+                                            <div class="points-usage mt-3">
+                                                <label for="usePoints" class="form-label">Sử dụng điểm thưởng:</label>
+                                                <input type="number" class="form-control" id="usePoints" 
+                                                       min="0" max="0" value="0"
+                                                       placeholder="Nhập số điểm muốn sử dụng">
+                                                <small class="text-muted">1 điểm = 1,000 VNĐ</small>
                                             </div>
                                             
                                             <div class="payment-methods mt-4">
@@ -377,6 +380,122 @@
         <div class="loading-spinner">
             <i class="fas fa-spinner fa-spin"></i>
             <p>Đang xử lý...</p>
+        </div>
+    </div>
+
+    <!-- Modal xác nhận đặt vé -->
+    <div class="modal fade" id="bookingConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="bookingConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingConfirmationModalLabel">Xác nhận đặt vé</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="booking-confirmation-details">
+                        <div class="text-center mb-4">
+                            <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                            <h4 class="text-success mt-2">Đặt vé thành công!</h4>
+                        </div>
+                        
+                        <div class="confirmation-item">
+                            <strong>Mã đặt vé:</strong>
+                            <span class="booking-code fw-bold text-primary"></span>
+                        </div>
+                        <div class="confirmation-item">
+                            <strong>Phim:</strong>
+                            <span class="movie-title"></span>
+                        </div>
+                        <div class="confirmation-item">
+                            <strong>Phòng chiếu:</strong>
+                            <span class="cinema-room"></span>
+                        </div>
+                        <div class="confirmation-item">
+                            <strong>Ngày chiếu:</strong>
+                            <span class="show-date"></span>
+                        </div>
+                        <div class="confirmation-item">
+                            <strong>Giờ chiếu:</strong>
+                            <span class="show-time"></span>
+                        </div>
+                        <div class="confirmation-item">
+                            <strong>Ghế:</strong>
+                            <span class="seats fw-bold"></span>
+                        </div>
+                        <div class="confirmation-item">
+                            <strong>Tạm tính:</strong>
+                            <span class="sub-total"></span>
+                        </div>
+                        <div class="confirmation-item points-section">
+                            <strong>Điểm sử dụng:</strong>
+                            <span class="points-used"></span>
+                            <span class="points-discount text-success"></span>
+                        </div>
+                        <div class="confirmation-item total border-top pt-2">
+                            <strong>Tổng thanh toán:</strong>
+                            <span class="total-price fw-bold text-danger" style="font-size: 1.25rem;"></span>
+                        </div>
+                        <div class="confirmation-item">
+                            <strong>Ngày đặt:</strong>
+                            <span class="booking-date"></span>
+                        </div>
+                        <div class="confirmation-item">
+                            <strong>Phương thức thanh toán:</strong>
+                            <span class="payment-method"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary print-ticket">In vé</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal tạo khách hàng mới -->
+    <div class="modal fade" id="createCustomerModal" tabindex="-1" role="dialog" aria-labelledby="createCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createCustomerModalLabel">
+                        <i class="fas fa-user-plus me-2"></i>Tạo khách hàng mới
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createCustomerForm">
+                        <div class="mb-3">
+                            <label for="newCustomerFullName" class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="newCustomerFullName" placeholder="Nhập họ và tên">
+                        </div>
+                        <div class="mb-3">
+                            <label for="newCustomerPhone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="newCustomerPhone" placeholder="Nhập số điện thoại">
+                        </div>
+                        <div class="mb-3">
+                            <label for="newCustomerEmail" class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="newCustomerEmail" placeholder="Nhập email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="newCustomerIdentity" class="form-label">CMND/CCCD <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="newCustomerIdentity" placeholder="Nhập CMND/CCCD">
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Khách hàng sẽ nhận được thông tin đăng nhập qua email sau khi tạo tài khoản thành công.
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-success" id="saveCustomer">
+                        <i class="fas fa-save me-2"></i>Tạo khách hàng
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 

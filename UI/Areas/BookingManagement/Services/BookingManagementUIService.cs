@@ -30,6 +30,19 @@ namespace UI.Areas.BookingManagement.Services
 
         // T11: Ticket Information
         Task<ApiResponse<dynamic>> GetBookingDetailAsync(Guid bookingId);
+
+        // Search Customer
+        Task<ApiResponse<CustomerSearchViewModel>> SearchCustomerAsync(string searchTerm);
+        
+        // Create Customer
+        Task<ApiResponse<dynamic>> CreateCustomerAsync(CreateCustomerViewModel model);
+
+        // Confirm Admin Booking
+        Task<ApiResponse<dynamic>> ConfirmAdminBookingAsync(ConfirmAdminBookingViewModel model);
+
+        // New methods for score conversion booking
+        Task<ApiResponse<BookingConfirmationDetailViewModel>> GetBookingConfirmationDetailAsync(Guid showTimeId, List<Guid> seatIds, string memberId);
+        Task<ApiResponse<BookingConfirmSuccessViewModel>> ConfirmBookingWithScoreAsync(BookingConfirmWithScoreViewModel model);
     }
 
     public class BookingManagementUIService : IBookingManagementUIService
@@ -241,6 +254,104 @@ namespace UI.Areas.BookingManagement.Services
                 {
                     Success = false,
                     Message = "Không thể xác thực ghế. Vui lòng thử lại."
+                };
+            }
+        }
+
+        // Search Customer
+        public async Task<ApiResponse<CustomerSearchViewModel>> SearchCustomerAsync(string searchTerm)
+        {
+            try
+            {
+                _logger.LogInformation("Searching customer with term: {SearchTerm}", searchTerm);
+                return await _apiService.GetAsync<CustomerSearchViewModel>($"api/v1/booking-ticket/SearchCustomer?searchTerm={Uri.EscapeDataString(searchTerm)}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error searching customer");
+                return new ApiResponse<CustomerSearchViewModel>
+                {
+                    Success = false,
+                    Message = "Không thể tìm kiếm khách hàng. Vui lòng thử lại."
+                };
+            }
+        }
+
+        // Create Customer
+        public async Task<ApiResponse<dynamic>> CreateCustomerAsync(CreateCustomerViewModel model)
+        {
+            try
+            {
+                _logger.LogInformation("Creating customer");
+                return await _apiService.PostAsync<dynamic>("api/v1/booking-ticket/create-member-account", model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating customer");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể tạo khách hàng. Vui lòng thử lại."
+                };
+            }
+        }
+
+        // Confirm Admin Booking
+        public async Task<ApiResponse<dynamic>> ConfirmAdminBookingAsync(ConfirmAdminBookingViewModel model)
+        {
+            try
+            {
+                _logger.LogInformation("Confirming admin booking for showtime: {ShowTimeId}", model.ShowTimeId);
+                return await _apiService.PostAsync<dynamic>("api/v1/booking-ticket/confirm-Admin-booking", model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error confirming admin booking");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể xác nhận đặt vé. Vui lòng thử lại."
+                };
+            }
+        }
+
+        // New methods for score conversion booking
+        public async Task<ApiResponse<BookingConfirmationDetailViewModel>> GetBookingConfirmationDetailAsync(Guid showTimeId, List<Guid> seatIds, string memberId)
+        {
+            try
+            {
+                _logger.LogInformation("Getting booking confirmation detail for showtime: {ShowTimeId}, seatIds: {SeatIds}, memberId: {MemberId}", showTimeId, string.Join(",", seatIds), memberId);
+                
+                var seatIdsParam = string.Join("&seatIds=", seatIds);
+                var url = $"api/v1/booking-ticket/booking-confirmation-detail?showTimeId={showTimeId}&seatIds={seatIdsParam}&memberId={Uri.EscapeDataString(memberId)}";
+                
+                return await _apiService.GetAsync<BookingConfirmationDetailViewModel>(url);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting booking confirmation detail");
+                return new ApiResponse<BookingConfirmationDetailViewModel>
+                {
+                    Success = false,
+                    Message = "Không thể tải thông tin xác nhận đặt vé. Vui lòng thử lại."
+                };
+            }
+        }
+
+        public async Task<ApiResponse<BookingConfirmSuccessViewModel>> ConfirmBookingWithScoreAsync(BookingConfirmWithScoreViewModel model)
+        {
+            try
+            {
+                _logger.LogInformation("Confirming booking with score for member: {MemberId}", model.MemberId);
+                return await _apiService.PostAsync<BookingConfirmSuccessViewModel>("api/v1/booking-ticket/confirm-booking-with-score", model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error confirming booking with score");
+                return new ApiResponse<BookingConfirmSuccessViewModel>
+                {
+                    Success = false,
+                    Message = "Không thể xác nhận đặt vé. Vui lòng thử lại."
                 };
             }
         }

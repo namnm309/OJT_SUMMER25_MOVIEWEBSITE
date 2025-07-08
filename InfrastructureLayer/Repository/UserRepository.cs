@@ -77,5 +77,28 @@ namespace InfrastructureLayer.Repository
             return await _context.Users
                 .AnyAsync(u => u.IdentityCard == identityCard && u.IsActive);
         }
+
+        public async Task<Users?> SearchCustomerAsync(string searchTerm)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => 
+                    (u.Phone == searchTerm || u.Email == searchTerm) && 
+                    u.IsActive);
+        }
+
+        public async Task<int> GetTotalBookingsAsync(Guid userId)
+        {
+            return await _context.Bookings
+                .CountAsync(b => b.UserId == userId);
+        }
+
+        public async Task<DateTime?> GetLastBookingDateAsync(Guid userId)
+        {
+            return await _context.Bookings
+                .Where(b => b.UserId == userId)
+                .OrderByDescending(b => b.CreatedAt)
+                .Select(b => b.CreatedAt)
+                .FirstOrDefaultAsync();
+        }
     }
 } 

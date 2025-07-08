@@ -198,6 +198,9 @@ namespace ControllerLayer
             //
             builder.Services.AddHttpContextAccessor();
 
+            // Thêm vào phần đăng ký services
+            builder.Services.AddScoped<ICustomerSearchService, CustomerSearchService>();
+
             //===================================================================================================================================================
 
             var app = builder.Build();

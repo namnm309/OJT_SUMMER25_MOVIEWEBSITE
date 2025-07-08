@@ -513,3 +513,385 @@
         box-shadow: inset 0px 0px 0px 30px #4caf50;
     }
 }
+
+/* Customer Info Styles */
+.customer-info-card {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.customer-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.customer-details {
+    flex-grow: 1;
+}
+
+.customer-details h5 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.customer-details p {
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.customer-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    background-color: #f4f4f4;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.customer-stats .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.customer-stats .stat strong {
+    color: #6c757d;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.customer-stats .stat span {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.points-usage {
+    margin-top: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+}
+
+.points-usage .form-label {
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.points-usage input {
+    max-width: 200px;
+    text-align: center;
+}
+
+.points-usage small {
+    display: block;
+    margin-top: 5px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Input Validation Styles */
+.form-control.is-invalid {
+    border-color: #dc3545;
+    background-image: none;
+}
+
+.form-control.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+    background-image: none;
+}
+
+.form-control.is-valid:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Booking Confirmation Modal Styles */
+#bookingConfirmationModal .booking-confirmation-details {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+#bookingConfirmationModal .confirmation-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+#bookingConfirmationModal .confirmation-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+#bookingConfirmationModal .confirmation-item strong {
+    color: #6c757d;
+    margin-right: 10px;
+}
+
+#bookingConfirmationModal .confirmation-item span {
+    color: #333;
+    font-weight: bold;
+}
+
+#bookingConfirmationModal .confirmation-item.total {
+    margin-top: 15px;
+    border-top: 1px solid #e9ecef;
+    padding-top: 10px;
+}
+
+#bookingConfirmationModal .confirmation-item.total strong {
+    color: #007bff;
+}
+
+#bookingConfirmationModal .points-section .points-discount {
+    margin-left: 10px;
+    font-size: 0.9em;
+}
+
+/* Customer Search Message */
+#searchMessage {
+    font-size: 0.9rem;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+}
+
+#searchMessage.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+#searchMessage.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+/* Add smooth transitions and hover effects for create customer button */
+.input-group .btn-success {
+    transition: all 0.3s ease;
+}
+
+.input-group .btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Create customer modal styling */
+#createCustomerModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+#createCustomerModal .modal-header {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    border-bottom: none;
+}
+
+#createCustomerModal .form-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+#createCustomerModal .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+#createCustomerModal .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+#createCustomerModal .alert-info {
+    background-color: #e8f4fd;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+    border-radius: 8px;
+}
+
+/* Create new customer button in search message */
+#createNewCustomerBtn {
+    font-size: 0.875rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+#createNewCustomerBtn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(40, 167, 69, 0.3);
+}
+
+/* Customer info styling improvements */
+.customer-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #007bff, #6610f2);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 auto 15px;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.customer-stats {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e9ecef;
+}
+
+.customer-stats > div {
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    margin-bottom: 10px;
+}
+
+.customer-stats strong {
+    color: #6c757d;
+    font-size: 0.875rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.customer-stats p {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+/* Warning alert styling for search message */
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .input-group .btn {
+        margin-top: 10px;
+        width: 100%;
+    }
+    
+    .customer-stats > div {
+        margin-bottom: 15px;
+    }
+    
+    #createCustomerModal .modal-dialog {
+        margin: 10px;
+    }
+}
+
+/* Booking Confirmation Modal Styling */
+#bookingConfirmationModal .modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+#bookingConfirmationModal .modal-header {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    border-bottom: none;
+}
+
+.booking-confirmation-details {
+    padding: 20px 0;
+}
+
+.confirmation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.confirmation-item:last-child {
+    border-bottom: none;
+}
+
+.confirmation-item strong {
+    color: #6c757d;
+    font-weight: 600;
+    min-width: 140px;
+}
+
+.confirmation-item span {
+    text-align: right;
+    flex: 1;
+}
+
+.confirmation-item.total {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px 12px;
+    margin-top: 10px;
+}
+
+/* Success animation for booking confirmation */
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.booking-confirmation-details .fas.fa-check-circle {
+    animation: successPulse 1.5s ease-in-out;
+}
+
+/* Print styles for ticket */
+@media print {
+    .modal-header,
+    .modal-footer {
+        display: none !important;
+    }
+    
+    .booking-confirmation-details {
+        padding: 0;
+    }
+    
+    .confirmation-item {
+        border-bottom: 1px solid #000;
+        padding: 8px 0;
+    }
+}

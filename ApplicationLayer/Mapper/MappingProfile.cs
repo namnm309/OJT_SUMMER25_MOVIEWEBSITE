@@ -4,6 +4,7 @@ using ApplicationLayer.DTO.EmployeeManagement;
 using ApplicationLayer.DTO.JWT;
 using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.DTO.PromotionManagement;
+using ApplicationLayer.DTO.UserManagement;
 using AutoMapper;
 using DomainLayer.Entities;
 using System;
@@ -104,6 +105,13 @@ namespace ApplicationLayer.Mapper
 
             CreateMap<Users, LoginResp>();
             CreateMap<EditUserReq, Users>().ReverseMap();
+
+            CreateMap<Users, CustomerSearchDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email ?? string.Empty))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone ?? string.Empty))
+                .ForMember(dest => dest.Points, opt => opt.MapFrom(src => (int)Math.Round(src.Score)));
         }
     }
 }
