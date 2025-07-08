@@ -12,5 +12,11 @@ namespace ApplicationLayer.Services.UserManagement
         string HashPassword(string password);
         bool VerifyPassword(string password, string hashedPassword);
         Task<CustomerSearchDto?> SearchCustomerAsync(string searchTerm);
+        
+        // Admin operations
+        Task<(bool Success, UserResponseDto? User, string Message)> CreateUserAsync(UserCreateDto createRequest);
+        Task<(bool Success, UserResponseDto? User, string Message)> UpdateUserAsync(Guid userId, UserUpdateDto updateRequest);
+        Task<(bool Success, string Message)> DeleteUserAsync(Guid userId);
+        Task<(bool Success, UserResponseDto? User, string Message)> ToggleUserStatusAsync(Guid userId);
     }
 } 

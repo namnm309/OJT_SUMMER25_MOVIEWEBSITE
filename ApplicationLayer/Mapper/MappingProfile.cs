@@ -112,6 +112,14 @@ namespace ApplicationLayer.Mapper
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email ?? string.Empty))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone ?? string.Empty))
                 .ForMember(dest => dest.Points, opt => opt.MapFrom(src => (int)Math.Round(src.Score)));
+
+            // User Management
+            CreateMap<RegisterRequestDto, Users>();
+            CreateMap<Users, UserResponseDto>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
+            CreateMap<UserCreateDto, Users>();
+            CreateMap<UserUpdateDto, Users>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

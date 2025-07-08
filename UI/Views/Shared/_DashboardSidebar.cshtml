@@ -1,0 +1,49 @@
+<div class="new-dashboard-sidebar">
+    <div class="sidebar-header">
+        <a href="/" class="sidebar-logo-link">
+            <img src="/cinema-favicon-projector.svg" alt="Cinema City Logo" class="sidebar-logo-img"/>
+            <div class="sidebar-logo-text">
+                <span class="logo-title">Cinema City</span>
+                <span class="logo-subtitle">Admin Panel</span>
+            </div>
+        </a>
+    </div>
+    <nav class="sidebar-nav">
+        <span class="nav-section-title">Tổng quan</span>
+        <ul class="nav-list">
+            <li class="nav-item">
+                 <a href="@Url.Action("AdminDashboard", "Dashboard")" class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "AdminDashboard" ? "active" : "")">
+                    <i class="fa-solid fa-chart-pie nav-icon"></i>
+                    <span class="nav-link-text">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/" class="nav-link">
+                    <i class="fa-solid fa-home nav-icon"></i>
+                    <span class="nav-link-text">Trang chủ</span>
+                </a>
+            </li>
+        </ul>
+
+        <span class="nav-section-title">Quản lý</span>
+        <ul class="nav-list">
+             <li class="nav-item">
+                <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" 
+                   class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Movies" ? "active" : "")">
+                    <i class="fa-solid fa-film nav-icon"></i>
+                    <span class="nav-link-text">Quản lý phim</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("BookTicket", "Dashboard")" class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "BookTicket" ? "active" : "")">
+                    <i class="fa-solid fa-ticket nav-icon"></i>
+                    <span class="nav-link-text">Quản lý đặt vé</span>
+                </a>
+            </li>
+            <!-- Add other management links here -->
+        </ul>
+    </nav>
+    <div class="sidebar-footer">
+        <!-- User profile section can go here -->
+    </div>
+</div> 

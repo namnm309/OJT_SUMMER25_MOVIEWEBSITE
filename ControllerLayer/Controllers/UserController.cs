@@ -147,6 +147,103 @@ namespace ControllerLayer.Controllers
             return Ok(new { success = true, data = members });
         }
 
+        // ============ ADMIN OPERATIONS ============
+
+        [HttpPost]
+        //[Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateDto createRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _userService.CreateUserAsync(createRequest);
+            if (!result.Success)
+            {
+                return BadRequest(new { success = false, message = result.Message });
+            }
+
+            return Ok(new 
+            { 
+                success = true, 
+                message = result.Message, 
+                data = result.User 
+            });
+        }
+
+        [HttpPatch("{id}")]
+        //[Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserUpdateDto updateRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _userService.UpdateUserAsync(id, updateRequest);
+            if (!result.Success)
+            {
+                return BadRequest(new { success = false, message = result.Message });
+            }
+
+            return Ok(new 
+            { 
+                success = true, 
+                message = result.Message, 
+                data = result.User 
+            });
+        }
+
+        [HttpDelete("{id}")]
+        //[Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            var result = await _userService.DeleteUserAsync(id);
+            if (!result.Success)
+            {
+                return BadRequest(new { success = false, message = result.Message });
+            }
+
+            return Ok(new { success = true, message = result.Message });
+        }
+
+        [HttpPatch("{id}/status")]
+        //[Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ToggleUserStatus(Guid id)
+        {
+            var result = await _userService.ToggleUserStatusAsync(id);
+            if (!result.Success)
+            {
+                return BadRequest(new { success = false, message = result.Message });
+            }
+
+            return Ok(new 
+            { 
+                success = true, 
+                message = result.Message, 
+                data = result.User 
+            });
+        }
+
+        [HttpGet("{id}")]
+        //[Authorize(Roles = "Admin,Staff")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUserById(Guid id)
+        {
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound(new { success = false, message = "User not found" });
+            }
+
+            return Ok(new { success = true, data = user });
+        }
+
         private string GetRedirectUrl(UserRole role)
         {
             return role switch

@@ -3,6 +3,11 @@
 /* Ensure all text in main content area is dark */
 .new-dashboard-main {
     color: #1e293b !important;
+    margin-left: 280px !important;  /* Để tránh bị sidebar đè lên */
+    flex: 1 !important;
+    background: var(--content-bg) !important;  /* Background màu sáng */
+    min-height: 100vh !important;
+    padding: 2rem !important;
 }
 
 /* Fix breadcrumb text colors - Override inline styles */

@@ -18,19 +18,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/new-dashboard.css" />
+    <!-- User Management CSS Fix -->
+    <link rel="stylesheet" href="~/css/book-ticket-fix.css" />
     
     <style>
         /* User Management Specific Styles */
-        .user-management-content {
+        .movie-management-content {
             padding: 2rem;
         }
         
-        /* Page Header */
-        .user-page-header {
+        /* Page Header - Sử dụng class giống movie management */
+        .movie-page-header {
             margin-bottom: 2rem;
         }
         
-        .user-page-title {
+        .movie-page-title {
             font-size: 2rem;
             font-weight: 700;
             color: var(--text-dark);
@@ -40,28 +42,28 @@
             gap: 0.75rem;
         }
         
-        .user-page-subtitle {
+        .movie-page-subtitle {
             color: var(--text-muted);
             margin-top: 0.5rem;
             font-size: 1rem;
         }
         
-        /* Loading States */
+        /* Loading Styles */
         .loading-spinner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
             text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-muted);
         }
         
         .loading-spinner i {
-            font-size: 2rem;
             color: var(--primary-purple);
             margin-bottom: 1rem;
         }
         
         .loading-spinner p {
-            margin: 0;
-            font-size: 14px;
+            color: var(--text-muted);
         }
         
         /* Empty State */
@@ -76,8 +78,6 @@
             margin-bottom: 1rem;
             opacity: 0.5;
         }
-        
-
         
         /* Controls Section */
         .user-controls {
@@ -154,8 +154,6 @@
             box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
             color: white;
         }
-
-
         
         /* User Table Container */
         .user-table-container {
@@ -232,8 +230,6 @@
             transition: opacity 0.2s ease;
             opacity: 0.7;
         }
-        
-
         
         /* Pagination Styles */
         .user-pagination {
@@ -328,10 +324,6 @@
             color: var(--primary-purple);
         }
         
-
-        
-
-        
         /* User Avatar */
         .user-avatar {
             width: 50px;
@@ -424,26 +416,23 @@
             color: white;
         }
         
-        /* Modal Styles */
+        /* Modal Styles - Updated for Bootstrap compatibility */
         .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
+            z-index: 1050 !important;
+        }
+        
+        .modal-backdrop {
+            z-index: 1040 !important;
+        }
+        
+        .modal-dialog {
+            z-index: 1060 !important;
         }
 
         .modal-content {
             background-color: var(--content-bg);
-            margin: 5% auto;
-            padding: 0;
             border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
+            border: none;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             animation: modalSlideIn 0.3s ease-out;
         }
@@ -454,15 +443,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: transparent;
         }
 
-        .modal-header h3 {
+        .modal-header h3, .modal-header h4, .modal-header h5 {
             margin: 0;
             color: var(--text-dark);
             font-weight: 600;
         }
 
-        .modal-close {
+        .modal-header .btn-close {
             background: none;
             border: none;
             font-size: 24px;
@@ -476,17 +466,94 @@
             justify-content: center;
             border-radius: 50%;
             transition: all 0.2s ease;
+            opacity: 1;
         }
 
-        .modal-close:hover {
+        .modal-header .btn-close:hover {
             background: var(--content-hover);
             color: var(--text-dark);
+            opacity: 1;
         }
 
         .modal-body {
             padding: 2rem;
+            color: var(--text-dark);
         }
 
+        .modal-footer {
+            padding: 1rem 2rem 2rem;
+            border-top: none;
+            background: transparent;
+        }
+        
+        /* Modal Button Styles */
+        .modal .btn {
+            border-radius: 8px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .modal .btn-primary {
+            background: var(--primary-purple);
+            color: white;
+        }
+        
+        .modal .btn-primary:hover {
+            background: var(--primary-purple-dark);
+            transform: translateY(-1px);
+        }
+        
+        .modal .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .modal .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .modal .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .modal .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        /* Modal Form Elements */
+        .modal .form-control {
+            border: 1px solid var(--content-border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            transition: border-color 0.2s ease;
+        }
+        
+        .modal .form-control:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 0.2rem rgba(139, 69, 255, 0.25);
+        }
+        
+        .modal .form-label {
+            color: var(--text-dark);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Prevent modal content from being clickable when backdrop */
+        .modal.show {
+            pointer-events: auto;
+        }
+        
+        .modal-dialog {
+            pointer-events: auto;
+        }
+        
         @@keyframes modalSlideIn {
             from {
                 opacity: 0;
@@ -498,10 +565,12 @@
             }
         }
         
-        /* Action Buttons */
+        /* Action Buttons Styles */
         .action-buttons {
             display: flex;
             gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
         }
         
         .action-btn {
@@ -512,160 +581,121 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            font-size: 0.875rem;
         }
         
         .btn-view {
-            background-color: #e3f2fd;
-            color: #1976d2;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
         }
         
         .btn-view:hover {
-            background-color: #1976d2;
-            color: white;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            color: white;
         }
         
         .btn-edit {
-            background-color: #fff3e0;
-            color: #f57c00;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
         }
         
         .btn-edit:hover {
-            background-color: #f57c00;
-            color: white;
+            background: linear-gradient(135deg, #d97706, #b45309);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 124, 0, 0.3);
-        }
-        
-        .btn-delete {
-            background-color: #ffebee;
-            color: #d32f2f;
-        }
-        
-        .btn-delete:hover {
-            background-color: #d32f2f;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
             color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
         }
         
         .btn-toggle {
-            background-color: #f3e5f5;
-            color: #7b1fa2;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
         }
         
         .btn-toggle:hover {
-            background-color: #7b1fa2;
-            color: white;
+            background: linear-gradient(135deg, #059669, #047857);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(123, 31, 162, 0.3);
-        }
-        
-        /* Ripple Effect */
-        .btn-action {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-action::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s;
-            transform: translate(-50%, -50%);
-        }
-        
-        .btn-action:active::before {
-            width: 100px;
-            height: 100px;
-            top: 50%;
-            left: 50%;
-        }
-        
-        /* Modal Styles */
-        .modal-content {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        
-        .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
             color: white;
-            border-radius: 15px 15px 0 0;
-            border: none;
         }
         
-        .modal-header .btn-close {
-            filter: invert(1);
+        .btn-delete {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
         }
         
-        .modal-body {
-            padding: 2rem;
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+            color: white;
         }
         
-        .modal-footer {
-            border: none;
-            padding: 1rem 2rem 2rem;
+        /* User Avatar Large */
+        .user-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 1.5rem;
+        /* Role Badges in Modal */
+        .badge.role-admin {
+            background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
         }
         
-        .form-label {
+        .badge.role-staff {
+            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .badge.role-member {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Enhanced Form Controls */
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        /* Status Badge Enhancements */
+        .status-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
             font-weight: 600;
-            color: #495057;
-            margin-bottom: 0.5rem;
-        }
-        
-        .form-control {
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.75rem;
-            transition: all 0.3s ease;
-        }
-        
-        .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-        
-        .form-select {
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.75rem;
-        }
-        
-        .form-select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-        
-        /* Animation */
-        @@keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        
+        .status-active {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
         }
         
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
+        .status-inactive {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
         }
         
         /* Responsive */
@@ -693,12 +723,33 @@
                 gap: 1rem;
             }
         }
+
+        /* Stats Cards */
+        .stats-cards {
+        }
+
+        /* User Info Styles */
+        .user-info-text {
+            padding: 0.5rem 0;
+        }
+        
+        .user-info-text .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+            margin-bottom: 0.25rem;
+        }
+        
+        .user-info-text .user-email {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
     </style>
 </head>
 
 <body>
     <!-- New Dashboard Layout -->
-    <div class="new-dashboard-container">
+    <div class="new-dashboard-layout">
         <!-- Sidebar -->
         <aside class="new-dashboard-sidebar">
             <!-- Sidebar Header -->
@@ -830,15 +881,29 @@
         
         <!-- Main Content -->
         <main class="new-dashboard-main">
-            <!-- Content -->
-            <div class="new-dashboard-content">
+            <div class="movie-management-content">
                 <!-- Page Header -->
-                <div class="user-page-header">
-                    <h1 class="user-page-title">
+                <div class="movie-page-header">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="@Url.Action("Index", "Home", new { area = "" })">
+                                    <i class="fas fa-home"></i> Trang chủ
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="@Url.Action("AdminDashboard", "Dashboard", new { area = "" })">
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">Quản lý người dùng</li>
+                        </ol>
+                    </nav>
+                    <h1 class="movie-page-title">
                         <i class="fas fa-users"></i>
                         Quản lý người dùng
                     </h1>
-                    <p class="user-page-subtitle">Quản lý thông tin và quyền hạn của người dùng trong hệ thống</p>
+                    <p class="movie-page-subtitle">Quản lý thông tin và quyền hạn của người dùng trong hệ thống</p>
                 </div>
             
                 <div class="container-fluid">
@@ -858,17 +923,9 @@
                 
                     <!-- Users Table Container -->
                     <div class="user-table-container">
-                        <div class="loading-spinner" id="loadingSpinner">
-                            <div class="spinner-border" role="status">
-                                <span class="visually-hidden">Đang tải...</span>
-                            </div>
-                            <p class="mt-2 text-muted">Đang tải dữ liệu người dùng...</p>
-                        </div>
-                        
                         <table class="user-table" id="usersTable">
                             <thead>
                                 <tr>
-                                    <th>AVATAR</th>
                                     <th>THÔNG TIN NGƯỜI DÙNG</th>
                                     <th>VAI TRÒ</th>
                                     <th>TRẠNG THÁI</th>
@@ -884,19 +941,13 @@
                             {
                                 @foreach (var member in ViewBag.Members)
                                 {
-                                    <tr class="fade-in">
+                                    <tr class="fade-in" data-user-id="@member.GetProperty("userId").ToString()">
                                         <td>
-                                            <div class="user-info">
-                                                <div class="user-avatar">
-                                                    @member.GetProperty("fullName").ToString().Substring(0, 1).ToUpper()
-                                                </div>
-                                                <div>
+                                            <div class="user-info-text">
                                                     <div class="user-name">@member.GetProperty("fullName").ToString()</div>
-                                                    <div class="user-email">@@member.GetProperty("username").ToString()</div>
-                                                </div>
+                                                <div class="user-email">@member.GetProperty("email").ToString()</div>
                                             </div>
                                         </td>
-                                        <td>@member.GetProperty("email").ToString()</td>
                                         <td>
                                             @{
                                                 var role = member.GetProperty("role").ToString();
@@ -963,7 +1014,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-5">
+                                    <td colspan="5" class="text-center text-muted py-5">
                                         <i class="fas fa-users fa-3x mb-3 d-block"></i>
                                         <h5>Không có dữ liệu người dùng</h5>
                                         <p>Hiện tại chưa có người dùng nào trong hệ thống.</p>
@@ -976,7 +1027,7 @@
                         <!-- Pagination -->
                         <div class="user-pagination">
                             <div class="pagination-info">
-                                <span id="paginationInfo">Đang tải...</span>
+                                <span id="paginationInfo">Hiển thị @ViewBag.TotalMembers người dùng</span>
                             </div>
                             <div class="pagination-controls">
                                 <button id="prevPageBtn" class="btn-pagination" disabled>❮ Trước</button>
@@ -1072,190 +1123,233 @@
         </div>
     }
     
+    <!-- View User Details Modal -->
+    <div class="modal fade" id="viewUserModal" tabindex="-1" aria-labelledby="viewUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="viewUserModalLabel">
+                        <i class="fas fa-user me-2"></i>Chi tiết người dùng
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="user-avatar-large" id="viewUserAvatar">
+                                <!-- Avatar will be populated here -->
+                            </div>
+                            <h4 id="viewUserName" class="mt-3"></h4>
+                            <span id="viewUserRole" class="badge"></span>
+                        </div>
+                        <div class="col-md-8">
+                            <h6>Thông tin cá nhân</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Tên đăng nhập:</strong></td>
+                                    <td id="viewUsername"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email:</strong></td>
+                                    <td id="viewEmail"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Số điện thoại:</strong></td>
+                                    <td id="viewPhone"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Địa chỉ:</strong></td>
+                                    <td id="viewAddress"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Điểm tích lũy:</strong></td>
+                                    <td><span id="viewScore" class="badge bg-success"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ngày tạo:</strong></td>
+                                    <td id="viewCreatedAt"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Đóng
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="editUserFromView()">
+                        <i class="fas fa-edit me-1"></i>Chỉnh sửa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="editUserModalLabel">
+                        <i class="fas fa-user-edit me-2"></i>Chỉnh sửa người dùng
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="editUserId">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Tên đăng nhập <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="editUsername" required readonly>
+                                    <small class="text-muted">Tên đăng nhập không thể thay đổi</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Họ tên <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="editFullName" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="editEmail" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Số điện thoại</label>
+                                    <input type="tel" class="form-control" id="editPhone">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Vai trò <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="editRole" required>
+                                        <option value="">Chọn vai trò</option>
+                                        <option value="Member">Thành viên</option>
+                                        <option value="Staff">Nhân viên</option>
+                                        <option value="Admin">Quản trị viên</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Địa chỉ</label>
+                                    <input type="text" class="form-control" id="editAddress">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Mật khẩu mới</label>
+                                    <input type="password" class="form-control" id="editPassword">
+                                    <small class="text-muted">Để trống nếu không muốn thay đổi mật khẩu</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Điểm tích lũy</label>
+                                    <input type="number" class="form-control" id="editScore" step="0.1" min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Hủy
+                    </button>
+                    <button type="button" class="btn btn-warning" onclick="updateUser()">
+                        <i class="fas fa-save me-1"></i>Cập nhật
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteUserModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Xác nhận xóa
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="fas fa-user-times fa-3x text-danger mb-3"></i>
+                        <h5>Bạn có chắc chắn muốn xóa người dùng này?</h5>
+                        <p class="text-muted">Hành động này không thể hoàn tác!</p>
+                        <div class="alert alert-warning">
+                            <strong>Người dùng:</strong> <span id="deleteUserName"></span><br>
+                            <strong>Email:</strong> <span id="deleteUserEmail"></span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="deleteUserId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Hủy
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDeleteUser()">
+                        <i class="fas fa-trash me-1"></i>Xóa người dùng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Toggle Modal -->
+    <div class="modal fade" id="toggleStatusModal" tabindex="-1" aria-labelledby="toggleStatusModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="toggleStatusModalLabel">
+                        <i class="fas fa-user-check me-2"></i>Thay đổi trạng thái
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="fas fa-exchange-alt fa-3x text-info mb-3"></i>
+                        <h5>Thay đổi trạng thái người dùng</h5>
+                        <div class="alert alert-info">
+                            <strong>Người dùng:</strong> <span id="toggleUserName"></span><br>
+                            <strong>Trạng thái hiện tại:</strong> <span id="toggleCurrentStatus"></span><br>
+                            <strong>Trạng thái mới:</strong> <span id="toggleNewStatus"></span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="toggleUserId">
+                    <input type="hidden" id="toggleNewStatusValue">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Hủy
+                    </button>
+                    <button type="button" class="btn btn-info" onclick="confirmToggleStatus()">
+                        <i class="fas fa-check me-1"></i>Xác nhận
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
+    <!-- JavaScript -->
+    <script src="~/js/user-management.js"></script>
     <script>
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeTable();
-            hideLoadingSpinner();
-            
-            // Add event listener for search input
-            const searchInput = document.getElementById('userSearch');
-            if (searchInput) {
-                searchInput.addEventListener('keyup', searchUsers);
-            }
-        });
-        
-        // Hide loading spinner
-        function hideLoadingSpinner() {
-            document.getElementById('loadingSpinner').style.display = 'none';
-        }
-        
-        // Search users
-        function searchUsers() {
-            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
-            const rows = document.querySelectorAll('#usersTableBody tr');
-            
-            rows.forEach(row => {
-                const userName = row.querySelector('.user-name')?.textContent.toLowerCase() || '';
-                const userEmail = row.querySelector('.user-email')?.textContent.toLowerCase() || '';
-                const phoneNumber = row.cells[1]?.textContent.toLowerCase() || '';
-                
-                if (userName.includes(searchTerm) || userEmail.includes(searchTerm) || phoneNumber.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-        
-        // Open add user modal
-        function openAddUserModal() {
-            const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
-            modal.show();
-        }
-        
-        // Filter by role
-        function filterByRole() {
-            const selectedRole = document.getElementById('roleFilter').value;
-            const rows = document.querySelectorAll('#usersTableBody tr');
-            
-            rows.forEach(row => {
-                const roleCell = row.cells[2];
-                if (!roleCell) return;
-                
-                const roleBadge = roleCell.querySelector('.badge');
-                if (!roleBadge) return;
-                
-                let roleValue = '';
-                if (roleBadge.classList.contains('role-admin')) roleValue = 'Admin';
-                else if (roleBadge.classList.contains('role-staff')) roleValue = 'Staff';
-                else if (roleBadge.classList.contains('role-member')) roleValue = 'Member';
-                
-                if (!selectedRole || roleValue === selectedRole) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-        
-        // Filter by status
-        function filterByStatus() {
-            const selectedStatus = document.getElementById('statusFilter').value;
-            const rows = document.querySelectorAll('#usersTableBody tr');
-            
-            rows.forEach(row => {
-                const statusCell = row.cells[3];
-                if (!statusCell) return;
-                
-                const statusBadge = statusCell.querySelector('.status-badge');
-                if (!statusBadge) return;
-                
-                let statusValue = '';
-                if (statusBadge.classList.contains('status-active')) statusValue = 'Active';
-                else if (statusBadge.classList.contains('status-inactive')) statusValue = 'Inactive';
-                
-                if (!selectedStatus || statusValue === selectedStatus) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-        
-        // Show loading spinner
-        function showLoadingSpinner() {
-            document.getElementById('loadingSpinner').style.display = 'block';
-        }
-        
-        // Initialize table features
-        function initializeTable() {
-            // Add fade-in animation to existing rows
-            const rows = document.querySelectorAll('#usersTableBody tr');
-            rows.forEach((row, index) => {
-                setTimeout(() => {
-                    row.classList.add('fade-in');
-                }, index * 100);
-            });
-        }
-        
-        // View user details
-        function viewUser(id) {
-            // TODO: Show user details modal
-            alert('Xem chi tiết người dùng ID: ' + id);
-        }
-        
-        // Edit user
-        function editUser(id) {
-            // TODO: Show edit user modal
-            alert('Chỉnh sửa người dùng ID: ' + id);
-        }
-        
-        // Toggle user status
-        function toggleUserStatus(id, newStatus) {
-            if (confirm('Bạn có chắc chắn muốn thay đổi trạng thái của người dùng này?')) {
-                // TODO: API call to toggle status
-                alert('Đổi trạng thái người dùng ID: ' + id + ' thành ' + (newStatus ? 'hoạt động' : 'không hoạt động'));
-            }
-        }
-        
-        // Delete user
-        function deleteUser(id) {
-            if (confirm('Bạn có chắc chắn muốn xóa người dùng này? Hành động này không thể hoàn tác!')) {
-                // TODO: API call to delete user
-                alert('Xóa người dùng ID: ' + id);
-            }
-        }
-        
-        // Add new user (Admin only)
-        function addUser() {
-            const form = document.getElementById('addUserForm');
-            const formData = new FormData(form);
-            
-            // Basic validation
-            const username = document.getElementById('newUsername').value;
-            const email = document.getElementById('newEmail').value;
-            const fullName = document.getElementById('newFullName').value;
-            const password = document.getElementById('newPassword').value;
-            const role = document.getElementById('newRole').value;
-            
-            if (!username || !email || !fullName || !password || !role) {
-                alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
-                return;
-            }
-            
-            // Email validation
-            const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
-            if (!emailRegex.test(email)) {
-                alert('Vui lòng nhập email hợp lệ!');
-                return;
-            }
-            
-            // Password validation
-            if (password.length < 6) {
-                alert('Mật khẩu phải có ít nhất 6 ký tự!');
-                return;
-            }
-            
-            // TODO: API call to add user
-            alert('Thêm người dùng mới: ' + fullName);
-            
-            // Close modal and reset form
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
-            modal.hide();
-            form.reset();
-        }
-        
-        // Change page size
-        function changePageSize() {
-            const pageSize = document.getElementById('pageSize').value;
-            console.log('Page size changed to:', pageSize);
-            // TODO: Implement page size change
-        }
-        
         // Toggle sidebar function
         function toggleSidebar() {
             const sidebar = document.querySelector('.new-dashboard-sidebar');
@@ -1264,18 +1358,6 @@
             sidebar.classList.toggle('collapsed');
             main.classList.toggle('expanded');
         }
-        
-        // Auto-hide alerts after 5 seconds
-        setTimeout(function() {
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => {
-                if (alert.classList.contains('alert-danger') || alert.classList.contains('alert-success')) {
-                    alert.style.transition = 'opacity 0.5s';
-                    alert.style.opacity = '0';
-                    setTimeout(() => alert.remove(), 500);
-                }
-            });
-        }, 5000);
     </script>
 </body>
 </html>

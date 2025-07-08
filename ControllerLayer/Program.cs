@@ -20,6 +20,7 @@ using InfrastructureLayer.Core.Cache;
 using StackExchange.Redis;
 using ApplicationLayer.Mappings;
 using ApplicationLayer.Services.Helper;
+using InfrastructureLayer.Data;
 
 namespace ControllerLayer
 {
@@ -133,6 +134,7 @@ namespace ControllerLayer
             // Đăng ký AutoMapper
             builder.Services.AddAutoMapper(typeof(ApplicationLayer.Mappings.MovieMappingProfile));
             builder.Services.AddAutoMapper(typeof(SeatMappingProfile));
+            builder.Services.AddAutoMapper(typeof(ApplicationLayer.Mapper.MappingProfile));
 
             // Đăng ký Generic Repository Pattern
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -224,7 +226,10 @@ namespace ControllerLayer
                 }
 
                 // Seed dữ liệu admin mặc định
-                // await DataSeeder.SeedAdminUser(context);
+                await DataSeeder.SeedAdminUser(context);
+                
+                // Seed dữ liệu người dùng mẫu
+                await DataSeeder.SeedSampleUsers(context);
             }
 
             // Configure the HTTP request pipeline.

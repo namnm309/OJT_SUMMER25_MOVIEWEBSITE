@@ -6,7 +6,8 @@ using UI.Services;
 namespace UI.Areas.UserManagement.Controllers
 {
     [Area("UserManagement")]
-    [Authorize(Roles = "Admin,Staff")]
+    //[Authorize(Roles = "Admin,Staff")] // Tạm thời comment để debug
+    [AllowAnonymous]
     public class MembersController : Controller
     {
         private readonly IApiService _apiService;
