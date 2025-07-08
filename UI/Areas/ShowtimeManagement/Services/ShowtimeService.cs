@@ -30,14 +30,15 @@ namespace UI.Areas.ShowtimeManagement.Services
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     return showtimes ?? new List<ShowtimeDto>();
                 }
+                
+                // API trả về thành công nhưng không có dữ liệu
+                throw new Exception("Không có lịch chiếu trong khoảng thời gian này");
             }
             catch (Exception ex)
             {
-                // Log error
+                // Lỗi khi tải dữ liệu từ API
+                throw new Exception($"Lỗi tải lịch chiếu: {ex.Message}");
             }
-            
-            // Return mock data for now
-            return GetMockShowtimes(startDate);
         }
 
         public async Task<ShowtimeDto> GetShowtimeByIdAsync(Guid id)
@@ -72,19 +73,15 @@ namespace UI.Areas.ShowtimeManagement.Services
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     return movies ?? new List<MovieDto>();
                 }
+                
+                // API trả về thành công nhưng không có dữ liệu
+                throw new Exception("Không có phim nào đang chiếu");
             }
             catch (Exception ex)
             {
-                // Log error
+                // Lỗi khi tải dữ liệu từ API
+                throw new Exception($"Lỗi tải danh sách phim: {ex.Message}");
             }
-            
-            // Return mock data
-            return new List<MovieDto>
-            {
-                new MovieDto { Id = Guid.NewGuid(), Title = "Oppenheimer", RunningTime = 180, Status = "NowShowing" },
-                new MovieDto { Id = Guid.NewGuid(), Title = "Barbie", RunningTime = 114, Status = "NowShowing" },
-                new MovieDto { Id = Guid.NewGuid(), Title = "The Nun II", RunningTime = 110, Status = "NowShowing" }
-            };
         }
 
         public async Task<List<CinemaRoomDto>> GetCinemaRoomsAsync()
@@ -99,20 +96,15 @@ namespace UI.Areas.ShowtimeManagement.Services
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     return rooms ?? new List<CinemaRoomDto>();
                 }
+                
+                // API trả về thành công nhưng không có dữ liệu
+                throw new Exception("Không có phòng chiếu nào");
             }
             catch (Exception ex)
             {
-                // Log error
+                // Lỗi khi tải dữ liệu từ API
+                throw new Exception($"Lỗi tải danh sách phòng chiếu: {ex.Message}");
             }
-            
-            // Return mock data
-            return new List<CinemaRoomDto>
-            {
-                new CinemaRoomDto { Id = Guid.NewGuid(), Name = "Phòng 1", TotalSeats = 100, RoomType = "Standard" },
-                new CinemaRoomDto { Id = Guid.NewGuid(), Name = "Phòng 2", TotalSeats = 120, RoomType = "VIP" },
-                new CinemaRoomDto { Id = Guid.NewGuid(), Name = "Phòng 3", TotalSeats = 80, RoomType = "Standard" },
-                new CinemaRoomDto { Id = Guid.NewGuid(), Name = "Phòng IMAX", TotalSeats = 200, RoomType = "IMAX" }
-            };
         }
 
         public async Task<object> CreateShowtimeAsync(CreateShowtimeViewModel model)
@@ -218,53 +210,6 @@ namespace UI.Areas.ShowtimeManagement.Services
             return false;
         }
 
-        private List<ShowtimeDto> GetMockShowtimes(DateTime startDate)
-        {
-            var showtimes = new List<ShowtimeDto>();
-            var movies = GetActiveMoviesAsync().Result;
-            var rooms = GetCinemaRoomsAsync().Result;
-            var random = new Random();
 
-            for (int day = 0; day < 7; day++)
-            {
-                var date = startDate.AddDays(day);
-                
-                foreach (var room in rooms)
-                {
-                    var showtimesPerDay = random.Next(3, 6);
-                    var currentTime = new TimeSpan(9, 0, 0); // Start at 9 AM
-
-                    for (int i = 0; i < showtimesPerDay; i++)
-                    {
-                        var movie = movies[random.Next(movies.Count)];
-                        var showtime = new ShowtimeDto
-                        {
-                            Id = Guid.NewGuid(),
-                            MovieId = movie.Id,
-                            MovieTitle = movie.Title,
-                            MovieDuration = movie.RunningTime,
-                            CinemaRoomId = room.Id,
-                            CinemaRoomName = room.Name,
-                            TotalSeats = room.TotalSeats,
-                            BookedSeats = random.Next(0, room.TotalSeats),
-                            ShowDate = date,
-                            StartTime = currentTime,
-                            EndTime = currentTime.Add(TimeSpan.FromMinutes(movie.RunningTime + 15)), // Add 15 min for cleaning
-                            Price = room.RoomType == "VIP" ? 150000 : (room.RoomType == "IMAX" ? 200000 : 100000),
-                            Status = "Active",
-                            IsActive = true
-                        };
-
-                        showtimes.Add(showtime);
-                        currentTime = showtime.EndTime.Add(TimeSpan.FromMinutes(30)); // 30 min break between shows
-                        
-                        if (currentTime > new TimeSpan(22, 0, 0)) // Stop after 10 PM
-                            break;
-                    }
-                }
-            }
-
-            return showtimes.OrderBy(s => s.ShowDate).ThenBy(s => s.StartTime).ToList();
-        }
     }
-} 
+}

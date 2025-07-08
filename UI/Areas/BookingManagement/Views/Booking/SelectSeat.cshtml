@@ -136,381 +136,402 @@
         color: white;
     }
 
-/* CSS cải tiến cho phần chọn ghế */
-.seat-selection {
-    flex: 1;
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.selection-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.section-title {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: white;
-    margin: 0;
-}
-
-.seat-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.seat-count {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-}
-
-.seat-types {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.seat-type {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 0.3rem 0.8rem;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    color: white;
-}
-
-/* Màn hình cong cải tiến */
-.screen-container {
-    display: flex;
-    justify-content: center;
-    margin: 2rem 0 3rem 0;
-    perspective: 1000px;
-}
-
-.screen {
-    width: 80%;
-    height: 8px;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(135, 206, 250, 0.8) 20%, 
-        rgba(135, 206, 250, 1) 50%, 
-        rgba(135, 206, 250, 0.8) 80%, 
-        transparent 100%);
-    border-radius: 50px;
-    position: relative;
-    transform: rotateX(45deg) rotateY(0deg);
-    box-shadow: 
-        0 0 20px rgba(135, 206, 250, 0.5),
-        0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.screen-text {
-    position: absolute;
-    top: -25px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    font-weight: 300;
-}
-
-/* Cải tiến seat map */
-.seat-map {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 2rem;
-    padding: 2rem;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.seat-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    justify-content: center;
-}
-
-.row-label {
-    color: rgba(255, 255, 255, 0.6);
-    font-weight: 600;
-    font-size: 0.9rem;
-    width: 20px;
-    text-align: center;
-}
-
-.seats-container {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-
-/* Cải tiến style ghế */
-.seat {
-    width: 35px;
-    height: 35px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.seat.regular.available {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.seat.regular.available:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-}
-
-.seat.vip.available {
-    background: linear-gradient(45deg, #f5c518, #ffd700);
-    border: 1px solid #ffd700;
-    color: #000;
-}
-
-.seat.vip.available:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(245, 197, 24, 0.5);
-}
-
-.seat.selected {
-    background: linear-gradient(45deg, #667eea, #764ba2) !important;
-    border: 1px solid #764ba2 !important;
-    color: white !important;
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
-}
-
-.seat.occupied {
-    background: #666 !important;
-    border: 1px solid #555 !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-/* Legend cải tiến */
-.seat-legend {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.legend-seat {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.legend-seat.normal {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.legend-seat.comfort {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.legend-seat.double-comfort {
-    background: linear-gradient(45deg, #f5c518, #ffd700);
-}
-
-.legend-seat.available {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.legend-seat.for-disabilities {
-    background: rgba(0, 150, 255, 0.6);
-}
-
-.legend-seat.selected {
-    background: linear-gradient(45deg, #667eea, #764ba2);
-}
-
-.legend-seat.taken {
-    background: #666;
-}
-
-/* Booking section cải tiến */
-.booking-section {
-    width: 350px;
-    padding: 1rem;
-}
-
-.movie-tickets-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 20px;
-    padding: 1.5rem;
-    color: white;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.card-header h3 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.ticket-icon {
-    font-size: 1.5rem;
-}
-
-.ticket-details {
-    margin-bottom: 1.5rem;
-}
-
-.detail-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.8rem;
-    font-size: 0.9rem;
-}
-
-.label {
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.value {
-    font-weight: 600;
-}
-
-.total-amount {
-    font-size: 1.1rem;
-    font-weight: 700;
-}
-
-.selected-seats-display {
-    margin: 1.5rem 0;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    min-height: 60px;
-}
-
-.seats-grid {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.ticket-summary {
-    margin: 1.5rem 0;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-}
-
-.summary-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-}
-
-.total-price-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 700;
-    font-size: 1.1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.btn-buy {
-    width: 100%;
-    padding: 1rem;
-    background: rgba(0, 0, 0, 0.8);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-buy:hover:not(:disabled) {
-    background: rgba(0, 0, 0, 0.9);
-    transform: translateY(-2px);
-}
-
-.btn-buy:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Responsive */
-@@media (max-width: 768px) {
-    .main-container {
-        flex-direction: column;
+    /* CSS cải tiến cho phần chọn ghế */
+    .seat-selection {
+        flex: 1;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
-    .booking-section {
-        width: 100%;
-        margin-top: 2rem;
+
+    .selection-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
-    .seat {
-        width: 30px;
-        height: 30px;
-        font-size: 0.7rem;
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: white;
+        margin: 0;
     }
-    
-    .seat-legend {
+
+    .seat-info {
+        display: flex;
+        align-items: center;
         gap: 1rem;
+        flex-wrap: wrap;
     }
-}
+
+    .seat-count, .seat-available, .seat-occupied {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .seat-available {
+        background: rgba(0, 255, 0, 0.2);
+        border-color: rgba(0, 255, 0, 0.3);
+    }
+
+    .seat-occupied {
+        background: rgba(255, 0, 0, 0.2);
+        border-color: rgba(255, 0, 0, 0.3);
+    }
+
+    .seat-types {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .seat-type {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        color: white;
+    }
+
+    /* Màn hình cong cải tiến */
+    .screen-container {
+        display: flex;
+        justify-content: center;
+        margin: 2rem 0 3rem 0;
+        perspective: 1000px;
+    }
+
+    .screen {
+        width: 80%;
+        height: 8px;
+        background: linear-gradient(90deg, transparent 0%, rgba(135, 206, 250, 0.8) 20%, rgba(135, 206, 250, 1) 50%, rgba(135, 206, 250, 0.8) 80%, transparent 100%);
+        border-radius: 50px;
+        position: relative;
+        transform: rotateX(45deg) rotateY(0deg);
+        box-shadow: 0 0 20px rgba(135, 206, 250, 0.5), 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .screen-text {
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        font-weight: 300;
+    }
+
+    /* Cải tiến seat map */
+    .seat-map {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 2rem;
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        min-height: 300px;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .seat-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        justify-content: center;
+        min-height: 40px;
+    }
+
+    .row-label {
+        color: rgba(255, 255, 255, 0.6);
+        font-weight: 600;
+        font-size: 0.9rem;
+        width: 20px;
+        text-align: center;
+    }
+
+    .seats-container {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+
+    /* Cải tiến style ghế */
+    .seat {
+        width: 35px;
+        height: 35px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        flex-shrink: 0;
+    }
+
+    .seat-number {
+        font-size: 0.7rem;
+        font-weight: bold;
+        text-align: center;
+        line-height: 1;
+    }
+
+    .seat.regular.available {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+        .seat.regular.available:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+    .seat.vip.available {
+        background: linear-gradient(45deg, #f5c518, #ffd700);
+        border: 1px solid #ffd700;
+        color: #000;
+    }
+
+        .seat.vip.available:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(245, 197, 24, 0.5);
+        }
+
+    .seat.selected {
+        background: linear-gradient(45deg, #667eea, #764ba2) !important;
+        border: 1px solid #764ba2 !important;
+        color: white !important;
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .seat.occupied {
+        background: #666 !important;
+        border: 1px solid #555 !important;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+    /* Legend cải tiến */
+    .seat-legend {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .legend-seat {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+        .legend-seat.normal {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .legend-seat.comfort {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .legend-seat.double-comfort {
+            background: linear-gradient(45deg, #f5c518, #ffd700);
+        }
+
+        .legend-seat.available {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .legend-seat.for-disabilities {
+            background: rgba(0, 150, 255, 0.6);
+        }
+
+        .legend-seat.selected {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .legend-seat.taken {
+            background: #666;
+        }
+
+    /* Booking section cải tiến */
+    .booking-section {
+        width: 350px;
+        padding: 1rem;
+    }
+
+    .movie-tickets-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 1.5rem;
+        color: white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+    .ticket-icon {
+        font-size: 1.5rem;
+    }
+
+    .ticket-details {
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .label {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .value {
+        font-weight: 600;
+    }
+
+    .total-amount {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .selected-seats-display {
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        min-height: 60px;
+    }
+
+    .seats-grid {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .ticket-summary {
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .total-price-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-buy {
+        width: 100%;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.8);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .btn-buy:hover:not(:disabled) {
+            background: rgba(0, 0, 0, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .btn-buy:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .main-container {
+            flex-direction: column;
+        }
+
+        .booking-section {
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        .seat {
+            width: 30px;
+            height: 30px;
+            font-size: 0.7rem;
+        }
+
+        .seat-legend {
+            gap: 1rem;
+        }
+    }
 
     .btn {
         padding: 0.8rem 1.5rem;
@@ -599,15 +620,15 @@
             <div class="movie-details">
                 <h1 class="movie-title">@Model.MovieTitle</h1>
 
-                <div class="movie-meta">
-                    <span class="meta-item">📽️ Phim điện ảnh</span>
-                    <span class="meta-item">⏱️ 120 phút</span>
-                    <span class="meta-item">⭐ 8.5/10</span>
-                    <span class="meta-item">🎬 Hành động</span>
+                <div class="movie-meta" id="movieMeta">
+                    <span class="meta-item">📽️ Đang tải...</span>
+                    <span class="meta-item">⏱️ Đang tải...</span>
+                    <span class="meta-item">⭐ Đang tải...</span>
+                    <span class="meta-item">🎬 Đang tải...</span>
                 </div>
 
-                <div class="movie-description">
-                    Một bộ phim hấp dẫn với cốt truyện ly kỳ và diễn xuất xuất sắc.
+                <div class="movie-description" id="movieDescription">
+                    Đang tải thông tin phim...
                 </div>
 
                 <!-- Thông tin suất chiếu -->
@@ -615,19 +636,19 @@
                     <div class="showtime-details">
                         <div class="showtime-item">
                             <div class="showtime-label">🎭 Rạp chiếu</div>
-                            <div class="showtime-value">@Model.CinemaRoom</div>
+                            <div class="showtime-value" id="cinemaRoom">@Model.CinemaRoom</div>
                         </div>
                         <div class="showtime-item">
                             <div class="showtime-label">📅 Ngày chiếu</div>
-                            <div class="showtime-value">@Model.ShowTime.ToString("dd/MM/yyyy")</div>
+                            <div class="showtime-value" id="showDate">@Model.ShowTime.ToString("dd/MM/yyyy")</div>
                         </div>
                         <div class="showtime-item">
                             <div class="showtime-label">🕐 Giờ chiếu</div>
-                            <div class="showtime-value">@Model.ShowTime.ToString("HH:mm")</div>
+                            <div class="showtime-value" id="showTime">@Model.ShowTime.ToString("HH:mm")</div>
                         </div>
                         <div class="showtime-item">
                             <div class="showtime-label">🎫 Loại vé</div>
-                            <div class="showtime-value">Vé thường</div>
+                            <div class="showtime-value" id="ticketType">Đang tải...</div>
                         </div>
                     </div>
                 </div>
@@ -638,11 +659,10 @@
         <div class="seat-selection">
             <div class="selection-header">
                 <h2 class="section-title">Select Your Seats</h2>
-                <div class="seat-info">
-                    <span class="seat-count">@Model.SelectedSeatCount Seats</span>
-                    <div class="seat-types">
-                        <span class="seat-type">D-BOX</span>
-                        <span class="seat-type">D-11</span>
+                <div class="seat-info" id="seatInfo">
+                    <span class="seat-count">Đang tải...</span>
+                    <div class="seat-types" id="seatTypes">
+                        <!-- Sẽ được cập nhật từ API -->
                     </div>
                 </div>
             </div>
@@ -655,41 +675,7 @@
             </div>
 
             <div class="seat-map" id="seatMap">
-                @{
-                    var seatsByRow = Model.Seats.GroupBy(s => s.Row).OrderBy(g => g.Key);
-                }
-
-                @foreach (var rowGroup in seatsByRow)
-                {
-                    <div class="seat-row">
-                        <span class="row-label">@((char)('A' + rowGroup.Key - 1))</span>
-
-                        <div class="seats-container">
-                            @foreach (var seat in rowGroup.OrderBy(s => s.Column))
-                            {
-                                var seatClass = "seat";
-                                if (seat.IsOccupied)
-                                    seatClass += " occupied";
-                                else if (seat.Type == SeatType.VIP)
-                                    seatClass += " vip available";
-                                else
-                                    seatClass += " regular available";
-
-                                <button type="button" class="@seatClass"
-                                        data-seat-id="@seat.Id"
-                                        data-seat-number="@seat.SeatNumber"
-                                        data-seat-price="@seat.Price"
-                                        data-seat-type="@seat.Type.ToString()"
-                                        title="Ghế @seat.SeatNumber - @String.Format("{0:N0}", seat.Price) VNĐ"
-                                @(seat.IsOccupied ? "disabled" : "")>
-                                    <span class="seat-number">@seat.Column.ToString("D2")</span>
-                                </button>
-                            }
-                        </div>
-
-                        <span class="row-label">@((char)('A' + rowGroup.Key - 1))</span>
-                    </div>
-                }
+                <!-- Ghế sẽ được load từ API -->
             </div>
 
             <!-- Legend cải tiến -->
@@ -737,15 +723,15 @@
             <div class="ticket-details">
                 <div class="detail-row">
                     <span class="label">Date & Time</span>
-                    <span class="value">@Model.ShowTime.ToString("dd/MM/yyyy, HH:mm")</span>
+                    <span class="value" id="ticketDateTime">@Model.ShowTime.ToString("dd/MM/yyyy, HH:mm")</span>
                 </div>
                 <div class="detail-row">
                     <span class="label">Tickets (Double comfort)</span>
-                    <span class="value">@Model.SelectedSeatCount</span>
+                    <span class="value" id="ticketCount">@Model.SelectedSeatCount</span>
                 </div>
                 <div class="detail-row">
                     <span class="label">Total</span>
-                    <span class="value total-amount">@String.Format("{0:N0}", Model.TotalPrice)₫</span>
+                    <span class="value total-amount" id="ticketTotal">@String.Format("{0:N0}", Model.TotalPrice)₫</span>
                 </div>
             </div>
 
@@ -784,308 +770,540 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const seats = document.querySelectorAll('.seat:not([disabled])');
         const totalPriceElement = document.getElementById('totalPrice');
         const continueBtn = document.getElementById('continueBtn');
         const selectedSeatsDisplay = document.getElementById('selectedSeatsDisplay');
+        const seatMapContainer = document.getElementById('seatMap');
 
         let selectedSeats = [];
-        let maxSeats = @Model.MaxSeats;
+        let maxSeats = 8; // Giới hạn tối đa 8 ghế
         const showTimeId = '@Model.ShowTimeId';
+        let allSeats = []; // Lưu trữ tất cả ghế từ API
 
-        // Gọi API để lấy chi tiết suất chiếu và thông tin phim
-        async function loadMovieAndShowtimeDetails() {
+        // Cải thiện hàm loadSeats với debug tốt hơn
+        async function loadSeats() {
             try {
-                console.log('Loading showtime details for showTimeId:', showTimeId);
-                
-                // Gọi API lấy chi tiết suất chiếu
-                const showtimeResponse = await fetch(`https://localhost:7049/api/v1/booking-ticket/${showTimeId}/details`);
-                if (!showtimeResponse.ok) {
-                    throw new Error('Không thể lấy thông tin suất chiếu');
+                console.log('Loading seats for showTimeId:', showTimeId);
+
+                // Hiển thị loading
+                seatMapContainer.innerHTML = `
+                        <div id="loadingSeats" style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.7);">
+                            <i class="fas fa-spinner fa-spin"></i> Đang tải ghế...
+                        </div>
+                    `;
+
+                const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/available?showTimeId=${showTimeId}`);
+
+                console.log('API Response status:', response.status);
+                console.log('API Response headers:', response.headers);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                const showtimeData = await showtimeResponse.json();
-                console.log('Showtime data:', showtimeData);
-                
-                if (showtimeData.code === 200 && showtimeData.data) {
-                    const movieId = showtimeData.data.movieId;
-                    console.log('MovieId from showtime:', movieId, 'Type:', typeof movieId);
-                    
-                    // Kiểm tra nếu movieId là string GUID hay int
-                    const movieIdParam = typeof movieId === 'string' ? movieId : movieId.toString();
-                    console.log('Using movieId param:', movieIdParam);
-                    
-                    // Gọi API lấy thông tin phim
-                    const movieApiUrl = `https://localhost:7049/api/v1/movie/GetById?movieId=${movieIdParam}`;
-                    console.log('Calling movie API:', movieApiUrl);
-                    
-                    const movieResponse = await fetch(movieApiUrl);
-                    console.log('Movie response status:', movieResponse.status);
-                    
-                    if (!movieResponse.ok) {
-                        const errorText = await movieResponse.text();
-                        console.error('Movie API error:', errorText);
-                        throw new Error(`Không thể lấy thông tin phim: ${movieResponse.status}`);
-                    }
-                    
-                    const movieData = await movieResponse.json();
-                    console.log('Movie data:', movieData);
-                    
-                    if (movieData.code === 200 && movieData.data) {
-                        // Cập nhật thông tin phim trên giao diện
-                        updateMovieInfo(movieData.data);
-                        updateShowtimeInfo(showtimeData.data);
+
+                const data = await response.json();
+                console.log('Full API response:', JSON.stringify(data, null, 2));
+
+                if (data.code === 200 && data.data) {
+                    if (data.data.seats && data.data.seats.length > 0) {
+                        allSeats = data.data.seats;
+                        console.log('Seats loaded successfully:', allSeats.length, 'seats');
+                        renderSeats(data.data.seats);
+
+                        // Cập nhật tên phòng
+                        if (data.data.roomName) {
+                            updateRoomName(data.data.roomName);
+                        }
                     } else {
-                        console.error('Movie API returned error:', movieData);
+                        console.error('No seats found in API response');
+                        throw new Error('Không có ghế nào trong phòng chiếu này');
                     }
+                } else {
+                    console.error('Invalid API response:', data);
+                    throw new Error(data.message || 'Invalid API response format');
                 }
             } catch (error) {
-                console.error('Lỗi khi tải thông tin:', error);
-                // Hiển thị thông báo lỗi cho người dùng
-                alert('Không thể tải thông tin phim. Vui lòng thử lại!');
+                console.error('Error loading seats:', error);
+                seatMapContainer.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: #ff6b6b;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            ${error.message || 'Không thể tải danh sách ghế. Vui lòng thử lại!'}
+                            <br><br>
+                            <button onclick="loadSeats()" class="btn btn-primary" style="padding: 0.5rem 1rem;">
+                                Thử lại
+                            </button>
+                        </div>
+                    `;
             }
         }
 
-        // Cập nhật thông tin phim
-        function updateMovieInfo(movieInfo) {
-            console.log('=== UPDATE MOVIE INFO DEBUG ===');
-            console.log('Full movieInfo object:', movieInfo);
-            console.log('PrimaryImageUrl:', movieInfo.primaryImageUrl);
-            console.log('Images:', movieInfo.images);
-            
-            // 1. Cập nhật tên phim
-            const movieTitle = document.querySelector('.movie-title');
-            if (movieTitle && movieInfo.title) {
-                movieTitle.textContent = movieInfo.title;
-                console.log('✓ Updated movie title:', movieInfo.title);
+        // Render ghế từ dữ liệu API
+        function renderSeats(seats) {
+            console.log('Rendering seats:', seats);
+            console.log('Total seats received:', seats.length);
+
+            // Xóa loading spinner
+            const loadingElement = document.getElementById('loadingSeats');
+            if (loadingElement) {
+                loadingElement.remove();
             }
 
-            // 2. Cập nhật ảnh poster phim - SỬ DỤNG CẤU TRÚC MỚI
-            const moviePoster = document.querySelector('.movie-poster');
-            if (moviePoster) {
-                let posterUrl = '/images/placeholder-movie.jpg'; // default
-                
-                // Ưu tiên sử dụng PrimaryImageUrl trước
-                if (movieInfo.primaryImageUrl) {
-                    posterUrl = movieInfo.primaryImageUrl;
-                    console.log('✓ Using PrimaryImageUrl:', posterUrl);
-                }
-                // Nếu không có PrimaryImageUrl, dùng Images array
-                else if (movieInfo.images && Array.isArray(movieInfo.images) && movieInfo.images.length > 0) {
-                    console.log('Found images array:', movieInfo.images);
-                    
-                    // Tìm ảnh primary trong Images array
-                    const primaryImage = movieInfo.images.find(img => img.isPrimary === true);
-                    if (primaryImage && primaryImage.imageUrl) {
-                        posterUrl = primaryImage.imageUrl;
-                        console.log('✓ Using primary image from Images:', posterUrl);
-                    } else if (movieInfo.images[0] && movieInfo.images[0].imageUrl) {
-                        posterUrl = movieInfo.images[0].imageUrl;
-                        console.log('✓ Using first image from Images:', posterUrl);
-                    }
-                } else {
-                    console.log('⚠️ No images found, using placeholder');
-                }
-                
-                // Cập nhật ảnh với error handling
-                moviePoster.innerHTML = `
-                    <img src="${posterUrl}" 
-                         alt="${movieInfo.title || 'Movie Poster'}" 
-                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;"
-                         onerror="console.error('❌ Image failed to load:', '${posterUrl}'); this.src='/images/placeholder-movie.jpg';" 
-                         onload="console.log('✅ Image loaded successfully:', '${posterUrl}');" />
-                `;
-                console.log('✓ Updated movie poster with URL:', posterUrl);
-            }
+            // Cập nhật tổng số ghế trong header
+            updateSeatCount(seats.length);
 
-            // 3. Cập nhật tóm tắt phim (Content)
-            const movieDescription = document.querySelector('.movie-description');
-            if (movieDescription && movieInfo.content) {
-                movieDescription.textContent = movieInfo.content;
-                console.log('✓ Updated movie description');
-            }
-
-            // 4. Cập nhật thông tin meta (bao gồm đạo diễn, thời lượng, đánh giá)
-            const movieMeta = document.querySelector('.movie-meta');
-            if (movieMeta && movieInfo) {
-                let metaHtml = '';
-                
-                // Đạo diễn
-                if (movieInfo.director) {
-                    metaHtml += `<span class="meta-item">🎬 Đạo diễn: ${movieInfo.director}</span>`;
+            // Group seats by row - sửa lỗi group
+            const seatsByRow = {};
+            seats.forEach(seat => {
+                const rowKey = seat.rowIndex || seat.row || 1;
+                if (!seatsByRow[rowKey]) {
+                    seatsByRow[rowKey] = [];
                 }
-                
-                // Thời lượng
-                if (movieInfo.runningTime) {
-                    metaHtml += `<span class="meta-item">⏱️ ${movieInfo.runningTime} phút</span>`;
-                }
-                
-                // Đánh giá
-                if (movieInfo.rating) {
-                    metaHtml += `<span class="meta-item">⭐ ${movieInfo.rating}/10</span>`;
-                }
-                
-                // Diễn viên
-                if (movieInfo.actors) {
-                    metaHtml += `<span class="meta-item">🎭 Diễn viên: ${movieInfo.actors}</span>`;
-                }
-                
-                // Công ty sản xuất
-                if (movieInfo.productionCompany) {
-                    metaHtml += `<span class="meta-item">🏢 ${movieInfo.productionCompany}</span>`;
-                }
-                
-                movieMeta.innerHTML = metaHtml;
-                console.log('✓ Updated movie meta information');
-            }
-
-            // 5. Thêm phần hiển thị trailer (nếu có)
-            addTrailerSection(movieInfo);
-            
-            console.log('=== END UPDATE MOVIE INFO DEBUG ===');
-        }
-        
-        // Hàm thêm phần trailer
-        function addTrailerSection(movieInfo) {
-            if (movieInfo.trailerUrl) {
-                // Tìm vị trí để chèn trailer (sau phần mô tả)
-                const movieDescription = document.querySelector('.movie-description');
-                if (movieDescription) {
-                    // Kiểm tra xem đã có trailer section chưa
-                    let trailerSection = document.querySelector('.trailer-section');
-                    if (!trailerSection) {
-                        // Tạo trailer section mới
-                        trailerSection = document.createElement('div');
-                        trailerSection.className = 'trailer-section';
-                        trailerSection.style.cssText = `
-                            margin-top: 1rem;
-                            padding: 1rem;
-                            background: rgba(255, 255, 255, 0.05);
-                            border-radius: 10px;
-                            border: 1px solid rgba(255, 255, 255, 0.1);
-                        `;
-                        
-                        // Chèn sau phần mô tả
-                        movieDescription.parentNode.insertBefore(trailerSection, movieDescription.nextSibling);
-                    }
-                    
-                    // Cập nhật nội dung trailer
-                    trailerSection.innerHTML = `
-                        <h4 style="color: white; margin-bottom: 0.5rem; font-size: 1.1rem;">🎥 Trailer</h4>
-                        <a href="${movieInfo.trailerUrl}" target="_blank" 
-                           style="color: #87ceeb; text-decoration: none; font-size: 0.9rem;"
-                           onmouseover="this.style.textDecoration='underline'"
-                           onmouseout="this.style.textDecoration='none'">
-                            ▶️ Xem trailer
-                        </a>
-                    `;
-                }
-            }
-        }
-
-        // Cập nhật thông tin suất chiếu
-        function updateShowtimeInfo(showtimeInfo) {
-            // Cập nhật thông tin suất chiếu trong phần showtime-details
-            const showtimeDetails = document.querySelector('.showtime-details');
-            if (showtimeDetails && showtimeInfo) {
-                let showtimeHtml = '';
-                
-                if (showtimeInfo.showDate) {
-                    const showDate = new Date(showtimeInfo.showDate);
-                    // Hiển thị giờ UTC gốc
-                    showtimeHtml += `
-                        <div class="showtime-item">
-                            <div class="showtime-label">Ngày chiếu</div>
-                            <div class="showtime-value">${showDate.toLocaleDateString('vi-VN')}</div>
-                        </div>
-                        <div class="showtime-item">
-                            <div class="showtime-label">Giờ chiếu</div>
-                            <div class="showtime-value">${showDate.getUTCHours().toString().padStart(2, '0')}:${showDate.getUTCMinutes().toString().padStart(2, '0')}</div>
-                        </div>
-                    `;
-                }
-                
-                // Giữ nguyên phần startTime nếu có (từ dữ liệu riêng biệt)
-                if (showtimeInfo.startTime) {
-                    showtimeHtml += `
-                        <div class="showtime-item">
-                            <div class="showtime-label">Giờ bắt đầu</div>
-                            <div class="showtime-value">${showtimeInfo.startTime}</div>
-                        </div>
-                    `;
-                }
-                
-                if (showtimeInfo.roomName) {
-                    showtimeHtml += `
-                        <div class="showtime-item">
-                            <div class="showtime-label">Phòng chiếu</div>
-                            <div class="showtime-value">${showtimeInfo.roomName}</div>
-                        </div>
-                    `;
-                }
-                
-                showtimeDetails.innerHTML = showtimeHtml;
-            }
-        }
-
-        // Gọi hàm load dữ liệu khi trang được tải
-        loadMovieAndShowtimeDetails();
-
-        seats.forEach(seat => {
-            seat.addEventListener('click', function () {
-                const seatId = this.dataset.seatId;
-                const seatNumber = this.dataset.seatNumber;
-                const seatPrice = parseFloat(this.dataset.seatPrice);
-                const seatType = this.dataset.seatType;
-
-                if (this.classList.contains('selected')) {
-                    // Deselect
-                    this.classList.remove('selected');
-                    selectedSeats = selectedSeats.filter(s => s.id !== seatId);
-                } else {
-                    // Select (if under limit)
-                    if (selectedSeats.length < maxSeats) {
-                        this.classList.add('selected');
-                        selectedSeats.push({
-                            id: seatId,
-                            number: seatNumber,
-                            price: seatPrice,
-                            type: seatType
-                        });
-                    } else {
-                        alert(`Bạn chỉ có thể chọn tối đa ${maxSeats} ghế.`);
-                    }
-                }
-
-                updateDisplay();
+                seatsByRow[rowKey].push(seat);
             });
-        });
 
-        continueBtn.addEventListener('click', function () {
-            if (selectedSeats.length > 0) {
-                const seatIds = selectedSeats.map(s => s.id).join(',');
-                window.location.href = `/BookingManagement/Booking/ConfirmBooking?showTimeId=${showTimeId}&seatIds=${seatIds}`;
+            console.log('Seats grouped by row:', seatsByRow);
+
+            let html = '';
+
+            // Sort rows by index
+            const sortedRows = Object.keys(seatsByRow).sort((a, b) => parseInt(a) - parseInt(b));
+            console.log('Sorted rows:', sortedRows);
+
+            if (sortedRows.length === 0) {
+                html = `
+                        <div style="text-align: center; padding: 2rem; color: #ff6b6b;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Không có ghế nào được tìm thấy!
+                            <br><br>
+                            <button onclick="loadSeats()" class="btn btn-primary" style="padding: 0.5rem 1rem;">
+                                Thử lại
+                            </button>
+                        </div>
+                    `;
+            } else {
+                sortedRows.forEach(rowIndex => {
+                    const rowSeats = seatsByRow[rowIndex].sort((a, b) => {
+                        const colA = a.columnIndex || a.column || 1;
+                        const colB = b.columnIndex || b.column || 1;
+                        return colA - colB;
+                    });
+
+                    const rowLabel = String.fromCharCode(64 + parseInt(rowIndex)); // A, B, C...
+
+                    html += `
+                            <div class="seat-row">
+                                <span class="row-label">${rowLabel}</span>
+                                <div class="seats-container">
+                        `;
+
+                    rowSeats.forEach(seat => {
+                        const seatClass = getSeatClass(seat);
+                        const isDisabled = !seat.isAvailable;
+                        const seatCode = seat.seatCode || seat.code || `${rowLabel}${seat.columnIndex || seat.column || '?'}`;
+                        const seatPrice = seat.price || 0;
+
+                        html += `
+                                <button type="button" class="${seatClass}"
+                                        data-seat-id="${seat.id}"
+                                        data-seat-code="${seatCode}"
+                                        data-seat-price="${seatPrice}"
+                                        data-seat-type="${seat.seatType || 'regular'}"
+                                        title="Ghế ${seatCode} - ${formatPrice(seatPrice)} VNĐ"
+                                        ${isDisabled ? 'disabled' : ''}>
+                                    <span class="seat-number">${seatCode}</span>
+                                </button>
+                            `;
+                    });
+
+                    html += `
+                                </div>
+                                <span class="row-label">${rowLabel}</span>
+                            </div>
+                        `;
+                });
             }
-        });
 
+            console.log('Generated HTML length:', html.length);
+            seatMapContainer.innerHTML = html;
+
+            // Attach event listeners to new seats
+            attachSeatEventListeners();
+
+            // Cập nhật thống kê ghế
+            updateSeatStatistics(seats);
+        }
+
+        // Thêm hàm cập nhật số lượng ghế trong header
+        function updateSeatCount(totalSeats) {
+            const seatCountElement = document.querySelector('.seat-count');
+            if (seatCountElement) {
+                seatCountElement.textContent = `${totalSeats} Seats Total`;
+            }
+        }
+
+        // Thêm hàm cập nhật thống kê ghế
+        function updateSeatStatistics(seats) {
+            const availableSeats = seats.filter(seat => seat.isAvailable).length;
+            const occupiedSeats = seats.filter(seat => !seat.isAvailable).length;
+            const totalSeats = seats.length;
+
+            // Lấy các loại ghế duy nhất
+            const seatTypes = [...new Set(seats.map(seat => seat.seatType || 'Regular'))];
+
+            // Cập nhật thông tin trong seat-info
+            const seatInfo = document.getElementById('seatInfo');
+            if (seatInfo) {
+                let seatTypesHtml = '';
+                seatTypes.forEach(type => {
+                    const displayName = getSeatTypeDisplayName(type);
+                    seatTypesHtml += `<span class="seat-type">${displayName}</span>`;
+                });
+
+                seatInfo.innerHTML = `
+                        <span class="seat-count">Tổng: ${totalSeats} ghế</span>
+                        <span class="seat-available">Trống: ${availableSeats}</span>
+                        <span class="seat-occupied">Đã đặt: ${occupiedSeats}</span>
+                        <div class="seat-types">
+                            ${seatTypesHtml}
+                        </div>
+                    `;
+            }
+
+            console.log(`Seat Statistics - Total: ${totalSeats}, Available: ${availableSeats}, Occupied: ${occupiedSeats}`);
+        }
+
+        // Thêm hàm helper để hiển thị tên loại ghế
+        function getSeatTypeDisplayName(seatType) {
+            const typeMap = {
+                'regular': 'Thường',
+                'normal': 'Thường',
+                'vip': 'VIP',
+                'comfort': 'Comfort',
+                'doublecomfort': 'Double Comfort',
+                'double-comfort': 'Double Comfort',
+                'fordisabilities': 'Người khuyết tật',
+                'for-disabilities': 'Người khuyết tật'
+            };
+
+            return typeMap[seatType.toLowerCase()] || seatType;
+        }
+
+        // Xác định class CSS cho ghế dựa trên loại và trạng thái
+        function getSeatClass(seat) {
+            let baseClass = 'seat';
+
+            if (!seat.isAvailable) {
+                return baseClass + ' occupied';
+            }
+
+            // Thêm class theo loại ghế - xử lý case-insensitive
+            const seatType = (seat.seatType || 'regular').toLowerCase();
+            switch (seatType) {
+                case 'vip':
+                    return baseClass + ' vip available';
+                case 'comfort':
+                    return baseClass + ' comfort available';
+                case 'doublecomfort':
+                case 'double-comfort':
+                    return baseClass + ' double-comfort available';
+                case 'fordisabilities':
+                case 'for-disabilities':
+                    return baseClass + ' for-disabilities available';
+                case 'regular':
+                case 'normal':
+                default:
+                    return baseClass + ' regular available';
+            }
+        }
+
+        // Gắn event listeners cho ghế
+        function attachSeatEventListeners() {
+            const seats = document.querySelectorAll('.seat:not([disabled])');
+
+            seats.forEach(seat => {
+                seat.addEventListener('click', function () {
+                    const seatId = this.dataset.seatId;
+                    const seatCode = this.dataset.seatCode;
+                    const seatPrice = parseFloat(this.dataset.seatPrice);
+                    const seatType = this.dataset.seatType;
+
+                    if (this.classList.contains('selected')) {
+                        // Bỏ chọn ghế
+                        this.classList.remove('selected');
+                        selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+                    } else {
+                        // Chọn ghế (nếu chưa đạt giới hạn)
+                        if (selectedSeats.length < maxSeats) {
+                            this.classList.add('selected');
+                            selectedSeats.push({
+                                id: seatId,
+                                code: seatCode,
+                                price: seatPrice,
+                                type: seatType
+                            });
+                        } else {
+                            alert(`Bạn chỉ có thể chọn tối đa ${maxSeats} ghế.`);
+                        }
+                    }
+
+                    updateDisplay();
+                });
+            });
+        }
+
+        // Cập nhật tên phòng
+        function updateRoomName(roomName) {
+            console.log('Updating room name:', roomName);
+
+            // Cập nhật tên phòng trong showtime info
+            const roomElements = document.querySelectorAll('.showtime-value');
+            if (roomElements.length > 0 && roomName) {
+                roomElements[0].textContent = roomName; // Phần tử đầu tiên là rạp chiếu
+                console.log('Room name updated to:', roomName);
+            }
+
+            // Cập nhật thêm trong header nếu có
+            const sectionTitle = document.querySelector('.section-title');
+            if (sectionTitle) {
+                sectionTitle.textContent = `Select Your Seats - ${roomName}`;
+            }
+        }
+
+        // Format giá tiền
+        function formatPrice(price) {
+            return new Intl.NumberFormat('vi-VN').format(price);
+        }
+
+        // Cập nhật hiển thị ghế đã chọn và tổng tiền
         function updateDisplay() {
             // Cập nhật hiển thị ghế đã chọn
             if (selectedSeats.length === 0) {
                 selectedSeatsDisplay.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.6); padding: 1rem;">Chưa chọn ghế nào</div>';
             } else {
-                selectedSeatsDisplay.innerHTML = selectedSeats.map(seat => 
-                    `<div class="selected-seat-item" style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.6rem; border-radius: 5px; font-size: 0.8rem;">${seat.number}</div>`
+                selectedSeatsDisplay.innerHTML = selectedSeats.map(seat =>
+                    `<div class="selected-seat-item" style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.6rem; border-radius: 5px; font-size: 0.8rem;">${seat.code}</div>`
                 ).join('');
             }
 
             // Cập nhật tổng tiền
             const total = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
-            totalPriceElement.textContent = new Intl.NumberFormat('vi-VN').format(total) + '₫';
+            totalPriceElement.textContent = formatPrice(total) + '₫';
+
+            // CẬP NHẬT TỔNG TIỀN TRONG TICKET DETAILS
+            const ticketTotalElement = document.getElementById('ticketTotal');
+            if (ticketTotalElement) {
+                ticketTotalElement.textContent = formatPrice(total) + '₫';
+            }
+
+            // CẬP NHẬT SỐ LƯỢNG VÉ TRONG TICKET DETAILS
+            const ticketCountElement = document.getElementById('ticketCount');
+            if (ticketCountElement) {
+                ticketCountElement.textContent = selectedSeats.length;
+            }
+
+            // Cập nhật số ghế đã chọn trong header
+            const seatCountInHeader = document.querySelector('.seat-count');
+            if (seatCountInHeader && allSeats.length > 0) {
+                seatCountInHeader.textContent = `${selectedSeats.length}/${allSeats.length} Seats Selected`;
+            }
 
             // Enable/disable nút tiếp tục
             continueBtn.disabled = selectedSeats.length === 0;
         }
 
-        // Khởi tạo display
+        // Validate ghế trước khi chuyển trang
+        async function validateAndContinue() {
+            if (selectedSeats.length === 0) {
+                alert('Vui lòng chọn ít nhất 1 ghế');
+                return;
+            }
+
+            try {
+                const seatIds = selectedSeats.map(s => s.id);
+                const seatNames = selectedSeats.map(s => s.seatNumber || s.name).join(',');
+
+                console.log('Selected seats for validation:', selectedSeats);
+                console.log('Seat IDs:', seatIds);
+                console.log('Seat Names:', seatNames);
+
+                const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/validate?showTimeId=${showTimeId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(seatIds)
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    // Ghế hợp lệ, chuyển trang với thêm thông tin tên ghế
+                    const seatIdsParam = seatIds.join(',');
+                    const seatNamesParam = encodeURIComponent(seatNames);
+                    window.location.href = `/BookingManagement/Booking/ConfirmBooking?showTimeId=${showTimeId}&seatIds=${seatIdsParam}&seatNames=${seatNamesParam}`;
+                } else {
+                    alert(result.message || 'Ghế đã chọn không hợp lệ. Vui lòng chọn lại!');
+                    // Reload lại ghế để cập nhật trạng thái
+                    selectedSeats = [];
+                    loadSeats();
+                }
+            } catch (error) {
+                console.error('Lỗi validate ghế:', error);
+                alert('Có lỗi xảy ra khi kiểm tra ghế. Vui lòng thử lại!');
+            }
+        }
+
+        // Gọi API để lấy chi tiết suất chiếu và thông tin phim
+        async function loadMovieAndShowtimeDetails() {
+            try {
+                console.log('Loading showtime details for showTimeId:', showTimeId);
+
+                const showtimeResponse = await fetch(`https://localhost:7049/api/v1/booking-ticket/showtime/${showTimeId}/details`);
+                if (!showtimeResponse.ok) {
+                    throw new Error('Không thể lấy thông tin suất chiếu');
+                }
+                const showtimeData = await showtimeResponse.json();
+                console.log('Showtime data:', showtimeData);
+
+                if (showtimeData.code === 200 && showtimeData.data) {
+                    const movieId = showtimeData.data.movieId;
+                    console.log('MovieId from showtime:', movieId);
+
+                    const movieIdParam = typeof movieId === 'string' ? movieId : movieId.toString();
+
+                    const movieResponse = await fetch(`https://localhost:7049/api/v1/movie/GetById?movieId=${movieIdParam}`);
+
+                    if (!movieResponse.ok) {
+                        console.error('Movie API error:', movieResponse.status);
+                        return;
+                    }
+
+                    const movieData = await movieResponse.json();
+                    console.log('Movie data:', movieData);
+
+                    if (movieData.code === 200 && movieData.data) {
+                        updateMovieInfo(movieData.data);
+                        updateShowtimeInfo(showtimeData.data);
+                    }
+                }
+            } catch (error) {
+                console.error('Lỗi khi tải thông tin:', error);
+            }
+        }
+
+        // Cập nhật thông tin phim
+        function updateMovieInfo(movieInfo) {
+            // Cập nhật tiêu đề phim
+            const movieTitles = document.querySelectorAll('.movie-title');
+            movieTitles.forEach(title => {
+                if (movieInfo.title) {
+                    title.textContent = movieInfo.title;
+                }
+            });
+
+            // Cập nhật poster phim
+            const moviePoster = document.querySelector('.movie-poster');
+            if (moviePoster && movieInfo.primaryImageUrl) {
+                moviePoster.innerHTML = `
+                        <img src="${movieInfo.primaryImageUrl}"
+                             alt="${movieInfo.title || 'Movie Poster'}"
+                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;"
+                             onerror="this.src='/images/placeholder-movie.jpg';" />
+                    `;
+            }
+
+            // Cập nhật mô tả phim
+            const movieDescription = document.getElementById('movieDescription');
+            if (movieDescription && movieInfo.content) {
+                movieDescription.textContent = movieInfo.content;
+            }
+
+            // Cập nhật thông tin meta
+            const movieMeta = document.getElementById('movieMeta');
+            if (movieMeta && movieInfo) {
+                let metaHtml = '';
+
+                // Thể loại phim
+                if (movieInfo.genres && movieInfo.genres.length > 0) {
+                    const genreNames = movieInfo.genres.map(g => g.name || g).join(', ');
+                    metaHtml += `<span class="meta-item">🎬 ${genreNames}</span>`;
+                } else {
+                    metaHtml += `<span class="meta-item">🎬 Phim điện ảnh</span>`;
+                }
+
+                // Thời lượng phim
+                if (movieInfo.runningTime) {
+                    metaHtml += `<span class="meta-item">⏱️ ${movieInfo.runningTime} phút</span>`;
+                } else {
+                    metaHtml += `<span class="meta-item">⏱️ Chưa cập nhật</span>`;
+                }
+
+                // Đánh giá
+                if (movieInfo.rating) {
+                    metaHtml += `<span class="meta-item">⭐ ${movieInfo.rating}/10</span>`;
+                } else {
+                    metaHtml += `<span class="meta-item">⭐ Chưa đánh giá</span>`;
+                }
+
+                // Đạo diễn
+                if (movieInfo.director) {
+                    metaHtml += `<span class="meta-item">🎭 ${movieInfo.director}</span>`;
+                }
+
+                movieMeta.innerHTML = metaHtml;
+            }
+        }
+
+        // Cập nhật thông tin suất chiếu
+        function updateShowtimeInfo(showtimeInfo) {
+            if (showtimeInfo.showDate) {
+                const showDate = new Date(showtimeInfo.showDate);
+
+                // Cập nhật ngày chiếu trong showtime info
+                const showDateElement = document.getElementById('showDate');
+                if (showDateElement) {
+                    showDateElement.textContent = showDate.toLocaleDateString('vi-VN');
+                }
+
+                // Cập nhật giờ chiếu trong showtime info
+                const showTimeElement = document.getElementById('showTime');
+                if (showTimeElement) {
+                    const hours = showDate.getUTCHours().toString().padStart(2, '0');
+                    const minutes = showDate.getUTCMinutes().toString().padStart(2, '0');
+                    showTimeElement.textContent = `${hours}:${minutes}`;
+                }
+
+                // CẬP NHẬT NGÀY GIỜ TRONG TICKET DETAILS
+                const ticketDateTimeElement = document.getElementById('ticketDateTime');
+                if (ticketDateTimeElement) {
+                    const formattedDate = showDate.toLocaleDateString('vi-VN');
+                    const formattedTime = showDate.getUTCHours().toString().padStart(2, '0') + ':' + showDate.getUTCMinutes().toString().padStart(2, '0');
+                    ticketDateTimeElement.textContent = `${formattedDate}, ${formattedTime}`;
+                }
+            }
+
+            // Cập nhật tên phòng chiếu
+            if (showtimeInfo.cinemaRoomName) {
+                const cinemaRoomElement = document.getElementById('cinemaRoom');
+                if (cinemaRoomElement) {
+                    cinemaRoomElement.textContent = showtimeInfo.cinemaRoomName;
+                }
+            }
+
+            // Cập nhật loại vé
+            const ticketTypeElement = document.getElementById('ticketType');
+            if (ticketTypeElement) {
+                const ticketType = showtimeInfo.version || 'Vé thường';
+                ticketTypeElement.textContent = ticketType;
+            }
+        }
+
+        // Event listeners
+        continueBtn.addEventListener('click', validateAndContinue);
+
+        // Khởi tạo
         updateDisplay();
+        loadSeats(); // Load ghế từ API
+        loadMovieAndShowtimeDetails(); // Load thông tin phim
     });
 </script>

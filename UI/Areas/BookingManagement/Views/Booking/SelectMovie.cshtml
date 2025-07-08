@@ -106,7 +106,7 @@
 
 .movie-selection-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -132,6 +132,9 @@
     font-weight: 700;
     margin-bottom: 15px;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    background: linear-gradient(45deg, #fff, #87ceeb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .hero-subtitle {
@@ -164,12 +167,12 @@
 .details-column {
     position: sticky;
     top: 20px;
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 20px;
     padding: 30px;
     min-height: 500px;
     border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 /* Default State */
@@ -718,14 +721,3 @@ document.addEventListener('DOMContentLoaded', function() {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 }
-
-// Trong hàm click event của movie card
-$('.movie-card').on('click', function() {
-    const movieId = $(this).data('movie-id');
-    console.log('MovieId được lấy:', movieId); // Kiểm tra giá trị này
-    console.log('Độ dài movieId:', movieId.length); // Phải là 36 ký tự
-    
-    if (movieId) {
-        loadMovieTimes(movieId);
-    }
-});

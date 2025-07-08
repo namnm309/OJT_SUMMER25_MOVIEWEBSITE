@@ -322,6 +322,8 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    transition: all 0.3s ease;
+    color: var(--text-dark);
 }
 
 .new-dashboard-content {
@@ -337,6 +339,22 @@ body {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--content-border);
+}
+
+/* Breadcrumb fixes */
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0 0 1rem 0;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-purple) !important;
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: var(--text-dark) !important;
 }
 
 .new-page-title {
@@ -655,4 +673,4 @@ body {
     .new-quick-actions {
         grid-template-columns: repeat(2, 1fr);
     }
-} 
+}

@@ -2065,9 +2065,8 @@
      <div class="new-dashboard-layout">
          <!-- Sidebar -->
          <aside class="new-dashboard-sidebar">
-             <!-- Sidebar Header -->
-             <div class="new-sidebar-header">
-                 <a href="@Url.Action("Index", "Home")" class="new-sidebar-brand">
+             <!-- Sidebar Header -->             <div class="new-sidebar-header">
+                 <a href="@Url.Action("Index","Home", new { area = "" })" class="new-sidebar-brand">
                      <div class="new-brand-logo"></div>
                      <div class="new-brand-text">
                          <h2>Cinema City</h2>
@@ -2077,17 +2076,16 @@
              </div>
              
              <!-- Navigation -->
-             <nav class="new-sidebar-nav">
-                 <div class="new-nav-section">
+             <nav class="new-sidebar-nav">                 <div class="new-nav-section">
                      <div class="new-nav-section-title">Tổng quan</div>
                      <div class="new-nav-item">
-                         <a href="@Url.Action("AdminDashboard", "Dashboard")" class="new-nav-link">
+                         <a href="@Url.Action("AdminDashboard","Dashboard", new { area = "" })" class="new-nav-link">
                              <i class="fas fa-chart-line"></i>
                              <span>Dashboard</span>
                          </a>
                      </div>
                      <div class="new-nav-item">
-                         <a href="@Url.Action("Index", "Home")" class="new-nav-link">
+                         <a href="@Url.Action("Index","Home", new { area = "" })" class="new-nav-link">
                              <i class="fas fa-home"></i>
                              <span>Trang chủ</span>
                          </a>

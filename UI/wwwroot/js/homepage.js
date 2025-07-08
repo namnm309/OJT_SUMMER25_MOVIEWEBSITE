@@ -56,6 +56,21 @@ let currentMovieIndex = 0;
 // let movieInterval; // REMOVED: No auto-transition
 let isTransitioning = false;
 
+// Cấu hình cho video liên tục
+const CONTINUOUS_VIDEO_URL = "https://your-domain.com/videos/hero-continuous.mp4"; // Video dài ghép nối
+const MOVIE_SEGMENT_DURATION = 10000; // 10 giây cho mỗi phim
+const VIDEO_PLAY_DURATION = 10000; // 10 giây (10000ms)
+const VIDEO_PRELOAD_TIME = 2000; // Preload video trước 2 giây
+let videoTimer = null;
+let preloadTimer = null;
+let isAutoPlaying = true; // Flag để bật/tắt auto play
+
+// Continuous video variables
+let continuousVideoElement = null;
+let movieSyncTimer = null;
+let currentVideoTime = 0;
+let TOTAL_VIDEO_DURATION = 0; // Will be calculated based on movies length
+
 /*
 NEW LOGIC:
 - Homepage sẽ tự phát video đầu tiên và loop
@@ -66,9 +81,9 @@ NEW LOGIC:
 */
 
 // Initialize page
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('Movies data loaded:', movies);
-    
+
     // Kiểm tra nếu không có data movies
     if (!movies || movies.length === 0) {
         console.warn('No movies data available, using fallback');
@@ -82,20 +97,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return; // Không khởi tạo carousel nếu không có data
     }
-    
-    initializeCarousel();
-    updateMovieDisplay();
+
+    // Calculate total video duration
+    TOTAL_VIDEO_DURATION = movies.length * MOVIE_SEGMENT_DURATION;
+
+    // Khởi tạo continuous video thay vì carousel thông thường
+    if (CONTINUOUS_VIDEO_URL && CONTINUOUS_VIDEO_URL !== "https://your-domain.com/videos/hero-continuous.mp4") {
+        initializeContinuousVideo();
+    } else {
+        // Fallback to normal mode
+        initializeIndividualVideos();
+    }
+
     updatePaginationDots();
-    
+
     const userDropdown = document.getElementById('userDropdown');
     const dropdownMenu = userDropdown?.nextElementSibling;
-    
+
     if (userDropdown && dropdownMenu) {
         // Toggle dropdown on click
-        userDropdown.addEventListener('click', function(e) {
+        userDropdown.addEventListener('click', function (e) {
             e.stopPropagation();
             dropdownMenu.classList.toggle('show');
-            
+
             // Toggle chevron rotation
             const chevron = userDropdown.querySelector('.fa-chevron-down');
             if (chevron) {
@@ -103,9 +127,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 chevron.style.transition = 'transform 0.3s ease';
             }
         });
-        
+
         // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
                 dropdownMenu.classList.remove('show');
                 const chevron = userDropdown.querySelector('.fa-chevron-down');
@@ -114,9 +138,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
-        
+
         // Prevent dropdown from closing when clicking inside
-        dropdownMenu.addEventListener('click', function(e) {
+        dropdownMenu.addEventListener('click', function (e) {
             e.stopPropagation();
         });
     }
@@ -126,13 +150,13 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeCarousel() {
     const heroSection = document.getElementById('heroSection');
     const movieContent = document.getElementById('movieContent');
-    
+
     // Đảm bảo có sẵn background ngay từ đầu
     showInitialBackground();
-    
+
     // Create background layers for smooth transitions
     createBackgroundLayers();
-    
+
     // Add transition styles if not already present
     if (!movieContent.style.transition) {
         movieContent.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
@@ -141,32 +165,29 @@ function initializeCarousel() {
 
 // Hiển thị background ban đầu để tránh màn hình đen
 function showInitialBackground() {
+    // 🔧 FIX: KHÔNG hiển thị hero-image ban đầu để tránh flash
     const heroImage = document.getElementById('heroImage');
-    if (heroImage && movies.length > 0) {
-        const initialMovie = movies[currentMovieIndex];
-        heroImage.style.backgroundImage = `url('${initialMovie.background}')`;
-        heroImage.style.display = 'block';
-        heroImage.style.opacity = '0.8';
-        heroImage.classList.add('visible');
+    if (heroImage) {
+        heroImage.style.display = 'none';
+        heroImage.style.opacity = '0';
     }
 }
 
 // Create two background layers for crossfade effect
 function createBackgroundLayers() {
     const heroSection = document.getElementById('heroSection');
-    
+
     // Remove existing background layers if any
     const existingLayers = heroSection.querySelectorAll('.bg-layer');
     existingLayers.forEach(layer => layer.remove());
-    
+
     // Create two background layers
     const bgLayer1 = document.createElement('div');
     const bgLayer2 = document.createElement('div');
-    
+
     bgLayer1.className = 'bg-layer bg-layer-1';
     bgLayer2.className = 'bg-layer bg-layer-2';
-    
-    // Set initial styles
+
     const layerStyles = {
         position: 'absolute',
         top: '0',
@@ -177,32 +198,24 @@ function createBackgroundLayers() {
         backgroundPosition: '50%',
         backgroundRepeat: 'no-repeat',
         transition: 'opacity 1s cubic-bezier(0.4, 0, 0.2, 1)',
-        zIndex: '1'
+        zIndex: '2' // 🔧 FIX: Tăng z-index để hiển thị ngay
     };
-    
+
     Object.assign(bgLayer1.style, layerStyles);
     Object.assign(bgLayer2.style, layerStyles);
-    
-    // Set initial background
+
+    // 🔧 FIX: Set background NGAY LẬP TỨC
     const initialMovie = movies[currentMovieIndex];
     const gradient = 'linear-gradient(107deg, rgba(0, 0, 0, 0.00) 36.24%, rgba(14, 14, 14, 0.55) 57.42%, rgba(12, 12, 12, 0.99) 76.93%)';
-    
+
     bgLayer1.style.background = `${gradient}, url('${initialMovie.background}') lightgray 50% / cover no-repeat`;
     bgLayer1.style.opacity = '1';
     bgLayer2.style.opacity = '0';
-    
-    // Insert layers at the beginning of hero section
+
     heroSection.insertBefore(bgLayer1, heroSection.firstChild);
     heroSection.insertBefore(bgLayer2, heroSection.firstChild);
-    
-    // Ẩn hero-image vì đã có background layers
-    const heroImage = document.getElementById('heroImage');
-    if (heroImage) {
-        heroImage.style.opacity = '0';
-        heroImage.style.display = 'none';
-    }
-    
-    // Ensure movie content is above background layers
+
+    // 🔧 FIX: KHÔNG ẩn hero-image nữa, để nó ẩn sẵn
     const movieContent = document.getElementById('movieContent');
     if (movieContent) {
         movieContent.style.position = 'relative';
@@ -210,8 +223,7 @@ function createBackgroundLayers() {
         movieContent.style.opacity = '1';
         movieContent.style.transform = 'translateX(0)';
     }
-    
-    // Ensure movie controls are above background layers
+
     const movieControls = document.querySelector('.movie-controls');
     if (movieControls) {
         movieControls.style.position = 'relative';
@@ -223,77 +235,54 @@ function createBackgroundLayers() {
 function updateMovieDisplay(direction = 'next') {
     if (isTransitioning) return;
     isTransitioning = true;
-    
+
     const movie = movies[currentMovieIndex];
     const heroSection = document.getElementById('heroSection');
     const movieContent = document.getElementById('movieContent');
     const bgLayer1 = heroSection.querySelector('.bg-layer-1');
     const bgLayer2 = heroSection.querySelector('.bg-layer-2');
-    
+
     if (!bgLayer1 || !bgLayer2) {
         createBackgroundLayers();
         return;
     }
-    
+
     // Start content fade out animation
     movieContent.style.opacity = '0';
     movieContent.style.transform = direction === 'next' ? 'translateX(-30px)' : 'translateX(30px)';
-    
-    // 🎥 VIDEO-FIRST APPROACH: Clear và load ngay, giữ video-playing state
-    
-    if (movie.trailerUrl && movie.trailerUrl.trim()) {
-        console.log('🎥 [VIDEO-FIRST] Loading video for:', movie.title);
-        
-        // Clear video cũ NHƯNG GIỮ video-playing class để không flash background
-        clearExistingVideosKeepState();
-        
-        // Load video mới ngay lập tức
-        loadVideo(movie.trailerUrl, () => {
-            // ✅ Video loaded successfully
-            console.log('🎥 [VIDEO-FIRST] ✅ Video loaded successfully');
-            // Update background trong background (không visible vì có video)
-            updateBackgroundLayers(movie, bgLayer1, bgLayer2, false);
-            
-        }, () => {
-            // ❌ Video failed to load
-            console.log('🎥 [VIDEO-FIRST] ❌ Video failed - falling back to background');
-            // Remove video-playing class và hiển thị background
-            const heroSection = document.getElementById('heroSection');
-            heroSection.classList.remove('video-playing');
-            updateBackgroundLayers(movie, bgLayer1, bgLayer2, true);
-        });
-    } else {
-        // Không có video URL - clear video và hiển thị background
-        console.log('🎥 [VIDEO-FIRST] No video URL - showing background only');
-        clearExistingVideos();
-        updateBackgroundLayers(movie, bgLayer1, bgLayer2, true);
+
+    // 🔧 FIX: Clear video HOÀN TOÀN và clear timer trước khi load video mới
+    if (videoTimer) {
+        clearTimeout(videoTimer);
+        videoTimer = null;
     }
-    
-    // Update content after fade out
+    clearExistingVideos();
+
+    // Update background layers NGAY LẬP TỨC
+    updateBackgroundLayers(movie, bgLayer1, bgLayer2, true);
+
+    // Update movie content after a short delay
     setTimeout(() => {
-        // Update text content
-        document.getElementById('movieTitle').textContent = movie.title;
-        document.getElementById('movieTitleVn').textContent = movie.titleVn;
-        document.getElementById('moviePlot').textContent = movie.plot;
-        document.getElementById('movieGenre').textContent = movie.genre;
-        document.getElementById('duration').textContent = movie.duration;
-        
-        // Fade in with slide animation
-        movieContent.style.transform = direction === 'next' ? 'translateX(30px)' : 'translateX(-30px)';
-        
-        // Trigger reflow to ensure transform is applied
-        movieContent.offsetHeight;
-        
-        // Fade in
+        updateMovieContent(movie);
+
+        // Fade in new content
         movieContent.style.opacity = '1';
         movieContent.style.transform = 'translateX(0)';
-        
-        // Reset transition flag after all animations complete
+
+        // 🔧 FIX: Load video với timeout ngắn hơn
+        if (movie.trailerUrl && movie.trailerUrl.trim() !== '') {
+            console.log('🎬 [UPDATE] Loading video for:', movie.title);
+            loadVideo(movie.trailerUrl, 1000); // Giảm timeout xuống 1 giây
+        } else {
+            console.log('🎬 [UPDATE] No video URL, showing background only for:', movie.title);
+        }
+
+        // Reset transition flag
         setTimeout(() => {
             isTransitioning = false;
-        }, 800);
-        
-    }, 250);
+        }, 500);
+
+    }, 300);
 }
 
 // Clear existing videos (full clear - for fallback to background)
@@ -301,17 +290,17 @@ function clearExistingVideos() {
     const heroBackground = document.getElementById('heroBackground');
     const existingVideos = heroBackground.querySelectorAll('.hero-video');
     existingVideos.forEach(video => video.remove());
-    
+
     const heroSection = document.getElementById('heroSection');
     heroSection.classList.remove('video-playing');
-    
+
     console.log('🗑️ [VIDEO CLEAR] Removed', existingVideos.length, 'videos, video-playing class removed');
     console.log('🗑️ [VIDEO CLEAR] Hero section classes:', heroSection.className);
-    
+
     // Đảm bảo background layers hiển thị lại
     const bgLayer1 = heroSection.querySelector('.bg-layer-1');
     const bgLayer2 = heroSection.querySelector('.bg-layer-2');
-    
+
     if (bgLayer1 && bgLayer2) {
         // Nếu có ít nhất 1 layer đang hiển thị thì OK
         if (bgLayer1.style.opacity === '0' && bgLayer2.style.opacity === '0') {
@@ -325,7 +314,7 @@ function clearExistingVideos() {
             }
         }
     }
-    
+
     console.log('🗑️ [VIDEO CLEAR] Background layers restored, should be visible now');
 }
 
@@ -334,11 +323,11 @@ function clearExistingVideosKeepState() {
     const heroBackground = document.getElementById('heroBackground');
     const existingVideos = heroBackground.querySelectorAll('.hero-video');
     existingVideos.forEach(video => video.remove());
-    
+
     // GIỮ NGUYÊN video-playing class để background không hiện lên
     const heroSection = document.getElementById('heroSection');
     // KHÔNG remove video-playing class
-    
+
     console.log('🗑️ [VIDEO CLEAR KEEP STATE] Removed', existingVideos.length, 'videos, kept video-playing class');
     console.log('🗑️ [VIDEO CLEAR KEEP STATE] Hero section classes:', heroSection.className);
 }
@@ -347,7 +336,7 @@ function clearExistingVideosKeepState() {
 function clearOldVideosOnly() {
     const heroBackground = document.getElementById('heroBackground');
     const existingVideos = heroBackground.querySelectorAll('.hero-video');
-    
+
     // Chỉ xóa video cũ (không phải video mới nhất)
     if (existingVideos.length > 1) {
         // Remove all except the last one (newest video)
@@ -356,7 +345,7 @@ function clearOldVideosOnly() {
             console.log('🗑️ [OLD VIDEO CLEAR] Removed old video', i + 1);
         }
     }
-    
+
     // GIỮ NGUYÊN video-playing class vì vẫn có video
     console.log('🗑️ [OLD VIDEO CLEAR] Kept newest video, video-playing state maintained');
 }
@@ -382,23 +371,40 @@ function isDirectVideoUrl(url) {
 }
 
 // Load video from URL (YouTube, Cloudinary embed, or direct video)
-function loadVideo(videoUrl, onSuccess, onError) {
-    console.log('🎥 [LOAD] Attempting to load video:', videoUrl);
-    
+function loadVideo(videoUrl, timeout = 3000) {
+    console.log('🎥 [LOAD] Attempting to load video:', videoUrl, 'with timeout:', timeout + 'ms');
+
+    const onSuccess = () => {
+        console.log('🎥 ✅ Video loaded successfully');
+    };
+
+    const onError = () => {
+        console.log('🎥 ❌ Video failed - background already visible');
+    };
+
     if (isYouTubeUrl(videoUrl)) {
-        loadYouTubeVideo(videoUrl, onSuccess, onError);
+        loadYouTubeVideo(videoUrl, onSuccess, onError, timeout);
     } else if (isCloudinaryEmbedUrl(videoUrl)) {
-        loadCloudinaryEmbedVideo(videoUrl, onSuccess, onError);
+        loadCloudinaryEmbedVideo(videoUrl, onSuccess, onError, timeout);
     } else if (isCloudinaryDirectUrl(videoUrl) || isDirectVideoUrl(videoUrl)) {
-        loadDirectVideo(videoUrl, onSuccess, onError);
+        loadDirectVideo(videoUrl, onSuccess, onError, timeout);
     } else {
         console.warn('❌ [LOAD] Unsupported video URL format:', videoUrl);
         onError();
     }
 }
 
+// Update movie content helper function
+function updateMovieContent(movie) {
+    document.getElementById('movieTitle').textContent = movie.title;
+    document.getElementById('movieTitleVn').textContent = movie.titleVn;
+    document.getElementById('moviePlot').textContent = movie.plot;
+    document.getElementById('movieGenre').textContent = movie.genre;
+    document.getElementById('duration').textContent = movie.duration;
+}
+
 // Load YouTube video
-function loadYouTubeVideo(url, onSuccess, onError) {
+function loadYouTubeVideo(url, onSuccess, onError, timeout = 3000) {
     try {
         const videoId = extractYouTubeVideoId(url);
         if (!videoId) {
@@ -406,38 +412,41 @@ function loadYouTubeVideo(url, onSuccess, onError) {
             onError();
             return;
         }
-        
+
         const heroBackground = document.getElementById('heroBackground');
         const iframe = document.createElement('iframe');
-        
+
         iframe.className = 'hero-video';
         iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0`;
         iframe.setAttribute('frameborder', '0');
         iframe.setAttribute('allow', 'autoplay; encrypted-media');
         iframe.style.pointerEvents = 'none';
-        
+
         // Add video overlay for text readability
         const overlay = document.createElement('div');
         overlay.className = 'hero-video-overlay';
-        
+
         iframe.onload = () => {
             console.log('YouTube video loaded successfully');
             iframe.classList.add('loaded');
-            
+
             const heroSection = document.getElementById('heroSection');
             heroSection.classList.add('video-playing');
-            
+
+            // Dừng video sau thời gian cấu hình
+            stopVideoAfterDuration(iframe);
+
             onSuccess();
         };
-        
+
         iframe.onerror = () => {
             console.error('Failed to load YouTube video');
             onError();
         };
-        
+
         heroBackground.appendChild(iframe);
         heroBackground.appendChild(overlay);
-        
+
     } catch (error) {
         console.error('Error loading YouTube video:', error);
         onError();
@@ -445,10 +454,10 @@ function loadYouTubeVideo(url, onSuccess, onError) {
 }
 
 // Load Cloudinary embed player
-function loadCloudinaryEmbedVideo(url, onSuccess, onError) {
+function loadCloudinaryEmbedVideo(url, onSuccess, onError, timeout = 3000) {
     try {
         console.log('Loading Cloudinary embed video:', url);
-        
+
         // Tạm thời tắt convert sang direct URL vì không hoạt động
         // const directVideoUrl = tryExtractCloudinaryDirectUrl(url);
         // if (directVideoUrl) {
@@ -456,47 +465,47 @@ function loadCloudinaryEmbedVideo(url, onSuccess, onError) {
         //     loadDirectVideo(directVideoUrl, onSuccess, onError);
         //     return;
         // }
-        
+
         const heroBackground = document.getElementById('heroBackground');
         const iframe = document.createElement('iframe');
-        
+
         iframe.className = 'hero-video';
-        
+
         // Thêm autoplay parameters vào Cloudinary URL
         const autoplayUrl = addCloudinaryAutoplayParams(url);
         iframe.src = autoplayUrl;
-        
+
         iframe.setAttribute('frameborder', '0');
         iframe.setAttribute('allowfullscreen', 'true');
         iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
-        
+
         // KHÔNG set style inline để tránh conflict với CSS
         // iframe.style.pointerEvents = 'none';
-        
+
         // Add video overlay for text readability
         const overlay = document.createElement('div');
         overlay.className = 'hero-video-overlay';
-        
+
         iframe.onload = () => {
             console.log('🎬 Cloudinary embed video loaded successfully');
             iframe.classList.add('loaded');
-            
+
             // Debug: Log iframe attributes before forcing fullscreen
             console.log('Before fullscreen - Width:', iframe.width, 'Height:', iframe.height);
             console.log('Before fullscreen - Style:', iframe.getAttribute('style'));
-            
+
             // FORCE REMOVE Cloudinary inline styles để fullscreen
             forceCloudinaryFullscreen(iframe);
-            
+
             // Debug: Log iframe attributes after forcing fullscreen
             setTimeout(() => {
                 console.log('After fullscreen - Style:', iframe.getAttribute('style'));
                 console.log('After fullscreen - Transform:', iframe.style.transform);
             }, 100);
-            
+
             const heroSection = document.getElementById('heroSection');
             heroSection.classList.add('video-playing');
-            
+
             // Try to trigger autoplay programmatically after a short delay
             setTimeout(() => {
                 try {
@@ -506,45 +515,43 @@ function loadCloudinaryEmbedVideo(url, onSuccess, onError) {
                     console.log('Could not trigger autoplay programmatically');
                 }
             }, 1000);
-            
+
+            // Dừng video sau thời gian cấu hình
+            stopVideoAfterDuration(iframe);
+
             onSuccess();
         };
-        
+
         iframe.onerror = () => {
             console.error('Failed to load Cloudinary embed video');
             onError();
         };
-        
+
         // Set timeout as fallback for onload event
         setTimeout(() => {
             if (!iframe.classList.contains('loaded')) {
-                console.log('Cloudinary embed video assumed loaded (timeout)');
-                iframe.classList.add('loaded');
-                
-                // FORCE fullscreen even with timeout fallback
-                forceCloudinaryFullscreen(iframe);
-                
-                const heroSection = document.getElementById('heroSection');
-                heroSection.classList.add('video-playing');
-                
-                onSuccess();
+                console.log('Cloudinary embed video timeout - falling back to background');
+                onError();
             }
-        }, 3000);
-        
+        }, timeout);
+
         heroBackground.appendChild(iframe);
         heroBackground.appendChild(overlay);
-        
+
         // 🔧 FORCE fullscreen NGAY sau khi append iframe
         // Không đợi onload vì có thể bị cross-origin block
         setTimeout(() => {
             console.log('🚀 Forcing Cloudinary fullscreen immediately...');
             forceCloudinaryFullscreen(iframe);
             iframe.classList.add('loaded');
-            
+
             const heroSection = document.getElementById('heroSection');
             heroSection.classList.add('video-playing');
+
+            // Dừng video sau thời gian cấu hình (cho immediate force)
+            stopVideoAfterDuration(iframe);
         }, 50); // 50ms để iframe render
-        
+
     } catch (error) {
         console.error('Error loading Cloudinary embed video:', error);
         onError();
@@ -558,9 +565,9 @@ function tryExtractCloudinaryDirectUrl(embedUrl) {
         const urlObj = new URL(embedUrl);
         const cloudName = urlObj.searchParams.get('cloud_name');
         const publicId = urlObj.searchParams.get('public_id');
-        
+
         console.log('Extracted params - cloud_name:', cloudName, 'public_id:', publicId);
-        
+
         if (cloudName && publicId) {
             // Convert to direct video URL
             const directUrl = `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}.mp4`;
@@ -579,13 +586,13 @@ function tryExtractCloudinaryDirectUrl(embedUrl) {
 function addCloudinaryAutoplayParams(url) {
     try {
         const urlObj = new URL(url);
-        
+
         // Add autoplay parameters
         urlObj.searchParams.set('autoplay', 'true');
         urlObj.searchParams.set('muted', 'true');
         urlObj.searchParams.set('loop', 'true');
         urlObj.searchParams.set('controls', 'false');
-        
+
         return urlObj.toString();
     } catch (e) {
         console.warn('Could not parse Cloudinary URL, using original:', url);
@@ -594,11 +601,11 @@ function addCloudinaryAutoplayParams(url) {
 }
 
 // Load direct video (Cloudinary, etc.)
-function loadDirectVideo(url, onSuccess, onError) {
+function loadDirectVideo(url, onSuccess, onError, timeout = 3000) {
     try {
         const heroBackground = document.getElementById('heroBackground');
         const video = document.createElement('video');
-        
+
         video.className = 'hero-video';
         video.src = url;
         video.autoplay = true;
@@ -607,32 +614,43 @@ function loadDirectVideo(url, onSuccess, onError) {
         video.playsInline = true;
         video.controls = false;
         video.style.pointerEvents = 'none';
-        
+
         // Add video overlay for text readability
         const overlay = document.createElement('div');
         overlay.className = 'hero-video-overlay';
-        
+
         video.addEventListener('loadeddata', () => {
             console.log('Direct video loaded successfully');
             video.classList.add('loaded');
-            
+
             const heroSection = document.getElementById('heroSection');
             heroSection.classList.add('video-playing');
-            
+
+            // Dừng video sau thời gian cấu hình
+            stopVideoAfterDuration(video);
+
             onSuccess();
         });
-        
+
         video.addEventListener('error', (e) => {
             console.error('Failed to load direct video:', e);
             onError();
         });
-        
+
+        // Set timeout for video loading
+        setTimeout(() => {
+            if (!video.classList.contains('loaded')) {
+                console.log('Direct video timeout - falling back to background');
+                onError();
+            }
+        }, timeout);
+
         // Start loading
         video.load();
-        
+
         heroBackground.appendChild(video);
         heroBackground.appendChild(overlay);
-        
+
     } catch (error) {
         console.error('Error loading direct video:', error);
         onError();
@@ -642,24 +660,24 @@ function loadDirectVideo(url, onSuccess, onError) {
 // Force Cloudinary iframe to fullscreen using scale approach
 function forceCloudinaryFullscreen(iframe) {
     console.log('Forcing Cloudinary fullscreen with scale approach...');
-    
+
     // Remove all existing attributes
     iframe.removeAttribute('width');
     iframe.removeAttribute('height');
     iframe.removeAttribute('style');
-    
+
     // Calculate scale needed to fill viewport
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const videoWidth = 640; // Cloudinary default
     const videoHeight = 360; // Cloudinary default
-    
+
     const scaleX = viewportWidth / videoWidth;
     const scaleY = viewportHeight / videoHeight;
     const scale = Math.max(scaleX, scaleY); // Use larger scale to cover entirely
-    
+
     console.log(`Viewport: ${viewportWidth}x${viewportHeight}, Scale: ${scale}`);
-    
+
     // Apply aggressive fullscreen styles
     Object.assign(iframe.style, {
         position: 'absolute',
@@ -682,7 +700,7 @@ function forceCloudinaryFullscreen(iframe) {
         // Prevent any overflow
         overflow: 'hidden'
     });
-    
+
     // Add !important rules via CSS text
     const styleSheet = document.createElement('style');
     styleSheet.textContent = `
@@ -703,7 +721,7 @@ function forceCloudinaryFullscreen(iframe) {
         }
     `;
     document.head.appendChild(styleSheet);
-    
+
     // Continuously force remove any Cloudinary overrides
     const forceInterval = setInterval(() => {
         // Check if iframe still exists
@@ -711,29 +729,223 @@ function forceCloudinaryFullscreen(iframe) {
             clearInterval(forceInterval);
             return;
         }
-        
+
         // Re-apply transform if it gets reset
         const currentTransform = iframe.style.transform;
         if (!currentTransform.includes('scale')) {
             iframe.style.transform = `translate(-50%, -50%) scale(${scale})`;
             console.log('Re-applied scale transform');
         }
-        
+
         // Remove any aspect-ratio that gets re-added
         if (iframe.style.aspectRatio && iframe.style.aspectRatio !== 'none') {
             iframe.style.aspectRatio = 'none';
             console.log('Removed aspect-ratio override');
         }
-        
+
     }, 200); // Check every 200ms for 10 seconds
-    
+
     // Stop forcing after 10 seconds
     setTimeout(() => {
         clearInterval(forceInterval);
         console.log('Stopped Cloudinary fullscreen forcing');
     }, 10000);
-    
+
     console.log('Cloudinary scale fullscreen applied');
+}
+
+// Enhanced function để preload video tiếp theo
+function preloadNextVideo() {
+    const nextIndex = (currentMovieIndex + 1) % movies.length;
+    const nextMovie = movies[nextIndex];
+
+    if (nextMovie.trailerUrl && nextMovie.trailerUrl.trim() !== '') {
+        console.log('🔄 Preloading next video:', nextMovie.title);
+
+        // Tạo video element ẩn để preload
+        if (isDirectVideoUrl(nextMovie.trailerUrl) || isCloudinaryDirectUrl(nextMovie.trailerUrl)) {
+            const preloadVideo = document.createElement('video');
+            preloadVideo.src = nextMovie.trailerUrl;
+            preloadVideo.muted = true;
+            preloadVideo.preload = 'auto';
+            preloadVideo.style.display = 'none';
+            preloadVideo.setAttribute('data-preload', 'true');
+            document.body.appendChild(preloadVideo);
+
+            // Xóa preload video sau khi load xong
+            preloadVideo.addEventListener('loadeddata', () => {
+                console.log('✅ Next video preloaded:', nextMovie.title);
+            });
+        }
+    }
+}
+
+// Enhanced stopVideoAfterDuration với preloading
+function stopVideoAfterDuration(videoElement, duration = VIDEO_PLAY_DURATION) {
+    // Clear timer cũ nếu có
+    if (videoTimer) {
+        clearTimeout(videoTimer);
+    }
+    if (preloadTimer) {
+        clearTimeout(preloadTimer);
+    }
+
+    console.log(`⏰ Setting video timer for ${duration / 1000} seconds`);
+
+    // Preload video tiếp theo trước khi video hiện tại kết thúc
+    preloadTimer = setTimeout(() => {
+        if (isAutoPlaying) {
+            preloadNextVideo();
+        }
+    }, duration - VIDEO_PRELOAD_TIME);
+
+    videoTimer = setTimeout(() => {
+        console.log(`⏰ Video ended after ${duration / 1000} seconds`);
+
+        if (isAutoPlaying) {
+            // Tự động chuyển sang video tiếp theo
+            console.log('🎬 Auto transitioning to next video');
+            nextMovieSeamless();
+        } else {
+            // Nếu không auto play, dừng video và hiển thị background
+            stopCurrentVideo(videoElement);
+        }
+
+    }, duration);
+}
+
+// Function chuyển phim mượt mà không có hiệu ứng loading
+function nextMovieSeamless() {
+    if (isTransitioning || !movies || movies.length === 0) return;
+
+    isTransitioning = true;
+    currentMovieIndex = (currentMovieIndex + 1) % movies.length;
+
+    const movie = movies[currentMovieIndex];
+    const movieContent = document.getElementById('movieContent');
+
+    // Update nội dung phim ngay lập tức
+    updateMovieContent(movie);
+    updatePaginationDots();
+
+    // Clear video cũ nhưng giữ video-playing state
+    clearExistingVideosKeepState();
+
+    // Load video mới ngay lập tức (đã được preload)
+    if (movie.trailerUrl && movie.trailerUrl.trim() !== '') {
+        console.log('🎬 Loading preloaded video for:', movie.title);
+        loadVideoSeamless(movie.trailerUrl);
+    } else {
+        console.log('🎬 No video URL, showing background for:', movie.title);
+        // Update background nếu không có video
+        const heroSection = document.getElementById('heroSection');
+        const bgLayer1 = heroSection.querySelector('.bg-layer-1');
+        const bgLayer2 = heroSection.querySelector('.bg-layer-2');
+        updateBackgroundLayers(movie, bgLayer1, bgLayer2, true);
+        heroSection.classList.remove('video-playing');
+    }
+
+    // Reset transition flag
+    setTimeout(() => {
+        isTransitioning = false;
+    }, 300);
+}
+
+// Function load video mượt mà (sử dụng preloaded video)
+function loadVideoSeamless(videoUrl) {
+    console.log('🎥 Loading seamless video:', videoUrl);
+
+    // Kiểm tra xem có preloaded video không
+    const preloadedVideo = document.querySelector(`video[src="${videoUrl}"][data-preload="true"]`);
+
+    if (preloadedVideo) {
+        console.log('✅ Using preloaded video');
+
+        // Di chuyển preloaded video vào hero background
+        const heroBackground = document.getElementById('heroBackground');
+        preloadedVideo.className = 'hero-video';
+        preloadedVideo.style.display = 'block';
+        preloadedVideo.autoplay = true;
+        preloadedVideo.loop = true;
+        preloadedVideo.playsInline = true;
+        preloadedVideo.controls = false;
+        preloadedVideo.style.pointerEvents = 'none';
+        preloadedVideo.removeAttribute('data-preload');
+
+        heroBackground.appendChild(preloadedVideo);
+
+        // Add overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'hero-video-overlay';
+        heroBackground.appendChild(overlay);
+
+        // Set video-playing state
+        const heroSection = document.getElementById('heroSection');
+        heroSection.classList.add('video-playing');
+
+        // Start playing
+        preloadedVideo.play().then(() => {
+            console.log('✅ Seamless video playing');
+            stopVideoAfterDuration(preloadedVideo);
+        }).catch(e => {
+            console.error('❌ Failed to play seamless video:', e);
+            loadVideo(videoUrl, 1000); // Fallback to normal loading
+        });
+
+    } else {
+        // Fallback to normal loading nếu không có preloaded video
+        console.log('⚠️ No preloaded video found, using normal loading');
+        loadVideo(videoUrl, 1000);
+    }
+}
+
+// Function để dừng video hiện tại
+function stopCurrentVideo(videoElement) {
+    if (videoElement) {
+        videoElement.classList.add('stopping');
+
+        if (videoElement.tagName === 'VIDEO') {
+            videoElement.pause();
+            videoElement.currentTime = 0;
+        } else if (videoElement.tagName === 'IFRAME') {
+            try {
+                videoElement.contentWindow?.postMessage({ action: 'pause' }, '*');
+            } catch (e) {
+                console.log('Could not pause iframe video programmatically');
+            }
+        }
+    }
+
+    // Remove video-playing state để hiển thị background
+    const heroSection = document.getElementById('heroSection');
+    heroSection.classList.remove('video-playing');
+}
+
+// Function để bật/tắt auto play
+function toggleAutoPlay() {
+    isAutoPlaying = !isAutoPlaying;
+    console.log('🔄 Auto play:', isAutoPlaying ? 'ON' : 'OFF');
+
+    if (!isAutoPlaying) {
+        // Clear timers nếu tắt auto play
+        if (videoTimer) {
+            clearTimeout(videoTimer);
+            videoTimer = null;
+        }
+        if (preloadTimer) {
+            clearTimeout(preloadTimer);
+            preloadTimer = null;
+        }
+    }
+}
+
+// Cleanup function để xóa preloaded videos
+function cleanupPreloadedVideos() {
+    const preloadedVideos = document.querySelectorAll('video[data-preload="true"]');
+    preloadedVideos.forEach(video => {
+        video.remove();
+        console.log('🗑️ Cleaned up preloaded video');
+    });
 }
 
 // Extract YouTube video ID from various URL formats
@@ -747,33 +959,33 @@ function extractYouTubeVideoId(url) {
 function updateBackgroundLayers(movie, bgLayer1, bgLayer2, showBackground) {
     console.log('🎬 [BACKGROUND UPDATE] Starting for movie:', movie.title, 'Background URL:', movie.background);
     console.log('🎬 [LAYER CHECK] Layer1 exists:', !!bgLayer1, 'Layer2 exists:', !!bgLayer2);
-    
+
     // Luôn update background image, bất kể có video hay không
     const updateBackground = () => {
         // Determine which layer is currently visible
         const layer1Opacity = bgLayer1.style.opacity || '0';
         const layer2Opacity = bgLayer2.style.opacity || '0';
-        
+
         console.log('🔍 Layer opacities - Layer1:', layer1Opacity, 'Layer2:', layer2Opacity);
-        
+
         const activeLayer = layer1Opacity === '1' ? bgLayer1 : bgLayer2;
         const inactiveLayer = layer1Opacity === '1' ? bgLayer2 : bgLayer1;
-        
-        console.log('🔄 Switching - Active layer:', activeLayer === bgLayer1 ? 'Layer1' : 'Layer2', 
-                    'Inactive layer:', inactiveLayer === bgLayer1 ? 'Layer1' : 'Layer2');
-        
+
+        console.log('🔄 Switching - Active layer:', activeLayer === bgLayer1 ? 'Layer1' : 'Layer2',
+            'Inactive layer:', inactiveLayer === bgLayer1 ? 'Layer1' : 'Layer2');
+
         // Set new background on inactive layer
         const gradient = 'linear-gradient(107deg, rgba(0, 0, 0, 0.00) 36.24%, rgba(14, 14, 14, 0.55) 57.42%, rgba(12, 12, 12, 0.99) 76.93%)';
-        
+
         // Sử dụng background image của phim hiện tại
         const backgroundImage = movie.background || 'https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg';
         const backgroundCSS = `${gradient}, url('${backgroundImage}') lightgray 50% / cover no-repeat`;
-        
+
         inactiveLayer.style.background = backgroundCSS;
-        
+
         console.log('🎨 Background updated to:', backgroundImage);
         console.log('🎨 CSS applied:', backgroundCSS.substring(0, 100) + '...');
-        
+
         // FORCE IMMEDIATE background change (no crossfade for now)
         console.log('🔀 FORCE immediate background change...');
         bgLayer1.style.opacity = '0';
@@ -785,17 +997,17 @@ function updateBackgroundLayers(movie, bgLayer1, bgLayer2, showBackground) {
     // Preload new background image
     if (movie.background) {
         const img = new Image();
-        img.onload = function() {
+        img.onload = function () {
             console.log('✅ Background image preloaded successfully:', movie.background);
             updateBackground();
         };
-        
-        img.onerror = function() {
+
+        img.onerror = function () {
             console.warn('❌ Failed to load background image, using fallback:', movie.background);
             // Vẫn update background với fallback image
             updateBackground();
         };
-        
+
         console.log('🔄 Preloading background image:', movie.background);
         img.src = movie.background;
     } else {
@@ -809,7 +1021,7 @@ function updatePaginationDots() {
     const dots = document.querySelectorAll('.dot');
     dots.forEach((dot, index) => {
         dot.classList.toggle('active', index === currentMovieIndex);
-        
+
         // Add smooth transition to dots
         if (!dot.style.transition) {
             dot.style.transition = 'all 0.3s ease';
@@ -817,33 +1029,211 @@ function updatePaginationDots() {
     });
 }
 
+// Function khởi tạo video liên tục
+function initializeContinuousVideo() {
+    console.log('🎬 Initializing continuous video playback');
+
+    const heroBackground = document.getElementById('heroBackground');
+
+    // Tạo video element cho video liên tục
+    continuousVideoElement = document.createElement('video');
+    continuousVideoElement.className = 'hero-video continuous-video';
+    continuousVideoElement.src = CONTINUOUS_VIDEO_URL;
+    continuousVideoElement.autoplay = true;
+    continuousVideoElement.muted = true;
+    continuousVideoElement.loop = true;
+    continuousVideoElement.playsInline = true;
+    continuousVideoElement.controls = false;
+    continuousVideoElement.style.pointerEvents = 'none';
+
+    // Add video overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'hero-video-overlay';
+
+    // Event listeners
+    continuousVideoElement.addEventListener('loadeddata', () => {
+        console.log('✅ Continuous video loaded successfully');
+
+        const heroSection = document.getElementById('heroSection');
+        heroSection.classList.add('video-playing');
+
+        // Bắt đầu sync nội dung với video
+        startMovieContentSync();
+    });
+
+    continuousVideoElement.addEventListener('timeupdate', () => {
+        currentVideoTime = continuousVideoElement.currentTime * 1000; // Convert to ms
+        syncMovieContent();
+    });
+
+    continuousVideoElement.addEventListener('error', (e) => {
+        console.error('❌ Failed to load continuous video:', e);
+        // Fallback to individual videos
+        initializeIndividualVideos();
+    });
+
+    heroBackground.appendChild(continuousVideoElement);
+    heroBackground.appendChild(overlay);
+
+    // Start playing
+    continuousVideoElement.play().catch(e => {
+        console.error('❌ Failed to play continuous video:', e);
+    });
+}
+
+// Function đồng bộ nội dung phim với timeline video
+function syncMovieContent() {
+    // Tính toán phim hiện tại dựa trên thời gian video
+    const segmentIndex = Math.floor(currentVideoTime / MOVIE_SEGMENT_DURATION);
+    const newMovieIndex = segmentIndex % movies.length;
+
+    // Chỉ update khi chuyển sang phim mới
+    if (newMovieIndex !== currentMovieIndex) {
+        currentMovieIndex = newMovieIndex;
+        updateMovieContentOnly();
+        updatePaginationDots();
+
+        console.log(`🎬 Synced to movie ${currentMovieIndex + 1}: ${movies[currentMovieIndex].title}`);
+    }
+}
+
+// Function bắt đầu đồng bộ nội dung
+function startMovieContentSync() {
+    // Clear existing timer
+    if (movieSyncTimer) {
+        clearInterval(movieSyncTimer);
+    }
+
+    // Sync every 100ms for smooth transitions
+    movieSyncTimer = setInterval(() => {
+        if (continuousVideoElement && !continuousVideoElement.paused) {
+            syncMovieContent();
+        }
+    }, 100);
+
+    console.log('🔄 Movie content sync started');
+}
+
+// Function chỉ update nội dung (không load video mới)
+function updateMovieContentOnly() {
+    const movie = movies[currentMovieIndex];
+
+    // Smooth transition cho nội dung
+    const movieContent = document.getElementById('movieContent');
+    movieContent.style.opacity = '0.7';
+
+    setTimeout(() => {
+        updateMovieContent(movie);
+        updateBackgroundForContinuousVideo(movie);
+
+        movieContent.style.opacity = '1';
+    }, 200);
+}
+
+// Function update background cho video liên tục
+function updateBackgroundForContinuousVideo(movie) {
+    const heroSection = document.getElementById('heroSection');
+    const bgLayer1 = heroSection.querySelector('.bg-layer-1');
+    const bgLayer2 = heroSection.querySelector('.bg-layer-2');
+
+    if (bgLayer1 && bgLayer2) {
+        // Update background nhẹ nhàng (cho trường hợp video bị lỗi)
+        updateBackgroundLayers(movie, bgLayer1, bgLayer2, false);
+    }
+}
+
+// Function seek đến thời điểm cụ thể trong video
+function seekToMovieSegment(movieIndex) {
+    if (continuousVideoElement && !isTransitioning) {
+        const targetTime = (movieIndex * MOVIE_SEGMENT_DURATION) / 1000; // Convert to seconds
+
+        console.log(`⏭️ Seeking to movie ${movieIndex + 1} at ${targetTime}s`);
+
+        continuousVideoElement.currentTime = targetTime;
+        currentMovieIndex = movieIndex;
+        updateMovieContentOnly();
+        updatePaginationDots();
+    }
+}
+
+// Fallback function nếu continuous video không hoạt động
+function initializeIndividualVideos() {
+    console.log('🔄 Falling back to individual video mode');
+
+    // Remove continuous video
+    if (continuousVideoElement) {
+        continuousVideoElement.remove();
+        continuousVideoElement = null;
+    }
+
+    // Clear sync timer
+    if (movieSyncTimer) {
+        clearInterval(movieSyncTimer);
+        movieSyncTimer = null;
+    }
+
+    // Initialize normal carousel
+    initializeCarousel();
+    updateMovieDisplay();
+}
+
+// Function cleanup khi rời khỏi trang
+function cleanupContinuousVideo() {
+    if (movieSyncTimer) {
+        clearInterval(movieSyncTimer);
+        movieSyncTimer = null;
+    }
+
+    if (continuousVideoElement) {
+        continuousVideoElement.pause();
+        continuousVideoElement = null;
+    }
+}
+
+// Override navigation functions cho continuous video
 function nextMovie() {
     if (isTransitioning || !movies || movies.length === 0) return;
-    currentMovieIndex = (currentMovieIndex + 1) % movies.length;
-    updateMovieDisplay('next');
-    updatePaginationDots();
+
+    if (continuousVideoElement) {
+        const nextIndex = (currentMovieIndex + 1) % movies.length;
+        seekToMovieSegment(nextIndex);
+    } else {
+        currentMovieIndex = (currentMovieIndex + 1) % movies.length;
+        updateMovieDisplay('next');
+        updatePaginationDots();
+    }
 }
 
 function previousMovie() {
     if (isTransitioning || !movies || movies.length === 0) return;
-    currentMovieIndex = (currentMovieIndex - 1 + movies.length) % movies.length;
-    updateMovieDisplay('prev');
-    updatePaginationDots();
+
+    if (continuousVideoElement) {
+        const prevIndex = (currentMovieIndex - 1 + movies.length) % movies.length;
+        seekToMovieSegment(prevIndex);
+    } else {
+        currentMovieIndex = (currentMovieIndex - 1 + movies.length) % movies.length;
+        updateMovieDisplay('prev');
+        updatePaginationDots();
+    }
 }
 
-// Enhanced dot click with smooth transition
-document.addEventListener('click', function(e) {
+// Override dot click cho continuous video
+document.addEventListener('click', function (e) {
     if (e.target.classList.contains('dot')) {
         if (isTransitioning) return;
-        
+
         const dots = Array.from(document.querySelectorAll('.dot'));
         const newIndex = dots.indexOf(e.target);
-        
-        if (newIndex !== currentMovieIndex) {
-            const direction = newIndex > currentMovieIndex ? 'next' : 'prev';
-            currentMovieIndex = newIndex;
-            updateMovieDisplay(direction);
-            updatePaginationDots();
+
+        if (newIndex !== currentMovieIndex && newIndex >= 0) {
+            if (continuousVideoElement) {
+                seekToMovieSegment(newIndex);
+            } else {
+                const direction = newIndex > currentMovieIndex ? 'next' : 'prev';
+                currentMovieIndex = newIndex;
+                updateMovieDisplay(direction);
+                updatePaginationDots();
+            }
         }
     }
 });
@@ -851,10 +1241,10 @@ document.addEventListener('click', function(e) {
 // Action button functions
 function bookTickets() {
     console.log('🎫 [BOOK TICKETS] Function called');
-    
+
     // Kiểm tra đăng nhập trước khi đặt vé
     const isAuthenticated = document.querySelector('.user-profile') !== null;
-    
+
     if (!isAuthenticated) {
         // Chưa đăng nhập - chuyển đến trang login
         if (confirm('Bạn cần đăng nhập để đặt vé. Chuyển đến trang đăng nhập?')) {
@@ -862,7 +1252,7 @@ function bookTickets() {
         }
         return;
     }
-    
+
     // Đã đăng nhập - chuyển đến trang đặt vé
     console.log('🎫 User authenticated, redirecting to booking');
     window.location.href = '/BookingManagement/Booking/SelectMovie';
@@ -870,22 +1260,22 @@ function bookTickets() {
 
 function showMovieInfo() {
     console.log('ℹ️ [MOVIE INFO] Function called');
-    
+
     if (!movies || movies.length === 0) {
         console.warn('ℹ️ No movies data available, redirecting to movies page');
         window.location.href = window.movieUrls?.moviesIndex || '/Movies';
         return;
     }
-    
+
     if (!window.movieUrls) {
         console.warn('ℹ️ No movie URLs configured, using fallback');
         window.location.href = '/Movies';
         return;
     }
-    
+
     const currentMovie = movies[currentMovieIndex];
     console.log('ℹ️ Current movie:', currentMovie?.title, 'ID:', currentMovie?.id);
-    
+
     if (currentMovie && currentMovie.id) {
         // Chuyển đến trang chi tiết phim
         const detailsUrl = window.movieUrls.movieDetails + '/' + currentMovie.id;
@@ -902,10 +1292,10 @@ function showMovieInfo() {
 function toggleSearch() {
     const searchForm = document.getElementById('searchForm');
     const searchToggle = document.querySelector('.search-toggle');
-    
+
     searchForm.classList.toggle('expanded');
     searchToggle.classList.toggle('collapsed');
-    
+
     // Add smooth rotation to toggle icon
     if (!searchToggle.style.transition) {
         searchToggle.style.transition = 'transform 0.3s ease';
@@ -916,7 +1306,7 @@ function toggleSearch() {
 function slideMovies(direction) {
     const grid = document.getElementById('moviesGrid');
     const scrollAmount = 300;
-    
+
     if (direction === 'left') {
         grid.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
     } else {
@@ -925,11 +1315,11 @@ function slideMovies(direction) {
 }
 
 // Toggle switches with animation
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     if (e.target.closest('.toggle-switch')) {
         const toggle = e.target.closest('.toggle-switch');
         toggle.classList.toggle('active');
-        
+
         // Add smooth transition if not present
         const circle = toggle.querySelector('.toggle-circle');
         if (circle && !circle.style.transition) {
@@ -939,7 +1329,7 @@ document.addEventListener('click', function(e) {
 });
 
 // Enhanced movie card hover effects
-document.addEventListener('mouseenter', function(e) {
+document.addEventListener('mouseenter', function (e) {
     if (e.target.closest('.movie-card') && !e.target.closest('.movie-card').classList.contains('featured')) {
         const card = e.target.closest('.movie-card');
         card.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
@@ -947,7 +1337,7 @@ document.addEventListener('mouseenter', function(e) {
     }
 }, true);
 
-document.addEventListener('mouseleave', function(e) {
+document.addEventListener('mouseleave', function (e) {
     if (e.target.closest('.movie-card') && !e.target.closest('.movie-card').classList.contains('featured')) {
         const card = e.target.closest('.movie-card');
         card.style.transform = 'translateY(0) scale(1)';
@@ -966,7 +1356,7 @@ document.addEventListener('mouseleave', function(e) {
 // });
 
 // Add keyboard navigation
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowLeft') {
         previousMovie();
     } else if (e.key === 'ArrowRight') {
@@ -978,11 +1368,11 @@ document.addEventListener('keydown', function(e) {
 let touchStartX = 0;
 let touchEndX = 0;
 
-document.getElementById('heroSection').addEventListener('touchstart', function(e) {
+document.getElementById('heroSection').addEventListener('touchstart', function (e) {
     touchStartX = e.changedTouches[0].screenX;
 });
 
-document.getElementById('heroSection').addEventListener('touchend', function(e) {
+document.getElementById('heroSection').addEventListener('touchend', function (e) {
     touchEndX = e.changedTouches[0].screenX;
     handleSwipe();
 });
@@ -990,7 +1380,7 @@ document.getElementById('heroSection').addEventListener('touchend', function(e) 
 function handleSwipe() {
     const swipeThreshold = 50;
     const diff = touchStartX - touchEndX;
-    
+
     if (Math.abs(diff) > swipeThreshold) {
         if (diff > 0) {
             nextMovie(); // Swipe left - next movie
@@ -1010,84 +1400,84 @@ class HomepagePagination {
             recommended: 1,
             comingSoon: 1
         };
-        
+
         this.init();
     }
-    
+
     init() {
         this.bindRecommendedEvents();
         this.bindComingSoonEvents();
         this.updatePaginationInfo();
     }
-    
+
     bindRecommendedEvents() {
         // Sort change
         document.getElementById('recommendedSort')?.addEventListener('change', (e) => {
             this.currentPages.recommended = 1;
             this.loadRecommendedMovies();
         });
-        
+
         // Genre filter change
         document.getElementById('recommendedGenre')?.addEventListener('change', (e) => {
             this.currentPages.recommended = 1;
             this.loadRecommendedMovies();
         });
-        
+
         // Page size change
         document.getElementById('recommendedPageSize')?.addEventListener('change', (e) => {
             this.currentPages.recommended = 1;
             this.loadRecommendedMovies();
         });
-        
+
         // Load more button
         document.getElementById('loadMoreRecommended')?.addEventListener('click', (e) => {
             this.currentPages.recommended++;
             this.loadRecommendedMovies(true);
         });
     }
-    
+
     bindComingSoonEvents() {
         // Sort change
         document.getElementById('comingSoonSort')?.addEventListener('change', (e) => {
             this.currentPages.comingSoon = 1;
             this.loadComingSoonMovies();
         });
-        
+
         // Genre filter change
         document.getElementById('comingSoonGenre')?.addEventListener('change', (e) => {
             this.currentPages.comingSoon = 1;
             this.loadComingSoonMovies();
         });
-        
+
         // Page size change
         document.getElementById('comingSoonPageSize')?.addEventListener('change', (e) => {
             this.currentPages.comingSoon = 1;
             this.loadComingSoonMovies();
         });
-        
+
         // Load more button
         document.getElementById('loadMoreComingSoon')?.addEventListener('click', (e) => {
             this.currentPages.comingSoon++;
             this.loadComingSoonMovies(true);
         });
     }
-    
+
     async loadRecommendedMovies(append = false) {
         const sortSelect = document.getElementById('recommendedSort');
         const genreSelect = document.getElementById('recommendedGenre');
         const pageSizeSelect = document.getElementById('recommendedPageSize');
         const pagination = document.getElementById('recommendedPagination');
-        
+
         if (!sortSelect || !genreSelect || !pageSizeSelect) return;
-        
+
         const [sortBy, sortOrder] = sortSelect.value.split('-');
         const genre = genreSelect.value;
         const pageSize = parseInt(pageSizeSelect.value);
         const page = this.currentPages.recommended;
-        
+
         // Show loading state
         pagination.classList.add('loading');
-        
+
         try {
             const params = new URLSearchParams({
                 page: page,
@@ -1095,14 +1485,14 @@ class HomepagePagination {
                 sortBy: sortBy,
                 sortOrder: sortOrder
             });
-            
+
             if (genre && genre !== 'all') {
                 params.append('genre', genre);
             }
-            
+
             const response = await fetch(`/Home/GetRecommendedMovies?${params}`);
             const data = await response.json();
-            
+
             if (data.success) {
                 this.updateRecommendedGrid(data.data, append);
                 this.updatePaginationInfo('recommended', data.pagination);
@@ -1115,23 +1505,23 @@ class HomepagePagination {
             pagination.classList.remove('loading');
         }
     }
-    
+
     async loadComingSoonMovies(append = false) {
         const sortSelect = document.getElementById('comingSoonSort');
         const genreSelect = document.getElementById('comingSoonGenre');
         const pageSizeSelect = document.getElementById('comingSoonPageSize');
         const pagination = document.getElementById('comingSoonPagination');
-        
+
         if (!sortSelect || !genreSelect || !pageSizeSelect) return;
-        
+
         const [sortBy, sortOrder] = sortSelect.value.split('-');
         const genre = genreSelect.value;
         const pageSize = parseInt(pageSizeSelect.value);
         const page = this.currentPages.comingSoon;
-        
+
         // Show loading state
         pagination.classList.add('loading');
-        
+
         try {
             const params = new URLSearchParams({
                 page: page,
@@ -1139,14 +1529,14 @@ class HomepagePagination {
                 sortBy: sortBy,
                 sortOrder: sortOrder
             });
-            
+
             if (genre && genre !== 'all') {
                 params.append('genre', genre);
             }
-            
+
             const response = await fetch(`/Home/GetComingSoonMovies?${params}`);
             const data = await response.json();
-            
+
             if (data.success) {
                 this.updateComingSoonGrid(data.data, append);
                 this.updatePaginationInfo('comingSoon', data.pagination);
@@ -1159,37 +1549,37 @@ class HomepagePagination {
             pagination.classList.remove('loading');
         }
     }
-    
+
     updateRecommendedGrid(movies, append = false) {
         const grid = document.querySelector('.recommended-grid');
         if (!grid) return;
-        
+
         if (!append) {
             // Replace content
             grid.innerHTML = '';
         }
-        
+
         movies.forEach(movie => {
             const movieElement = this.createRecommendedMovieElement(movie);
             grid.appendChild(movieElement);
         });
     }
-    
+
     updateComingSoonGrid(movies, append = false) {
         const list = document.querySelector('.coming-soon-list');
         if (!list) return;
-        
+
         if (!append) {
             // Replace content
             list.innerHTML = '';
         }
-        
+
         movies.forEach(movie => {
             const movieElement = this.createComingSoonMovieElement(movie);
             list.appendChild(movieElement);
         });
     }
-    
+
     createRecommendedMovieElement(movie) {
         const div = document.createElement('div');
         div.className = 'recommended-item';
@@ -1224,7 +1614,7 @@ class HomepagePagination {
         `;
         return div;
     }
-    
+
     createComingSoonMovieElement(movie) {
         const div = document.createElement('div');
         div.className = 'coming-soon-item';
@@ -1256,12 +1646,12 @@ class HomepagePagination {
         `;
         return div;
     }
-    
+
     updatePaginationInfo(section = null, pagination = null) {
         if (section && pagination) {
             const infoElement = document.getElementById(`${section}Info`);
             const loadMoreBtn = document.getElementById(`loadMore${section.charAt(0).toUpperCase() + section.slice(1)}`);
-            
+
             if (infoElement) {
                 const infoContent = infoElement.querySelector('.info-content span');
                 if (infoContent) {
@@ -1271,7 +1661,7 @@ class HomepagePagination {
                     infoElement.textContent = `Trang ${pagination.currentPage} / ${pagination.totalPages} (${pagination.totalItems} phim)`;
                 }
             }
-            
+
             if (loadMoreBtn) {
                 loadMoreBtn.style.display = pagination.hasNextPage ? 'flex' : 'none';
             }
@@ -1279,11 +1669,14 @@ class HomepagePagination {
     }
 }
 
+// Cleanup khi rời khỏi trang
+window.addEventListener('beforeunload', cleanupContinuousVideo);
+
 // Initialize pagination when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Add small delay to ensure all elements are rendered
     setTimeout(() => {
-        if (document.getElementById('recommendedPagination') && 
+        if (document.getElementById('recommendedPagination') &&
             document.getElementById('comingSoonPagination')) {
             new HomepagePagination();
             console.log('✅ Homepage Pagination initialized successfully');

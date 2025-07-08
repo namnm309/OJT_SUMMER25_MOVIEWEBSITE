@@ -60,7 +60,7 @@ namespace UI.Controllers
                 if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
                     var userElement = result.Data;
-                    
+
                     // Kiểm tra xem có thuộc tính user không (dựa trên phản hồi API thực tế)
                     if (!userElement.TryGetProperty("user", out var userData))
                     {
@@ -71,7 +71,7 @@ namespace UI.Controllers
                         ModelState.AddModelError("", "Invalid response format: missing user data");
                         return Json(new { success = false, message = "Invalid response format: missing user data" });
                     }
-                    
+
                     // Kiểm tra các thuộc tính cần thiết trong user object
                     if (!userData.TryGetProperty("userId", out var userIdProp))
                     {
@@ -82,7 +82,7 @@ namespace UI.Controllers
                         ModelState.AddModelError("", "Invalid response format: missing userId");
                         return Json(new { success = false, message = "Invalid response format: missing userId" });
                     }
-                    
+
                     if (!userData.TryGetProperty("username", out var usernameProp))
                     {
                         if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
@@ -92,7 +92,7 @@ namespace UI.Controllers
                         ModelState.AddModelError("", "Invalid response format: missing username");
                         return Json(new { success = false, message = "Invalid response format: missing username" });
                     }
-                    
+
                     if (!userData.TryGetProperty("role", out var roleProp))
                     {
                         if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
@@ -102,12 +102,12 @@ namespace UI.Controllers
                         ModelState.AddModelError("", "Invalid response format: missing role");
                         return Json(new { success = false, message = "Invalid response format: missing role" });
                     }
-                    
+
                     // Kiểm tra fullName, sử dụng giá trị mặc định nếu không có
-                    string fullName = userData.TryGetProperty("fullName", out var fullNameProp) 
-                        ? fullNameProp.GetString() ?? model.Username 
+                    string fullName = userData.TryGetProperty("fullName", out var fullNameProp)
+                        ? fullNameProp.GetString() ?? model.Username
                         : model.Username;
-                    
+
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, userIdProp.ToString()),
@@ -120,28 +120,33 @@ namespace UI.Controllers
                     var authProperties = new AuthenticationProperties
                     {
                         IsPersistent = model.RememberMe,
-                        ExpiresUtc = model.RememberMe 
+                        ExpiresUtc = model.RememberMe
                             ? DateTimeOffset.UtcNow.AddDays(7)  // 7 days for "Remember me"
                             : DateTimeOffset.UtcNow.AddMinutes(30)  // 30 minutes for regular session
                     };
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-                    
+
                     // Lấy redirectUrl từ API response
                     userElement.TryGetProperty("redirectUrl", out var redirectUrlProp);
-                    var redirectUrl = redirectUrlProp.ValueKind == JsonValueKind.String 
-                        ? redirectUrlProp.GetString() 
+                    var redirectUrl = redirectUrlProp.ValueKind == JsonValueKind.String
+                        ? redirectUrlProp.GetString()
                         : null;
 
                     // Lấy role để có thể dùng làm fallback nếu cần
                     string role = roleProp.ToString().ToLower();
-                    
+
+                    // Trong phần xử lý login thành công (khoảng dòng 130-140)
                     // Luôn trả về JSON cho AJAX request từ trang Login
                     // Frontend sẽ quyết định chuyển hướng đi đâu
-                    return new JsonResult(new { 
-                        success = true, 
-                        role = role, 
-                        redirectUrl = redirectUrl 
+                    return new JsonResult(new
+                    {
+                        success = true,
+                        role = role,
+                        redirectUrl = redirectUrl,
+                        userId = userIdProp.GetString(), // Thêm userId vào response
+                        username = usernameProp.GetString(), // Thêm username nếu cần
+                        fullName = fullName // Thêm fullName nếu cần
                     });
                 }
                 else
@@ -227,7 +232,7 @@ namespace UI.Controllers
                     {
                         return Json(new { success = true, message = "Registration successful! Please login to continue." });
                     }
-                    
+
                     TempData["SuccessMessage"] = "Registration successful! Please login to continue.";
                     return RedirectToAction("Index", "Home");
                 }
@@ -268,6 +273,12 @@ namespace UI.Controllers
 
             // Sign out từ UI authentication
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Nếu là AJAX request, trả về JSON để frontend xử lý
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new { success = true, redirectUrl = "/" });
+            }
 
             return RedirectToAction("Index", "Home");
         }

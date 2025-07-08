@@ -26,36 +26,65 @@ namespace UI.Areas.ShowtimeManagement.Controllers
         // GET: ShowtimeManagement/Showtimes
         public async Task<IActionResult> Index()
         {
-            var viewModel = new ShowtimePageViewModel
+            try
             {
-                CurrentWeek = GetCurrentWeek(),
-                Showtimes = await _showtimeService.GetShowtimesForWeekAsync(DateTime.Now),
-                Movies = await _showtimeService.GetActiveMoviesAsync(),
-                CinemaRooms = await _showtimeService.GetCinemaRoomsAsync()
-            };
+                var viewModel = new ShowtimePageViewModel
+                {
+                    CurrentWeek = GetCurrentWeek(),
+                    Showtimes = await _showtimeService.GetShowtimesForWeekAsync(DateTime.Now),
+                    Movies = await _showtimeService.GetActiveMoviesAsync(),
+                    CinemaRooms = await _showtimeService.GetCinemaRoomsAsync()
+                };
 
-            return View(viewModel);
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                var emptyViewModel = new ShowtimePageViewModel
+                {
+                    CurrentWeek = GetCurrentWeek(),
+                    Showtimes = new List<UI.Areas.ShowtimeManagement.Models.ShowtimeDto>(),
+                    Movies = new List<UI.Areas.ShowtimeManagement.Models.MovieDto>(),
+                    CinemaRooms = new List<UI.Areas.ShowtimeManagement.Models.CinemaRoomDto>()
+                };
+                return View(emptyViewModel);
+            }
         }
 
         // GET: ShowtimeManagement/Showtimes/GetWeeklyData
         [HttpGet]
         public async Task<IActionResult> GetWeeklyData(DateTime startDate)
         {
-            var showtimes = await _showtimeService.GetShowtimesForWeekAsync(startDate);
-            return Json(new { success = true, data = showtimes });
+            try
+            {
+                var showtimes = await _showtimeService.GetShowtimesForWeekAsync(startDate);
+                return Json(new { success = true, data = showtimes });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         // GET: ShowtimeManagement/Showtimes/Create
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var model = new CreateShowtimeViewModel
+            try
             {
-                Movies = await _showtimeService.GetActiveMoviesAsync(),
-                CinemaRooms = await _showtimeService.GetCinemaRoomsAsync(),
-                ShowDate = DateTime.Today
-            };
-            return PartialView("_CreateModal", model);
+                var model = new CreateShowtimeViewModel
+                {
+                    Movies = await _showtimeService.GetActiveMoviesAsync(),
+                    CinemaRooms = await _showtimeService.GetCinemaRoomsAsync(),
+                    ShowDate = DateTime.Today
+                };
+                return PartialView("_CreateModal", model);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         // POST: ShowtimeManagement/Showtimes/Create
@@ -76,25 +105,32 @@ namespace UI.Areas.ShowtimeManagement.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var showtime = await _showtimeService.GetShowtimeByIdAsync(id);
-            if (showtime == null)
+            try
             {
-                return NotFound();
+                var showtime = await _showtimeService.GetShowtimeByIdAsync(id);
+                if (showtime == null)
+                {
+                    return NotFound();
+                }
+
+                var model = new EditShowtimeViewModel
+                {
+                    Id = showtime.Id,
+                    MovieId = showtime.MovieId,
+                    CinemaRoomId = showtime.CinemaRoomId,
+                    ShowDate = showtime.ShowDate,
+                    StartTime = showtime.StartTime,
+                    Price = showtime.Price,
+                    Movies = await _showtimeService.GetActiveMoviesAsync(),
+                    CinemaRooms = await _showtimeService.GetCinemaRoomsAsync()
+                };
+
+                return PartialView("_EditModal", model);
             }
-
-            var model = new EditShowtimeViewModel
+            catch (Exception ex)
             {
-                Id = showtime.Id,
-                MovieId = showtime.MovieId,
-                CinemaRoomId = showtime.CinemaRoomId,
-                ShowDate = showtime.ShowDate,
-                StartTime = showtime.StartTime,
-                Price = showtime.Price,
-                Movies = await _showtimeService.GetActiveMoviesAsync(),
-                CinemaRooms = await _showtimeService.GetCinemaRoomsAsync()
-            };
-
-            return PartialView("_EditModal", model);
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         // POST: ShowtimeManagement/Showtimes/Edit
@@ -133,15 +169,30 @@ namespace UI.Areas.ShowtimeManagement.Controllers
         [Authorize(Roles = "Admin,2")]
         public async Task<IActionResult> AdminDashboard()
         {
-            var viewModel = new ShowtimePageViewModel
+            try
             {
-                CurrentWeek = GetCurrentWeek(),
-                Showtimes = await _showtimeService.GetShowtimesForWeekAsync(DateTime.Now),
-                Movies = await _showtimeService.GetActiveMoviesAsync(),
-                CinemaRooms = await _showtimeService.GetCinemaRoomsAsync()
-            };
+                var viewModel = new ShowtimePageViewModel
+                {
+                    CurrentWeek = GetCurrentWeek(),
+                    Showtimes = await _showtimeService.GetShowtimesForWeekAsync(DateTime.Now),
+                    Movies = await _showtimeService.GetActiveMoviesAsync(),
+                    CinemaRooms = await _showtimeService.GetCinemaRoomsAsync()
+                };
 
-            return View(viewModel);
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                var emptyViewModel = new ShowtimePageViewModel
+                {
+                    CurrentWeek = GetCurrentWeek(),
+                    Showtimes = new List<UI.Areas.ShowtimeManagement.Models.ShowtimeDto>(),
+                    Movies = new List<UI.Areas.ShowtimeManagement.Models.MovieDto>(),
+                    CinemaRooms = new List<UI.Areas.ShowtimeManagement.Models.CinemaRoomDto>()
+                };
+                return View(emptyViewModel);
+            }
         }
 
         // API: Get Dashboard Statistics
@@ -154,7 +205,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
                 var startOfWeek = today.AddDays(-(int)today.DayOfWeek + 1);
                 var endOfWeek = startOfWeek.AddDays(6);
 
-                var allShowtimes = await _showtimeService.GetShowtimesForWeekAsync(startOfWeek);
+                var allShowtimes = await _showtimeService.GetShowtimesForWeekAsync(startOfWeek) ?? new List<UI.Areas.ShowtimeManagement.Models.ShowtimeDto>();
                 
                 var stats = new
                 {

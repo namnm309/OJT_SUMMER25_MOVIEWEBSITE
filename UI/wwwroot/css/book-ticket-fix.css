@@ -1,0 +1,254 @@
+/* Fix for white text visibility issues in booking ticket page */
+
+/* Ensure all text in main content area is dark */
+.new-dashboard-main {
+    color: #1e293b !important;
+}
+
+/* Fix breadcrumb text colors - Override inline styles */
+.breadcrumb-item a {
+    color: #667eea !important;
+}
+
+.breadcrumb-item a[style*="color"] {
+    color: #667eea !important;
+}
+
+.breadcrumb-item.active {
+    color: #1e293b !important;
+}
+
+/* Fix specific breadcrumb links with inline styles */
+a[href*="Dashboard"][style*="rgba(255, 255, 255"] {
+    color: #667eea !important;
+}
+
+a[href*="BookingManagement"][style*="rgba(255, 255, 255"] {
+    color: #667eea !important;
+}
+
+/* Override any white/transparent text in breadcrumb area */
+.breadcrumb a[style] {
+    color: #667eea !important;
+}
+
+/* Force override all inline white/transparent colors in page header */
+.new-page-header a[style*="rgba(255, 255, 255"] {
+    color: #667eea !important;
+}
+
+.new-page-header a[style*="color: rgba(255, 255, 255"] {
+    color: #667eea !important;
+}
+
+/* General override for any white inline styles in main content */
+.new-dashboard-main a[style*="rgba(255, 255, 255"] {
+    color: #667eea !important;
+}
+
+/* Fix page title and subtitle */
+.new-page-title {
+    color: #1e293b !important;
+}
+
+.new-page-subtitle {
+    color: #64748b !important;
+}
+
+/* Fix booking steps layout and text */
+.booking-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.booking-steps .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+}
+
+.booking-steps .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    right: -50%;
+    width: 100%;
+    height: 2px;
+    background: #dee2e6;
+    z-index: 1;
+}
+
+.booking-steps .step.completed:not(:last-child)::after {
+    background: #28a745;
+}
+
+.booking-steps .step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #6c757d;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.booking-steps .step.active .step-number {
+    background: #667eea;
+    transform: scale(1.1);
+}
+
+.booking-steps .step.completed .step-number {
+    background: #28a745;
+}
+
+.booking-steps .step-title {
+    color: #1e293b !important;
+    font-weight: 600;
+    text-align: center;
+    font-size: 14px;
+}
+
+.booking-steps .step.active .step-title {
+    color: #667eea !important;
+}
+
+.booking-steps .step.completed .step-title {
+    color: #28a745 !important;
+}
+
+/* Fix card headers and content */
+.card-header h5 {
+    color: #1e293b !important;
+}
+
+.card-body {
+    color: #1e293b !important;
+}
+
+/* Fix form labels and text */
+.form-label {
+    color: #1e293b !important;
+}
+
+.text-muted {
+    color: #64748b !important;
+}
+
+/* Fix movie list and showtime text */
+.movie-list {
+    color: #1e293b !important;
+}
+
+.showtime-selection {
+    color: #1e293b !important;
+}
+
+/* Fix seat legend text */
+.seat-legend span {
+    color: #1e293b !important;
+}
+
+/* Fix selected seats text */
+.selected-seats {
+    color: #1e293b !important;
+}
+
+/* Fix customer info text */
+.customer-info {
+    color: #1e293b !important;
+}
+
+/* Fix payment methods text */
+.payment-methods label {
+    color: #1e293b !important;
+}
+
+/* Fix order summary text */
+.order-summary {
+    color: #1e293b !important;
+}
+
+/* Fix any remaining white text in content areas */
+.booking-container * {
+    color: inherit;
+}
+
+.booking-container h1,
+.booking-container h2,
+.booking-container h3,
+.booking-container h4,
+.booking-container h5,
+.booking-container h6 {
+    color: #1e293b !important;
+}
+
+.booking-container p,
+.booking-container span,
+.booking-container div {
+    color: #1e293b;
+}
+
+/* Ensure buttons have proper contrast */
+.btn-primary {
+    background-color: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #64748b;
+    border-color: #64748b;
+    color: white;
+}
+
+.btn-success {
+    background-color: #10b981;
+    border-color: #10b981;
+    color: white;
+}
+
+/* Fix input placeholders */
+.form-control::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* Fix any white text in step panels */
+.step-panel {
+    color: #1e293b !important;
+}
+
+.step-panel * {
+    color: inherit;
+}
+
+/* Override any white text specifically */
+.step-panel h5,
+.step-panel h6,
+.step-panel p,
+.step-panel span,
+.step-panel div:not(.btn):not(.seat):not(.step-number) {
+    color: #1e293b !important;
+}
+
+/* Ensure form check labels are visible */
+.form-check-label {
+    color: #1e293b !important;
+}
+
+/* Fix loading overlay text */
+.loading-overlay p {
+    color: white !important;
+}

@@ -13,6 +13,7 @@ namespace InfrastructureLayer.Data
         // Constructor cho DI (Dependency Injection)
         public MovieContext(DbContextOptions<MovieContext> options) : base(options)
         {
+            Database.EnsureCreated();
         }
 
         // Constructor mặc định cho testing/migration

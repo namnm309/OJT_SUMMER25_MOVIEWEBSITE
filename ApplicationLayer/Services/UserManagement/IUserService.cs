@@ -11,5 +11,6 @@ namespace ApplicationLayer.Services.UserManagement
         Task<UserResponseDto?> GetUserByIdAsync(Guid userId);
         string HashPassword(string password);
         bool VerifyPassword(string password, string hashedPassword);
+        Task<CustomerSearchDto?> SearchCustomerAsync(string searchTerm);
     }
 } 

@@ -30,6 +30,19 @@ namespace UI.Areas.BookingManagement.Services
 
         // T11: Ticket Information
         Task<ApiResponse<dynamic>> GetBookingDetailAsync(Guid bookingId);
+
+        // Search Customer
+        Task<ApiResponse<CustomerSearchViewModel>> SearchCustomerAsync(string searchTerm);
+
+        // Create Customer
+        Task<ApiResponse<dynamic>> CreateCustomerAsync(CreateCustomerViewModel model);
+
+        // Confirm Admin Booking
+        Task<ApiResponse<dynamic>> ConfirmAdminBookingAsync(ConfirmAdminBookingViewModel model);
+
+        // New methods for score conversion booking
+        Task<ApiResponse<BookingConfirmationDetailViewModel>> GetBookingConfirmationDetailAsync(Guid showTimeId, List<Guid> seatIds, string memberId);
+        Task<ApiResponse<BookingConfirmSuccessViewModel>> ConfirmBookingWithScoreAsync(BookingConfirmWithScoreViewModel model);
     }
 
     public class BookingManagementUIService : IBookingManagementUIService
@@ -48,7 +61,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Getting available movies for booking");
-                return await _apiService.GetAsync<dynamic>("movies");
+                return await _apiService.GetAsync<dynamic>("api/v1/booking-ticket/dropdown/movies");
             }
             catch (Exception ex)
             {
@@ -85,7 +98,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Searching movies with term: {SearchTerm}", searchTerm);
-                return await _apiService.GetAsync<dynamic>($"movies/search?term={Uri.EscapeDataString(searchTerm)}");
+                return await _apiService.GetAsync<dynamic>($"api/v1/movie/Search?keyword={Uri.EscapeDataString(searchTerm)}");
             }
             catch (Exception ex)
             {
@@ -102,7 +115,6 @@ namespace UI.Areas.BookingManagement.Services
         {
             try
             {
-                _logger.LogInformation("Getting show dates for movie: {MovieId} from /api/v1/booking-ticket/dropdown/movies/{MovieId}/dates", movieId);
                 return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/dropdown/movies/{movieId}/dates");
             }
             catch (Exception ex)
@@ -120,9 +132,9 @@ namespace UI.Areas.BookingManagement.Services
         {
             try
             {
-                _logger.LogInformation("Getting show times for movie: {MovieId} on {ShowDate} from /api/v1/booking-ticket/dropdown/movies/{MovieId}/times", movieId, showDate);
-                // Tự động thêm thời gian 10:00:00+07 vào ngày
-                var dateParam = showDate.ToString("yyyy-MM-dd") + " 10:00:00+07";
+                _logger.LogInformation("Getting show times for movie: {MovieId} on {ShowDate} from /api/v1/booking-ticket/times", movieId, showDate);
+                // Format date as yyyy-MM-dd for the API
+                var dateParam = showDate.ToString("yyyy-MM-dd");
                 return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/dropdown/movies/{movieId}/times?date={Uri.EscapeDataString(dateParam)}");
             }
             catch (Exception ex)
@@ -141,7 +153,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Getting seats for showtime: {ShowTimeId}", showTimeId);
-                return await _apiService.GetAsync<dynamic>($"showtimes/{showTimeId}/seats");
+                return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/available?showTimeId={showTimeId}");
             }
             catch (Exception ex)
             {
@@ -159,8 +171,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Selecting {SeatCount} seats for showtime: {ShowTimeId}", seatIds.Count, showTimeId);
-                var request = new { ShowTimeId = showTimeId, SeatIds = seatIds };
-                return await _apiService.PostAsync<dynamic>("booking/select-seats", request);
+                return await _apiService.PostAsync<dynamic>($"api/v1/booking-ticket/validate?showTimeId={showTimeId}", seatIds);
             }
             catch (Exception ex)
             {
@@ -215,7 +226,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Getting available seats for showtime: {ShowtimeId}", showtimeId);
-                return await _apiService.GetAsync<dynamic>($"api/v1/seat/GetByShowTimeId?showTimeId={showtimeId}");
+                return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/available?showTimeId={showtimeId}");
             }
             catch (Exception ex)
             {
@@ -234,8 +245,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Validating {SeatCount} seats for showtime: {ShowtimeId}", seatIds.Count, showtimeId);
-                var request = new { ShowtimeId = showtimeId, SeatIds = seatIds };
-                return await _apiService.PostAsync<dynamic>("api/v1/booking/validate-seats", request);
+                return await _apiService.PostAsync<dynamic>($"api/v1/booking-ticket/validate?showTimeId={showtimeId}", seatIds);
             }
             catch (Exception ex)
             {
@@ -244,6 +254,104 @@ namespace UI.Areas.BookingManagement.Services
                 {
                     Success = false,
                     Message = "Không thể xác thực ghế. Vui lòng thử lại."
+                };
+            }
+        }
+
+        // Search Customer
+        public async Task<ApiResponse<CustomerSearchViewModel>> SearchCustomerAsync(string searchTerm)
+        {
+            try
+            {
+                _logger.LogInformation("Searching customer with term: {SearchTerm}", searchTerm);
+                return await _apiService.GetAsync<CustomerSearchViewModel>($"api/v1/booking-ticket/SearchCustomer?searchTerm={Uri.EscapeDataString(searchTerm)}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error searching customer");
+                return new ApiResponse<CustomerSearchViewModel>
+                {
+                    Success = false,
+                    Message = "Không thể tìm kiếm khách hàng. Vui lòng thử lại."
+                };
+            }
+        }
+
+        // Create Customer
+        public async Task<ApiResponse<dynamic>> CreateCustomerAsync(CreateCustomerViewModel model)
+        {
+            try
+            {
+                _logger.LogInformation("Creating customer");
+                return await _apiService.PostAsync<dynamic>("api/v1/booking-ticket/create-member-account", model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating customer");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể tạo khách hàng. Vui lòng thử lại."
+                };
+            }
+        }
+
+        // Confirm Admin Booking
+        public async Task<ApiResponse<dynamic>> ConfirmAdminBookingAsync(ConfirmAdminBookingViewModel model)
+        {
+            try
+            {
+                _logger.LogInformation("Confirming admin booking for showtime: {ShowTimeId}", model.ShowTimeId);
+                return await _apiService.PostAsync<dynamic>("api/v1/booking-ticket/confirm-Admin-booking", model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error confirming admin booking");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể xác nhận đặt vé. Vui lòng thử lại."
+                };
+            }
+        }
+
+        // New methods for score conversion booking
+        public async Task<ApiResponse<BookingConfirmationDetailViewModel>> GetBookingConfirmationDetailAsync(Guid showTimeId, List<Guid> seatIds, string memberId)
+        {
+            try
+            {
+                _logger.LogInformation("Getting booking confirmation detail for showtime: {ShowTimeId}, seatIds: {SeatIds}, memberId: {MemberId}", showTimeId, string.Join(",", seatIds), memberId);
+
+                var seatIdsParam = string.Join("&seatIds=", seatIds);
+                var url = $"api/v1/booking-ticket/booking-confirmation-detail?showTimeId={showTimeId}&seatIds={seatIdsParam}&memberId={Uri.EscapeDataString(memberId)}";
+
+                return await _apiService.GetAsync<BookingConfirmationDetailViewModel>(url);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting booking confirmation detail");
+                return new ApiResponse<BookingConfirmationDetailViewModel>
+                {
+                    Success = false,
+                    Message = "Không thể tải thông tin xác nhận đặt vé. Vui lòng thử lại."
+                };
+            }
+        }
+
+        public async Task<ApiResponse<BookingConfirmSuccessViewModel>> ConfirmBookingWithScoreAsync(BookingConfirmWithScoreViewModel model)
+        {
+            try
+            {
+                _logger.LogInformation("Confirming booking with score for member: {MemberId}", model.MemberId);
+                return await _apiService.PostAsync<BookingConfirmSuccessViewModel>("api/v1/booking-ticket/confirm-booking-with-score", model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error confirming booking with score");
+                return new ApiResponse<BookingConfirmSuccessViewModel>
+                {
+                    Success = false,
+                    Message = "Không thể xác nhận đặt vé. Vui lòng thử lại."
                 };
             }
         }

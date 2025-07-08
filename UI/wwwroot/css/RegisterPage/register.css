@@ -4,12 +4,13 @@
 }
 
 body {
-    font-family: 'Rubik', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #000;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
     color: #fff;
     overflow-x: hidden;
+    min-height: 100vh;
 }
 
 /* Main container - layout chính */
@@ -37,18 +38,17 @@ body {
     position: absolute;
     bottom: 60px;
     left: 40px;
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: clamp(2.5rem, 4vw, 4rem);
-    font-weight: bold;
-    color: #e50914;
+    font-weight: 700;
+    color: #667eea;
     letter-spacing: 6px;
     text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
     white-space: nowrap;
     z-index: 2;
-    font-size: 64px;
 }
 
-/* Right side - Login form (60%) */
+/* Right side - Register form (60%) */
 .login-side {
     flex: 0 0 60%;
     position: relative;
@@ -58,6 +58,7 @@ body {
     min-height: 100vh;
     overflow-y: auto;
     padding: 20px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0a0a0a 100%);
 }
 
     /* Ảnh nền cho bên phải */
@@ -65,7 +66,7 @@ body {
         content: "";
         position: absolute;
         inset: 0;
-        background: url('../Image/loginright.png') no-repeat center center / cover;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(22, 33, 62, 0.3) 100%);
         z-index: 0;
     }
 
@@ -74,7 +75,7 @@ body {
         content: "";
         position: absolute;
         inset: 0;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.2);
         backdrop-filter: blur(5px);
         z-index: 1;
     }
@@ -84,14 +85,14 @@ body {
     position: absolute;
     top: 30px;
     left: 40px;
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: clamp(2rem, 3vw, 2.5rem);
-    font-weight: bold;
-    color: #e50914;
+    font-weight: 700;
+    color: #667eea;
     z-index: 10;
 }
 
-/* Top bar - SỬA LỖI TEXT BỊ ĐÈ */
+/* Top bar */
 .top-bar {
     position: absolute;
     top: 30px;
@@ -99,59 +100,62 @@ body {
     display: flex;
     align-items: center;
     z-index: 10;
-    gap: 15px; /* Thêm khoảng cách giữa các phần tử */
+    gap: 15px;
 }
 
 .signup-prompt {
-    color: #ccc;
+    color: rgba(255, 255, 255, 0.7);
     font-size: clamp(12px, 1.2vw, 14px);
-    white-space: nowrap; /* Ngăn text bị xuống dòng */
+    white-space: nowrap;
 }
 
 .signup-btn {
-    border: 1px solid #e50914;
-    color: #e50914;
+    border: 1px solid #667eea;
+    color: #667eea;
     padding: 8px 16px;
-    border-radius: 4px;
+    border-radius: 8px;
     text-decoration: none;
     font-weight: 500;
     transition: all 0.3s ease;
     font-size: clamp(12px, 1.2vw, 14px);
-    white-space: nowrap; /* Ngăn text bị xuống dòng */
+    white-space: nowrap;
+    backdrop-filter: blur(10px);
 }
 
     .signup-btn:hover {
-        background-color: #e50914;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
         color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
     }
 
-/* Login container - GIẢM KÍCH THƯỚC */
+/* Login container */
 .login-container {
     width: 100%;
-    max-width: 550px; /* Giảm từ 700px xuống 550px */
+    max-width: 550px;
     margin: 0 auto;
     position: relative;
     z-index: 2;
 }
 
-/* Auth card - GIẢM PADDING */
+/* Auth card */
 .auth-card {
-    background: rgba(17, 17, 17, 0.95);
-    backdrop-filter: blur(10px);
-    padding: 25px 20px; /* Giảm padding cố định */
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(25px);
+    padding: 25px 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 5px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 /* Auth header */
 .auth-header {
     text-align: center;
-    margin-bottom: 20px; /* Giảm margin */
+    margin-bottom: 20px;
 }
 
 .auth-title {
-    font-size: clamp(18px, 2.2vw, 24px); /* Giảm font size */
+    font-size: clamp(18px, 2.2vw, 24px);
     font-weight: 700;
     color: #fff;
     margin-bottom: 8px;
@@ -159,15 +163,15 @@ body {
 
 .auth-subtitle {
     font-size: clamp(12px, 1.2vw, 14px);
-    color: #aaa;
+    color: rgba(255, 255, 255, 0.7);
     margin: 0;
 }
 
-/* Form grid - LAYOUT 2 CỘT NHƯNG COMPACT HỌN */
+/* Form grid */
 .form-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Cố định 2 cột */
-    gap: 15px; /* Giảm gap */
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
     width: 100%;
 }
 
@@ -175,18 +179,18 @@ body {
     width: 100%;
 }
 
-/* Form styles - GIẢM KÍCH THƯỚC */
+/* Form styles */
 .form-group {
-    margin-bottom: 12px; /* Giảm margin */
+    margin-bottom: 12px;
     position: relative;
 }
 
 .form-label {
     display: block;
-    margin-bottom: 6px; /* Giảm margin */
+    margin-bottom: 6px;
     font-weight: 500;
-    color: #ccc;
-    font-size: 12px; /* Cố định font size nhỏ */
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
 }
 
 .input-icon {
@@ -194,107 +198,99 @@ body {
     left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: #666;
+    color: #667eea;
     z-index: 5;
-    font-size: 12px; /* Cố định font size nhỏ */
+    font-size: 12px;
 }
 
 .form-control {
     width: 100%;
-    padding: 10px 12px; /* Giảm padding */
-    background: rgba(255, 255, 255, 0.05);
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px; /* Giảm border radius */
+    border-radius: 10px;
     color: #fff;
-    font-size: 13px; /* Cố định font size nhỏ */
-    backdrop-filter: blur(6px);
-    box-shadow: inset 0 0 5px rgba(255,255,255,0.1);
+    font-size: 14px;
+    backdrop-filter: blur(10px);
     transition: all 0.3s ease;
 }
 
     .form-control.with-icon {
-        padding-left: 35px; /* Cố định padding left */
+        padding-left: 35px;
     }
 
     .form-control:focus {
         outline: none;
-        border-color: #e50914;
-        box-shadow: 0 0 8px rgba(229, 9, 20, 0.7);
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
     }
 
     .form-control::placeholder {
-        color: #bbb;
-        font-size: 12px; /* Cố định font size nhỏ */
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
     }
 
-/* Textarea specific */
-textarea.form-control {
-    resize: vertical;
-    min-height: 50px; /* Giảm chiều cao */
+/* Select styles */
+.form-select {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
 }
 
-/* Input group for password */
-.input-group {
-    display: flex;
-    position: relative;
-}
-
-    .input-group .form-control {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
+    .form-select:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
     }
 
-    .input-group .btn {
-        background: #333;
-        border: 1px solid #555;
-        border-left: none;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        color: #ccc;
-        padding: 10px 12px; /* Cố định padding */
-        transition: all 0.3s ease;
-        font-size: 12px; /* Cố định font size nhỏ */
+    .form-select option {
+        background: #2a2a2a;
+        color: white;
     }
-
-        .input-group .btn:hover {
-            background: #444;
-            color: #fff;
-        }
 
 /* Auth button */
 .auth-btn {
-    background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
     color: white;
     font-weight: 600;
-    padding: 12px 0; /* Cố định padding */
-    border-radius: 6px;
-    font-size: 14px; /* Cố định font size */
+    padding: 12px 0;
+    border-radius: 10px;
+    font-size: 14px;
     transition: all 0.3s ease;
     cursor: pointer;
-    margin-top: 15px; /* Thêm margin top */
+    width: 100%;
+    margin-top: 15px;
 }
 
     .auth-btn:hover {
-        background: linear-gradient(135deg, #b81d24 0%, #a01820 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
     }
 
 /* Auth footer */
 .auth-footer {
-    margin-top: 20px; /* Giảm margin */
+    margin-top: 20px;
     text-align: center;
-    font-size: 12px; /* Cố định font size nhỏ */
+    font-size: 12px;
 }
 
     .auth-footer p {
         margin: 8px 0;
+        color: rgba(255, 255, 255, 0.7);
     }
 
 .auth-link {
-    color: #e50914;
+    color: #667eea;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
@@ -305,32 +301,30 @@ textarea.form-control {
         text-decoration: underline;
     }
 
+/* Alert styles */
+.alert {
+    margin-bottom: 15px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    font-size: 12px;
+    padding: 10px;
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.2);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    color: #28a745;
+}
+
 /* Validation styles */
 .text-danger {
-    color: #dc3545;
-    font-size: 10px; /* Cố định font size nhỏ */
-    margin-top: 4px;
+    color: #ff6b6b;
+    font-size: 10px;
+    margin-top: 2px;
     display: block;
 }
 
-/* Responsive breakpoints */
-@media (max-width: 1200px) {
-    .login-container {
-        max-width: 500px; /* Giảm thêm */
-    }
-}
-
-@media (max-width: 992px) {
-    .form-grid {
-        grid-template-columns: 1fr; /* Chuyển về 1 cột trên tablet */
-        gap: 12px;
-    }
-
-    .login-container {
-        max-width: 450px;
-    }
-}
-
+/* Responsive design */
 @media (max-width: 768px) {
     .main-container {
         flex-direction: column;
@@ -346,63 +340,26 @@ textarea.form-control {
         padding: 15px;
     }
 
-    .netflix-logo-center {
-        position: static;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .top-bar {
-        position: static;
-        text-align: center;
-        margin-bottom: 20px;
-        justify-content: center;
-    }
-
     .form-grid {
         grid-template-columns: 1fr;
-        gap: 12px;
-    }
-
-    .login-container {
-        max-width: 90%;
-    }
-}
-
-@media (max-width: 480px) {
-    .login-side {
-        padding: 10px;
+        gap: 10px;
     }
 
     .auth-card {
         padding: 20px 15px;
+        margin: 0;
     }
 
-    .form-grid {
-        gap: 10px;
+    .netflix-logo-center {
+        position: static;
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 1.8rem;
     }
 
-    .form-group {
-        margin-bottom: 10px;
-    }
-}
-
-/* Zoom compatibility */
-@media screen and (min-resolution: 120dpi) {
-    .form-control {
-        font-size: 13px;
-    }
-
-    .auth-btn {
-        font-size: 14px;
-    }
-}
-
-/* High DPI displays */
-@media (-webkit-min-device-pixel-ratio: 1.5) {
-    .form-control,
-    .auth-btn {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+    .top-bar {
+        position: static;
+        justify-content: center;
+        margin-bottom: 15px;
     }
 }

@@ -8,6 +8,16 @@ using ApplicationLayer.Services.PromotionManagement;
 using ApplicationLayer.Services.CinemaRoomManagement;
 using ApplicationLayer.Services.BookingTicketManagement;
 using ApplicationLayer.Services.EmployeeManagement;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using ApplicationLayer.Services.JWT;
+using InfrastructureLayer.Core.JWT;
+using InfrastructureLayer.Core.Crypto;
+using Microsoft.OpenApi.Models;
+using InfrastructureLayer.Core.Mail;
+using InfrastructureLayer.Core.Cache;
+using StackExchange.Redis;
 using ApplicationLayer.Mappings;
 using ApplicationLayer.Services.Helper;
 
@@ -20,6 +30,8 @@ namespace ControllerLayer
             var builder = WebApplication.CreateBuilder(args);
 
             // Đăng ký các service và cấu hình ứng dụng
+
+            //===================================================================================================================================================
 
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
@@ -34,7 +46,12 @@ namespace ControllerLayer
             {
                 options.AddPolicy("AllowUI", policy =>
                 {
-                    policy.WithOrigins("https://localhost:7069", "http://localhost:7069", "http://localhost:5073", "https://localhost:5073", "http://localhost:5000", "https://localhost:5001")
+                    policy.WithOrigins("https://localhost:7069",
+                        "http://localhost:7069",
+                        "http://localhost:5073",
+                        "https://localhost:5073",
+                        "http://localhost:5000",
+                        "https://localhost:5001")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials(); // Cho phép chia sẻ cookie giữa UI và API
@@ -48,10 +65,66 @@ namespace ControllerLayer
                           .AllowAnyHeader();
                 });
             });
-            
+
+            // JWT Token
+            var jwtSecret = builder.Configuration["Jwt:Secret"]
+                ?? "ea8cf10696dc45a8b7b5f15758ae3ef238b440cfa1f84b449af315d515de6f95";
+            var key = Encoding.ASCII.GetBytes(jwtSecret);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "JWT System API", Version = "v1" });
+
+                // Add a bearer token to Swagger
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer"
+                });
+
+                // Require the bearer token for all API operations
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                  {
+                      new OpenApiSecurityScheme
+                      {
+                          Reference = new OpenApiReference
+                          {
+                              Type = ReferenceType.SecurityScheme,
+                              Id = "Bearer"
+                          }
+                      },
+                      new string[] {}
+                  }
+                });
+
+                //File upload support
+                c.SupportNonNullableReferenceTypes();
+            });
 
             // Cấu hình DbContext
             builder.Services.AddDbContext<MovieContext>(options =>
@@ -63,6 +136,18 @@ namespace ControllerLayer
 
             // Đăng ký Generic Repository Pattern
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+            // Đăng ký Redis
+            builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection") ?? throw new ArgumentNullException("RedisConnection")));
+
+
+            // Đăng ký của phần CORE {Cache, Crypto, Jwt, Mail}
+            builder.Services.AddSingleton<IJwtService, JwtService>();
+
+            builder.Services.AddSingleton<ICryptoService, CryptoService>();
+
+            builder.Services.AddScoped<ICacheService, CacheService>();
+
             
             // Đăng ký Repository và Services
             builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -83,13 +168,17 @@ namespace ControllerLayer
             builder.Services.AddScoped<ISeatRepository, SeatRepository>();
             builder.Services.AddScoped<ISeatService, SeatService>();
 
-            builder.Services.AddScoped<IMailService>(provider =>
-    new MailService("smtp.gmail.com", 587, "phucan0147@gmail.com", "kgwg vpwi voer ziag"));
+            //Cấu hình mail của Ân
+            builder.Services.AddScoped<ApplicationLayer.Services.Helper.IMailService>(provider =>
+            new ApplicationLayer.Services.Helper.MailService("smtp.gmail.com", 587, "phucan0147@gmail.com", "kgwg vpwi voer ziag"));
 
             // Thêm vào Program.cs
             builder.Services.AddAutoMapper(typeof(BookingProfile));
 
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
+            // Tạm comment AuthService vì cần mail service
+            // builder.Services.AddScoped<IAuthService, AuthService>();
 
             // Cấu hình Authentication với Cookie
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -106,7 +195,17 @@ namespace ControllerLayer
 
             builder.Services.AddAuthorization();
 
+            //
+            builder.Services.AddHttpContextAccessor();
+
+            // Thêm vào phần đăng ký services
+            builder.Services.AddScoped<ICustomerSearchService, CustomerSearchService>();
+
+            //===================================================================================================================================================
+
             var app = builder.Build();
+
+            // Đã đăng ký Mail service ở trên rồi
 
             // Tự động tạo database và khởi tạo dữ liệu mẫu
             using (var scope = app.Services.CreateScope())
@@ -125,7 +224,7 @@ namespace ControllerLayer
                 }
 
                 // Seed dữ liệu admin mặc định
-                await DataSeeder.SeedAdminUser(context);
+                // await DataSeeder.SeedAdminUser(context);
             }
 
             // Configure the HTTP request pipeline.

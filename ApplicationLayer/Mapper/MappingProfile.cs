@@ -1,8 +1,10 @@
-﻿using ApplicationLayer.DTO.BookingTicketManagement;
+using ApplicationLayer.DTO.BookingTicketManagement;
 using ApplicationLayer.DTO.CinemaRoomManagement;
 using ApplicationLayer.DTO.EmployeeManagement;
+using ApplicationLayer.DTO.JWT;
 using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.DTO.PromotionManagement;
+using ApplicationLayer.DTO.UserManagement;
 using AutoMapper;
 using DomainLayer.Entities;
 using System;
@@ -77,12 +79,39 @@ namespace ApplicationLayer.Mapper
             CreateMap<Seat, SeatViewDto>();
 
             //Booking
-            CreateMap<Movie, MovieDropdownDto>();
+            CreateMap<Movie, MovieDropdownDto>()
+                .ForMember(dest => dest.PrimaryImageUrl, 
+                    opt => opt.MapFrom(src => src.MovieImages.FirstOrDefault(img => img.IsPrimary) != null 
+                        ? src.MovieImages.FirstOrDefault(img => img.IsPrimary)!.ImageUrl 
+                        : src.MovieImages.FirstOrDefault() != null 
+                            ? src.MovieImages.FirstOrDefault()!.ImageUrl 
+                            : null))
+                .ForMember(dest => dest.Genre,
+                    opt => opt.MapFrom(src => string.Join(", ", src.MovieGenres.Select(mg => mg.Genre.GenreName))))
+                .ForMember(dest => dest.Duration,
+                    opt => opt.MapFrom(src => src.RunningTime));
 
             //Employee
             CreateMap<EmployeeCreateDto, Employee>();
             CreateMap<Employee, EmployeeListDto>();
             CreateMap<EmployeeUpdateDto, Employee>().ReverseMap();
+
+            //Auth - User
+            CreateMap<RegisterReq, Users>();
+            CreateMap<Users, UserDto>()
+                .ForMember(dest => dest.IdentityCard, opt => opt.MapFrom(src => src.IdentityCard))
+                .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Score))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive));
+
+            CreateMap<Users, LoginResp>();
+            CreateMap<EditUserReq, Users>().ReverseMap();
+
+            CreateMap<Users, CustomerSearchDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email ?? string.Empty))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone ?? string.Empty))
+                .ForMember(dest => dest.Points, opt => opt.MapFrom(src => (int)Math.Round(src.Score)));
         }
     }
 }
