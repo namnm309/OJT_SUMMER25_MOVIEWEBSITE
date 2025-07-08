@@ -1,1 +1,0 @@
-// Service quản lý khuyến mãi cho UI - hiện tại được tạm dừng sử dụng 
