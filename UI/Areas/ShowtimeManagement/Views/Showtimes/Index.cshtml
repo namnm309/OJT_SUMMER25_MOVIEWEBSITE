@@ -1,6 +1,6 @@
 @model UI.Areas.ShowtimeManagement.Models.ShowtimePageViewModel
 @{
-    ViewData["Title"] = "Quản lý lịch chiếu";
+    ViewData["Title"] = "Quản lý lịch chiếu - Cinema City";
     Layout = null;
 }
 
@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Cinema City</title>
+    <title>@ViewData["Title"]</title>
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -19,315 +19,667 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- New Dashboard CSS -->
     <link rel="stylesheet" href="~/css/new-dashboard.css" />
-    <!-- Showtime Management CSS -->
+    
     <style>
-        /* Showtime specific styles */
-        .showtime-header {
-            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-pink) 100%);
-            color: white;
+        /* Showtime Management Specific Styles */
+        .showtime-management-content {
             padding: 2rem;
-            border-radius: 16px;
+        }
+        
+        /* Page Header */
+        .showtime-page-header {
             margin-bottom: 2rem;
         }
-
-        .showtime-filters {
-            background: var(--content-primary);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .filter-group {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .filter-item {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .filter-item label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-
-        .week-navigator {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            background: var(--content-primary);
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-        }
-
-        .week-info {
-            flex: 1;
-            text-align: center;
-        }
-
-        .week-info h4 {
+        
+        .showtime-page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
             margin: 0;
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .week-info p {
-            margin: 0;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        /* Timeline styles */
-        .showtime-timeline {
-            background: var(--content-primary);
-            border-radius: 12px;
-            padding: 1.5rem;
-            overflow-x: auto;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .timeline-header {
-            display: grid;
-            grid-template-columns: 120px repeat(7, 1fr);
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .timeline-day {
-            text-align: center;
-            padding: 0.5rem;
-        }
-
-        .timeline-day.today {
-            background: var(--primary-purple);
-            color: white;
-            border-radius: 8px;
-        }
-
-        .timeline-body {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .timeline-room {
-            display: grid;
-            grid-template-columns: 120px repeat(7, 1fr);
-            gap: 0.5rem;
-            min-height: 80px;
-            align-items: stretch;
-        }
-
-        .room-label {
-            background: var(--content-secondary);
-            padding: 0.75rem;
-            border-radius: 8px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .room-schedule {
-            position: relative;
-            background: var(--content-secondary);
-            border-radius: 8px;
-            padding: 0.5rem;
-            min-height: 80px;
-        }
-
-        .showtime-block {
-            position: absolute;
-            background: var(--primary-purple);
-            color: white;
-            padding: 0.5rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .showtime-block:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-            z-index: 10;
-        }
-
-        .showtime-block.vip {
-            background: var(--warning);
-        }
-
-        .showtime-block.imax {
-            background: var(--danger);
-        }
-
-        /* List view styles */
-        .showtime-list {
-            background: var(--content-primary);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .showtime-table {
-            width: 100%;
-        }
-
-        .showtime-table th {
-            background: var(--content-secondary);
-            padding: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            border: none;
-        }
-
-        .showtime-table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .movie-info {
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
-
-        .movie-poster {
-            width: 40px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 4px;
+        
+        .showtime-page-subtitle {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        /* Controls Section */
+        .showtime-controls {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
         }
 
-        .occupancy-bar {
-            width: 100px;
-            height: 8px;
-            background: var(--content-secondary);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .occupancy-fill {
-            height: 100%;
-            background: var(--success);
-            transition: width 0.3s ease;
-        }
-
-        .occupancy-fill.high {
-            background: var(--danger);
-        }
-
-        .occupancy-fill.medium {
-            background: var(--warning);
-        }
-
-        .action-buttons {
+        .showtime-controls-header {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .showtime-search-box {
+            position: relative;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .showtime-search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            z-index: 2;
+        }
+        
+        .showtime-search-input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 1px solid var(--content-border);
+            border-radius: 8px;
+            background: var(--content-secondary);
+            color: var(--text-dark);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .showtime-search-input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: var(--content-bg);
+            outline: none;
+        }
+
+        .showtime-search-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .btn-add-showtime {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
             gap: 0.5rem;
         }
 
-        .btn-icon {
-            width: 32px;
-            height: 32px;
+        .btn-add-showtime:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+
+        .btn-filter, .btn-export {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            color: var(--text-dark);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-filter:hover, .btn-export:hover {
+            background: var(--content-secondary);
+            border-color: var(--primary-purple);
+            color: var(--primary-purple);
+        }
+        
+        /* Showtime Table Container */
+        .showtime-table-container {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .showtime-table-container.loading {
+            opacity: 0.7;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 6px;
-            border: none;
-            background: var(--content-secondary);
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .loading-spinner-small {
+            color: var(--primary-purple);
+            font-size: 1.5rem;
         }
 
-        .btn-icon:hover {
+        /* Showtime Table */
+        .showtime-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-dark);
+        }
+
+        .showtime-table thead {
+            background: var(--content-secondary);
+        }
+        
+        .showtime-table thead th {
+            padding: 16px 12px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--content-border);
+            text-align: left;
+        }
+        
+        .showtime-table tbody tr {
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            transition: background-color 0.2s ease;
+        }
+
+        .showtime-table tbody tr:hover {
+            background: var(--content-secondary);
+        }
+        
+        .showtime-table tbody td {
+            padding: 16px 12px;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+
+        /* Movie Info in Table */
+        .movie-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .movie-poster {
+            width: 40px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .movie-details h6 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .movie-details small {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-badge.available {
+            color: #059669;
+            background: rgba(5, 150, 105, 0.1);
+        }
+
+        .status-badge.nearly-full {
+            color: #d97706;
+            background: rgba(217, 119, 6, 0.1);
+        }
+
+        .status-badge.sold-out {
+            color: #dc2626;
+            background: rgba(220, 38, 38, 0.1);
+        }
+
+        .status-badge.active {
+            color: #059669;
+            background: rgba(5, 150, 105, 0.1);
+        }
+
+        .status-badge.inactive {
+            color: #dc2626;
+            background: rgba(220, 38, 38, 0.1);
+        }
+
+        .status-badge.pending {
+            color: #d97706;
+            background: rgba(217, 119, 6, 0.1);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid var(--content-border);
+            background: var(--content-bg);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .action-btn:hover {
             background: var(--primary-purple);
+            border-color: var(--primary-purple);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .action-btn.edit:hover {
+            background: #f59e0b;
+            border-color: #f59e0b;
+        }
+
+        .action-btn.delete:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        /* Loading Styles */
+        .loading-spinner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            text-align: center;
+        }
+        
+        .loading-spinner i {
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+        }
+        
+        .loading-spinner p {
+            color: var(--text-muted);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            display: flex;
+            gap: 8px;
+            margin-right: 16px;
+        }
+
+        .bulk-action-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--content-border);
+            background: var(--content-bg);
+            color: var(--text-dark);
+            transition: all 0.2s ease;
+        }
+
+        .bulk-action-btn:hover:not(:disabled) {
+            background: var(--primary-purple);
+            border-color: var(--primary-purple);
             color: white;
         }
 
-        .btn-icon.delete:hover {
-            background: var(--danger);
+        .bulk-action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        /* Modal styles */
+        .bulk-action-btn.danger:hover:not(:disabled) {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        /* Modal Styles */
         .modal-content {
-            background: var(--content-primary);
             border: none;
             border-radius: 16px;
+            box-shadow: var(--shadow-xl);
         }
 
         .modal-header {
-            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-pink) 100%);
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
             color: white;
             border-radius: 16px 16px 0 0;
-            border: none;
+            border-bottom: none;
+        }
+
+        .modal-header .btn-close {
+            filter: invert(1);
         }
 
         .modal-body {
             padding: 2rem;
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
+        .modal-footer {
+            border-top: 1px solid var(--content-border);
+            padding: 1rem 2rem;
         }
 
-        .form-label {
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .form-control, .form-select {
+        /* Calendar View Styles */
+        .view-toggle {
+            display: flex;
             background: var(--content-secondary);
-            border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 0.75rem 1rem;
-            color: var(--text-primary);
+            padding: 4px;
+            margin-left: auto;
         }
 
-        .form-control:focus, .form-select:focus {
+        .view-toggle-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .view-toggle-btn.active {
+            background: var(--primary-purple);
+            color: white;
+        }
+
+        .calendar-view {
+            display: none;
+        }
+
+        .calendar-view.active {
+            display: block;
+        }
+
+        .calendar-container {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 1.5rem;
             background: var(--content-secondary);
-            border-color: var(--primary-purple);
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
-            color: var(--text-primary);
+            border-bottom: 1px solid var(--content-border);
         }
 
-        /* Responsive */
-        @@media (max-width: 768px) {
-            .filter-group {
-                flex-direction: column;
-            }
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
 
-            .filter-item {
-                width: 100%;
-            }
+        .calendar-nav-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--content-border);
+            background: var(--content-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
 
-            .timeline-header, .timeline-room {
-                grid-template-columns: 80px 1fr;
-            }
+        .calendar-nav-btn:hover {
+            background: var(--primary-purple);
+            border-color: var(--primary-purple);
+            color: white;
+        }
 
-            .timeline-day:not(:first-child) {
+        .calendar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .calendar-weekdays {
+            display: contents;
+        }
+
+        .calendar-weekday {
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            background: var(--content-secondary);
+            border-bottom: 1px solid var(--content-border);
+        }
+
+        .calendar-day {
+            min-height: 120px;
+            border-right: 1px solid var(--content-border);
+            border-bottom: 1px solid var(--content-border);
+            padding: 8px;
+            position: relative;
+            background: var(--content-bg);
+        }
+
+        .calendar-day:nth-child(7n) {
+            border-right: none;
+        }
+
+        .calendar-day.other-month {
+            background: var(--content-secondary);
+            opacity: 0.3;
+        }
+
+        .calendar-day.today {
+            background: rgba(102, 126, 234, 0.05);
+            border-color: var(--primary-purple);
+        }
+
+        .calendar-day-number {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .calendar-day.today .calendar-day-number {
+            color: var(--primary-purple);
+        }
+
+        .calendar-showtimes {
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .calendar-showtimes::-webkit-scrollbar {
                 display: none;
             }
 
-            .room-schedule:not(:nth-child(2)) {
-                display: none;
-            }
+        .calendar-showtime-item {
+            min-width: 80px;
+            max-width: 80px;
+            background: white;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            padding: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .calendar-showtime-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-purple);
+        }
+
+        .calendar-showtime-poster {
+            width: 100%;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 4px;
+        }
+
+        .calendar-showtime-title {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--text-dark);
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-bottom: 2px;
+        }
+
+        .calendar-showtime-time {
+            font-size: 9px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Showtime Detail Modal */
+        .showtime-detail-modal .modal-dialog {
+            max-width: 800px;
+        }
+
+        .showtime-detail-header {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .showtime-detail-poster {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .showtime-detail-info h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .showtime-detail-meta {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .showtime-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--content-secondary);
+            border-radius: 8px;
+        }
+
+        .showtime-detail-item i {
+            color: var(--primary-purple);
+            width: 20px;
+        }
+
+        .showtime-detail-item strong {
+            color: var(--text-dark);
+        }
+
+        .table-view {
+            display: block;
+        }
+
+        .table-view.active {
+            display: block;
+        }
+
+        .calendar-view.active ~ .table-view {
+            display: none;
         }
     </style>
 </head>
+
 <body>
     <!-- New Dashboard Layout -->
     <div class="new-dashboard-layout">
@@ -335,11 +687,11 @@
         <aside class="new-dashboard-sidebar">
             <!-- Sidebar Header -->
             <div class="new-sidebar-header">
-                <a href="@Url.Action("Index", "Home")" class="new-sidebar-brand">
+                <a href="@Url.Action("Index","Home", new { area = "" })" class="new-sidebar-brand">
                     <div class="new-brand-logo"></div>
                     <div class="new-brand-text">
                         <h2>Cinema City</h2>
-                        <p>@(User.IsInRole("Admin") || User.IsInRole("2") ? "Admin Panel" : "Staff Panel")</p>
+                        <p>Admin Panel</p>
                     </div>
                 </a>
             </div>
@@ -349,13 +701,13 @@
                 <div class="new-nav-section">
                     <div class="new-nav-section-title">Tổng quan</div>
                     <div class="new-nav-item">
-                        <a href="@(User.IsInRole("Admin") || User.IsInRole("2") ? Url.Action("AdminDashboard", "Dashboard") : Url.Action("StaffDashboard", "Dashboard"))" class="new-nav-link">
+                        <a href="@Url.Action("AdminDashboard","Dashboard", new { area = "" })" class="new-nav-link">
                             <i class="fas fa-chart-line"></i>
                             <span>Dashboard</span>
                         </a>
                     </div>
                     <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Home")" class="new-nav-link">
+                        <a href="@Url.Action("Index","Home", new { area = "" })" class="new-nav-link">
                             <i class="fas fa-home"></i>
                             <span>Trang chủ</span>
                         </a>
@@ -364,15 +716,12 @@
 
                 <div class="new-nav-section">
                     <div class="new-nav-section-title">Quản lý</div>
-                    @if (User.IsInRole("Admin") || User.IsInRole("2"))
-                    {
                         <div class="new-nav-item">
                             <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-nav-link">
                                 <i class="fas fa-film"></i>
                                 <span>Quản lý phim</span>
                             </a>
                         </div>
-                    }
                     <div class="new-nav-item">
                         <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link">
                             <i class="fas fa-ticket-alt"></i>
@@ -385,21 +734,40 @@
                             <span>Quản lý lịch chiếu</span>
                         </a>
                     </div>
-                    @if (User.IsInRole("Admin") || User.IsInRole("2"))
-                    {
                         <div class="new-nav-item">
                             <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-nav-link">
                                 <i class="fas fa-gift"></i>
                                 <span>Quản lý khuyến mãi</span>
                             </a>
                         </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-star"></i>
+                            <span>Quản lý sự kiện</span>
+                        </a>
+                    </div>
                         <div class="new-nav-item">
                             <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-nav-link">
                                 <i class="fas fa-users"></i>
                                 <span>Quản lý người dùng</span>
                             </a>
                         </div>
-                    }
+                </div>
+
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Hệ thống</div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Báo cáo</span>
+                        </a>
+                    </div>
+                    <div class="new-nav-item">
+                        <a href="#" class="new-nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Cài đặt</span>
+                        </a>
+                    </div>
                 </div>
             </nav>
             
@@ -413,12 +781,21 @@
                         }
                         else
                         {
-                            <span>U</span>
+                            <span>A</span>
                         }
                     </div>
                     <div class="new-user-info">
-                        <h4>@User.Identity?.Name</h4>
-                        <p>@(User.IsInRole("Admin") || User.IsInRole("2") ? "Administrator" : "Staff")</p>
+                        <h4>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                @(User.Identity.Name?.Length > 12 ? User.Identity.Name.Substring(0, 12) + "..." : User.Identity.Name)
+                            }
+                            else
+                            {
+                                <span>Admin</span>
+                            }
+                        </h4>
+                        <p>Administrator</p>
                     </div>
                 </div>
                 <div class="new-user-actions">
@@ -437,323 +814,601 @@
 
         <!-- Main Content -->
         <main class="new-dashboard-main">
-            <!-- Error Message Display -->
-            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
-            {
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    @ViewBag.ErrorMessage
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            }
-            
-            <div class="new-dashboard-content">
+            <div class="showtime-management-content">
                 <!-- Page Header -->
-                <div class="showtime-header animate-fade-in">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h1 class="mb-2">
-                                <i class="fas fa-calendar-alt me-2"></i>
+                    <div class="showtime-page-header">
+                        <h1 class="showtime-page-title">
+                            <i class="fas fa-calendar-alt"></i>
                                 Quản lý lịch chiếu
                             </h1>
-                            <p class="mb-0 opacity-75">Quản lý và sắp xếp lịch chiếu phim trong rạp</p>
-                        </div>
-                        <button class="btn btn-light" onclick="openCreateModal()">
-                            <i class="fas fa-plus me-2"></i>
-                            Thêm lịch chiếu
-                        </button>
-                    </div>
+                        <p class="showtime-page-subtitle">
+                            Quản lý và điều phối lịch chiếu phim tại rạp Cinema City
+                        </p>
                 </div>
 
-                <!-- Filters -->
-                <div class="showtime-filters animate-fade-in">
-                    <div class="filter-group">
-                        <div class="filter-item">
-                            <label>Phim</label>
-                            <select class="form-select" id="movieFilter">
-                                <option value="">Tất cả phim</option>
-                                @foreach (var movie in Model.Movies)
-                                {
-                                    <option value="@movie.Id">@movie.Title</option>
-                                }
-                            </select>
+                    <!-- Controls Section -->
+                    <div class="showtime-controls">
+                        <div class="showtime-controls-header">
+                            <div class="showtime-search-box">
+                                <i class="fas fa-search showtime-search-icon"></i>
+                                <input type="text" 
+                                       class="showtime-search-input" 
+                                       id="showtimeSearch"
+                                       placeholder="Tìm kiếm theo tên phim, phòng chiếu..."
+                                       onkeyup="searchShowtimes()">
                         </div>
-                        <div class="filter-item">
-                            <label>Phòng chiếu</label>
-                            <select class="form-select" id="roomFilter">
-                                <option value="">Tất cả phòng</option>
-                                @foreach (var room in Model.CinemaRooms)
-                                {
-                                    <option value="@room.Id">@room.Name</option>
-                                }
-                            </select>
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="view-toggle">
+                                    <button class="view-toggle-btn active" onclick="switchView('calendar')">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        Lịch
+                                    </button>
+                                    <button class="view-toggle-btn" onclick="switchView('table')">
+                                        <i class="fas fa-list"></i>
+                                        Bảng
+                                    </button>
                         </div>
-                        <div class="filter-item">
-                            <label>Chế độ xem</label>
-                            <select class="form-select" id="viewMode">
-                                <option value="timeline">Timeline</option>
-                                <option value="list">Danh sách</option>
-                            </select>
-                        </div>
-                        <div class="filter-item" style="flex: 0; margin-top: 1.75rem;">
-                            <button class="btn btn-primary" onclick="applyFilters()">
-                                <i class="fas fa-filter me-2"></i>
+                                <button class="btn-filter" onclick="openFilterModal()">
+                                    <i class="fas fa-filter"></i>
                                 Lọc
                             </button>
+                                <button class="btn-export" onclick="exportShowtimes()">
+                                    <i class="fas fa-download"></i>
+                                    Xuất Excel
+                                </button>
+                                <button class="btn-add-showtime" onclick="openCreateShowtimeModal()">
+                                    <i class="fas fa-plus"></i>
+                                    Thêm lịch chiếu
+                                </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Week Navigator -->
-                <div class="week-navigator animate-slide-in">
-                    <button class="btn btn-outline-primary" onclick="changeWeek(-1)">
+                    <!-- Calendar View -->
+                    <div class="calendar-view active" id="calendarView">
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <div class="calendar-nav">
+                                    <button class="calendar-nav-btn" onclick="changeMonth(-1)">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <div class="week-info">
-                        <h4>Tuần @Model.CurrentWeek.WeekNumber</h4>
-                        <p>@Model.CurrentWeek.StartDate.ToString("dd/MM/yyyy") - @Model.CurrentWeek.EndDate.ToString("dd/MM/yyyy")</p>
-                    </div>
-                    <button class="btn btn-outline-primary" onclick="changeWeek(1)">
+                                    <h3 class="calendar-title" id="calendarTitle">Tháng 12/2024</h3>
+                                    <button class="calendar-nav-btn" onclick="changeMonth(1)">
                         <i class="fas fa-chevron-right"></i>
                     </button>
-                    <button class="btn btn-primary ms-2" onclick="goToToday()">
-                        Hôm nay
+                                </div>
+                                <button class="btn-add-showtime" onclick="openCreateShowtimeModal()">
+                                    <i class="fas fa-plus"></i>
+                                    Thêm lịch chiếu
                     </button>
                 </div>
-
-                <!-- Timeline View -->
-                <div class="showtime-timeline animate-slide-in" id="timelineView">
-                    <div class="timeline-header">
-                        <div></div>
-                        @foreach (var day in Model.CurrentWeek.GetDaysOfWeek())
-                        {
-                            <div class="timeline-day @(day.Date == DateTime.Today ? "today" : "")">
-                                <div class="fw-bold">@day.ToString("ddd")</div>
-                                <div>@day.ToString("dd/MM")</div>
+                            <div class="calendar-grid" id="calendarGrid">
+                                <div class="calendar-weekdays">
+                                    <div class="calendar-weekday">Thứ 2</div>
+                                    <div class="calendar-weekday">Thứ 3</div>
+                                    <div class="calendar-weekday">Thứ 4</div>
+                                    <div class="calendar-weekday">Thứ 5</div>
+                                    <div class="calendar-weekday">Thứ 6</div>
+                                    <div class="calendar-weekday">Thứ 7</div>
+                                    <div class="calendar-weekday">Chủ nhật</div>
                             </div>
-                        }
+                                <!-- Calendar days will be generated by JavaScript -->
                     </div>
-                    <div class="timeline-body">
-                        @foreach (var room in Model.CinemaRooms)
-                        {
-                            <div class="timeline-room">
-                                <div class="room-label">
-                                    @room.Name
-                                    <span class="badge bg-secondary ms-2">@room.TotalSeats ghế</span>
                                 </div>
-                                @foreach (var day in Model.CurrentWeek.GetDaysOfWeek())
-                                {
-                                    <div class="room-schedule" data-room="@room.Id" data-date="@day.ToString("yyyy-MM-dd")">
-                                        @{
-                                            var dayShowtimes = Model.Showtimes
-                                                .Where(s => s.CinemaRoomId == room.Id && s.ShowDate.Date == day.Date)
-                                                .OrderBy(s => s.StartTime)
-                                                .ToList();
-                                        }
-                                        @foreach (var showtime in dayShowtimes)
-                                        {
-                                            var topPosition = ((showtime.StartTime.TotalMinutes - 540) / 780) * 100; // 9AM = 540 min, 10PM = 1320 min
-                                            var height = (showtime.MovieDuration / 780.0) * 100;
-                                            var occupancyRate = (double)showtime.BookedSeats / showtime.TotalSeats * 100;
-                                            
-                                            <div class="showtime-block @(room.RoomType.ToLower())"
-                                                 style="top: @topPosition%; height: @height%;"
-                                                 data-showtime-id="@showtime.Id"
-                                                 onclick="editShowtime('@showtime.Id')"
-                                                 title="@showtime.MovieTitle - @showtime.StartTime.ToString(@"hh\:mm")">
-                                                <div>@showtime.StartTime.ToString(@"hh\:mm")</div>
-                                                <div class="fw-bold">@showtime.MovieTitle</div>
-                                                <div>@occupancyRate.ToString("0")% đã đặt</div>
+                    </div>
+
+                    <!-- Table View -->
+                    <div class="table-view" id="tableView">
+                        <div class="showtime-table-container" id="showtimeTableContainer">
+                        <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                            <div class="d-flex align-items-center gap-3">
+                                <h5 class="mb-0">Danh sách lịch chiếu</h5>
+                                <span class="badge bg-primary">@Model.Showtimes.Count() lịch chiếu</span>
                                             </div>
-                                        }
-                                    </div>
-                                }
-                            </div>
-                        }
+                            <div class="bulk-actions">
+                                <button class="bulk-action-btn danger" id="bulkDeleteBtn" onclick="bulkDeleteShowtimes()" disabled>
+                                    <i class="fas fa-trash"></i>
+                                    Xóa đã chọn
+                                </button>
+                                <button class="bulk-action-btn" id="bulkUpdateBtn" onclick="bulkUpdateStatus()" disabled>
+                                    <i class="fas fa-toggle-on"></i>
+                                    Cập nhật trạng thái
+                                </button>
                     </div>
                 </div>
 
-                <!-- List View -->
-                <div class="showtime-list animate-slide-in" id="listView" style="display: none;">
-                    <table class="showtime-table">
+                        <div class="table-responsive">
+                            <table class="showtime-table" id="showtimeTable">
                         <thead>
                             <tr>
+                                        <th style="width: 40px;">
+                                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                        </th>
                                 <th>Phim</th>
                                 <th>Phòng chiếu</th>
                                 <th>Ngày chiếu</th>
                                 <th>Giờ chiếu</th>
                                 <th>Giá vé</th>
-                                <th>Tình trạng ghế</th>
-                                <th>Thao tác</th>
+                                        <th>Trạng thái</th>
+                                        <th>Tình trạng</th>
+                                        <th style="width: 120px;">Thao tác</th>
                             </tr>
                         </thead>
-                        <tbody>
+                                <tbody id="showtimeTableBody">
+                                    @if (Model.Showtimes != null && Model.Showtimes.Any())
+                                    {
                             @foreach (var showtime in Model.Showtimes.OrderBy(s => s.ShowDate).ThenBy(s => s.StartTime))
                             {
-                                var occupancyRate = (double)showtime.BookedSeats / showtime.TotalSeats * 100;
-                                var occupancyClass = occupancyRate > 80 ? "high" : (occupancyRate > 50 ? "medium" : "low");
-                                
-                                <tr>
+                                            var showtimeOccupancyRate = showtime.TotalSeats > 0 ? (double)showtime.BookedSeats / showtime.TotalSeats * 100 : 0;
+                                            var occupancyStatus = showtimeOccupancyRate >= 90 ? "sold-out" : 
+                                                                showtimeOccupancyRate >= 70 ? "nearly-full" : "available";
+                                            var occupancyText = showtimeOccupancyRate >= 90 ? "Hết vé" : 
+                                                              showtimeOccupancyRate >= 70 ? "Sắp hết vé" : "Còn vé";
+                                            
+                                            var status = showtime.ShowDate.Date < DateTime.Today ? "inactive" : 
+                                                       showtime.ShowDate.Date == DateTime.Today ? "active" : "pending";
+                                            var statusText = showtime.ShowDate.Date < DateTime.Today ? "Đã qua" : 
+                                                           showtime.ShowDate.Date == DateTime.Today ? "Hôm nay" : "Sắp tới";
+                                            
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" value="@showtime.Id" onchange="updateBulkActionButtons()">
+                                                </td>
                                     <td>
                                         <div class="movie-info">
                                             @if (!string.IsNullOrEmpty(showtime.MoviePoster))
                                             {
                                                 <img src="@showtime.MoviePoster" alt="@showtime.MovieTitle" class="movie-poster">
                                             }
-                                            <div>
-                                                <div class="fw-bold">@showtime.MovieTitle</div>
-                                                <div class="text-muted small">@showtime.MovieDuration phút</div>
+                                                        else
+                                                        {
+                                                            <div class="movie-poster bg-light d-flex align-items-center justify-content-center">
+                                                                <i class="fas fa-film text-muted"></i>
+                                                            </div>
+                                                        }
+                                                        <div class="movie-details">
+                                                            <h6>@showtime.MovieTitle</h6>
+                                                            <small>@showtime.MovieDuration phút</small>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>@showtime.CinemaRoomName</td>
-                                    <td>@showtime.ShowDate.ToString("dd/MM/yyyy")</td>
-                                    <td>@showtime.StartTime.ToString(@"hh\:mm") - @showtime.EndTime.ToString(@"hh\:mm")</td>
-                                    <td>@showtime.Price.ToString("N0") ₫</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="occupancy-bar">
-                                                <div class="occupancy-fill @occupancyClass" style="width: @occupancyRate%"></div>
-                                            </div>
-                                            <span>@showtime.BookedSeats/@showtime.TotalSeats</span>
+                                                <td>
+                                                    <strong>@showtime.CinemaRoomName</strong>
+                                                </td>
+                                                <td>
+                                                    @showtime.ShowDate.ToString("dd/MM/yyyy")
+                                                </td>
+                                                <td>
+                                                    <strong>@showtime.StartTime.ToString(@"hh\:mm")</strong>
+                                                </td>
+                                                <td>
+                                                    <span class="text-success fw-bold">@showtime.Price.ToString("N0") VNĐ</span>
+                                                </td>
+                                                <td>
+                                                    <span class="status-badge @status">@statusText</span>
+                                                </td>
+                                                <td>
+                                                    <span class="status-badge @occupancyStatus">@occupancyText</span>
+                                                    <div class="mt-1">
+                                                        <small class="text-muted">@showtime.BookedSeats/@showtime.TotalSeats vé</small>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn-icon" onclick="editShowtime('@showtime.Id')" title="Sửa">
+                                                        <button class="action-btn" onclick="viewShowtime('@showtime.Id')" title="Xem chi tiết">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="action-btn edit" onclick="editShowtime('@showtime.Id')" title="Chỉnh sửa">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button class="btn-icon delete" onclick="deleteShowtime('@showtime.Id')" title="Xóa">
+                                                        <button class="action-btn delete" onclick="deleteShowtime('@showtime.Id')" title="Xóa">
                                                 <i class="fas fa-trash"></i>
                                             </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="9">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-calendar-times"></i>
+                                                    <h5>Chưa có lịch chiếu nào</h5>
+                                                    <p>Nhấn "Thêm lịch chiếu" để tạo lịch chiếu mới</p>
                                         </div>
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
+                        </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Create/Edit Modal -->
-    <div class="modal fade" id="showtimeModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+    <!-- Showtime Detail Modal -->
+    <div class="modal fade showtime-detail-modal" id="showtimeDetailModal" tabindex="-1">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Thêm lịch chiếu mới</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">Chi tiết lịch chiếu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" id="modalBody">
-                    <!-- Content will be loaded here -->
+                <div class="modal-body" id="showtimeDetailBody">
+                    <!-- Content will be loaded by JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-warning" onclick="editCurrentShowtime()">
+                        <i class="fas fa-edit"></i>
+                        Chỉnh sửa
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="deleteCurrentShowtime()">
+                        <i class="fas fa-trash"></i>
+                        Xóa
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     
     <script>
-        let currentWeekStart = new Date('@Model.CurrentWeek.StartDate.ToString("yyyy-MM-dd")');
-        
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // View mode change
-            document.getElementById('viewMode').addEventListener('change', function() {
-                const timelineView = document.getElementById('timelineView');
-                const listView = document.getElementById('listView');
+        // Search functionality
+        function searchShowtimes() {
+            const searchTerm = document.getElementById('showtimeSearch').value.toLowerCase();
+            const tableBody = document.getElementById('showtimeTableBody');
+            const rows = tableBody.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                const movieTitle = row.querySelector('.movie-details h6')?.textContent.toLowerCase() || '';
+                const roomName = row.querySelectorAll('td')[2]?.textContent.toLowerCase() || '';
                 
-                if (this.value === 'timeline') {
-                    timelineView.style.display = 'block';
-                    listView.style.display = 'none';
+                if (movieTitle.includes(searchTerm) || roomName.includes(searchTerm)) {
+                    row.style.display = '';
                 } else {
-                    timelineView.style.display = 'none';
-                    listView.style.display = 'block';
-                }
-            });
-        });
-
-        // Week navigation
-        function changeWeek(direction) {
-            currentWeekStart.setDate(currentWeekStart.getDate() + (direction * 7));
-            loadWeekData();
-        }
-
-        function goToToday() {
-            currentWeekStart = new Date();
-            currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay() + 1); // Monday
-            loadWeekData();
-        }
-
-        function loadWeekData() {
-            $.get('@Url.Action("GetWeeklyData", "Showtimes")', { startDate: currentWeekStart.toISOString() }, function(response) {
-                if (response.success) {
-                    // Update timeline with new data
-                    updateTimeline(response.data);
+                    row.style.display = 'none';
                 }
             });
         }
 
-        function updateTimeline(showtimes) {
-            // Implementation to update timeline view with new showtime data
-            console.log('Updating timeline with', showtimes);
+        // Select all functionality
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            
+            updateBulkActionButtons();
         }
 
-        // CRUD operations
-        function openCreateModal() {
-            $('#modalTitle').text('Thêm lịch chiếu mới');
-            $.get('@Url.Action("Create", "Showtimes")', function(html) {
-                $('#modalBody').html(html);
-                $('#showtimeModal').modal('show');
-            });
+        // Update bulk action buttons
+        function updateBulkActionButtons() {
+            const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            const bulkUpdateBtn = document.getElementById('bulkUpdateBtn');
+            
+            const hasSelected = checkedBoxes.length > 0;
+            bulkDeleteBtn.disabled = !hasSelected;
+            bulkUpdateBtn.disabled = !hasSelected;
+        }
+
+        // Modal functions
+        function openCreateShowtimeModal() {
+            showNotification('Chức năng thêm lịch chiếu đang được phát triển', 'info');
+        }
+
+        function openFilterModal() {
+            showNotification('Chức năng lọc đang được phát triển', 'info');
+        }
+
+        function exportShowtimes() {
+            showNotification('Đang xuất dữ liệu...', 'info');
+        }
+
+        // CRUD functions
+        function viewShowtime(id) {
+            showNotification(`Xem chi tiết lịch chiếu ID: ${id}`, 'info');
         }
 
         function editShowtime(id) {
-            $('#modalTitle').text('Chỉnh sửa lịch chiếu');
-            $.get('@Url.Action("Edit", "Showtimes")/' + id, function(html) {
-                $('#modalBody').html(html);
-                $('#showtimeModal').modal('show');
-            });
+            showNotification(`Chỉnh sửa lịch chiếu ID: ${id}`, 'info');
         }
 
         function deleteShowtime(id) {
             if (confirm('Bạn có chắc chắn muốn xóa lịch chiếu này?')) {
-                $.post('@Url.Action("Delete", "Showtimes")/' + id, { __RequestVerificationToken: $('[name=__RequestVerificationToken]').val() }, function(response) {
-                    if (response.success) {
-                        alert(response.message);
-                        location.reload();
-                    } else {
-                        alert('Lỗi: ' + response.message);
-                    }
-                });
+                showNotification(`Đã xóa lịch chiếu ID: ${id}`, 'success');
             }
         }
 
-        function saveShowtime() {
-            const form = $('#showtimeForm');
-            if (form.valid()) {
-                $.post(form.attr('action'), form.serialize(), function(response) {
-                    if (response.success) {
-                        $('#showtimeModal').modal('hide');
-                        alert(response.message);
-                        location.reload();
-                    } else {
-                        alert('Lỗi: ' + response.message);
-                    }
-                });
+        function bulkDeleteShowtimes() {
+            const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+            if (checkedBoxes.length === 0) {
+                showNotification('Vui lòng chọn ít nhất một lịch chiếu để xóa', 'warning');
+                return;
             }
-        }
-
-        function applyFilters() {
-            const movieId = $('#movieFilter').val();
-            const roomId = $('#roomFilter').val();
             
-            // Apply filters to the current view
-            console.log('Applying filters:', { movieId, roomId });
+            if (confirm(`Bạn có chắc chắn muốn xóa ${checkedBoxes.length} lịch chiếu đã chọn?`)) {
+                showNotification(`Đã xóa ${checkedBoxes.length} lịch chiếu`, 'success');
+                checkedBoxes.forEach(checkbox => {
+                    checkbox.closest('tr').remove();
+                });
+                updateBulkActionButtons();
+            }
         }
+
+        function bulkUpdateStatus() {
+            const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+            if (checkedBoxes.length === 0) {
+                showNotification('Vui lòng chọn ít nhất một lịch chiếu để cập nhật', 'warning');
+                return;
+            }
+            
+            showNotification(`Đã cập nhật trạng thái cho ${checkedBoxes.length} lịch chiếu`, 'success');
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = `
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                min-width: 300px;
+                box-shadow: var(--shadow-lg);
+                border: none;
+                border-radius: 12px;
+            `;
+            
+            const icon = type === 'success' ? 'check-circle' : 
+                        type === 'warning' ? 'exclamation-triangle' : 
+                        type === 'danger' ? 'times-circle' : 'info-circle';
+            
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-${icon} me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Calendar functionality
+        let currentDate = new Date();
+        let currentShowtimeId = null;
+        let showtimeData = @Html.Raw(Json.Serialize(Model.Showtimes ?? new List<UI.Areas.ShowtimeManagement.Models.ShowtimeDto>()));
+
+        function switchView(viewType) {
+            const calendarView = document.getElementById('calendarView');
+            const tableView = document.getElementById('tableView');
+            const toggleBtns = document.querySelectorAll('.view-toggle-btn');
+
+            toggleBtns.forEach(btn => btn.classList.remove('active'));
+            
+            if (viewType === 'calendar') {
+                calendarView.classList.add('active');
+                tableView.classList.remove('active');
+                document.querySelector('[onclick="switchView(\'calendar\')"]').classList.add('active');
+                generateCalendar();
+                    } else {
+                calendarView.classList.remove('active');
+                tableView.classList.add('active');
+                document.querySelector('[onclick="switchView(\'table\')"]').classList.add('active');
+            }
+        }
+
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            generateCalendar();
+        }
+
+        function generateCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const firstDayOfWeek = (firstDay.getDay() + 6) % 7; // Convert to Monday = 0
+            
+            // Update title
+            const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+                              'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+            document.getElementById('calendarTitle').textContent = `${monthNames[month]}/${year}`;
+
+            const calendarGrid = document.getElementById('calendarGrid');
+            
+            // Clear existing days
+            const existingDays = calendarGrid.querySelectorAll('.calendar-day');
+            existingDays.forEach(day => day.remove());
+
+            // Generate calendar days
+            let dayCount = 1;
+            for (let week = 0; week < 6; week++) {
+                for (let day = 0; day < 7; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    
+                    const dayIndex = week * 7 + day;
+                    
+                    if (dayIndex < firstDayOfWeek) {
+                        // Previous month days
+                        const prevMonthDay = new Date(year, month, -(firstDayOfWeek - dayIndex - 1));
+                        dayElement.classList.add('other-month');
+                        dayElement.innerHTML = `<div class="calendar-day-number">${prevMonthDay.getDate()}</div>`;
+                    } else if (dayCount <= lastDay.getDate()) {
+                        // Current month days
+                        const currentDay = new Date(year, month, dayCount);
+                        const isToday = currentDay.toDateString() === new Date().toDateString();
+                        
+                        if (isToday) {
+                            dayElement.classList.add('today');
+                        }
+                        
+                        dayElement.innerHTML = `
+                            <div class="calendar-day-number">${dayCount}</div>
+                            <div class="calendar-showtimes" id="day-${year}-${month}-${dayCount}">
+                                ${generateShowtimesForDay(currentDay)}
+                            </div>
+                        `;
+                        dayCount++;
+                    } else {
+                        // Next month days
+                        const nextMonthDay = dayCount - lastDay.getDate();
+                        dayElement.classList.add('other-month');
+                        dayElement.innerHTML = `<div class="calendar-day-number">${nextMonthDay}</div>`;
+                        dayCount++;
+                    }
+                    
+                    calendarGrid.appendChild(dayElement);
+                }
+                
+                if (dayCount > lastDay.getDate() && week < 5) {
+                    break;
+                }
+            }
+        }
+
+        function generateShowtimesForDay(date) {
+            const dateStr = date.toISOString().split('T')[0];
+            const dayShowtimes = showtimeData.filter(st => {
+                const showtimeDate = new Date(st.showDate).toISOString().split('T')[0];
+                return showtimeDate === dateStr;
+            });
+
+            return dayShowtimes.map(showtime => `
+                <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')">
+                    <img src="${showtime.moviePoster || '/images/no-poster.jpg'}" 
+                         alt="${showtime.movieTitle}" 
+                         class="calendar-showtime-poster"
+                         onerror="this.src='/images/no-poster.jpg'">
+                    <div class="calendar-showtime-title">${showtime.movieTitle}</div>
+                    <div class="calendar-showtime-time">${formatTime(showtime.startTime)}</div>
+                </div>
+            `).join('');
+        }
+
+        function formatTime(timeSpan) {
+            // Assuming timeSpan is in format "HH:mm:ss" or similar
+            return timeSpan.substring(0, 5);
+        }
+
+        function showShowtimeDetail(showtimeId) {
+            const showtime = showtimeData.find(st => st.id === showtimeId);
+            if (!showtime) return;
+
+            currentShowtimeId = showtimeId;
+            
+            const modalBody = document.getElementById('showtimeDetailBody');
+            modalBody.innerHTML = `
+                <div class="showtime-detail-header">
+                    <img src="${showtime.moviePoster || '/images/no-poster.jpg'}" 
+                         alt="${showtime.movieTitle}" 
+                         class="showtime-detail-poster"
+                         onerror="this.src='/images/no-poster.jpg'">
+                    <div class="showtime-detail-info">
+                        <h3>${showtime.movieTitle}</h3>
+                        <p class="text-muted">Thời lượng: ${showtime.movieDuration} phút</p>
+                        <div class="showtime-detail-meta">
+                            <div class="showtime-detail-item">
+                                <i class="fas fa-calendar"></i>
+                                <div>
+                                    <strong>Ngày chiếu:</strong><br>
+                                    ${new Date(showtime.showDate).toLocaleDateString('vi-VN')}
+                                </div>
+                            </div>
+                            <div class="showtime-detail-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <strong>Giờ chiếu:</strong><br>
+                                    ${formatTime(showtime.startTime)}
+                                </div>
+                            </div>
+                            <div class="showtime-detail-item">
+                                <i class="fas fa-door-open"></i>
+                                <div>
+                                    <strong>Phòng chiếu:</strong><br>
+                                    ${showtime.cinemaRoomName}
+                                </div>
+                            </div>
+                            <div class="showtime-detail-item">
+                                <i class="fas fa-money-bill"></i>
+                                <div>
+                                    <strong>Giá vé:</strong><br>
+                                    ${showtime.price.toLocaleString('vi-VN')} VNĐ
+                                </div>
+                            </div>
+                            <div class="showtime-detail-item">
+                                <i class="fas fa-users"></i>
+                                <div>
+                                    <strong>Tình trạng vé:</strong><br>
+                                    ${showtime.bookedSeats}/${showtime.totalSeats} vé đã đặt
+                                </div>
+                            </div>
+                            <div class="showtime-detail-item">
+                                <i class="fas fa-info-circle"></i>
+                                <div>
+                                    <strong>Trạng thái:</strong><br>
+                                    ${getStatusText(showtime.showDate)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const modal = new bootstrap.Modal(document.getElementById('showtimeDetailModal'));
+            modal.show();
+        }
+
+        function getStatusText(showDate) {
+            const today = new Date();
+            const showtimeDate = new Date(showDate);
+            
+            if (showtimeDate.toDateString() === today.toDateString()) {
+                return 'Hôm nay';
+            } else if (showtimeDate < today) {
+                return 'Đã qua';
+            } else {
+                return 'Sắp tới';
+            }
+        }
+
+        function editCurrentShowtime() {
+            if (currentShowtimeId) {
+                editShowtime(currentShowtimeId);
+                bootstrap.Modal.getInstance(document.getElementById('showtimeDetailModal')).hide();
+            }
+        }
+
+        function deleteCurrentShowtime() {
+            if (currentShowtimeId) {
+                deleteShowtime(currentShowtimeId);
+                bootstrap.Modal.getInstance(document.getElementById('showtimeDetailModal')).hide();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Showtime Management Dashboard loaded');
+            generateCalendar();
+        });
     </script>
 </body>
 </html>

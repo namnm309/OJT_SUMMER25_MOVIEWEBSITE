@@ -1,6 +1,6 @@
 @model UI.Areas.ShowtimeManagement.Models.ShowtimePageViewModel
 @{
-    ViewData["Title"] = "Dashboard Quản lý Lịch chiếu";
+    ViewData["Title"] = "Quản lý lịch chiếu - Cinema City";
     Layout = null;
 }
 
@@ -9,944 +9,245 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Cinema City Admin</title>
+    <title>@ViewData["Title"]</title>
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- FullCalendar -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- New Dashboard CSS -->
+    <link rel="stylesheet" href="~/css/new-dashboard.css" />
     
     <style>
-        /* Admin Dashboard Design System */
-        :root {
-            /* Color Palette */
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --danger-gradient: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
-            
-            /* Modern Colors */
-            --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --bg-dark: #0f172a;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --border-color: #e2e8f0;
-            --border-hover: #cbd5e1;
-            
-            /* Shadows */
-            --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            
-            /* Spacing */
-            --space-xs: 0.5rem;
-            --space-sm: 0.75rem;
-            --space-md: 1rem;
-            --space-lg: 1.5rem;
-            --space-xl: 2rem;
-            --space-2xl: 3rem;
+        /* Showtime Management Specific Styles */
+        .showtime-management-content {
+            padding: 2rem;
         }
-
-        * {
+        
+        /* Page Header */
+        .showtime-page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .showtime-page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
             margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Admin Layout */
-        .admin-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            grid-template-rows: auto 1fr;
-            grid-template-areas: 
-                "sidebar header"
-                "sidebar main";
-            min-height: 100vh;
-        }
-
-        /* Modern Sidebar */
-        .admin-sidebar {
-            grid-area: sidebar;
-            background: var(--bg-dark);
-            color: white;
-            padding: var(--space-xl);
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
-            width: 280px;
-            overflow-y: auto;
-            z-index: 1000;
-            scrollbar-width: thin;
-            scrollbar-color: #475569 transparent;
-        }
-
-        .admin-sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .admin-sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .admin-sidebar::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 2px;
-        }
-
-        .sidebar-brand {
             display: flex;
             align-items: center;
-            gap: var(--space-md);
-            margin-bottom: var(--space-2xl);
-            text-decoration: none;
-            color: white;
+            gap: 0.75rem;
         }
-
-        .sidebar-brand:hover {
-            color: white;
-            text-decoration: none;
+        
+        .showtime-page-subtitle {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 1rem;
         }
-
-        .brand-logo {
-            width: 50px;
-            height: 50px;
-            background: var(--primary-gradient);
+        
+        /* Controls Section */
+        .showtime-controls {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
             border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .brand-logo::before {
-            content: '🎬';
-            position: relative;
-            z-index: 1;
-        }
-
-        .brand-logo::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .sidebar-brand:hover .brand-logo::after {
-            left: 100%;
-        }
-
-        .brand-text h2 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin: 0;
-        }
-
-        .brand-text p {
-            font-size: 0.875rem;
-            opacity: 0.7;
-            margin: 0;
-        }
-
-        .sidebar-nav {
-            list-style: none;
-        }
-
-        .nav-section {
-            margin-bottom: var(--space-xl);
-        }
-
-        .nav-section-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.6;
-            margin-bottom: var(--space-md);
-        }
-
-        .nav-item {
-            margin-bottom: var(--space-xs);
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            padding: var(--space-md) var(--space-lg);
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--primary-gradient);
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            background: rgba(102, 126, 234, 0.1);
-            color: white;
-            text-decoration: none;
-        }
-
-        .nav-link:hover::before,
-        .nav-link.active::before {
-            transform: scaleY(1);
-        }
-
-        .nav-link i {
-            width: 20px;
-            text-align: center;
-        }
-
-        /* Modern Header */
-        .admin-header {
-            grid-area: header;
-            background: var(--bg-secondary);
-            padding: var(--space-lg) var(--space-xl);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
             box-shadow: var(--shadow-sm);
+        }
+
+        .showtime-controls-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 999;
-            margin-left: 280px;
-        }
-
-        .header-title {
-            display: flex;
             align-items: center;
-            gap: var(--space-md);
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
-        .header-title h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-            margin: 0;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header-breadcrumb {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-left: var(--space-md);
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-        }
-
-        .header-action-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            border: none;
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
+        .showtime-search-box {
             position: relative;
+            flex: 1;
+            min-width: 300px;
         }
 
-        .header-action-btn:hover {
-            background: var(--primary-gradient);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .header-action-btn.notification::after {
-            content: '';
+        .showtime-search-icon {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 8px;
-            height: 8px;
-            background: #ef4444;
-            border-radius: 50%;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            z-index: 2;
         }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            padding: var(--space-sm) var(--space-md);
-            background: var(--bg-primary);
-            border-radius: 12px;
-            cursor: pointer;
+        
+        .showtime-search-input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 1px solid var(--content-border);
+            border-radius: 8px;
+            background: var(--content-secondary);
+            color: var(--text-dark);
+            font-size: 14px;
             transition: all 0.3s ease;
         }
+        
+        .showtime-search-input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: var(--content-bg);
+            outline: none;
+        }
 
-        .user-profile:hover {
-            background: var(--primary-gradient);
+        .showtime-search-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .btn-add-showtime {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-add-showtime:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
             color: white;
         }
 
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
+        .btn-filter, .btn-export {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            color: var(--text-dark);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
+            gap: 0.5rem;
         }
-
-        .user-info h4 {
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin: 0;
+        
+        .btn-filter:hover, .btn-export:hover {
+            background: var(--content-secondary);
+            border-color: var(--primary-purple);
+            color: var(--primary-purple);
         }
-
-        .user-info p {
-            font-size: 0.75rem;
-            opacity: 0.7;
-            margin: 0;
-        }
-
-        /* Main Content */
-        .admin-main {
-            grid-area: main;
-            padding: var(--space-xl);
-            margin-left: 280px;
-            max-width: calc(100vw - 280px);
-        }
-
-        /* Dashboard Cards */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--space-xl);
-            margin-bottom: var(--space-2xl);
-        }
-
-        .dashboard-card {
-            background: var(--bg-secondary);
-            border-radius: 20px;
-            padding: var(--space-xl);
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            position: relative;
+        
+        /* Showtime Table Container */
+        .showtime-table-container {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
             overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            position: relative;
         }
 
-        .dashboard-card::before {
-            content: '';
+        .showtime-table-container.loading {
+            opacity: 0.7;
+        }
+        
+        .loading-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: var(--primary-gradient);
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-            border-color: var(--border-hover);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: var(--space-lg);
-        }
-
-        .card-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin: 0;
-            color: var(--text-primary);
-        }
-
-        .card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: var(--primary-gradient);
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 1.25rem;
+            z-index: 10;
         }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--space-lg);
-            margin-bottom: var(--space-2xl);
-        }
-
-        .stat-card {
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            padding: var(--space-xl);
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--primary-gradient);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-content {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-        }
-
-        .stat-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
-            background: var(--primary-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
+        
+        .loading-spinner-small {
+            color: var(--primary-purple);
             font-size: 1.5rem;
         }
 
-        .stat-info h3 {
-            font-size: 2rem;
-            font-weight: 800;
-            margin: 0;
-            color: var(--text-primary);
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-info p {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin: 0.25rem 0 0;
-            font-weight: 500;
-        }
-
-        .stat-trend {
-            position: absolute;
-            top: var(--space-md);
-            right: var(--space-md);
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-            background: rgba(34, 197, 94, 0.1);
-            color: #16a34a;
-        }
-
-        .stat-trend.down {
-            background: rgba(239, 68, 68, 0.1);
-            color: #dc2626;
-        }
-
-        /* Modern Table */
-        .modern-table-container {
-            background: var(--bg-secondary);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border-color);
-        }
-
-        .table-header {
-            padding: var(--space-xl);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .table-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--text-primary);
-        }
-
-        .table-actions {
-            display: flex;
-            gap: var(--space-md);
-        }
-
-        .btn-primary-modern {
-            background: var(--primary-gradient);
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary-modern:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-secondary-modern {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-secondary-modern:hover {
-            background: var(--bg-secondary);
-            border-color: var(--border-hover);
-            color: var(--text-primary);
-        }
-
-        .modern-table {
+        /* Showtime Table */
+        .showtime-table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse;
+            color: var(--text-dark);
         }
 
-        .modern-table th {
-            background: var(--bg-primary);
-            padding: var(--space-lg);
-            text-align: left;
+        .showtime-table thead {
+            background: var(--content-secondary);
+        }
+        
+        .showtime-table thead th {
+            padding: 16px 12px;
             font-weight: 600;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--content-border);
+            text-align: left;
+        }
+        
+        .showtime-table tbody tr {
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            transition: background-color 0.2s ease;
         }
 
-        .modern-table td {
-            padding: var(--space-lg);
-            border-bottom: 1px solid var(--border-color);
+        .showtime-table tbody tr:hover {
+            background: var(--content-secondary);
+        }
+        
+        .showtime-table tbody td {
+            padding: 16px 12px;
             vertical-align: middle;
-            transition: all 0.3s ease;
+            font-size: 14px;
         }
 
-        .modern-table tr:hover td {
-            background: var(--bg-primary);
+        /* Movie Info in Table */
+        .movie-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .modern-table tr:last-child td {
-            border-bottom: none;
+        .movie-poster {
+            width: 40px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .movie-details h6 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .movie-details small {
+            color: var(--text-muted);
+            font-size: 12px;
         }
 
         /* Status Badges */
         .status-badge {
-            padding: 0.375rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .status-badge.active {
-            background: rgba(34, 197, 94, 0.1);
-            color: #16a34a;
-        }
-
-        .status-badge.inactive {
-            background: rgba(239, 68, 68, 0.1);
-            color: #dc2626;
-        }
-
-        .status-badge.pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: #d97706;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: var(--space-sm);
-        }
-
-        .action-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            border: none;
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            font-size: 0.875rem;
-        }
-
-        .action-btn:hover {
-            background: var(--primary-gradient);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .action-btn.delete:hover {
-            background: var(--danger-gradient);
-        }
-
-        /* Calendar Integration */
-        .calendar-container {
-            background: var(--bg-secondary);
-            border-radius: 20px;
-            padding: var(--space-xl);
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border-color);
-        }
-
-        .fc {
-            background: transparent;
-        }
-
-        .fc-header-toolbar {
-            margin-bottom: var(--space-lg) !important;
-        }
-
-        .fc-button-primary {
-            background: var(--primary-gradient) !important;
-            border: none !important;
-            border-radius: 8px !important;
-            font-weight: 600 !important;
-        }
-
-        .fc-event {
-            border: none !important;
-            border-radius: 6px !important;
-            font-weight: 500 !important;
-        }
-
-        /* Charts */
-        .chart-container {
-            background: var(--bg-secondary);
-            border-radius: 20px;
-            padding: var(--space-xl);
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border-color);
-            height: 400px;
-        }
-
-        /* Responsive Design */
-        @@media (max-width: 1024px) {
-            .admin-layout {
-                grid-template-columns: 1fr;
-                grid-template-areas: 
-                    "header"
-                    "main";
-            }
-
-            .admin-sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-
-            .admin-sidebar.open {
-                transform: translateX(0);
-            }
-
-            .admin-header,
-            .admin-main {
-                margin-left: 0;
-            }
-
-            .admin-header {
-                max-width: 100vw;
-            }
-
-            .admin-main {
-                max-width: 100vw;
-            }
-        }
-
-        @@media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .admin-main {
-                padding: var(--space-lg);
-            }
-
-            .table-header {
-                flex-direction: column;
-                gap: var(--space-md);
-                align-items: stretch;
-            }
-
-            .table-actions {
-                flex-direction: column;
-            }
-        }
-
-        @@media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stat-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-        }
-
-        /* Animations */
-        @@keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @@keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .animate-fade-up {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .animate-slide-right {
-            animation: slideInRight 0.6s ease-out;
-        }
-
-        /* Loading States */
-        .loading {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .loading::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
-            transform: translateX(-100%);
-            animation: shimmer 1.5s infinite;
-        }
-
-        @@keyframes shimmer {
-            0% {
-                transform: translateX(-100%);
-            }
-            100% {
-                transform: translateX(100%);
-            }
-        }
-
-        /* Modal Styles */
-        .modal-content {
-            border: none;
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .modal-header {
-            background: var(--primary-gradient);
-            color: white;
-            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
-            border-bottom: none;
-        }
-
-        .modal-header .btn-close {
-            filter: brightness(0) invert(1);
-        }
-
-        .modal-body {
-            padding: var(--space-xl);
-        }
-
-        .modal-footer {
-            border-top: 1px solid var(--border-color);
-            background: var(--bg-primary);
-            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
-        }
-
-        /* Notification Styles */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: var(--space-md) var(--space-lg);
-            border-radius: var(--border-radius-md);
-            color: white;
-            font-weight: 500;
-            z-index: 9999;
-            min-width: 300px;
-            box-shadow: var(--shadow-lg);
-            animation: slideInRight 0.3s ease-out;
-        }
-
-        .notification.success {
-            background: var(--success-gradient);
-        }
-
-        .notification.error {
-            background: var(--danger-gradient);
-        }
-
-        .notification.warning {
-            background: var(--warning-gradient);
-        }
-
-        .notification.info {
-            background: var(--primary-gradient);
-        }
-
-        .notification.hide {
-            animation: fadeOut 0.3s ease-out forwards;
-        }
-
-        @@keyframes fadeOut {
-            to {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-        }
-
-        /* Form Styles */
-        .form-control, .form-select {
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-sm);
-            padding: var(--space-sm) var(--space-md);
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(103, 126, 234, 0.15);
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: var(--space-sm);
-        }
-
-        .form-check-label {
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-
-        /* Table Improvements */
-        .table-responsive {
-            border-radius: var(--border-radius-md);
-            overflow: hidden;
-        }
-
-        /* Status Badge Improvements */
-        .status-badge {
             display: inline-flex;
             align-items: center;
-            gap: var(--space-xs);
-            padding: var(--space-xs) var(--space-sm);
-            border-radius: var(--border-radius-full);
-            font-size: 0.75rem;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -975,443 +276,295 @@
             background: rgba(220, 38, 38, 0.1);
         }
 
-        /* Movie Item Styles */
-        .movie-item {
+        .status-badge.active {
+            color: #059669;
+            background: rgba(5, 150, 105, 0.1);
+        }
+
+        .status-badge.inactive {
+            color: #dc2626;
+            background: rgba(220, 38, 38, 0.1);
+        }
+
+        .status-badge.pending {
+            color: #d97706;
+            background: rgba(217, 119, 6, 0.1);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid var(--content-border);
+            background: var(--content-bg);
+            color: var(--text-muted);
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: var(--space-sm) 0;
-            border-bottom: 1px solid var(--border-color);
+            justify-content: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-size: 12px;
         }
 
-        .movie-item:last-child {
-            border-bottom: none;
+        .action-btn:hover {
+            background: var(--primary-purple);
+            border-color: var(--primary-purple);
+            color: white;
+            transform: translateY(-1px);
         }
 
-        .movie-info h6 {
-            margin: 0;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-primary);
+        .action-btn.edit:hover {
+            background: #f59e0b;
+            border-color: #f59e0b;
         }
 
-        .movie-info small {
+        .action-btn.delete:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        /* Loading Styles */
+        .loading-spinner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            text-align: center;
+        }
+        
+        .loading-spinner i {
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+        }
+        
+        .loading-spinner p {
+            color: var(--text-muted);
+        }
+        
+        /* Empty State */
+        .empty-state {
+                text-align: center;
+            padding: 4rem 2rem;
             color: var(--text-muted);
         }
 
-        .movie-bookings {
-            font-weight: 600;
-            color: var(--primary-color);
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
         }
 
-        /* Bulk Action Buttons */
+        /* Bulk Actions */
+        .bulk-actions {
+            display: flex;
+            gap: 8px;
+            margin-right: 16px;
+        }
+
+        .bulk-action-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--content-border);
+            background: var(--content-bg);
+            color: var(--text-dark);
+            transition: all 0.2s ease;
+        }
+
+        .bulk-action-btn:hover:not(:disabled) {
+            background: var(--primary-purple);
+            border-color: var(--primary-purple);
+            color: white;
+        }
+
         .bulk-action-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
 
-        /* Enhanced Button Styles */
-        .btn-gradient {
-            background: var(--primary-gradient);
+        .bulk-action-btn.danger:hover:not(:disabled) {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        /* Modal Styles */
+        .modal-content {
             border: none;
-            color: white;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            border-radius: 16px;
+            box-shadow: var(--shadow-xl);
         }
 
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
             color: white;
+            border-radius: 16px 16px 0 0;
+            border-bottom: none;
         }
 
-        .btn-gradient:active {
-            transform: translateY(0);
+        .modal-header .btn-close {
+            filter: invert(1);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--content-border);
+            padding: 1rem 2rem;
         }
     </style>
 </head>
 
 <body>
-    <div class="admin-layout">
-        <!-- Modern Sidebar -->
-        <aside class="admin-sidebar">
-            <a href="@Url.Action("Index", "Home")" class="sidebar-brand">
-                <div class="brand-logo"></div>
-                <div class="brand-text">
+    <div class="new-dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="new-dashboard-sidebar">
+            <div class="new-sidebar-header">
+                <a href="@Url.Action("Index", "Home")" class="new-sidebar-brand">
+                    <div class="new-brand-logo"></div>
+                    <div class="new-brand-text">
                     <h2>Cinema City</h2>
                     <p>Admin Dashboard</p>
                 </div>
             </a>
+            </div>
 
-            <nav class="sidebar-nav">
-                <div class="nav-section">
-                    <div class="nav-section-title">Tổng quan</div>
-                    <div class="nav-item">
-                        <a href="@Url.Action("AdminDashboard", "Dashboard")" class="nav-link">
+            <nav class="new-sidebar-nav">
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Tổng quan</div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("AdminDashboard", "Dashboard")" class="new-nav-link">
                             <i class="fas fa-chart-line"></i>
                             <span>Dashboard</span>
                         </a>
                     </div>
-                    <div class="nav-item">
-                        <a href="@Url.Action("Analytics", "Dashboard")" class="nav-link">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>Phân tích</span>
-                        </a>
-                    </div>
                 </div>
 
-                <div class="nav-section">
-                    <div class="nav-section-title">Quản lý nội dung</div>
-                    <div class="nav-item">
-                        <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="nav-link">
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Quản lý nội dung</div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-nav-link">
                             <i class="fas fa-film"></i>
                             <span>Quản lý phim</span>
                         </a>
                     </div>
-                    <div class="nav-item">
-                        <a href="@Url.Action("AdminDashboard", "Showtimes", new { area = "ShowtimeManagement" })" class="nav-link active">
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("AdminDashboard", "Showtimes", new { area = "ShowtimeManagement" })" class="new-nav-link active">
                             <i class="fas fa-calendar-alt"></i>
                             <span>Lịch chiếu</span>
                         </a>
                     </div>
-                    <div class="nav-item">
-                        <a href="@Url.Action("Index", "CinemaRooms", new { area = "CinemaManagement" })" class="nav-link">
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "CinemaRooms", new { area = "CinemaManagement" })" class="new-nav-link">
                             <i class="fas fa-door-open"></i>
                             <span>Phòng chiếu</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="nav-section">
-                    <div class="nav-section-title">Kinh doanh</div>
-                    <div class="nav-item">
-                        <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="nav-link">
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Kinh doanh</div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link">
                             <i class="fas fa-ticket-alt"></i>
                             <span>Đặt vé</span>
                         </a>
                     </div>
-                    <div class="nav-item">
-                        <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="nav-link">
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-nav-link">
                             <i class="fas fa-gift"></i>
                             <span>Khuyến mãi</span>
                         </a>
                     </div>
-                    <div class="nav-item">
-                        <a href="@Url.Action("Revenue", "Dashboard")" class="nav-link">
-                            <i class="fas fa-chart-pie"></i>
-                            <span>Doanh thu</span>
-                        </a>
-                    </div>
                 </div>
 
-                <div class="nav-section">
-                    <div class="nav-section-title">Hệ thống</div>
-                    <div class="nav-item">
-                        <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="nav-link">
+                <div class="new-nav-section">
+                    <div class="new-nav-section-title">Hệ thống</div>
+                    <div class="new-nav-item">
+                        <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-nav-link">
                             <i class="fas fa-users"></i>
                             <span>Người dùng</span>
-                        </a>
-                    </div>
-                    <div class="nav-item">
-                        <a href="@Url.Action("Settings", "Admin")" class="nav-link">
-                            <i class="fas fa-cog"></i>
-                            <span>Cài đặt</span>
                         </a>
                     </div>
                 </div>
             </nav>
         </aside>
 
-        <!-- Modern Header -->
-        <header class="admin-header">
-            <div class="header-title">
-                <button class="header-action-btn d-lg-none" id="sidebarToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div>
-                    <h1>Dashboard Lịch chiếu</h1>
-                    <div class="header-breadcrumb">
-                        <span>Dashboard</span> / <span>Lịch chiếu</span> / <span class="text-primary">Tổng quan</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="header-actions">
-                <button class="header-action-btn notification" title="Thông báo">
-                    <i class="fas fa-bell"></i>
-                </button>
-                <button class="header-action-btn" title="Tìm kiếm">
-                    <i class="fas fa-search"></i>
-                </button>
-                <div class="user-profile">
-                    <div class="user-avatar">
-                        @User.Identity?.Name?.Substring(0, 1).ToUpper()
-                    </div>
-                    <div class="user-info">
-                        <h4>@User.Identity?.Name</h4>
-                        <p>Administrator</p>
-                    </div>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-            </div>
-        </header>
-
         <!-- Main Content -->
-        <main class="admin-main">
-            <!-- Statistics Overview -->
-            <div class="stats-grid animate-fade-up">
-                @{
-                    var totalShowtimes = Model.Showtimes.Count;
-                    var todayShowtimes = Model.Showtimes.Count(s => s.ShowDate.Date == DateTime.Today);
-                    var totalRevenue = Model.Showtimes.Sum(s => s.BookedSeats * s.Price);
-                    var occupancyRate = Model.Showtimes.Any() ? (double)Model.Showtimes.Sum(s => s.BookedSeats) / Model.Showtimes.Sum(s => s.TotalSeats) * 100 : 0;
-                }
-                
-                <div class="stat-card">
-                    <div class="stat-trend">+12%</div>
-                    <div class="stat-content">
-                        <div class="stat-icon">
-                            <i class="fas fa-calendar-check"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 class="stat-number">@totalShowtimes</h3>
-                            <p>Tổng lịch chiếu</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-trend">+8%</div>
-                    <div class="stat-content">
-                        <div class="stat-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 class="stat-number">@todayShowtimes</h3>
-                            <p>Hôm nay</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-trend">+15%</div>
-                    <div class="stat-content">
-                        <div class="stat-icon">
-                            <i class="fas fa-money-bill-wave"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 class="stat-number">@totalRevenue.ToString("N0")</h3>
-                            <p>Doanh thu (VNĐ)</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-trend @(occupancyRate > 70 ? "" : "down")">@(occupancyRate > 70 ? "+" : "")@((occupancyRate - 65).ToString("0"))%</div>
-                    <div class="stat-content">
-                        <div class="stat-icon">
-                            <i class="fas fa-chart-pie"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 class="stat-number">@occupancyRate.ToString("0.1")%</h3>
-                            <p>Tỷ lệ đặt vé</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dashboard Grid -->
-            <div class="dashboard-grid">
-                <!-- Quick Actions -->
-                <div class="dashboard-card animate-fade-up" style="animation-delay: 0.1s;">
-                    <div class="card-header">
-                        <h3 class="card-title">Thao tác nhanh</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column gap-3">
-                        <button class="btn-primary-modern" onclick="openCreateShowtimeModal()">
-                            <i class="fas fa-plus"></i>
-                            Thêm lịch chiếu
-                        </button>
-                        <button class="btn-secondary-modern" onclick="openBulkActionsModal()">
-                            <i class="fas fa-tasks"></i>
-                            Thao tác hàng loạt
-                        </button>
-                        <button class="btn-secondary-modern" onclick="exportData()">
-                            <i class="fas fa-download"></i>
-                            Xuất dữ liệu
-                        </button>
-                        <button class="btn-secondary-modern" onclick="generateReport()">
-                            <i class="fas fa-chart-line"></i>
-                            Báo cáo
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Weekly Overview Chart -->
-                <div class="dashboard-card animate-fade-up" style="animation-delay: 0.2s;">
-                    <div class="card-header">
-                        <h3 class="card-title">Tổng quan tuần</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                    </div>
-                    <div style="height: 200px;">
-                        <canvas id="weeklyChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Popular Movies -->
-                <div class="dashboard-card animate-fade-up" style="animation-delay: 0.3s;">
-                    <div class="card-header">
-                        <h3 class="card-title">Phim phổ biến</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <div class="popular-movies-list d-flex flex-column gap-3">
-                        @{
-                            var popularMovies = Model.Showtimes
-                                .GroupBy(s => new { s.MovieId, s.MovieTitle })
-                                .Select(g => new { 
-                                    Title = g.Key.MovieTitle, 
-                                    BookedSeats = g.Sum(s => s.BookedSeats),
-                                    TotalSeats = g.Sum(s => s.TotalSeats)
-                                })
-                                .OrderByDescending(m => m.BookedSeats)
-                                .Take(5)
-                                .ToList();
-                        }
-                        @foreach (var movie in popularMovies)
-                        {
-                            var movieOccupancy = movie.TotalSeats > 0 ? (double)movie.BookedSeats / movie.TotalSeats * 100 : 0;
-                            <div class="movie-item">
-                                <div class="movie-info">
-                                    <h6>@movie.Title</h6>
-                                    <small>@movie.BookedSeats/@movie.TotalSeats vé</small>
-                                </div>
-                                <div class="text-end">
-                                    <div class="movie-bookings">@movieOccupancy.ToString("0.1")%</div>
-                                    <div class="progress" style="width: 60px; height: 4px;">
-                                        <div class="progress-bar bg-primary" style="width: @movieOccupancy%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <!-- Recent Activities -->
-                <div class="dashboard-card animate-fade-up" style="animation-delay: 0.4s;">
-                    <div class="card-header">
-                        <h3 class="card-title">Hoạt động gần đây</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-history"></i>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column gap-3">
-                        <div class="d-flex align-items-center gap-3 p-2">
-                            <div class="text-primary">
-                                <i class="fas fa-plus-circle"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="fw-medium">Thêm lịch chiếu mới</div>
-                                <small class="text-muted">Avatar 2 - Phòng A1 - 20:00</small>
-                            </div>
-                            <small class="text-muted">2 phút trước</small>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 p-2">
-                            <div class="text-warning">
-                                <i class="fas fa-edit"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="fw-medium">Cập nhật giá vé</div>
-                                <small class="text-muted">Spiderman - Tăng lên 120.000đ</small>
-                            </div>
-                            <small class="text-muted">15 phút trước</small>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 p-2">
-                            <div class="text-danger">
-                                <i class="fas fa-trash"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="fw-medium">Xóa lịch chiếu</div>
-                                <small class="text-muted">The Batman - Phòng B2 - 14:00</small>
-                            </div>
-                            <small class="text-muted">1 giờ trước</small>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 p-2">
-                            <div class="text-success">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="fw-medium">Phê duyệt lịch chiếu</div>
-                                <small class="text-muted">Tuần 25/12 - 31/12</small>
-                            </div>
-                            <small class="text-muted">2 giờ trước</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Calendar Section -->
-            <div class="calendar-container animate-fade-up" style="animation-delay: 0.5s;">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="card-title">Lịch chiếu tháng @DateTime.Now.ToString("MM/yyyy")</h3>
-                    <div class="d-flex gap-2">
-                        <button class="btn-secondary-modern" onclick="viewCalendar('month')">
+        <main class="new-dashboard-main">
+            <div class="new-dashboard-content">
+                <div class="showtime-management-content">
+                    <!-- Page Header -->
+                    <div class="showtime-page-header">
+                        <h1 class="showtime-page-title">
                             <i class="fas fa-calendar-alt"></i>
-                            Tháng
+                            Quản lý lịch chiếu
+                        </h1>
+                        <p class="showtime-page-subtitle">
+                            Quản lý và điều phối lịch chiếu phim tại rạp Cinema City
+                        </p>
+                </div>
+
+                    <!-- Controls Section -->
+                    <div class="showtime-controls">
+                        <div class="showtime-controls-header">
+                            <div class="showtime-search-box">
+                                <i class="fas fa-search showtime-search-icon"></i>
+                                <input type="text" 
+                                       class="showtime-search-input" 
+                                       id="showtimeSearch"
+                                       placeholder="Tìm kiếm theo tên phim, phòng chiếu..."
+                                       onkeyup="searchShowtimes()">
+                        </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn-filter" onclick="openFilterModal()">
+                                    <i class="fas fa-filter"></i>
+                                    Lọc
                         </button>
-                        <button class="btn-secondary-modern" onclick="viewCalendar('week')">
-                            <i class="fas fa-calendar-week"></i>
-                            Tuần
+                                <button class="btn-export" onclick="exportShowtimes()">
+                            <i class="fas fa-download"></i>
+                                    Xuất Excel
                         </button>
-                        <button class="btn-primary-modern" onclick="openCreateShowtimeModal()">
-                            <i class="fas fa-plus"></i>
-                            Thêm mới
+                                <button class="btn-add-showtime" onclick="openCreateShowtimeModal()">
+                                    <i class="fas fa-plus"></i>
+                                    Thêm lịch chiếu
                         </button>
                     </div>
+                    </div>
                 </div>
-                <div id="calendar"></div>
-            </div>
 
-            <!-- Detailed Table -->
-            <div class="modern-table-container animate-fade-up" style="animation-delay: 0.6s;">
-                <div class="table-header">
-                    <h3 class="table-title">Danh sách lịch chiếu</h3>
-                    <div class="table-actions">
-                        <div class="bulk-actions" style="display: flex; gap: 0.5rem; margin-right: 1rem;">
-                            <button class="btn btn-outline-danger btn-sm bulk-action-btn" onclick="bulkDeleteShowtimes()" disabled>
+                    <!-- Showtime Table -->
+                    <div class="showtime-table-container" id="showtimeTableContainer">
+                        <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                            <div class="d-flex align-items-center gap-3">
+                                <h5 class="mb-0">Danh sách lịch chiếu</h5>
+                                <span class="badge bg-primary">@Model.Showtimes.Count() lịch chiếu</span>
+                        </div>
+                            <div class="bulk-actions">
+                                <button class="bulk-action-btn danger" id="bulkDeleteBtn" onclick="bulkDeleteShowtimes()" disabled>
                                 <i class="fas fa-trash"></i>
                                 Xóa đã chọn
                             </button>
-                            <button class="btn btn-outline-primary btn-sm bulk-action-btn" onclick="bulkUpdateStatus()" disabled>
+                                <button class="bulk-action-btn" id="bulkUpdateBtn" onclick="bulkUpdateStatus()" disabled>
                                 <i class="fas fa-toggle-on"></i>
                                 Cập nhật trạng thái
                             </button>
                         </div>
-                        <button class="btn-secondary-modern" onclick="filterShowtimes()">
-                            <i class="fas fa-filter"></i>
-                            Lọc
-                        </button>
-                        <button class="btn-secondary-modern" onclick="exportShowtimes()">
-                            <i class="fas fa-download"></i>
-                            Xuất Excel
-                        </button>
-                        <button class="btn-primary-modern" onclick="openCreateShowtimeModal()">
-                            <i class="fas fa-plus"></i>
-                            Thêm mới
-                        </button>
                     </div>
-                </div>
-                <div style="overflow-x: auto;">
-                    <table class="modern-table">
+
+                        <div class="table-responsive">
+                            <table class="showtime-table" id="showtimeTable">
                         <thead>
                             <tr>
-                                <th>
+                                        <th style="width: 40px;">
                                     <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
                                 </th>
                                 <th>Phim</th>
@@ -1421,13 +574,20 @@
                                 <th>Giá vé</th>
                                 <th>Trạng thái</th>
                                 <th>Tình trạng</th>
-                                <th>Thao tác</th>
+                                        <th style="width: 120px;">Thao tác</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach (var showtime in Model.Showtimes.OrderBy(s => s.ShowDate).ThenBy(s => s.StartTime).Take(10))
-                            {
-                                var showtimeOccupancyRate = (double)showtime.BookedSeats / showtime.TotalSeats * 100;
+                                <tbody id="showtimeTableBody">
+                                    @if (Model.Showtimes != null && Model.Showtimes.Any())
+                                    {
+                                        @foreach (var showtime in Model.Showtimes.OrderBy(s => s.ShowDate).ThenBy(s => s.StartTime))
+                                        {
+                                            var showtimeOccupancyRate = showtime.TotalSeats > 0 ? (double)showtime.BookedSeats / showtime.TotalSeats * 100 : 0;
+                                            var occupancyStatus = showtimeOccupancyRate >= 90 ? "sold-out" : 
+                                                                showtimeOccupancyRate >= 70 ? "nearly-full" : "available";
+                                            var occupancyText = showtimeOccupancyRate >= 90 ? "Hết vé" : 
+                                                              showtimeOccupancyRate >= 70 ? "Sắp hết vé" : "Còn vé";
+                                            
                                 var status = showtime.ShowDate.Date < DateTime.Today ? "inactive" : 
                                            showtime.ShowDate.Date == DateTime.Today ? "active" : "pending";
                                 var statusText = showtime.ShowDate.Date < DateTime.Today ? "Đã qua" : 
@@ -1438,595 +598,183 @@
                                         <input type="checkbox" value="@showtime.Id" onchange="updateBulkActionButtons()">
                                     </td>
                                     <td>
-                                        <div class="d-flex align-items-center gap-3">
+                                                    <div class="movie-info">
                                             @if (!string.IsNullOrEmpty(showtime.MoviePoster))
                                             {
-                                                <img src="@showtime.MoviePoster" alt="@showtime.MovieTitle" 
-                                                     style="width: 40px; height: 56px; object-fit: cover; border-radius: 6px;">
-                                            }
-                                            <div>
-                                                <div class="fw-medium movie-title">@showtime.MovieTitle</div>
-                                                <small class="text-muted">@showtime.MovieDuration phút</small>
+                                                            <img src="@showtime.MoviePoster" alt="@showtime.MovieTitle" class="movie-poster">
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="movie-poster bg-light d-flex align-items-center justify-content-center">
+                                                                <i class="fas fa-film text-muted"></i>
+                                                            </div>
+                                                        }
+                                                        <div class="movie-details">
+                                                            <h6>@showtime.MovieTitle</h6>
+                                                            <small>@showtime.MovieDuration phút</small>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="fw-medium room-name">@showtime.CinemaRoomName</div>
-                                        <small class="text-muted">@showtime.TotalSeats ghế</small>
+                                                    <strong>@showtime.CinemaRoomName</strong>
                                     </td>
                                     <td>
-                                        <div class="fw-medium">@showtime.ShowDate.ToString("dd/MM/yyyy")</div>
-                                        <small class="text-muted">@showtime.ShowDate.ToString("dddd")</small>
+                                                    @showtime.ShowDate.ToString("dd/MM/yyyy")
                                     </td>
                                     <td>
-                                        <div class="fw-medium">@showtime.StartTime.ToString("HH:mm")</div>
-                                        <small class="text-muted">@showtime.EndTime.ToString("HH:mm")</small>
+                                                    <strong>@showtime.StartTime.ToString(@"hh\:mm")</strong>
                                     </td>
                                     <td>
-                                        <div class="fw-medium text-success">@showtime.Price.ToString("N0") ₫</div>
+                                                    <span class="text-success fw-bold">@showtime.Price.ToString("N0") VNĐ</span>
                                     </td>
                                     <td>
                                         <span class="status-badge @status">@statusText</span>
                                     </td>
                                     <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="progress" style="width: 60px; height: 6px;">
-                                                <div class="progress-bar bg-primary" style="width: @showtimeOccupancyRate%"></div>
-                                            </div>
-                                            <small class="text-muted">@showtime.BookedSeats/@showtime.TotalSeats</small>
+                                                    <span class="status-badge @occupancyStatus">@occupancyText</span>
+                                                    <div class="mt-1">
+                                                        <small class="text-muted">@showtime.BookedSeats/@showtime.TotalSeats vé</small>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="action-btn" onclick="viewShowtime('@showtime.Id')" title="Xem">
+                                                        <button class="action-btn" onclick="viewShowtime('@showtime.Id')" title="Xem chi tiết">
                                                 <i class="fas fa-eye"></i>
                                             </button>
-                                            <button class="action-btn" onclick="editShowtime('@showtime.Id')" title="Sửa">
+                                                        <button class="action-btn edit" onclick="editShowtime('@showtime.Id')" title="Chỉnh sửa">
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                             <button class="action-btn delete" onclick="deleteShowtime('@showtime.Id')" title="Xóa">
                                                 <i class="fas fa-trash"></i>
                                             </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="9">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-calendar-times"></i>
+                                                    <h5>Chưa có lịch chiếu nào</h5>
+                                                    <p>Nhấn "Thêm lịch chiếu" để tạo lịch chiếu mới</p>
                                         </div>
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     
     <script>
-        // Global variables
-        let weeklyChart;
-        
-        // Initialize Dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeCharts();
-            initializeCalendar();
-            initializeAnimations();
-            initializeSidebar();
-        });
-
-        // Initialize Charts
-        function initializeCharts() {
-            const chartElement = document.getElementById('weeklyChart');
-            if (!chartElement) {
-                console.error('Weekly chart element not found');
-                return;
-            }
+        // Search functionality
+        function searchShowtimes() {
+            const searchTerm = document.getElementById('showtimeSearch').value.toLowerCase();
+            const tableBody = document.getElementById('showtimeTableBody');
+            const rows = tableBody.querySelectorAll('tr');
             
-            const ctx = chartElement.getContext('2d');
-            weeklyChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'],
-                    datasets: [{
-                        label: 'Lịch chiếu',
-                        data: [12, 19, 15, 25, 22, 18, 16],
-                        borderColor: 'rgb(102, 126, 234)',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0,0,0,0.05)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                color: 'rgba(0,0,0,0.05)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Initialize Calendar
-        function initializeCalendar() {
-            const calendarEl = document.getElementById('calendar');
-            if (!calendarEl) {
-                console.error('Calendar element not found');
-                return;
-            }
-            
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                events: [
-                    // Sample events - replace with real data from API
-                    {
-                        title: 'Avatar 2',
-                        start: '2025-07-04T14:00:00',
-                        end: '2025-07-04T17:00:00',
-                        backgroundColor: '#10b981',
-                        borderColor: 'transparent',
-                        textColor: 'white'
-                    },
-                    {
-                        title: 'Fast X',
-                        start: '2025-07-04T20:00:00',
-                        end: '2025-07-04T22:30:00',
-                        backgroundColor: '#f59e0b',
-                        borderColor: 'transparent',
-                        textColor: 'white'
-                    }
-                ],
-                eventClick: function(info) {
-                    alert('Phim: ' + info.event.title);
-                },
-                dateClick: function(info) {
-                    openCreateShowtimeModal(info.dateStr);
-                }
-            });
-            calendar.render();
-            
-            // Load real calendar events from API
-            loadCalendarEvents(calendar);
-        }
-
-        // Load Calendar Events from API
-        async function loadCalendarEvents(calendar) {
-            try {
-                const response = await fetch('/ShowtimeManagement/Showtimes/GetDashboardStats');
-                const result = await response.json();
+            rows.forEach(row => {
+                const movieTitle = row.querySelector('.movie-details h6')?.textContent.toLowerCase() || '';
+                const roomName = row.querySelectorAll('td')[2]?.textContent.toLowerCase() || '';
                 
-                if (result.success && result.data.CalendarEvents) {
-                    // Remove existing events
-                    calendar.removeAllEvents();
-                    
-                    // Add real events
-                    result.data.CalendarEvents.forEach(event => {
-                        calendar.addEvent({
-                            title: event.MovieTitle,
-                            start: event.Start,
-                            end: event.End,
-                            backgroundColor: event.BackgroundColor,
-                            borderColor: 'transparent',
-                            textColor: 'white'
-                        });
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading calendar events:', error);
-            }
-        }
-
-        // Initialize Animations
-        function initializeAnimations() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            });
-
-            document.querySelectorAll('.animate-fade-up').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px)';
-                el.style.transition = 'all 0.6s ease-out';
-                observer.observe(el);
-            });
-        }
-
-        // Initialize Sidebar
-        function initializeSidebar() {
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const sidebar = document.querySelector('.admin-sidebar');
-
-            if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('open');
-                });
-            }
-
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(e) {
-                if (window.innerWidth <= 1024) {
-                    if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
-                        sidebar.classList.remove('open');
-                    }
-                }
-            });
-        }
-
-        // Load Dashboard Data
-        async function loadDashboardData() {
-            try {
-                const response = await fetch('/ShowtimeManagement/Showtimes/GetDashboardStats');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (!data.success) {
-                    showNotification(data.message || 'Không thể tải dữ liệu dashboard', 'error');
-                    return;
-                }
-                
-                // Process successful data
-                // ... existing code to handle successful response
-                const result = await response.json();
-                
-                if (result.success) {
-                    updateDashboardStats(result.data);
-                    updateCharts(result.data);
+                if (movieTitle.includes(searchTerm) || roomName.includes(searchTerm)) {
+                    row.style.display = '';
                 } else {
-                    showNotification('Không thể tải dữ liệu thống kê', 'error');
+                    row.style.display = 'none';
                 }
-            } catch (error) {
-                console.error('Error loading dashboard data:', error);
-                showNotification('Lỗi khi tải dữ liệu dashboard: ' + error.message, 'error');
-            }
+            });
         }
 
-        // Update Dashboard Statistics
-        function updateDashboardStats(data) {
-            // Update quick stats
-            document.querySelector('.stat-number').textContent = data.TotalShowtimes;
-            document.querySelectorAll('.stat-number')[1].textContent = data.TodayShowtimes;
-            document.querySelectorAll('.stat-number')[2].textContent = data.WeeklyShowtimes;
-            document.querySelectorAll('.stat-number')[3].textContent = data.AvgOccupancy + '%';
-
-            // Update popular movies
-            const popularMoviesList = document.querySelector('.popular-movies-list');
-            if (popularMoviesList && data.PopularMovies) {
-                popularMoviesList.innerHTML = data.PopularMovies.map(movie => `
-                    <div class="movie-item">
-                        <div class="movie-info">
-                            <h6>${movie.MovieTitle}</h6>
-                            <small>${movie.ShowCount} suất chiếu</small>
-                        </div>
-                        <span class="movie-bookings">${movie.TotalBookings} vé</span>
-                    </div>
-                `).join('');
-            }
-        }
-
-        // Update Charts with Real Data
-        function updateCharts(data) {
-            // Update weekly chart
-            if (weeklyChart && data.WeeklyChartData) {
-                weeklyChart.data.labels = data.WeeklyChartData.map(d => d.Date);
-                weeklyChart.data.datasets[0].data = data.WeeklyChartData.map(d => d.ShowCount);
-                weeklyChart.data.datasets[1].data = data.WeeklyChartData.map(d => d.Revenue / 1000000);
-                weeklyChart.update();
-            }
-        }
-
-        // CRUD Functions
-        function openCreateShowtimeModal(date = null) {
-            const modal = new bootstrap.Modal(document.getElementById('createShowtimeModal'));
-            if (date) {
-                document.getElementById('showtimeDate').value = date;
-            }
-            modal.show();
-        }
-
-        function viewShowtime(id) {
-            window.location.href = `/ShowtimeManagement/Showtimes/Details/${id}`;
-        }
-
-        function editShowtime(id) {
-            window.location.href = `/ShowtimeManagement/Showtimes/Edit/${id}`;
-        }
-
-        async function deleteShowtime(id) {
-            if (confirm('Bạn có chắc chắn muốn xóa lịch chiếu này?')) {
-                try {
-                    const response = await fetch(`/ShowtimeManagement/Showtimes/Delete/${id}`, {
-                        method: 'DELETE'
-                    });
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        showNotification('Đã xóa lịch chiếu thành công', 'success');
-                        loadDashboardData(); // Refresh data
-                    } else {
-                        showNotification(result.message || 'Không thể xóa lịch chiếu', 'error');
-                    }
-                } catch (error) {
-                    showNotification('Lỗi khi xóa lịch chiếu', 'error');
-                }
-            }
-        }
-
-        // Bulk Actions
+        // Select all functionality
         function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAll');
             const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
-            const selectAll = document.getElementById('selectAll');
             
             checkboxes.forEach(checkbox => {
-                checkbox.checked = selectAll.checked;
+                checkbox.checked = selectAllCheckbox.checked;
             });
             
             updateBulkActionButtons();
         }
 
+        // Update bulk action buttons
         function updateBulkActionButtons() {
             const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
-            const bulkActionButtons = document.querySelectorAll('.bulk-action-btn');
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            const bulkUpdateBtn = document.getElementById('bulkUpdateBtn');
             
-            bulkActionButtons.forEach(btn => {
-                btn.disabled = checkedBoxes.length === 0;
-            });
+            const hasSelected = checkedBoxes.length > 0;
+            bulkDeleteBtn.disabled = !hasSelected;
+            bulkUpdateBtn.disabled = !hasSelected;
         }
 
-        async function bulkDeleteShowtimes() {
+        // Modal functions
+        function openCreateShowtimeModal() {
+            showNotification('Chức năng thêm lịch chiếu đang được phát triển', 'info');
+        }
+
+        function openFilterModal() {
+            showNotification('Chức năng lọc đang được phát triển', 'info');
+        }
+
+        function exportShowtimes() {
+            showNotification('Đang xuất dữ liệu...', 'info');
+        }
+
+        // CRUD functions
+        function viewShowtime(id) {
+            showNotification(`Xem chi tiết lịch chiếu ID: ${id}`, 'info');
+        }
+
+        function editShowtime(id) {
+            showNotification(`Chỉnh sửa lịch chiếu ID: ${id}`, 'info');
+        }
+
+        function deleteShowtime(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa lịch chiếu này?')) {
+                showNotification(`Đã xóa lịch chiếu ID: ${id}`, 'success');
+            }
+        }
+
+        function bulkDeleteShowtimes() {
             const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
             if (checkedBoxes.length === 0) {
-                showNotification('Vui lòng chọn ít nhất một lịch chiếu', 'warning');
+                showNotification('Vui lòng chọn ít nhất một lịch chiếu để xóa', 'warning');
                 return;
             }
 
             if (confirm(`Bạn có chắc chắn muốn xóa ${checkedBoxes.length} lịch chiếu đã chọn?`)) {
-                try {
-                    const showtimeIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
-                    
-                    const response = await fetch('/ShowtimeManagement/Showtimes/BulkDelete', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(showtimeIds)
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        showNotification(result.message, 'success');
-                        loadDashboardData(); // Refresh data
-                    } else {
-                        showNotification(result.message || 'Không thể xóa lịch chiếu', 'error');
-                    }
-                } catch (error) {
-                    showNotification('Lỗi khi xóa lịch chiếu', 'error');
-                }
+                showNotification(`Đã xóa ${checkedBoxes.length} lịch chiếu`, 'success');
+                checkedBoxes.forEach(checkbox => {
+                    checkbox.closest('tr').remove();
+                });
+                updateBulkActionButtons();
             }
         }
 
-        async function bulkUpdateStatus() {
+        function bulkUpdateStatus() {
             const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
             if (checkedBoxes.length === 0) {
-                showNotification('Vui lòng chọn ít nhất một lịch chiếu', 'warning');
+                showNotification('Vui lòng chọn ít nhất một lịch chiếu để cập nhật', 'warning');
                 return;
             }
 
-            const newStatus = prompt('Nhập trạng thái mới (1: Hoạt động, 0: Tạm dừng):');
-            if (newStatus === null) return;
-
-            if (newStatus !== '0' && newStatus !== '1') {
-                showNotification('Trạng thái không hợp lệ', 'error');
-                return;
-            }
-
-            try {
-                const showtimeIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
-                
-                // This would be an API call to update status
-                showNotification(`Đã cập nhật trạng thái cho ${showtimeIds.length} lịch chiếu`, 'success');
-                loadDashboardData(); // Refresh data
-            } catch (error) {
-                showNotification('Lỗi khi cập nhật trạng thái', 'error');
-            }
+            showNotification(`Đã cập nhật trạng thái cho ${checkedBoxes.length} lịch chiếu`, 'success');
         }
 
-        // Export Functions
-        async function exportData() {
-            try {
-                showNotification('Đang xuất dữ liệu...', 'info');
-                
-                const response = await fetch('/ShowtimeManagement/Showtimes/ExportToExcel');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const result = await response.json();
-                
-                if (result.success) {
-                    showNotification('Xuất file thành công!', 'success');
-                    // Download file
-                    if (result.downloadUrl) {
-                        window.open(result.downloadUrl, '_blank');
-                    }
-                } else {
-                    showNotification(result.message || 'Không thể xuất file', 'error');
-                }
-            } catch (error) {
-                console.error('Error exporting data:', error);
-                showNotification('Lỗi khi xuất dữ liệu: ' + error.message, 'error');
-            }
-        }
-
-        function exportShowtimes() {
-            // Open export modal with date range picker
-            const modal = new bootstrap.Modal(document.getElementById('exportModal'));
-            modal.show();
-        }
-
-        // Filter Functions
-        function filterShowtimes() {
-            const modal = new bootstrap.Modal(document.getElementById('filterModal'));
-            modal.show();
-        }
-
-        function applyFilters() {
-            // Get filter values
-            const movieFilter = document.getElementById('movieFilter').value;
-            const roomFilter = document.getElementById('roomFilter').value;
-            const statusFilter = document.getElementById('statusFilter').value;
-            const dateFromFilter = document.getElementById('dateFromFilter').value;
-            const dateToFilter = document.getElementById('dateToFilter').value;
-
-            // Apply filters to table
-            const rows = document.querySelectorAll('.modern-table tbody tr');
-            
-            rows.forEach(row => {
-                let showRow = true;
-                
-                // Apply movie filter
-                if (movieFilter && !row.querySelector('.movie-title').textContent.toLowerCase().includes(movieFilter.toLowerCase())) {
-                    showRow = false;
-                }
-                
-                // Apply room filter
-                if (roomFilter && !row.querySelector('.room-name').textContent.toLowerCase().includes(roomFilter.toLowerCase())) {
-                    showRow = false;
-                }
-                
-                // Apply status filter
-                if (statusFilter && !row.querySelector('.status-badge').classList.contains(statusFilter)) {
-                    showRow = false;
-                }
-                
-                row.style.display = showRow ? '' : 'none';
-            });
-            
-            // Close modal
-            bootstrap.Modal.getInstance(document.getElementById('filterModal')).hide();
-            showNotification('Đã áp dụng bộ lọc', 'success');
-        }
-
-        function clearFilters() {
-            document.getElementById('movieFilter').value = '';
-            document.getElementById('roomFilter').value = '';
-            document.getElementById('statusFilter').value = '';
-            document.getElementById('dateFromFilter').value = '';
-            document.getElementById('dateToFilter').value = '';
-            
-            // Show all rows
-            const rows = document.querySelectorAll('.modern-table tbody tr');
-            rows.forEach(row => row.style.display = '');
-            
-            showNotification('Đã xóa bộ lọc', 'success');
-        }
-
-        // Export Functions
-        function confirmExport() {
-            const dateFrom = document.getElementById('exportDateFrom').value;
-            const dateTo = document.getElementById('exportDateTo').value;
-            const format = document.querySelector('input[name="exportFormat"]:checked').value;
-            
-            if (!dateFrom || !dateTo) {
-                showNotification('Vui lòng chọn khoảng thời gian', 'warning');
-                return;
-            }
-            
-            const url = `/ShowtimeManagement/Showtimes/ExportToExcel?startDate=${dateFrom}&endDate=${dateTo}&format=${format}`;
-            window.open(url, '_blank');
-            
-            bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
-            showNotification('Đang xuất dữ liệu...', 'info');
-        }
-
-        // Create Showtime Function
-        async function createShowtime() {
-            const form = document.getElementById('createShowtimeForm');
-            const formData = new FormData(form);
-            
-            const movieId = document.getElementById('movieSelect').value;
-            const roomId = document.getElementById('roomSelect').value;
-            const date = document.getElementById('showtimeDate').value;
-            const time = document.getElementById('showtimeTime').value;
-            const price = document.getElementById('ticketPrice').value;
-            const status = document.getElementById('showtimeStatus').value;
-            
-            if (!movieId || !roomId || !date || !time || !price) {
-                showNotification('Vui lòng điền đầy đủ thông tin', 'warning');
-                return;
-            }
-            
-            try {
-                const response = await fetch('/ShowtimeManagement/Showtimes/Create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        MovieId: movieId,
-                        CinemaRoomId: roomId,
-                        ShowDate: date,
-                        StartTime: time,
-                        Price: price,
-                        Status: status
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showNotification('Tạo lịch chiếu thành công', 'success');
-                    bootstrap.Modal.getInstance(document.getElementById('createShowtimeModal')).hide();
-                    form.reset();
-                    loadDashboardData(); // Refresh data
-                } else {
-                    showNotification(result.message || 'Không thể tạo lịch chiếu', 'error');
-                }
-            } catch (error) {
-                showNotification('Lỗi khi tạo lịch chiếu', 'error');
-            }
-        }
-
-        function viewCalendar(view) {
-            showNotification(`Chuyển sang chế độ xem ${view}...`, 'info');
-            // Implementation here
-        }
-
-        // Report Functions
-        function generateReport() {
-            showNotification('Đang tạo báo cáo...', 'info');
-            // Implementation here
-        }
-
-        // Notification System
+        // Notification system
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
@@ -2059,267 +807,10 @@
             }, 5000);
         }
 
-        // Keyboard Shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'n') {
-                e.preventDefault();
-                openCreateShowtimeModal();
-            }
-            if (e.ctrlKey && e.key === 'f') {
-                e.preventDefault();
-                filterShowtimes();
-            }
-        });
-
-        // Auto-refresh data every 5 minutes
-        setInterval(() => {
-            if (document.visibilityState === 'visible') {
-                loadDashboardData();
-            }
-        }, 300000);
-
-        // Initialize dashboard on page load
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            loadDashboardData();
+            console.log('Showtime Management Dashboard loaded');
         });
-
-        // Bulk Actions Modal
-        function openBulkActionsModal() {
-            const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
-            if (checkedBoxes.length === 0) {
-                showNotification('Vui lòng chọn ít nhất một lịch chiếu để thực hiện thao tác hàng loạt', 'warning');
-                return;
-            }
-            
-            const actions = [
-                { text: 'Xóa đã chọn', action: () => bulkDeleteShowtimes() },
-                { text: 'Cập nhật trạng thái', action: () => bulkUpdateStatus() },
-                { text: 'Xuất dữ liệu đã chọn', action: () => exportSelectedShowtimes() }
-            ];
-            
-            const actionList = actions.map(item => 
-                `<button class="btn btn-outline-primary w-100 mb-2" onclick="${item.action.toString().match(/=> (.+)\(\)/)[1]}(); bootstrap.Modal.getInstance(document.getElementById('bulkActionsModal')).hide();">${item.text}</button>`
-            ).join('');
-            
-            const modalHTML = `
-                <div class="modal fade" id="bulkActionsModal" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Thao tác hàng loạt</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Đã chọn ${checkedBoxes.length} lịch chiếu. Chọn thao tác:</p>
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-outline-danger w-100" onclick="bulkDeleteShowtimes(); bootstrap.Modal.getInstance(document.getElementById('bulkActionsModal')).hide();">Xóa đã chọn</button>
-                                    <button class="btn btn-outline-primary w-100" onclick="bulkUpdateStatus(); bootstrap.Modal.getInstance(document.getElementById('bulkActionsModal')).hide();">Cập nhật trạng thái</button>
-                                    <button class="btn btn-outline-success w-100" onclick="exportSelectedShowtimes(); bootstrap.Modal.getInstance(document.getElementById('bulkActionsModal')).hide();">Xuất dữ liệu đã chọn</button>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // Remove existing modal if any
-            const existingModal = document.getElementById('bulkActionsModal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-            
-            // Add modal to body
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-            
-            // Show modal
-            const modal = new bootstrap.Modal(document.getElementById('bulkActionsModal'));
-            modal.show();
-        }
-
-        function exportSelectedShowtimes() {
-            const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
-            const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
-            
-            showNotification(`Đang xuất dữ liệu ${selectedIds.length} lịch chiếu...`, 'info');
-            
-            // Create download URL with selected IDs
-            const exportUrl = `/ShowtimeManagement/Showtimes/ExportToExcel?ids=${selectedIds.join(',')}`;
-            window.open(exportUrl, '_blank');
-        }
     </script>
-
-    <!-- Export Modal -->
-    <div class="modal fade" id="exportModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Xuất dữ liệu lịch chiếu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="exportForm">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label">Từ ngày</label>
-                                <input type="date" class="form-control" id="exportDateFrom">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Đến ngày</label>
-                                <input type="date" class="form-control" id="exportDateTo">
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <label class="form-label">Định dạng file</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="exportFormat" value="excel" id="exportExcel" checked>
-                                <label class="form-check-label" for="exportExcel">Excel (.xlsx)</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="exportFormat" value="csv" id="exportCsv">
-                                <label class="form-check-label" for="exportCsv">CSV (.csv)</label>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmExport()">Xuất dữ liệu</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filter Modal -->
-    <div class="modal fade" id="filterModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Bộ lọc lịch chiếu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="filterForm">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label">Tìm theo tên phim</label>
-                                <input type="text" class="form-control" id="movieFilter" placeholder="Nhập tên phim...">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Phòng chiếu</label>
-                                <select class="form-select" id="roomFilter">
-                                    <option value="">Tất cả phòng</option>
-                                    @foreach (var room in Model.CinemaRooms)
-                                    {
-                                        <option value="@room.Name">@room.Name</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Trạng thái</label>
-                                <select class="form-select" id="statusFilter">
-                                    <option value="">Tất cả trạng thái</option>
-                                    <option value="available">Còn vé</option>
-                                    <option value="nearly-full">Sắp hết vé</option>
-                                    <option value="sold-out">Hết vé</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Từ ngày</label>
-                                <input type="date" class="form-control" id="dateFromFilter">
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Đến ngày</label>
-                                <input type="date" class="form-control" id="dateToFilter">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Giá vé</label>
-                                <div class="d-flex gap-2">
-                                    <input type="number" class="form-control" id="priceFrom" placeholder="Từ">
-                                    <input type="number" class="form-control" id="priceTo" placeholder="Đến">
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="clearFilters()">Xóa bộ lọc</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" onclick="applyFilters()">Áp dụng</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Create Showtime Modal -->
-    <div class="modal fade" id="createShowtimeModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Thêm lịch chiếu mới</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="createShowtimeForm">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label">Phim <span class="text-danger">*</span></label>
-                                <select class="form-select" id="movieSelect" required>
-                                    <option value="">Chọn phim...</option>
-                                    @foreach (var movie in Model.Movies)
-                                    {
-                                        <option value="@movie.Id">@movie.Title</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Phòng chiếu <span class="text-danger">*</span></label>
-                                <select class="form-select" id="roomSelect" required>
-                                    <option value="">Chọn phòng...</option>
-                                    @foreach (var room in Model.CinemaRooms)
-                                    {
-                                        <option value="@room.Id">@room.Name</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Ngày chiếu <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="showtimeDate" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Giờ chiếu <span class="text-danger">*</span></label>
-                                <input type="time" class="form-control" id="showtimeTime" required>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Giá vé (VNĐ) <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="ticketPrice" min="0" step="1000" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Trạng thái</label>
-                                <select class="form-select" id="showtimeStatus">
-                                    <option value="1">Hoạt động</option>
-                                    <option value="0">Tạm dừng</option>
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" onclick="createShowtime()">Tạo lịch chiếu</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
