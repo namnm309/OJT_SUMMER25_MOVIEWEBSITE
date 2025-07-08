@@ -11,11 +11,10 @@
     <!-- Thêm media và keyframes từ CDN -->
     <!--  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" /> 
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/UI.styles.css" asp-append-version="true" />
-    
+    <link rel="stylesheet" href="~/css/shared-footer.css" asp-append-version="true" />
     <!--<link rel="stylesheet" href="~/css/HomePage/base.css" asp-append-version="true" />  -->
-
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -35,7 +34,7 @@
         </div>
     }
 
-    @await Html.PartialAsync("footer")
+    @await Html.PartialAsync("_SharedFooter")
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

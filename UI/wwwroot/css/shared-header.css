@@ -59,16 +59,16 @@ body {
     gap: 12px;
 }
 
-.shared-brand-link:hover {
-    transform: translateY(-1px);
-    color: inherit;
-    text-decoration: none;
-}
+    .shared-brand-link:hover {
+        transform: translateY(-1px);
+        color: inherit;
+        text-decoration: none;
+    }
 
 .shared-brand-logo {
     width: 40px;
     height: 32px;
-    background: linear-gradient(135deg, #df2144 0%, #c01b3a 100%);
+    background: url('/img/logo.png') center/contain no-repeat;
     border-radius: 6px;
     display: flex;
     align-items: center;
@@ -78,11 +78,14 @@ body {
     overflow: hidden;
 }
 
+/* Xóa emoji bằng cách comment hoặc xóa phần này */
+/*
 .shared-brand-logo::before {
     content: '🎬';
     font-size: 18px;
     color: white;
 }
+*/
 
 .shared-brand-text {
     display: flex;
@@ -128,34 +131,34 @@ body {
     overflow: hidden;
 }
 
-.shared-nav-link::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s ease;
-}
+    .shared-nav-link::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
 
-.shared-nav-link:hover::before {
-    left: 100%;
-}
+    .shared-nav-link:hover::before {
+        left: 100%;
+    }
 
-.shared-nav-link:hover {
-    color: #ffffff;
-    background: rgba(223, 33, 68, 0.15);
-    transform: translateY(-2px);
-    text-decoration: none;
-    box-shadow: 0 4px 12px rgba(223, 33, 68, 0.2);
-}
+    .shared-nav-link:hover {
+        color: #ffffff;
+        background: rgba(223, 33, 68, 0.15);
+        transform: translateY(-2px);
+        text-decoration: none;
+        box-shadow: 0 4px 12px rgba(223, 33, 68, 0.2);
+    }
 
-.shared-nav-link i {
-    font-size: 16px;
-    width: 18px;
-    text-align: center;
-}
+    .shared-nav-link i {
+        font-size: 16px;
+        width: 18px;
+        text-align: center;
+    }
 
 /* Search Box */
 .shared-search-box {
@@ -170,17 +173,17 @@ body {
     min-width: 200px;
 }
 
-.shared-search-box:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
+    .shared-search-box:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
 
-.shared-search-box:focus-within {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: #df2144;
-    box-shadow: 0 0 0 3px rgba(223, 33, 68, 0.2);
-}
+    .shared-search-box:focus-within {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #df2144;
+        box-shadow: 0 0 0 3px rgba(223, 33, 68, 0.2);
+    }
 
 .shared-search-input {
     flex: 1;
@@ -193,9 +196,9 @@ body {
     placeholder-color: rgba(255, 255, 255, 0.5);
 }
 
-.shared-search-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-}
+    .shared-search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
 
 .shared-search-btn {
     background: linear-gradient(135deg, #df2144 0%, #c01b3a 100%);
@@ -210,15 +213,15 @@ body {
     justify-content: center;
 }
 
-.shared-search-btn:hover {
-    background: linear-gradient(135deg, #c01b3a 0%, #a61530 100%);
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(223, 33, 68, 0.4);
-}
+    .shared-search-btn:hover {
+        background: linear-gradient(135deg, #c01b3a 0%, #a61530 100%);
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(223, 33, 68, 0.4);
+    }
 
-.shared-search-btn i {
-    font-size: 14px;
-}
+    .shared-search-btn i {
+        font-size: 14px;
+    }
 
 /* User Section */
 .shared-user-section {
@@ -245,26 +248,26 @@ body {
     font-size: 14px;
 }
 
-.shared-user-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
+    .shared-user-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
 
-.shared-user-btn i.fa-user-circle {
-    font-size: 20px;
-    color: #df2144;
-}
+    .shared-user-btn i.fa-user-circle {
+        font-size: 20px;
+        color: #df2144;
+    }
 
-.shared-user-btn i.fa-chevron-down {
-    font-size: 12px;
-    transition: transform 0.3s ease;
-}
+    .shared-user-btn i.fa-chevron-down {
+        font-size: 12px;
+        transition: transform 0.3s ease;
+    }
 
-.shared-user-btn[aria-expanded="true"] i.fa-chevron-down {
-    transform: rotate(180deg);
-}
+    .shared-user-btn[aria-expanded="true"] i.fa-chevron-down {
+        transform: rotate(180deg);
+    }
 
 .shared-user-name {
     max-width: 120px;
@@ -295,11 +298,11 @@ body {
     margin: 10px 0 0 0;
 }
 
-.shared-dropdown-menu.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0) scale(1);
-}
+    .shared-dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+    }
 
 .shared-dropdown-header {
     padding: 16px 20px;
@@ -313,10 +316,10 @@ body {
     gap: 12px;
 }
 
-.shared-user-info i {
-    color: #df2144;
-    flex-shrink: 0;
-}
+    .shared-user-info i {
+        color: #df2144;
+        flex-shrink: 0;
+    }
 
 .shared-user-details {
     flex: 1;
@@ -357,18 +360,18 @@ body {
     cursor: pointer;
 }
 
-.shared-dropdown-item:hover {
-    background: rgba(223, 33, 68, 0.1);
-    color: #ffffff;
-    text-decoration: none;
-    padding-left: 24px;
-}
+    .shared-dropdown-item:hover {
+        background: rgba(223, 33, 68, 0.1);
+        color: #ffffff;
+        text-decoration: none;
+        padding-left: 24px;
+    }
 
-.shared-dropdown-item i {
-    width: 18px;
-    text-align: center;
-    flex-shrink: 0;
-}
+    .shared-dropdown-item i {
+        width: 18px;
+        text-align: center;
+        flex-shrink: 0;
+    }
 
 .shared-dropdown-divider {
     margin: 8px 0;
@@ -384,10 +387,10 @@ body {
     color: #ff6b6b !important;
 }
 
-.shared-logout-btn:hover {
-    background: rgba(255, 107, 107, 0.1) !important;
-    color: #ff8a8a !important;
-}
+    .shared-logout-btn:hover {
+        background: rgba(255, 107, 107, 0.1) !important;
+        color: #ff8a8a !important;
+    }
 
 /* Auth Buttons */
 .shared-auth-buttons {
@@ -415,13 +418,13 @@ body {
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-.shared-btn-register:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.5);
-    text-decoration: none;
-    transform: translateY(-1px);
-}
+    .shared-btn-register:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
 
 .shared-btn-login {
     background: linear-gradient(135deg, #df2144 0%, #c01b3a 100%);
@@ -429,28 +432,28 @@ body {
     border-color: #df2144;
 }
 
-.shared-btn-login:hover {
-    background: linear-gradient(135deg, #c01b3a 0%, #a61530 100%);
-    color: #ffffff;
-    text-decoration: none;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(223, 33, 68, 0.3);
-}
+    .shared-btn-login:hover {
+        background: linear-gradient(135deg, #c01b3a 0%, #a61530 100%);
+        color: #ffffff;
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(223, 33, 68, 0.3);
+    }
 
 /* Responsive Design */
 @media (max-width: 1200px) {
     .shared-nav-content {
         gap: 20px;
     }
-    
+
     .shared-search-box {
         min-width: 180px;
     }
-    
+
     .shared-nav-links {
         gap: 4px;
     }
-    
+
     .shared-nav-link {
         padding: 8px 12px;
         font-size: 13px;
@@ -462,20 +465,20 @@ body {
         gap: 15px;
         height: 65px;
     }
-    
+
     .shared-nav-links {
         display: none;
     }
-    
+
     .shared-search-box {
         min-width: 160px;
         max-width: 200px;
     }
-    
+
     .shared-brand-name {
         font-size: 16px;
     }
-    
+
     .shared-brand-subtitle {
         font-size: 10px;
     }
@@ -485,38 +488,38 @@ body {
     .shared-nav-container {
         padding: 0 15px;
     }
-    
+
     .shared-nav-content {
         gap: 12px;
         height: 60px;
     }
-    
+
     .shared-brand-text {
         display: none;
     }
-    
+
     .shared-search-box {
         min-width: 140px;
         max-width: 160px;
     }
-    
+
     .shared-search-input {
         font-size: 13px;
         padding: 8px 12px;
     }
-    
+
     .shared-user-name {
         display: none;
     }
-    
+
     .shared-btn span {
         display: none;
     }
-    
+
     .shared-btn {
         padding: 8px 12px;
     }
-    
+
     .shared-dropdown-menu {
         min-width: 250px;
         right: -10px;
@@ -527,26 +530,26 @@ body {
     .shared-nav-container {
         padding: 0 10px;
     }
-    
+
     .shared-nav-content {
         gap: 8px;
         height: 55px;
     }
-    
+
     .shared-brand-logo {
         width: 32px;
         height: 28px;
     }
-    
+
     .shared-search-box {
         min-width: 120px;
         max-width: 140px;
     }
-    
+
     .shared-search-input::placeholder {
         font-size: 12px;
     }
-    
+
     .shared-dropdown-menu {
         min-width: 220px;
         right: -15px;
@@ -558,20 +561,25 @@ body {
     pointer-events: none;
 }
 
-.shared-header.loading::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #df2144, transparent);
-    animation: loading-slide 2s ease-in-out infinite;
-}
+    .shared-header.loading::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #df2144, transparent);
+        animation: loading-slide 2s ease-in-out infinite;
+    }
 
 @keyframes loading-slide {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 /* Accessibility improvements */
@@ -610,4 +618,4 @@ body {
     body {
         margin-top: 55px;
     }
-} 
+}

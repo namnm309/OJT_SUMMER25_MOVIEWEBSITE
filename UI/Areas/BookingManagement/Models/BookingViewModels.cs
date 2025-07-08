@@ -156,4 +156,22 @@ namespace UI.Areas.BookingManagement.Models
         public int TotalResults { get; set; }
         public bool HasSearched { get; set; } = false;
     }
+
+    public class ProcessBookingRequest
+    {
+        public string ShowtimeId { get; set; }
+        public List<string> SeatIds { get; set; } = new List<string>();
+        public decimal TotalPrice { get; set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string IdentityCard { get; set; }
+        public string PhoneNumber { get; set; }
+    }
+
+    public class BookingResultViewModel
+    {
+        public bool Success { get; set; }
+        public dynamic Data { get; set; }
+        public ProcessBookingRequest BookingInfo { get; set; }
+    }
 }

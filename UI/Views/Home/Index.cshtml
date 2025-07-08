@@ -22,8 +22,9 @@
 	<link rel="stylesheet" href="~/css/MovieDetails/movie-details-mostly.css" asp-append-version="true" />
 
 }
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<div class="cinema-homepage">
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<div class="home-new-style">
 	<!-- Hero Section -->
 	<div class="hero-section" id="heroSection">
 		<!-- Background Video/Image -->
@@ -61,12 +62,8 @@
 
 						<div class="genre-section">
 							<h3>Thể loại</h3>
-							<p id="movieGenre" style="@(Model.FeaturedMovie.Genres != null && Model.FeaturedMovie.Genres.Any() ? "" : "display:none")">
-								@(Model.FeaturedMovie.Genres != null && Model.FeaturedMovie.Genres.Any()
-															? string.Join(", ", Model.FeaturedMovie.Genres.Select(g => g.Name))
-															: "")
-						</p>
-					</div>
+							<p id="movieGenre">@(Model.FeaturedMovie.Genres != null && Model.FeaturedMovie.Genres.Any() ? string.Join(", ", Model.FeaturedMovie.Genres.Select(g => g.Name)) : "Chưa phân loại")</p>
+						</div>
 
 						<div class="ratings-section">
 							<div class="rating-item">
@@ -154,10 +151,6 @@
 
 
 
-
-
-
-
 				}
 
 
@@ -170,15 +163,7 @@
 
 
 
-
-
-
-
 				else
-
-
-
-
 
 
 
@@ -257,11 +242,6 @@
 					</div>
 				</div>
 
-				<button id="loadMoreRecommended" class="btn-load-more">
-					<i class="fas fa-chevron-down"></i>
-					<span>Xem thêm</span>
-				</button>
-
 				<div class="pagination-info" id="recommendedInfo">
 					<div class="info-content">
 						<i class="fas fa-info-circle"></i>
@@ -279,15 +259,13 @@
 
 					foreach (var movie in Model.RecommendedMovies.Take(5))
 					{
-						<div class="recommended-item">
-							<div class="recommended-poster">
+						<div class="recommended-item movie-card">
+							<div class="recommended-poster movie-poster">
 								@{
 									string imageUrl = movie.PrimaryImageUrl ?? movie.ImageUrl;
 									if (string.IsNullOrEmpty(imageUrl) && movie.Images != null && movie.Images.Any())
-
 									{
 										var primaryImage = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
-
 										imageUrl = primaryImage?.ImageUrl ?? "";
 									}
 									imageUrl = imageUrl ?? "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
@@ -304,11 +282,11 @@
 									<i class="fas fa-star"></i> @movie.Rating.ToString("F1")
 								</div>
 							</div>
-							<div class="recommended-info">
-								<span class="recommended-genre">
+							<div class="recommended-info movie-info-home">
+								<span class="recommended-genre badge-genre-home">
 									@(movie.Genres != null && movie.Genres.Any() ? movie.Genres.First().Name : "Chưa phân loại")
 								</span>
-								<h3 class="recommended-title">@movie.Title</h3>
+								<h3 class="recommended-title movie-title-home">@movie.Title</h3>
 								<div class="recommended-meta">
 									<div class="recommended-duration">
 										<i class="fas fa-clock"></i>
@@ -338,10 +316,17 @@
 					</div>
 				}
 			</div>
+
+			<!-- Thêm nút "Xem thêm" vào đây, sau grid phim -->
+			<button id="loadMoreRecommended" class="btn-load-more">
+				<i class="fas fa-chevron-down"></i>
+				<span>Xem thêm</span>
+			</button>
 		</div>
 	</div>
 
 	<!-- Phim Sắp Chiếu - Full Width như Phim đề xuất -->
+	<!-- Phim Sắp Chiếu - Thiết kế mới -->
 	<div class="recommended-section-new">
 		<div class="section-title-bar">
 			<h2><i class="fas fa-film"></i> Phim Sắp Chiếu</h2>
@@ -350,141 +335,145 @@
 			</a>
 		</div>
 
-		<!-- Modern Pagination Controls for Coming Soon Movies - TRƯỚC danh sách phim -->
-		<div class="section-pagination" id="comingSoonPagination">
-			<div class="pagination-controls">
-				<div class="sort-filter-controls">
-					<div class="filter-group">
-						<label class="filter-label">
-							<i class="fas fa-calendar-alt"></i>
-							<span>Sắp xếp</span>
-						</label>
-						<select id="comingSoonSort" class="pagination-select">
-							<option value="releaseDate-asc">📅 Ngày chiếu gần nhất</option>
-							<option value="releaseDate-desc">📅 Ngày chiếu xa nhất</option>
-							<option value="title-asc">🔤 Tên A-Z</option>
-							<option value="rating-desc">⭐ Đánh giá cao nhất</option>
-						</select>
-					</div>
-
-					<div class="filter-group">
-						<label class="filter-label">
-							<i class="fas fa-film"></i>
-							<span>Thể loại</span>
-						</label>
-						<select id="comingSoonGenre" class="pagination-select">
-							<option value="all">🎬 Tất cả thể loại</option>
-							<option value="hành động">💥 Hành động</option>
-							<option value="tình cảm">💕 Tình cảm</option>
-							<option value="kinh dị">👻 Kinh dị</option>
-							<option value="hài">😂 Hài</option>
-						</select>
-					</div>
-
-					<div class="filter-group">
-						<label class="filter-label">
-							<i class="fas fa-eye"></i>
-							<span>Hiển thị</span>
-						</label>
-						<select id="comingSoonPageSize" class="pagination-select">
-							<option value="4">📑 4 phim</option>
-							<option value="6">📑 6 phim</option>
-							<option value="8">📑 8 phim</option>
-						</select>
-					</div>
+		<!-- Bộ lọc và sắp xếp -->
+		<div class="pagination-controls">
+			<div class="sort-filter-controls">
+				<div class="filter-group">
+					<label class="filter-label">
+						<i class="fas fa-calendar-alt"></i>
+						<span>Sắp xếp theo</span>
+					</label>
+					<select id="comingSoonSort" class="pagination-select">
+						<option value="releaseDate-asc">Ngày chiếu gần nhất</option>
+						<option value="releaseDate-desc">Ngày chiếu xa nhất</option>
+						<option value="title-asc">Tên A-Z</option>
+						<option value="rating-desc">Đánh giá cao nhất</option>
+					</select>
 				</div>
 
-				<button id="loadMoreComingSoon" class="btn-load-more">
-					<i class="fas fa-chevron-down"></i>
-					<span>Xem thêm</span>
-				</button>
+				<div class="filter-group">
+					<label class="filter-label">
+						<i class="fas fa-theater-masks"></i>
+						<span>Thể loại</span>
+					</label>
+					<select id="comingSoonGenre" class="pagination-select">
+						<option value="all">Tất cả thể loại</option>
+						<option value="hành động">Hành động</option>
+						<option value="tình cảm">Tình cảm</option>
+						<option value="kinh dị">Kinh dị</option>
+						<option value="hài">Hài</option>
+						<option value="khoa học viễn tưởng">Khoa học viễn tưởng</option>
+						<option value="phiêu lưu">Phiêu lưu</option>
+					</select>
+				</div>
 
-				<div class="pagination-info" id="comingSoonInfo">
-					<div class="info-content">
-						<i class="fas fa-clock"></i>
-						<span>Trang 1 / 1 (0 phim)</span>
-					</div>
+				<div class="filter-group">
+					<label class="filter-label">
+						<i class="fas fa-eye"></i>
+						<span>Hiển thị</span>
+					</label>
+					<select id="comingSoonPageSize" class="pagination-select">
+						<option value="4">4 phim</option>
+						<option value="8">8 phim</option>
+						<option value="12">12 phim</option>
+					</select>
+				</div>
+			</div>
+
+			<!-- Thông tin phân trang -->
+			<div class="pagination-info" id="comingSoonInfo">
+				<div class="info-content">
+					<i class="fas fa-info-circle"></i>
+					<span>Trang 1 / 1 (0 phim)</span>
 				</div>
 			</div>
 		</div>
 
-		<div class="recommended-content">
-			<div class="recommended-grid">
-				@if (Model?.ComingSoonMovies != null && Model.ComingSoonMovies.Any())
+		<!-- Grid phim -->
+		<div class="recommended-grid">
+			@if (Model?.ComingSoonMovies != null && Model.ComingSoonMovies.Any())
+			{
+				foreach (var movie in Model.ComingSoonMovies.Take(4))
 				{
-
-
-
-					foreach (var movie in Model.ComingSoonMovies.Take(4))
-					{
-						<div class="recommended-item">
-							<div class="recommended-poster">
-								@{
-									string imageUrl = movie.PrimaryImageUrl ?? movie.ImageUrl;
-									if (string.IsNullOrEmpty(imageUrl) && movie.Images != null && movie.Images.Any())
-
-									{
-										var primaryImage = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
-
-										imageUrl = primaryImage?.ImageUrl ?? "";
-
-									}
-									imageUrl = imageUrl ?? "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
-								}
-								<img src="@imageUrl" alt="@movie.Title" loading="lazy"
-									 onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
-								<div class="recommended-overlay">
-									<a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="recommended-view-btn">
-										<i class="fas fa-info-circle"></i>
-										Xem Chi Tiết
-									</a>
-								</div>
-								<!-- Release Date Badge cho Coming Soon -->
-								<div class="recommended-release-date">
-									<i class="fas fa-calendar-alt"></i> @movie.ReleaseDate.ToString("dd/MM/yyyy")
-								</div>
-								@if (movie.Rating > 0)
-
+					<div class="recommended-item">
+						<div class="recommended-poster">
+							@{
+								string imageUrl = movie.PrimaryImageUrl ?? movie.ImageUrl;
+								if (string.IsNullOrEmpty(imageUrl) && movie.Images != null && movie.Images.Any())
 								{
-									<div class="recommended-rating">
-										<i class="fas fa-star"></i> @movie.Rating.ToString("F1")
-									</div>
+									var primaryImage = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
+									imageUrl = primaryImage?.ImageUrl ?? "";
 								}
+								imageUrl = imageUrl ?? "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
+							}
+							<img src="@imageUrl" alt="@movie.Title" loading="lazy"
+								 onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
+
+							<!-- Overlay khi hover -->
+							<div class="recommended-overlay">
+								<a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="recommended-view-btn">
+									<i class="fas fa-info-circle"></i>
+									Xem Chi Tiết
+								</a>
 							</div>
-							<div class="recommended-info">
-								<span class="recommended-genre">
-									@(movie.Genres != null && movie.Genres.Any() ? movie.Genres.First().Name : "Chưa phân loại")
-								</span>
-								<h3 class="recommended-title">@movie.Title</h3>
-								<div class="recommended-meta">
-									<div class="recommended-duration">
-										<i class="fas fa-clock"></i>
-										<span>@movie.RunningTime phút</span>
-									</div>
-									<span>@movie.ReleaseDate.Year</span>
+
+							<!-- Ngày phát hành -->
+							<div class="recommended-release-date">
+								<i class="fas fa-calendar-alt"></i> @movie.ReleaseDate.ToString("dd/MM/yyyy")
+							</div>
+
+							<!-- Đánh giá sao -->
+							@if (movie.Rating > 0)
+							{
+								<div class="recommended-rating">
+									<i class="fas fa-star"></i> @movie.Rating.ToString("F1")
 								</div>
-							</div>
+							}
 						</div>
-					}
 
-				}
+						<!-- Thông tin phim -->
+						<div class="recommended-info">
+							<!-- Thể loại -->
+							<span class="recommended-genre">
+								@(movie.Genres != null && movie.Genres.Any() ? movie.Genres.First().Name : "Chưa phân loại")
+							</span>
 
-				else
-				{
-					<!-- Empty state khi không có phim sắp chiếu -->
-					<div class="empty-state">
-						<div class="empty-state-content">
-							<i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
-							<h4>Chưa có phim sắp chiếu</h4>
-							<p>Hiện tại chưa có phim nào trong trạng thái sắp chiếu.</p>
-							<a href="@Url.Action("Index", "Movies")" class="btn btn-primary">
-								<i class="fas fa-search"></i> Xem tất cả phim
-							</a>
+							<!-- Tiêu đề -->
+							<h3 class="recommended-title">@movie.Title</h3>
+
+							<!-- Thông tin thêm -->
+							<div class="recommended-meta">
+								<div class="recommended-duration">
+									<i class="fas fa-clock"></i>
+									<span>@movie.RunningTime phút</span>
+								</div>
+								<span>@movie.ReleaseDate.Year</span>
+							</div>
 						</div>
 					</div>
 				}
-			</div>
+			}
+			else
+			{
+				<!-- Trạng thái trống -->
+				<div class="empty-state">
+					<div class="empty-state-content">
+						<i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
+						<h4>Chưa có phim sắp chiếu</h4>
+						<p>Hiện tại chưa có phim nào trong trạng thái sắp chiếu.</p>
+						<a href="@Url.Action("Index", "Movies")" class="btn btn-primary">
+							<i class="fas fa-search"></i> Xem tất cả phim
+						</a>
+					</div>
+				</div>
+			}
 		</div>
+
+		<!-- Nút xem thêm -->
+		<button id="loadMoreComingSoon" class="btn-load-more">
+			<i class="fas fa-chevron-down"></i>
+			<span>Xem thêm</span>
+		</button>
 	</div>
 
 	<!-- Khuyến Mãi - Independent Section -->
@@ -655,14 +644,23 @@
 		// Truyền dữ liệu phim từ Model vào JavaScript
 		window.heroMoviesData = @Html.Raw(JsonSerializer.Serialize((Model?.HeroMovies ?? new List<MovieViewModel>()).Select(movie => new
 			{
+
 				id = movie.Id,
+
 				title = movie.Title,
+
 				titleVn = movie.Director ?? "Đạo diễn",
+
 				plot = movie.Content ?? "Chưa có thông tin nội dung.",
+
 				genre = (movie.Genres != null && movie.Genres.Any()) ? string.Join(", ", movie.Genres.Select(g => g.Name)) : "Chưa phân loại",
+
 				duration = $"{movie.RunningTime} phút",
+
 				background = GetMovieImageUrl(movie),
+
 				trailerUrl = movie.TrailerUrl ?? ""
+
 			})));
 
 		// 🔍 DEBUG: Kiểm tra data source

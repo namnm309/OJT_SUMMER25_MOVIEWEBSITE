@@ -1,330 +1,53 @@
 @model UI.Models.MovieViewModel
 @{
     ViewData["Title"] = Model?.Title ?? "Chi tiết phim";
-
-
-
-
-
-
-
     Layout = null; // Remove layout to have full control
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Process API data
-
-
-
-
-
-
-
+                   // Process API data
     var movieData = Model;
-
-
-
-
-
-
-
     var hasValidData = movieData != null && !string.IsNullOrEmpty(movieData.Title);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Primary image for background
-
-
-
-
-
-
-
     var backgroundImage = hasValidData ? (movieData?.PrimaryImageUrl ?? movieData?.ImageUrl) : "";
-
-
-
-
-
-
-
     if (string.IsNullOrEmpty(backgroundImage) && hasValidData && movieData?.Images?.Any() == true)
-
-
-
-
-
-
-
     {
-
-
-
-
-
-
-
         backgroundImage = movieData.Images?.FirstOrDefault(img => img.IsPrimary)?.ImageUrl ?? movieData.Images?.FirstOrDefault()?.ImageUrl;
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Parse actors string to array
-
-
-
-
-
-
-
+    // Parse actors string to array - DECLARE THE VARIABLE
     var actorsList = new List<string>();
-
-
-
-
-
-
-
     if (hasValidData && !string.IsNullOrEmpty(movieData?.Actors))
-
-
-
-
-
-
-
     {
-
-
-
-
-
-
-
         actorsList = movieData.Actors!.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
-
-
-
-
-
-
-
                                     .Select(a => a.Trim())
-
-
-
-
-
-
-
                                     .Where(a => !string.IsNullOrEmpty(a))
-
-
-
-
-
-
-
                                     .ToList();
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // Extract trailer embed URL
-
-
-
-
-
-
-
     var embedTrailerUrl = "";
 
-
-
-
-
-
-
     if (hasValidData && !string.IsNullOrEmpty(movieData?.TrailerUrl))
-
-
-
-
-
-
-
     {
-
-
-
-
-
-
-
         var trailerUrl = movieData.TrailerUrl;
-
-
-
-
-
-
-
         if (trailerUrl.Contains("youtube.com/watch?v="))
-
-
-
-
-
-
-
         {
-
-
-
-
-
-
-
             var videoId = trailerUrl.Split("v=")[1].Split("&")[0];
-
-
-
-
-
-
-
-            embedTrailerUrl = $"https://www.youtube.com/embed/{videoId}";
-
-
-
-
-
-
-
+            embedTrailerUrl = $"https://www.youtube.com/embed/{videoId}?autoplay=1&mute=1&loop=1&playlist={videoId}";
         }
-
-
-
-
-
-
-
         else if (trailerUrl.Contains("youtu.be/"))
-
-
-
-
-
-
-
         {
-
-
-
-
-
-
-
             var videoId = trailerUrl.Split("/").Last();
-
-
-
-
-
-
-
-            embedTrailerUrl = $"https://www.youtube.com/embed/{videoId}";
-
-
-
-
-
-
-
+            embedTrailerUrl = $"https://www.youtube.com/embed/{videoId}?autoplay=1&mute=1&loop=1&playlist={videoId}";
         }
-
-
-
-
-
-
-
     }
 }
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-
     <!-- External Stylesheets -->
     <link rel="stylesheet" href="~/css/HomePage/base.css" />
-    <link rel="stylesheet" href="~/css/HomePage/header.css" /> 
+    <link rel="stylesheet" href="~/css/HomePage/header.css" />
     <link rel="stylesheet" href="~/css/Shared/_header.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/HomePage/layout.css" />
     <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" />
@@ -335,132 +58,78 @@
 </head>
 <body class="details-page">
     @Html.Partial("_Header")
-
     <!-- Hero Section -->
-    <section class="hero-section" style="margin-top: 0; padding-top: 120px;"> <!-- Đổi margin-top thành padding-top -->
-        <div class="hero-background" style="top: 0; height: 100vh;"> <!-- Đảm bảo ảnh nền full height -->
-            <img src="@(backgroundImage ?? "https://via.placeholder.com/1920x1080/333/fff?text=Movie+Background")" 
-                 alt="@(movieData?.Title ?? "Movie Background")" 
+    <section class="hero-section" style="margin-top: 0; padding-top: 120px;">
+        <!-- Đổi margin-top thành padding-top -->
+        <div class="hero-background" style="top: 0; height: 100vh;">
+            <!-- Đảm bảo ảnh nền full height -->
+            <img src="@(backgroundImage ?? "https://via.placeholder.com/1920x1080/333/fff?text=Movie+Background")"
+                 alt="@(movieData?.Title ?? "Movie Background")"
                  class="hero-bg"
                  style="object-fit: cover; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"
                  onerror="this.src='https://via.placeholder.com/1920x1080/333/fff?text=Movie+Background'">
         </div>
         <div class="hero-overlay"></div>
-
-        <div class="hero-content" style="padding-top: 0;"> <!-- Bỏ padding-top thừa -->
+        <div class="hero-content" style="padding-top: 0;">
+            <!-- Bỏ padding-top thừa -->
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="movie-info">
                             <h1 class="movie-title-main">@(movieData?.Title ?? "Tên phim")</h1>
-
                             @if (hasValidData && !string.IsNullOrEmpty(movieData?.ProductionCompany))
-
-
-
-
-
-
-
                             {
-                                            <p class="movie-tagline">@movieData.ProductionCompany</p>
+                                <p class="movie-tagline">@movieData.ProductionCompany</p>
                             }
-
                             <div class="movie-meta-info">
                                 @if (hasValidData && movieData?.Rating > 0)
-
-
-
-
-
-
-
                                 {
-                                                <span><i class="fas fa-star"></i> @movieData.Rating.ToString("F1")</span>
+                                    <span><i class="fas fa-star"></i> @movieData.Rating.ToString("F1")</span>
                                 }
                                 @if (hasValidData && movieData?.RunningTime > 0)
-
-
-
-
-
-
-
                                 {
-                                                <span><i class="fas fa-clock"></i> @movieData.RunningTime phút</span>
+                                    <span><i class="fas fa-clock"></i> @movieData.RunningTime phút</span>
                                 }
                                 @if (hasValidData && movieData != null)
-
-
-
-
-
-
-
                                 {
-                                                <span><i class="fas fa-calendar"></i> @movieData.ReleaseDate.Year</span>
+                                    <span><i class="fas fa-calendar"></i> @movieData.ReleaseDate.Year</span>
                                 }
                             </div>
-
                             @if (hasValidData && movieData.Genres?.Any() == true)
-
-
-
-
-
-
-
                             {
-                                            <div class="genre-list">
+                                <div class="genre-list">
                                     @foreach (var genre in movieData.Genres)
-
-
-
-
-
-
-
                                     {
-                                                                <a href="#" class="genre-item">@genre.Name</a>
+                                        <a href="#" class="genre-item">@genre.Name</a>
                                     }
-                                            </div>
+                                </div>
                             }
-
                             <div class="credits-info">
                                 @if (hasValidData && !string.IsNullOrEmpty(movieData?.Director))
-
-
-
-
-
-
-
                                 {
-                                                <div class="credit-item">
-                                                    <span class="credit-label">Đạo diễn:</span>
-                                                    <span class="credit-value">@movieData.Director</span>
-                                                </div>
+                                    <div class="credit-item">
+                                        <span class="credit-label">Đạo diễn:</span>
+                                        <span class="credit-value">@movieData.Director</span>
+                                    </div>
                                 }
                                 @if (actorsList.Any())
-
-
-
-
-
-
-
                                 {
-                                                <div class="credit-item">
-                                                    <span class="credit-label">Diễn viên:</span>
-                                                    <span class="credit-value">@string.Join(", ", actorsList.Take(3))</span>
-                                                </div>
+                                    <div class="credit-item">
+                                        <span class="credit-label">Diễn viên:</span>
+                                        <span class="credit-value">@string.Join(", ", actorsList.Take(3))</span>
+                                    </div>
                                 }
                             </div>
-
                             <div class="synopsis">
                                 <p>@(movieData?.Content ?? "Thông tin chi tiết về phim sẽ được cập nhật sớm.")</p>
                             </div>
-
+                            <!-- Nút đặt vé -->
+                            <div class="booking-actions">
+                                <a href="https://localhost:7069/BookingManagement/Booking/SelectMovie" class="btn-book-ticket">
+                                    <i class="fas fa-ticket-alt"></i>
+                                    <span>Đặt vé ngay</span>
+                                </a>
+                            </div>
                             <div class="social-links">
                                 <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
                                 <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
@@ -469,12 +138,11 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="col-lg-4">
                         <div class="poster-container">
                             <div class="poster-wrapper">
-                                <img src="@(backgroundImage ?? "https://via.placeholder.com/300x450/333/fff?text=Movie+Poster")" 
-                                     alt="@(movieData?.Title ?? "Movie Poster")" 
+                                <img src="@(backgroundImage ?? "https://via.placeholder.com/300x450/333/fff?text=Movie+Poster")"
+                                     alt="@(movieData?.Title ?? "Movie Poster")"
                                      class="poster-image"
                                      onerror="this.src='https://via.placeholder.com/300x450/333/fff?text=Movie+Poster'">
                             </div>
@@ -484,7 +152,6 @@
             </div>
         </div>
     </section>
-
     <!-- Main Content -->
     <section class="main-content">
         <div class="container">
@@ -500,7 +167,6 @@
                             <button class="date-btn">Chủ nhật<br><span>@DateTime.Now.AddDays(3).ToString("dd/MM")</span></button>
                         </div>
                     </div>
-
                     <!-- Cinema Showtimes -->
                     <div class="cinema-showtimes">
                         <!-- CGV Vincom -->
@@ -533,7 +199,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- Lotte Cinema -->
                         <div class="cinema-item">
                             <div class="cinema-info">
@@ -572,45 +237,24 @@
                     <div class="sidebar-section">
                         <div class="trailer-container">
                             @if (!string.IsNullOrEmpty(embedTrailerUrl))
-
-
-
-
-
-
-
                             {
-                                            <div class="trailer-video">
-                                                <iframe src="@embedTrailerUrl" 
-                                                         frameborder="0" 
-                                                         allowfullscreen
-                                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                         class="trailer-iframe"></iframe>
-                                            </div>
+                                <div class="trailer-video">
+                                    <iframe src="@embedTrailerUrl"
+                                            frameborder="0"
+                                            allowfullscreen
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            class="trailer-iframe"></iframe>
+                                </div>
                             }
-
-
-
-
-
-
-
                             else
-
-
-
-
-
-
-
                             {
-                                            <div class="trailer-thumbnail">
-                                                <img src="@(backgroundImage ?? "https://via.placeholder.com/400x225/333/fff?text=No+Trailer")" alt="@(movieData?.Title ?? "Movie") Trailer" />
-                                                <button class="play-trailer" onclick="playTrailer()">
-                                                    <i class="fas fa-play"></i>
-                                                    <span>Play trailer</span>
-                                                </button>
-                                            </div>
+                                <div class="trailer-thumbnail">
+                                    <img src="@(backgroundImage ?? "https://via.placeholder.com/400x225/333/fff?text=No+Trailer")" alt="@(movieData?.Title ?? "Movie") Trailer" />
+                                    <button class="play-trailer" onclick="playTrailer()">
+                                        <i class="fas fa-play"></i>
+                                        <span>Play trailer</span>
+                                    </button>
+                                </div>
                             }
                             <div class="trailer-info">
                                 <p class="trailer-label">Official Trailer</p>
@@ -624,60 +268,32 @@
                         <h3>Thông tin nhanh</h3>
                         <div class="quick-info">
                             @if (hasValidData && movieData?.RunningTime > 0)
-
-
-
-
-
-
-
                             {
-                                            <div class="info-item">
-                                                <span class="info-label">Thời lượng:</span>
-                                                <span class="info-value">@movieData.RunningTime phút</span>
-                                            </div>
+                                <div class="info-item">
+                                    <span class="info-label">Thời lượng:</span>
+                                    <span class="info-value">@movieData.RunningTime phút</span>
+                                </div>
                             }
                             @if (hasValidData && movieData != null)
-
-
-
-
-
-
-
                             {
-                                            <div class="info-item">
-                                                <span class="info-label">Khởi chiếu:</span>
-                                                <span class="info-value">@movieData.ReleaseDate.ToString("dd/MM/yyyy")</span>
-                                            </div>
+                                <div class="info-item">
+                                    <span class="info-label">Khởi chiếu:</span>
+                                    <span class="info-value">@movieData.ReleaseDate.ToString("dd/MM/yyyy")</span>
+                                </div>
                             }
                             @if (hasValidData && movieData.Genres?.Any() == true)
-
-
-
-
-
-
-
                             {
-                                            <div class="info-item">
-                                                <span class="info-label">Thể loại:</span>
-                                                <span class="info-value">@string.Join(", ", movieData.Genres.Select(g => g.Name))</span>
-                                            </div>
+                                <div class="info-item">
+                                    <span class="info-label">Thể loại:</span>
+                                    <span class="info-value">@string.Join(", ", movieData.Genres.Select(g => g.Name))</span>
+                                </div>
                             }
                             @if (hasValidData && !string.IsNullOrEmpty(movieData?.ProductionCompany))
-
-
-
-
-
-
-
                             {
-                                            <div class="info-item">
-                                                <span class="info-label">Nhà sản xuất:</span>
-                                                <span class="info-value">@movieData.ProductionCompany</span>
-                                            </div>
+                                <div class="info-item">
+                                    <span class="info-label">Nhà sản xuất:</span>
+                                    <span class="info-value">@movieData.ProductionCompany</span>
+                                </div>
                             }
                         </div>
                     </div>
@@ -701,7 +317,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+    </section>
     </div>
 
     <!-- Scripts -->
@@ -712,7 +328,6 @@
                 window.open(url, '_blank');
             }
         }
-
         function playTrailer() {
             // Implement trailer play functionality
             console.log('Play trailer clicked');

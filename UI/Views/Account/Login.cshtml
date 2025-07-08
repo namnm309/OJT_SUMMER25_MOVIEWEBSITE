@@ -19,8 +19,6 @@
 
     <!-- Bên phải: nội dung form login -->
     <div class="login-side">
-        <!-- Logo Netflix ở góc trên trái -->
-        <div class="netflix-logo-center d-none d-lg-block">C</div>
 
         <!-- Top bar ở góc trên phải -->
         <div class="top-bar d-none d-lg-block">
@@ -138,7 +136,7 @@
         });
 
         // Focus vào username khi trang load
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const usernameField = document.getElementById('Username');
             if (usernameField) {
                 usernameField.focus();
@@ -146,7 +144,7 @@
         });
 
         // Login form submission with AJAX
-        document.getElementById('loginForm')?.addEventListener('submit', async function(e) {
+        document.getElementById('loginForm')?.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const formData = new FormData(this);
@@ -184,7 +182,22 @@
                 if (contentType && contentType.indexOf("application/json") !== -1) {
                     const result = await response.json();
 
+                    // Trong phần xử lý response thành công (khoảng dòng 170-180)
                     if (result.success) {
+                        // Lưu thông tin user vào localStorage
+                        if (result.userId) {
+                            localStorage.setItem('userId', result.userId);
+                        }
+                        if (result.username) {
+                            localStorage.setItem('username', result.username);
+                        }
+                        if (result.fullName) {
+                            localStorage.setItem('fullName', result.fullName);
+                        }
+                        if (result.role) {
+                            localStorage.setItem('userRole', result.role);
+                        }
+
                         // Redirect theo role
                         if (result.role === "admin" || result.role === "2") {
                             window.location.href = "/Dashboard/AdminDashboard";

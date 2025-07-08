@@ -282,8 +282,25 @@ namespace UI.Areas.BookingManagement.Controllers
         {
             ViewData["Title"] = "Xác nhận đặt vé";
 
-            var seatIdList = seatIds.Split(',').Select(Guid.Parse).ToList();
-            var model = GetDummyConfirmViewModel(showTimeId, seatIdList);
+            // Tạo model với thông tin cơ bản
+            var model = new ConfirmBookingViewModel
+            {
+                ShowTimeId = showTimeId,
+                SelectedSeatIds = !string.IsNullOrEmpty(seatIds)
+                    ? seatIds.Split(',').Select(Guid.Parse).ToList()
+                    : new List<Guid>(),
+                // Thông tin sẽ được load động từ JavaScript
+                MovieTitle = "Đang tải...",
+                MoviePoster = "/images/placeholder-movie.jpg",
+                CinemaRoom = "Đang tải...",
+                ShowDate = DateTime.Today,
+                ShowTime = TimeSpan.Zero,
+                SelectedSeats = new List<string>(),
+                TotalPrice = 0,
+                TotalSeats = 0,
+                AvailablePoints = 500, // Lấy từ user claims hoặc API
+                FinalPrice = 0
+            };
 
             // Điền thông tin khách hàng từ Claims
             model.CustomerName = User.FindFirst("FullName")?.Value ?? User.Identity?.Name ?? "";
@@ -296,49 +313,73 @@ namespace UI.Areas.BookingManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmBooking(ConfirmBookingViewModel model)
+        public async Task<IActionResult> ProcessBooking([FromBody] ProcessBookingRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             try
             {
-                // Simulate booking confirmation
-                var bookingId = Guid.NewGuid();
-                var bookingCode = $"BK{DateTime.Now:yyyyMMddHHmmss}";
+                // Lấy userId từ localStorage hoặc claims
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Json(new { success = false, message = "Không tìm thấy thông tin người dùng" });
+                }
 
-                TempData["BookingSuccess"] = true;
-                TempData["BookingId"] = bookingId.ToString();
-                TempData["BookingCode"] = bookingCode;
+                // Tạo request body theo format API
+                var apiRequest = new
+                {
+                    showtimeId = request.ShowtimeId,
+                    seatIds = request.SeatIds,
+                    totalPrice = request.TotalPrice,
+                    userId = userId,
+                    fullName = request.FullName,
+                    email = request.Email,
+                    identityCard = request.IdentityCard,
+                    phoneNumber = request.PhoneNumber
+                };
 
-                return RedirectToAction("TicketInfo", new { bookingId = bookingId });
+                // Gọi API confirm-user-booking-v2
+                var result = await _apiService.PostAsync<dynamic>(
+                    "/api/v1/booking-ticket/confirm-user-booking-v2",
+                    apiRequest
+                );
+
+                if (result.Success)
+                {
+                    // Lưu thông tin booking vào TempData để hiển thị ở trang kết quả
+                    TempData["BookingResult"] = System.Text.Json.JsonSerializer.Serialize(new
+                    {
+                        Success = true,
+                        Data = result.Data,
+                        BookingInfo = apiRequest
+                    });
+
+                    return Json(new { success = true, redirectUrl = Url.Action("BookingResult") });
+                }
+                else
+                {
+                    return Json(new { success = false, message = result.Message ?? "Có lỗi xảy ra khi đặt vé" });
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error confirming booking");
-                ModelState.AddModelError("", "Có lỗi xảy ra khi xác nhận đặt vé. Vui lòng thử lại.");
-                return View(model);
+                _logger.LogError(ex, "Error processing booking");
+                return Json(new { success = false, message = "Có lỗi xảy ra khi xử lý đặt vé" });
             }
         }
 
-        // T11: Ticket Information
         [HttpGet]
-        public async Task<IActionResult> TicketInfo(Guid bookingId)
+        public IActionResult BookingResult()
         {
-            ViewData["Title"] = "Thông tin vé";
+            ViewData["Title"] = "Kết Quả Đặt Vé";
 
-            var model = GetDummyTicketInfo(bookingId);
-
-            // Kiểm tra xem có booking success từ TempData không
-            if (TempData["BookingSuccess"] != null)
+            var bookingResultJson = TempData["BookingResult"] as string;
+            if (string.IsNullOrEmpty(bookingResultJson))
             {
-                ViewBag.IsNewBooking = true;
-                ViewBag.BookingCode = TempData["BookingCode"];
+                return RedirectToAction("SelectMovie");
             }
 
-            return View(model);
+            var bookingResult = System.Text.Json.JsonSerializer.Deserialize<BookingResultViewModel>(bookingResultJson);
+            return View(bookingResult);
         }
 
         // Helper Methods for Dummy Data
