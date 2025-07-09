@@ -1777,19 +1777,37 @@ document.addEventListener('DOMContentLoaded', function () {
         // Additional checks for sort/filter elements
         const recommendedSort = document.getElementById('recommendedSort');
         const recommendedGenre = document.getElementById('recommendedGenre');
+        const recommendedPageSize = document.getElementById('recommendedPageSize');
         const comingSoonSort = document.getElementById('comingSoonSort');
         const comingSoonGenre = document.getElementById('comingSoonGenre');
+        const comingSoonPageSize = document.getElementById('comingSoonPageSize');
         
         console.log('📊 Element check results:', {
             recommendedInfo: !!recommendedInfo,
             comingSoonInfo: !!comingSoonInfo,
             recommendedSort: !!recommendedSort,
             recommendedGenre: !!recommendedGenre,
+            recommendedPageSize: !!recommendedPageSize,
             comingSoonSort: !!comingSoonSort,
             comingSoonGenre: !!comingSoonGenre,
+            comingSoonPageSize: !!comingSoonPageSize,
             recommendedGrid: !!document.querySelector('.recommended-grid'),
             comingSoonList: !!document.querySelector('.coming-soon-list')
         });
+
+        // Debug: Log dropdown options
+        if (recommendedSort) {
+            console.log('🔄 Recommended sort options:', Array.from(recommendedSort.options).map(opt => opt.value));
+        }
+        if (recommendedGenre) {
+            console.log('🎭 Recommended genre options:', Array.from(recommendedGenre.options).map(opt => opt.value));
+        }
+        if (comingSoonSort) {
+            console.log('🔄 Coming soon sort options:', Array.from(comingSoonSort.options).map(opt => opt.value));
+        }
+        if (comingSoonGenre) {
+            console.log('🎭 Coming soon genre options:', Array.from(comingSoonGenre.options).map(opt => opt.value));
+        }
         
         if (recommendedInfo && comingSoonInfo) {
             window.homepagePagination = new HomepagePagination();
