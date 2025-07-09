@@ -796,11 +796,13 @@
                     <div class="pagination-info">
                         <span id="paginationInfo">Đang tải...</span>
                     </div>
-                    <div class="pagination-controls">
-                        <button id="prevPageBtn" class="btn-pagination" disabled>❮ Trước</button>
-                        <div id="pageNumbers" class="page-numbers"></div>
-                        <button id="nextPageBtn" class="btn-pagination" disabled>Sau ❯</button>
+                    <div id="pagination-controls" style="margin-top: 20px; display: flex; align-items: center; gap: 10px;">
+                        <button id="prevPageBtn" onclick="goToPage(currentPage - 1)">Trước</button>
+                        <div id="pageNumbers" style="display: flex; gap: 5px;"></div>
+                        <button id="nextPageBtn" onclick="goToPage(currentPage + 1)">Sau</button>
                     </div>
+                    <div id="paginationInfo" style="margin-top: 10px; font-style: italic;"></div>
+
                     <div class="pagination-size">
                         <select id="pageSizeSelect" class="form-select">
                             <option value="5">5/trang</option>
@@ -867,12 +869,15 @@
     
     <script>
         // API Base URL
-        const API_BASE = '/api/v1';
+        // const API_BASE = '/api/v1';
+        const API_BASE = 'https://localhost:7049/api/v1';
+
+
         let promotions = [];
         
         // Variables for pagination
         let currentPage = 1;
-        let pageSize = 10;
+        let pageSize = 2;
         let totalPromotions = 0;
         let totalPages = 0;
         
@@ -971,27 +976,25 @@
                 showTableLoading();
                 
                 // Tạm thời comment API call và dùng data demo để tránh lỗi
-                // const response = await fetch(`${API_BASE}/promotions`);
-                
-                // if (response.ok) {
-                //     const result = await response.json();
-                //     
-                //     if (result.isSuccess && result.data) {
-                //         promotions = result.data;
-                //         processPromotionData(promotions, page, size);
-                //     } else {
-                //         throw new Error('Không thể tải dữ liệu khuyến mãi');
-                //     }
-                // } else {
-                //     throw new Error('API không phản hồi');
-                // }
+                const response = await fetch(`${API_BASE}/promotions`);
+
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                if (result.data && Array.isArray(result.data)) {
+                    promotions = result.data;
+                    processPromotionData(promotions, page, size);
+                } else {
+                    throw new Error('API trả về sai định dạng hoặc không có dữ liệu');
+                }
+                } else {
+                    throw new Error('API không phản hồi');
+                }
                 
                 // Sử dụng data demo ngay lập tức để tránh delay gây "giật"
                 // Chỉ delay nhẹ để có cảm giác thực tế mà không bị giật
                 await new Promise(resolve => setTimeout(resolve, 100)); // Giảm từ 300ms xuống 100ms
-                
-                promotions = fallbackPromotions;
-                processPromotionData(promotions, page, size);
                 
             } catch (error) {
                 console.error('Error loading promotions:', error);
@@ -1004,6 +1007,19 @@
 
         // Tách function xử lý data để tái sử dụng và tối ưu
         function processPromotionData(allPromotions, page, size) {
+            const now = new Date();
+            allPromotions.sort((a, b) => {
+                    const aEnd = new Date(a.endDate);
+                    const bEnd = new Date(b.endDate);
+                    const aExpired = aEnd < now;
+                    const bExpired = bEnd < now;
+
+                    if (aExpired && !bExpired) return 1;
+                    if (!aExpired && bExpired) return -1;
+
+                    return aEnd - bEnd;
+                });
+
             totalPromotions = allPromotions.length;
             totalPages = Math.ceil(totalPromotions / size);
             currentPage = page;
@@ -1011,6 +1027,8 @@
             const startIndex = (page - 1) * size;
             const endIndex = startIndex + size;
             const pagePromotions = allPromotions.slice(startIndex, endIndex);
+
+
             
             // Xử lý data tuần tự để tránh conflict
             displayPromotions(pagePromotions);
@@ -1173,6 +1191,13 @@
             }
             
             pageNumbers.innerHTML = pageNumbersHTML;
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(totalPromotions / pageSize);
+            if (page < 1 || page > totalPages) return;
+
+            processPromotionData(promotions, page, pageSize);
         }
 
         // Filter promotions by search term
@@ -1630,6 +1655,7 @@
             
             try {
                 const promotionData = {
+                    id: promotionId,
                     title: formData.get('title'),
                     startDate: formData.get('startDate'),
                     endDate: formData.get('endDate'),
@@ -1638,7 +1664,7 @@
                     imageUrl: formData.get('imageUrl')
                 };
                 
-                const response = await fetch(`${API_BASE}/promotions/${promotionId}`, {
+                const response = await fetch(`${API_BASE}/promotions`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

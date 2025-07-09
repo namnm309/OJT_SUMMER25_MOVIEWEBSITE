@@ -1,8 +1,8 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace UI.Models
+namespace UI.Areas.PromotionManagement.Models
 {
-    public class PromotionViewModel
+    public class PromotionDto
     {
         public Guid Id { get; set; }
 

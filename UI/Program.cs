@@ -60,6 +60,11 @@ namespace UI
             builder.Services.AddScoped<UI.Areas.ShowtimeManagement.Services.IShowtimeService,
                           UI.Areas.ShowtimeManagement.Services.ShowtimeService>();
 
+            // Register PromotionManagementUIService
+            builder.Services.AddScoped<UI.Areas.PromotionManagement.Services.IPromotionManagementUIService,
+                          UI.Areas.PromotionManagement.Services.PromotionManagementUIService>();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

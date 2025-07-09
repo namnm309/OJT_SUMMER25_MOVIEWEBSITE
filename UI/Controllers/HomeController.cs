@@ -239,7 +239,7 @@ namespace UI.Controllers
             {
                 new PromotionViewModel
                 {
-                    Id = "1",
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                     Title = "Giảm 50% vé phim cuối tuần",
                     StartDate = DateTime.Now.AddDays(-7),
                     EndDate = DateTime.Now.AddDays(14),
@@ -249,7 +249,7 @@ namespace UI.Controllers
                 },
                 new PromotionViewModel
                 {
-                    Id = "2", 
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                     Title = "Combo bắp nước chỉ 99K",
                     StartDate = DateTime.Now.AddDays(-3),
                     EndDate = DateTime.Now.AddDays(21),
@@ -259,7 +259,7 @@ namespace UI.Controllers
                 },
                 new PromotionViewModel
                 {
-                    Id = "3",
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
                     Title = "Thành viên VIP - Ưu đãi đặc biệt",
                     StartDate = DateTime.Now.AddDays(-10),
                     EndDate = DateTime.Now.AddDays(30),
@@ -269,7 +269,7 @@ namespace UI.Controllers
                 },
                 new PromotionViewModel
                 {
-                    Id = "4",
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000004"),
                     Title = "Sinh viên giảm 40%",
                     StartDate = DateTime.Now.AddDays(-5),
                     EndDate = DateTime.Now.AddDays(60),
