@@ -616,7 +616,8 @@
     </style>
 </head>
 <body class="dashboard-body">
-    <div class="new-dashboard-layout">
+    
+    @* <div class="new-dashboard-layout">
         <!-- Sidebar -->
         <aside class="new-dashboard-sidebar">
             <div class="new-sidebar-header">
@@ -738,7 +739,10 @@
                     </form>
                 </div>
             </div>
-        </aside>
+        </aside> *@
+
+    @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
+
 
         <!-- Main Content -->
         <main class="new-dashboard-main">

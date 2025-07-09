@@ -1,39 +1,31 @@
+@using System.Security.Claims
+
 @{
-    string currentPage = ViewBag.CurrentPage as string ?? "";
+    var currentPage = ViewContext.RouteData.Values["Area"]?.ToString() ?? ViewContext.RouteData.Values["Controller"]?.ToString() ?? "";
 }
 
-<!-- Debug info - remove in production -->
-@if (User.IsInRole("Admin"))
-{
-    // <div style="position: fixed; top: 0; right: 0; background: rgba(0,0,0,0.8); color: white; padding: 10px; z-index: 9999; font-size: 12px;">
-    //     CurrentPage: @currentPage
-    // </div>
-}
+<link href="~/css/dashboard-header-dropdown.css" rel="stylesheet" />
 
 <header class="dashboard-header">
     <div class="header-content">
         <div class="brand-section">
-            <a href="@Url.Action("Index", "Home", new { area = "" })" class="d-flex align-items-center text-decoration-none">
+            <a href="/" class="d-flex align-items-center text-decoration-none">
                 <div class="brand-logo"></div>
                 <div class="ms-3">
-                    <div class="brand-name">Cinema City</div>
-                    <div class="brand-subtitle">Rạp chiếu phim hiện đại</div>
+                    <h1 class="brand-name mb-0">Cinema City</h1>
+                    <p class="brand-subtitle mb-0">Admin Dashboard</p>
                 </div>
             </a>
         </div>
+        
         <nav class="nav-links">
-            <a href="@Url.Action("Index","Home", new { area = "" })" class="nav-link @(currentPage == "Home" ? "active" : "")">
-                <i class="fas fa-home me-1"></i>Trang chủ
-            </a>
-            
-            @* Management links for Admin/Staff *@
             @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
             {
                 <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="nav-link @(currentPage == "MovieManagement" ? "active" : "")">
                     <i class="fas fa-film me-1"></i>Quản lý phim
                 </a>
-                <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="nav-link @(currentPage == "UserManagement" ? "active" : "")">
-                    <i class="fas fa-users me-1"></i>Quản lý thành viên
+                <a href="@Url.Action("Index", "Showtimes", new { area = "ShowtimeManagement" })" class="nav-link @(currentPage == "ShowtimeManagement" ? "active" : "")">
+                    <i class="fas fa-calendar-alt me-1"></i>Quản lý lịch chiếu
                 </a>
                 <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="nav-link @(currentPage == "PromotionManagement" ? "active" : "")">
                     <i class="fas fa-gift me-1"></i>Quản lý khuyến mãi
@@ -53,40 +45,60 @@
                           User.Identity?.Name)
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li class="dropdown-header">
+                            <div class="user-info">
+                                <i class="fas fa-user-circle fa-2x mb-2"></i>
+                                <div class="user-name">@(User.Identity?.Name ?? "Admin")</div>
+                                <div class="user-email">@(User.IsInRole("Admin") ? "Administrator" : User.IsInRole("Staff") ? "Staff" : "User")</div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
                         <li>
                             <a class="dropdown-item" href="@Url.Action("Profile", "Account", new { area = "UserManagement" })">
-                                <i class="fas fa-user-edit me-2"></i>Hồ sơ
+                                <i class="fas fa-user-edit"></i>
+                                Chỉnh sửa thông tin
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="@Url.Action("AdminDashboard", "Dashboard")">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
                             </a>
                         </li>
                         @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
                         {
                             <li>
                                 <a class="dropdown-item" href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })">
-                                    <i class="fas fa-film me-2"></i>Quản lý phim
+                                    <i class="fas fa-film"></i>
+                                    Quản lý phim
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="@Url.Action("Index", "Members", new { area = "UserManagement" })">
-                                    <i class="fas fa-users me-2"></i>Quản lý thành viên
+                                    <i class="fas fa-users"></i>
+                                    Quản lý thành viên
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })">
-                                    <i class="fas fa-gift me-2"></i>Quản lý khuyến mãi
+                                    <i class="fas fa-gift"></i>
+                                    Quản lý khuyến mãi
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })">
-                                    <i class="fas fa-ticket-alt me-2"></i>Quản lý đặt vé
+                                    <i class="fas fa-ticket-alt"></i>
+                                    Quản lý đặt vé
                                 </a>
                             </li>
                         }
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="d-inline">
+                            <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="m-0">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="dropdown-item">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Đăng xuất
                                 </button>
                             </form>
                         </li>
@@ -180,41 +192,6 @@
         color: #df2144 !important;
         background: rgba(223, 33, 68, 0.1);
     }
-
-    /* Enhanced dropdown styles for navigation */
-    .nav-links .dropdown-menu {
-        background: #1a1a1a !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 12px !important;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
-        min-width: 250px !important;
-        padding: 0.5rem 0 !important;
-        margin-top: 0.5rem !important;
-    }
-    
-    .nav-links .dropdown-item {
-        color: rgba(255, 255, 255, 0.8) !important;
-        padding: 0.75rem 1rem !important;
-        transition: all 0.3s ease !important;
-        border: none !important;
-        background: transparent !important;
-        width: 100% !important;
-        text-align: left !important;
-    }
-    
-    .nav-links .dropdown-item:hover {
-        background: rgba(223, 33, 68, 0.1) !important;
-        color: #ffffff !important;
-    }
-    
-    .nav-links .dropdown-divider {
-        border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-        margin: 0.5rem 0 !important;
-    }
-    
-    .nav-links .dropdown-toggle::after {
-        margin-left: 0.5rem !important;
-    }
     
     /* Make brand link hover effect */
     .brand-section a:hover .brand-name {
@@ -225,7 +202,7 @@
     @@media (max-width: 768px) {
         .header-content {
             padding: 15px;
-    }
+        }
     
         .nav-links {
             gap: 15px;

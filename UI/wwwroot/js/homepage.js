@@ -1396,6 +1396,7 @@ function handleSwipe() {
 
 class HomepagePagination {
     constructor() {
+        console.log('🔧 Initializing HomepagePagination...');
         this.currentPages = {
             recommended: 1,
             comingSoon: 1
@@ -1405,29 +1406,40 @@ class HomepagePagination {
     }
 
     init() {
+        console.log('⚙️ Binding pagination events and loading initial data...');
         this.bindRecommendedEvents();
         this.bindComingSoonEvents();
-        this.updatePaginationInfo();
+        // Load initial data for both sections (replace static content)
+        this.loadRecommendedMovies(false); // false = replace static content
+        this.loadComingSoonMovies(false); // false = replace static content
     }
 
     bindRecommendedEvents() {
         // Sort change
         document.getElementById('recommendedSort')?.addEventListener('change', (e) => {
+            console.log('🔄 Recommended sort changed to:', e.target.value);
             this.currentPages.recommended = 1;
-            this.loadRecommendedMovies();
+            this.loadRecommendedMovies(false); // false = replace, not append
         });
 
         // Genre filter change
         document.getElementById('recommendedGenre')?.addEventListener('change', (e) => {
+            console.log('🎭 Recommended genre changed to:', e.target.value);
             this.currentPages.recommended = 1;
-            this.loadRecommendedMovies();
+            this.loadRecommendedMovies(false); // false = replace, not append
         });
 
-        // Page size change
-        document.getElementById('recommendedPageSize')?.addEventListener('change', (e) => {
-            this.currentPages.recommended = 1;
-            this.loadRecommendedMovies();
-        });
+        // Page size change (optional element)
+        const recommendedPageSize = document.getElementById('recommendedPageSize');
+        if (recommendedPageSize) {
+            recommendedPageSize.addEventListener('change', (e) => {
+                console.log('📏 Recommended page size changed to:', e.target.value);
+                this.currentPages.recommended = 1;
+                this.loadRecommendedMovies(false); // false = replace, not append
+            });
+        } else {
+            console.warn('⚠️ recommendedPageSize element not found');
+        }
 
         // Load more button
         document.getElementById('loadMoreRecommended')?.addEventListener('click', (e) => {
@@ -1439,21 +1451,29 @@ class HomepagePagination {
     bindComingSoonEvents() {
         // Sort change
         document.getElementById('comingSoonSort')?.addEventListener('change', (e) => {
+            console.log('🔄 Coming soon sort changed to:', e.target.value);
             this.currentPages.comingSoon = 1;
-            this.loadComingSoonMovies();
+            this.loadComingSoonMovies(false); // false = replace, not append
         });
 
         // Genre filter change
         document.getElementById('comingSoonGenre')?.addEventListener('change', (e) => {
+            console.log('🎭 Coming soon genre changed to:', e.target.value);
             this.currentPages.comingSoon = 1;
-            this.loadComingSoonMovies();
+            this.loadComingSoonMovies(false); // false = replace, not append
         });
 
-        // Page size change
-        document.getElementById('comingSoonPageSize')?.addEventListener('change', (e) => {
-            this.currentPages.comingSoon = 1;
-            this.loadComingSoonMovies();
-        });
+        // Page size change (optional element)
+        const comingSoonPageSize = document.getElementById('comingSoonPageSize');
+        if (comingSoonPageSize) {
+            comingSoonPageSize.addEventListener('change', (e) => {
+                console.log('📏 Coming soon page size changed to:', e.target.value);
+                this.currentPages.comingSoon = 1;
+                this.loadComingSoonMovies(false); // false = replace, not append
+            });
+        } else {
+            console.warn('⚠️ comingSoonPageSize element not found');
+        }
 
         // Load more button
         document.getElementById('loadMoreComingSoon')?.addEventListener('click', (e) => {
@@ -1463,16 +1483,30 @@ class HomepagePagination {
     }
 
     async loadRecommendedMovies(append = false) {
+        console.log('🎬 Loading recommended movies...', { append, page: this.currentPages.recommended });
+        
         const sortSelect = document.getElementById('recommendedSort');
         const genreSelect = document.getElementById('recommendedGenre');
         const pageSizeSelect = document.getElementById('recommendedPageSize');
-        const pagination = document.getElementById('recommendedPagination');
+        const pagination = document.getElementById('recommendedInfo');
 
-        if (!sortSelect || !genreSelect || !pageSizeSelect) return;
+        if (!sortSelect || !genreSelect) {
+            console.log('❌ Missing recommended controls:', {
+                sort: !!sortSelect,
+                genre: !!genreSelect,
+                pageSize: !!pageSizeSelect
+            });
+            return;
+        }
+        
+        // Default values if elements not found
+        if (!pageSizeSelect) {
+            console.warn('⚠️ PageSize select not found, using default value');
+        }
 
         const [sortBy, sortOrder] = sortSelect.value.split('-');
         const genre = genreSelect.value;
-        const pageSize = parseInt(pageSizeSelect.value);
+        const pageSize = parseInt(pageSizeSelect?.value || '6'); // Default to 6 if not found
         const page = this.currentPages.recommended;
 
         // Show loading state
@@ -1490,14 +1524,20 @@ class HomepagePagination {
                 params.append('genre', genre);
             }
 
-            const response = await fetch(`/Home/GetRecommendedMovies?${params}`);
+            const apiUrl = `/Home/GetRecommendedMovies?${params}`;
+            console.log('📡 API Call:', apiUrl);
+            
+            const response = await fetch(apiUrl);
             const data = await response.json();
 
+            console.log('📥 API Response:', data);
+
             if (data.success) {
+                console.log(`✅ Loaded ${data.data.length} recommended movies`);
                 this.updateRecommendedGrid(data.data, append);
                 this.updatePaginationInfo('recommended', data.pagination);
             } else {
-                console.error('Failed to load recommended movies:', data.message);
+                console.error('❌ Failed to load recommended movies:', data.message);
             }
         } catch (error) {
             console.error('Error loading recommended movies:', error);
@@ -1507,16 +1547,30 @@ class HomepagePagination {
     }
 
     async loadComingSoonMovies(append = false) {
+        console.log('🔮 Loading coming soon movies...', { append, page: this.currentPages.comingSoon });
+        
         const sortSelect = document.getElementById('comingSoonSort');
         const genreSelect = document.getElementById('comingSoonGenre');
         const pageSizeSelect = document.getElementById('comingSoonPageSize');
-        const pagination = document.getElementById('comingSoonPagination');
+        const pagination = document.getElementById('comingSoonInfo');
 
-        if (!sortSelect || !genreSelect || !pageSizeSelect) return;
+        if (!sortSelect || !genreSelect) {
+            console.log('❌ Missing coming soon controls:', {
+                sort: !!sortSelect,
+                genre: !!genreSelect,
+                pageSize: !!pageSizeSelect
+            });
+            return;
+        }
+        
+        // Default values if elements not found
+        if (!pageSizeSelect) {
+            console.warn('⚠️ ComingSoon PageSize select not found, using default value');
+        }
 
         const [sortBy, sortOrder] = sortSelect.value.split('-');
         const genre = genreSelect.value;
-        const pageSize = parseInt(pageSizeSelect.value);
+        const pageSize = parseInt(pageSizeSelect?.value || '4'); // Default to 4 for coming soon
         const page = this.currentPages.comingSoon;
 
         // Show loading state
@@ -1551,33 +1605,64 @@ class HomepagePagination {
     }
 
     updateRecommendedGrid(movies, append = false) {
+        // Fix: Target the correct recommended grid  
         const grid = document.querySelector('.recommended-grid');
-        if (!grid) return;
+        if (!grid) {
+            console.error('Recommended grid not found');
+            return;
+        }
+
+        console.log(`📝 Updating recommended grid: ${append ? 'append' : 'replace'} with ${movies.length} movies`);
 
         if (!append) {
-            // Replace content
+            // Complete replacement - clear all content when filtering
+            console.log('🧹 Clearing all recommended movies for filter/sort change');
             grid.innerHTML = '';
+        } else {
+            // Only remove existing dynamic items when appending (load more)
+            const existingDynamic = grid.querySelectorAll('.dynamic-item');
+            existingDynamic.forEach(item => item.remove());
         }
 
         movies.forEach(movie => {
             const movieElement = this.createRecommendedMovieElement(movie);
+            movieElement.classList.add('dynamic-item'); // Mark as dynamic
             grid.appendChild(movieElement);
         });
+
+        console.log(`✅ Grid updated with ${grid.children.length} total items`);
     }
 
     updateComingSoonGrid(movies, append = false) {
-        const list = document.querySelector('.coming-soon-list');
-        if (!list) return;
+        // Fix: Target the coming soon section grid (second .recommended-grid)
+        const sections = document.querySelectorAll('.recommended-section-new');
+        const comingSoonSection = sections[1]; // Second section (0-indexed) is coming soon
+        const grid = comingSoonSection?.querySelector('.recommended-grid');
+        
+        if (!grid) {
+            console.error('Coming soon grid not found');
+            return;
+        }
+
+        console.log(`📝 Updating coming soon grid: ${append ? 'append' : 'replace'} with ${movies.length} movies`);
 
         if (!append) {
-            // Replace content
-            list.innerHTML = '';
+            // Complete replacement - clear all content when filtering
+            console.log('🧹 Clearing all coming soon movies for filter/sort change');
+            grid.innerHTML = '';
+        } else {
+            // Only remove existing dynamic items when appending (load more)
+            const existingDynamic = grid.querySelectorAll('.dynamic-item');
+            existingDynamic.forEach(item => item.remove());
         }
 
         movies.forEach(movie => {
             const movieElement = this.createComingSoonMovieElement(movie);
-            list.appendChild(movieElement);
+            movieElement.classList.add('dynamic-item'); // Mark as dynamic
+            grid.appendChild(movieElement);
         });
+
+        console.log(`✅ Coming soon grid updated with ${grid.children.length} total items`);
     }
 
     createRecommendedMovieElement(movie) {
@@ -1617,30 +1702,38 @@ class HomepagePagination {
 
     createComingSoonMovieElement(movie) {
         const div = document.createElement('div');
-        div.className = 'coming-soon-item';
+        div.className = 'recommended-item'; // Use same class structure as in HTML
         div.innerHTML = `
-            <div class="coming-soon-poster">
+            <div class="recommended-poster">
                 <img src="${movie.primaryImageUrl || movie.imageUrl || 'https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'}" 
                      alt="${movie.title}" loading="lazy"
                      onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
-                <div class="coming-soon-overlay">
-                    <a href="/Movies/Details/${movie.id}" class="coming-soon-view-btn">
+                <div class="recommended-overlay">
+                    <a href="/Movies/Details/${movie.id}" class="recommended-view-btn">
                         <i class="fas fa-info-circle"></i>
                         Xem Chi Tiết
                     </a>
                 </div>
-                <div class="coming-soon-release">${new Date(movie.releaseDate).toLocaleDateString('vi-VN')}</div>
+                <div class="recommended-release-date">
+                    <i class="fas fa-calendar-alt"></i> ${new Date(movie.releaseDate).toLocaleDateString('vi-VN')}
+                </div>
                 ${movie.rating > 0 ? `
-                    <div class="coming-soon-rating">
+                    <div class="recommended-rating">
                         <i class="fas fa-star"></i> ${movie.rating.toFixed(1)}
                     </div>
                 ` : ''}
             </div>
-            <div class="coming-soon-info">
-                <h3 class="coming-soon-title">${movie.title}</h3>
-                <div class="coming-soon-meta">
-                    <span>${movie.genres && movie.genres.length > 0 ? movie.genres[0].name : 'Chưa phân loại'}</span>
-                    <span>${movie.runningTime} phút</span>
+            <div class="recommended-info">
+                <span class="recommended-genre">
+                    ${movie.genres && movie.genres.length > 0 ? movie.genres[0].name : 'Chưa phân loại'}
+                </span>
+                <h3 class="recommended-title">${movie.title}</h3>
+                <div class="recommended-meta">
+                    <div class="recommended-duration">
+                        <i class="fas fa-clock"></i>
+                        <span>${movie.runningTime} phút</span>
+                    </div>
+                    <span>${new Date(movie.releaseDate).getFullYear()}</span>
                 </div>
             </div>
         `;
@@ -1674,12 +1767,44 @@ window.addEventListener('beforeunload', cleanupContinuousVideo);
 
 // Initialize pagination when DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('🚀 Homepage DOM loaded, checking pagination elements...');
+    
     // Add small delay to ensure all elements are rendered
     setTimeout(() => {
-        if (document.getElementById('recommendedPagination') &&
-            document.getElementById('comingSoonPagination')) {
-            new HomepagePagination();
+        const recommendedInfo = document.getElementById('recommendedInfo');
+        const comingSoonInfo = document.getElementById('comingSoonInfo');
+        
+        // Additional checks for sort/filter elements
+        const recommendedSort = document.getElementById('recommendedSort');
+        const recommendedGenre = document.getElementById('recommendedGenre');
+        const comingSoonSort = document.getElementById('comingSoonSort');
+        const comingSoonGenre = document.getElementById('comingSoonGenre');
+        
+        console.log('📊 Element check results:', {
+            recommendedInfo: !!recommendedInfo,
+            comingSoonInfo: !!comingSoonInfo,
+            recommendedSort: !!recommendedSort,
+            recommendedGenre: !!recommendedGenre,
+            comingSoonSort: !!comingSoonSort,
+            comingSoonGenre: !!comingSoonGenre,
+            recommendedGrid: !!document.querySelector('.recommended-grid'),
+            comingSoonList: !!document.querySelector('.coming-soon-list')
+        });
+        
+        if (recommendedInfo && comingSoonInfo) {
+            window.homepagePagination = new HomepagePagination();
             console.log('✅ Homepage Pagination initialized successfully');
+        } else {
+            console.warn('⚠️ Pagination elements missing:', {
+                recommendedInfo: !!recommendedInfo,
+                comingSoonInfo: !!comingSoonInfo
+            });
+            
+            // Fallback: Still initialize if at least one section exists
+            if (recommendedInfo || comingSoonInfo) {
+                window.homepagePagination = new HomepagePagination();
+                console.log('⚠️ Partial pagination initialized');
+            }
         }
     }, 500);
 });

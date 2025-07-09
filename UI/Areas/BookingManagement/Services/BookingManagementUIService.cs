@@ -43,6 +43,11 @@ namespace UI.Areas.BookingManagement.Services
         // New methods for score conversion booking
         Task<ApiResponse<BookingConfirmationDetailViewModel>> GetBookingConfirmationDetailAsync(Guid showTimeId, List<Guid> seatIds, string memberId);
         Task<ApiResponse<BookingConfirmSuccessViewModel>> ConfirmBookingWithScoreAsync(BookingConfirmWithScoreViewModel model);
+
+        // Booking list management methods
+        Task<ApiResponse<dynamic>> GetBookingListAsync(dynamic filter);
+        Task<ApiResponse<dynamic>> UpdateBookingStatusAsync(Guid bookingId, string newStatus);
+        Task<ApiResponse<dynamic>> CancelBookingAsync(Guid bookingId, string reason);
     }
 
     public class BookingManagementUIService : IBookingManagementUIService
@@ -352,6 +357,94 @@ namespace UI.Areas.BookingManagement.Services
                 {
                     Success = false,
                     Message = "Không thể xác nhận đặt vé. Vui lòng thử lại."
+                };
+            }
+        }
+
+        // Booking list management methods
+        public async Task<ApiResponse<dynamic>> GetBookingListAsync(dynamic filter)
+        {
+            try
+            {
+                _logger.LogInformation("Getting booking list with filters");
+                
+                var queryParams = new List<string>();
+                
+                if (filter.FromDate != null)
+                    queryParams.Add($"fromDate={((DateTime)filter.FromDate).ToString("yyyy-MM-dd")}");
+                
+                if (filter.ToDate != null)
+                    queryParams.Add($"toDate={((DateTime)filter.ToDate).ToString("yyyy-MM-dd")}");
+                
+                if (!string.IsNullOrEmpty(filter.MovieTitle))
+                    queryParams.Add($"movieTitle={Uri.EscapeDataString(filter.MovieTitle)}");
+                
+                if (!string.IsNullOrEmpty(filter.BookingStatus))
+                    queryParams.Add($"bookingStatus={Uri.EscapeDataString(filter.BookingStatus)}");
+                
+                if (!string.IsNullOrEmpty(filter.CustomerSearch))
+                    queryParams.Add($"customerSearch={Uri.EscapeDataString(filter.CustomerSearch)}");
+                
+                if (!string.IsNullOrEmpty(filter.BookingCode))
+                    queryParams.Add($"bookingCode={Uri.EscapeDataString(filter.BookingCode)}");
+                
+                queryParams.Add($"page={filter.Page}");
+                queryParams.Add($"pageSize={filter.PageSize}");
+                queryParams.Add($"sortBy={Uri.EscapeDataString(filter.SortBy)}");
+                queryParams.Add($"sortDirection={Uri.EscapeDataString(filter.SortDirection)}");
+                
+                var queryString = string.Join("&", queryParams);
+                var url = $"api/v1/booking-ticket/bookings?{queryString}";
+                
+                return await _apiService.GetAsync<dynamic>(url);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting booking list");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể tải danh sách đặt vé. Vui lòng thử lại."
+                };
+            }
+        }
+
+        public async Task<ApiResponse<dynamic>> UpdateBookingStatusAsync(Guid bookingId, string newStatus)
+        {
+            try
+            {
+                _logger.LogInformation("Updating booking status for {BookingId} to {NewStatus}", bookingId, newStatus);
+                
+                var updateData = new { NewStatus = newStatus };
+                return await _apiService.PutAsync<dynamic>($"api/v1/booking-ticket/booking/{bookingId}/status", updateData);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating booking status");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể cập nhật trạng thái đặt vé. Vui lòng thử lại."
+                };
+            }
+        }
+
+        public async Task<ApiResponse<dynamic>> CancelBookingAsync(Guid bookingId, string reason)
+        {
+            try
+            {
+                _logger.LogInformation("Cancelling booking {BookingId} with reason: {Reason}", bookingId, reason);
+                
+                var cancelData = new { Reason = reason };
+                return await _apiService.PostAsync<dynamic>($"api/v1/booking-ticket/booking/{bookingId}/cancel", cancelData);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error cancelling booking");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể hủy đặt vé. Vui lòng thử lại."
                 };
             }
         }

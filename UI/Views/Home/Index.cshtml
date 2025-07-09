@@ -2,7 +2,7 @@
 @using System.Text.Json
 @model UI.Models.HomeViewModel
 @{
-	ViewData["Title"] = "Trang Chủ - Cinema City";
+	ViewData["Title"] = "Cinema City";
 }
 
 @section Styles {
@@ -24,6 +24,7 @@
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
 <div class="home-new-style">
 	<!-- Hero Section -->
 	<div class="hero-section" id="heroSection">
@@ -106,75 +107,13 @@
 
 			<div class="pagination-dots" id="paginationDots">
 				@if (Model?.HeroMovies != null && Model.HeroMovies.Any())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				{
-
-
-
-
-
-
-
 					for (int i = 0; i < Model.HeroMovies.Count; i++)
-
-
-
-
-
-
-
 					{
 						<span class="dot @(i == 0 ? "active" : "")" data-index="@i"></span>
 					}
-
-
-
-
-
-
-
-
-
-
-
 				}
-
-
-
-
-
-
-
-
-
-
-
 				else
-
-
-
-
-
-
-
-
-
-
-
 				{
 					<span class="dot active"></span>
 				}
@@ -188,65 +127,65 @@
 		</div>
 	</div>
 
-	<!-- Phim đề xuất mới -->
+	<!-- Phim Đề Xuất - Thiết kế mới nhất quán -->
 	<div class="recommended-section-new">
 		<div class="section-title-bar">
-			<h2><i class="fas fa-thumbs-up"></i> Phim đề xuất</h2>
+			<h2><i class="fas fa-star"></i> Phim Đề Xuất</h2>
 			<a href="@Url.Action("Index", "Movies")" class="view-all-link">
 				Xem tất cả <i class="fas fa-chevron-right"></i>
 			</a>
 		</div>
 
-		<!-- Modern Pagination Controls for Recommended Movies - TRƯỚC danh sách phim -->
-		<div class="section-pagination" id="recommendedPagination">
-			<div class="pagination-controls">
-				<div class="sort-filter-controls">
-					<div class="filter-group">
-						<label class="filter-label">
-							<i class="fas fa-sort-amount-down"></i>
-							<span>Sắp xếp</span>
-						</label>
-						<select id="recommendedSort" class="pagination-select">
-							<option value="createdAt-desc">🕒 Mới nhất</option>
-							<option value="title-asc">🔤 Tên A-Z</option>
-							<option value="title-desc">🔤 Tên Z-A</option>
-							<option value="rating-desc">⭐ Đánh giá cao nhất</option>
-							<option value="rating-asc">⭐ Đánh giá thấp nhất</option>
-						</select>
-					</div>
-
-					<div class="filter-group">
-						<label class="filter-label">
-							<i class="fas fa-theater-masks"></i>
-							<span>Thể loại</span>
-						</label>
-						<select id="recommendedGenre" class="pagination-select">
-							<option value="all">🎭 Tất cả thể loại</option>
-							<option value="hành động">💥 Hành động</option>
-							<option value="tình cảm">💕 Tình cảm</option>
-							<option value="kinh dị">👻 Kinh dị</option>
-							<option value="hài">😂 Hài</option>
-						</select>
-					</div>
-
-					<div class="filter-group">
-						<label class="filter-label">
-							<i class="fas fa-list"></i>
-							<span>Hiển thị</span>
-						</label>
-						<select id="recommendedPageSize" class="pagination-select">
-							<option value="6">📄 6 phim</option>
-							<option value="9">📄 9 phim</option>
-							<option value="12">📄 12 phim</option>
-						</select>
-					</div>
+		<!-- Bộ lọc và sắp xếp cho Phim Đề Xuất -->
+		<div class="pagination-controls">
+			<div class="sort-filter-controls">
+				<div class="filter-group">
+					<label class="filter-label">
+						<i class="fas fa-sort"></i>
+						<span>Sắp xếp theo</span>
+					</label>
+					<select id="recommendedSort" class="pagination-select">
+						<option value="createdAt-desc">Mới nhất</option>
+						<option value="rating-desc">Đánh giá cao nhất</option>
+						<option value="title-asc">Tên A-Z</option>
+						<option value="releaseDate-desc">Ngày phát hành gần nhất</option>
+					</select>
 				</div>
 
-				<div class="pagination-info" id="recommendedInfo">
-					<div class="info-content">
-						<i class="fas fa-info-circle"></i>
-						<span>Trang 1 / 1 (0 phim)</span>
-					</div>
+				<div class="filter-group">
+					<label class="filter-label">
+						<i class="fas fa-theater-masks"></i>
+						<span>Thể loại</span>
+					</label>
+					<select id="recommendedGenre" class="pagination-select">
+						<option value="all">Tất cả thể loại</option>
+						<option value="hành động">Hành động</option>
+						<option value="tình cảm">Tình cảm</option>
+						<option value="kinh dị">Kinh dị</option>
+						<option value="hài">Hài</option>
+						<option value="khoa học viễn tưởng">Khoa học viễn tưởng</option>
+						<option value="phiêu lưu">Phiêu lưu</option>
+					</select>
+				</div>
+
+				<div class="filter-group">
+					<label class="filter-label">
+						<i class="fas fa-eye"></i>
+						<span>Hiển thị</span>
+					</label>
+					<select id="recommendedPageSize" class="pagination-select">
+						<option value="6">6 phim</option>
+						<option value="8">8 phim</option>
+						<option value="12">12 phim</option>
+					</select>
+				</div>
+			</div>
+
+			<!-- Thông tin phân trang cho Phim Đề Xuất -->
+			<div class="pagination-info" id="recommendedInfo">
+				<div class="info-content">
+					<i class="fas fa-info-circle"></i>
+					<span>Trang 1 / 1 (0 phim)</span>
 				</div>
 			</div>
 		</div>
@@ -773,8 +712,37 @@
 				window.location.href = searchUrl;
 			}
 		});
+
+		// Debug: Add test button
+		if (window.location.search.includes('debug=true')) {
+			document.addEventListener('DOMContentLoaded', function() {
+				const testButton = document.createElement('button');
+				testButton.textContent = 'TEST NAVIGATE TO MOVIE';
+				testButton.style.position = 'fixed';
+				testButton.style.top = '10px';
+				testButton.style.right = '10px';
+				testButton.style.zIndex = '99999';
+				testButton.style.background = 'red';
+				testButton.style.color = 'white';
+				testButton.style.padding = '10px';
+				testButton.style.border = 'none';
+				testButton.style.cursor = 'pointer';
+				
+				testButton.addEventListener('click', function() {
+					console.log('🧪 Test button clicked');
+					window.location.href = '/Movies/Details/11111111-1111-1111-1111-0000000000a1';
+				});
+				
+				document.body.appendChild(testButton);
+			});
+		}
 	</script>
 	<script src="~/js/homepage.js"></script>
+<script src="~/js/homepage-debug.js"></script>
+	<script src="~/js/movie-card-debug.js"></script>
+	<script src="~/js/quick-fix.js"></script>
+	<script src="~/js/force-navigation.js"></script>
+	<script src="~/js/pagination-debug.js"></script>
 }
 
 @functions {

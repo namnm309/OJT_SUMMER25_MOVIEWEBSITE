@@ -456,12 +456,14 @@
     justify-content: flex-end;
     padding: 20px;
     opacity: 0;
+    pointer-events: none;
     transition: all 0.4s ease;
     border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
 .recommended-item:hover .recommended-overlay {
     opacity: 1;
+    pointer-events: auto;
     background: linear-gradient(to bottom, rgba(139, 92, 246, 0.1) 30%, rgba(139, 92, 246, 0.95) 100%);
 }
 
@@ -1266,11 +1268,13 @@
     justify-content: flex-end;
     padding: 1.5rem;
     opacity: 0;
+    pointer-events: none;
     transition: opacity 0.4s ease;
 }
 
 .recommended-item:hover .recommended-overlay {
     opacity: 1;
+    pointer-events: auto;
 }
 
 /* Nút xem chi tiết */

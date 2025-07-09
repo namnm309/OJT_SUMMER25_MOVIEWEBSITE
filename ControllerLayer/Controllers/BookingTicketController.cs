@@ -228,5 +228,35 @@ namespace ControllerLayer.Controllers
         {
             return await _bookingTicketService.ConfirmBookingWithScoreAsync(request);
         }
+
+        /// <summary>
+        /// Get list of all bookings with filtering and pagination for admin/staff
+        /// </summary>
+        [HttpGet("bookings")]
+        //[Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> GetBookingList([FromQuery] BookingFilterDto filter)
+        {
+            return await _bookingTicketService.GetBookingListAsync(filter);
+        }
+
+        /// <summary>
+        /// Update booking status
+        /// </summary>
+        [HttpPut("booking/{bookingId}/status")]
+        //[Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> UpdateBookingStatus(Guid bookingId, [FromBody] UpdateBookingStatusDto request)
+        {
+            return await _bookingTicketService.UpdateBookingStatusAsync(bookingId, request.NewStatus);
+        }
+
+        /// <summary>
+        /// Cancel a booking
+        /// </summary>
+        [HttpPost("booking/{bookingId}/cancel")]
+        //[Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> CancelBooking(Guid bookingId, [FromBody] CancelBookingDto request)
+        {
+            return await _bookingTicketService.CancelBookingAsync(bookingId, request.Reason);
+        }
     }
 }
