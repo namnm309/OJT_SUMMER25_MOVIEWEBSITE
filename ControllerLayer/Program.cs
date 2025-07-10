@@ -20,8 +20,7 @@ using InfrastructureLayer.Core.Mail;
 using InfrastructureLayer.Core.Cache;
 using StackExchange.Redis;
 using ApplicationLayer.Mappings;
-using ApplicationLayer.Services.Helper;
-using InfrastructureLayer.Data;
+using ApplicationLayer.Services.Payment;   
 
 namespace ControllerLayer
 {
@@ -151,7 +150,13 @@ namespace ControllerLayer
 
             builder.Services.AddScoped<ICacheService, CacheService>();
 
-            
+            var smtpUsername = builder.Configuration.GetValue<string>("SMTPEmail") ?? "smtp_email";
+            var smtpPassword = builder.Configuration.GetValue<string>("SMTPPassword") ?? "smtp_password";
+            builder.Services.AddSingleton<IMailService>(new MailService("smtp.gmail.com", 587, smtpUsername, smtpPassword));
+
+
+
+
             // Đăng ký Repository và Services
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
@@ -173,9 +178,9 @@ namespace ControllerLayer
             builder.Services.AddScoped<ISeatRepository, SeatRepository>();
             builder.Services.AddScoped<ISeatService, SeatService>();
 
-            //Cấu hình mail của Ân
-            builder.Services.AddScoped<ApplicationLayer.Services.Helper.IMailService>(provider =>
-            new ApplicationLayer.Services.Helper.MailService("smtp.gmail.com", 587, "phucan0147@gmail.com", "kgwg vpwi voer ziag"));
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
 
             // Thêm vào Program.cs
             builder.Services.AddAutoMapper(typeof(BookingProfile));
