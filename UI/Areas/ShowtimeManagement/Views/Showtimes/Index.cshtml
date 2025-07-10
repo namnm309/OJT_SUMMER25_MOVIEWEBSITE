@@ -1,4 +1,4 @@
-@model UI.Areas.ShowtimeManagement.Models.ShowtimePageViewModel
+﻿@model UI.Areas.ShowtimeManagement.Models.ShowtimePageViewModel
 @{
     ViewData["Title"] = "Quản lý lịch chiếu - Cinema City";
     Layout = null;
@@ -582,6 +582,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: var(--shadow-sm);
+            overflow: hidden;
         }
 
         .calendar-showtime-item:hover {
@@ -596,6 +597,29 @@
             object-fit: cover;
             border-radius: 4px;
             margin-bottom: 4px;
+            transition: opacity 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .calendar-showtime-poster:not([src]),
+        .calendar-showtime-poster[src=""],
+        .calendar-showtime-poster[src="/images/no-poster.jpg"] {
+            opacity: 0;
+            background: linear-gradient(45deg, #e9ecef 25%, transparent 25%, transparent 50%, #e9ecef 50%, #e9ecef 75%, transparent 75%, transparent);
+            background-size: 8px 8px;
+            position: relative;
+        }
+
+        .calendar-showtime-poster:not([src])::after,
+        .calendar-showtime-poster[src=""]::after,
+        .calendar-showtime-poster[src="/images/no-poster.jpg"]::after {
+            content: "🎬";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            opacity: 0.7;
         }
 
         .calendar-showtime-title {
@@ -937,6 +961,9 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     
     <script>
+        // Base API URL
+        const apiBaseUrl = 'http://localhost:5274';
+
         // Search functionality
         function searchShowtimes() {
             const searchTerm = document.getElementById('showtimeSearch').value.toLowerCase();
@@ -979,8 +1006,141 @@
         }
 
         // Modal functions
-        function openCreateShowtimeModal() {
-            showNotification('Chức năng thêm lịch chiếu đang được phát triển', 'info');
+        async function openCreateShowtimeModal() {
+            try {
+                // Load movies and cinema rooms for dropdowns
+                await loadMoviesAndRooms();
+                
+                // Show the modal
+                const modal = new bootstrap.Modal(document.getElementById('createNewShowtimeModal'));
+                modal.show();
+            } catch (error) {
+                console.error('Error opening create showtime modal:', error);
+                showNotification('Lỗi khi mở form thêm lịch chiếu', 'danger');
+            }
+        }
+        
+        async function loadMoviesAndRooms() {
+            try {
+                // Load movies
+                const moviesResponse = await fetch(`${apiBaseUrl}/api/v1/booking-ticket/dropdown/movies`);
+                const moviesResult = await moviesResponse.json();
+                
+                if (moviesResult.success) {
+                    const movieSelect = document.getElementById('movieSelect');
+                    movieSelect.innerHTML = '<option value="">-- Chọn phim --</option>';
+                    moviesResult.data.forEach(movie => {
+                        movieSelect.innerHTML += `<option value="${movie.id}">${movie.title}</option>`;
+                    });
+                }
+                
+                // Load cinema rooms
+                const roomsResponse = await fetch(`${apiBaseUrl}/api/v1/cinemaroom/ViewRoom`);
+                const roomsResult = await roomsResponse.json();
+                
+                const roomsData = roomsResult.data || roomsResult;
+
+                if (Array.isArray(roomsData)) {
+                    const roomSelect = document.getElementById('cinemaRoomSelect');
+                    roomSelect.innerHTML = '<option value="">-- Chọn phòng chiếu --</option>';
+                    roomsData.forEach(room => {
+                        roomSelect.innerHTML += `<option value="${room.id}">${room.roomName}</option>`;
+                    });
+                } else {
+                    showNotification('Lỗi khi tải dữ liệu phòng chiếu', 'danger');
+                }
+            } catch (error) {
+                console.error('Error loading movies and rooms:', error);
+                showNotification('Lỗi khi tải dữ liệu phim và phòng chiếu', 'danger');
+            }
+        }
+        
+        async function checkScheduleConflict() {
+            const movieId = document.getElementById('movieSelect').value;
+            const cinemaRoomId = document.getElementById('cinemaRoomSelect').value;
+            const showDate = document.getElementById('showDate').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            
+            if (!movieId || !cinemaRoomId || !showDate || !startTime || !endTime) {
+                showNotification('Vui lòng điền đầy đủ thông tin trước khi kiểm tra xung đột', 'warning');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${apiBaseUrl}/api/v1/showtime/check-conflict?movieId=${movieId}&cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (result.data.hasConflict) {
+                        showNotification('Có xung đột lịch chiếu! Vui lòng chọn thời gian khác.', 'danger');
+                    } else {
+                        showNotification('Không có xung đột lịch chiếu. Có thể tạo lịch chiếu này.', 'success');
+                    }
+                } else {
+                    showNotification('Lỗi khi kiểm tra xung đột: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error checking schedule conflict:', error);
+                showNotification('Lỗi khi kiểm tra xung đột lịch chiếu', 'danger');
+            }
+        }
+        
+        async function saveNewShowtime() {
+            const formData = {
+                movieId: document.getElementById('movieSelect').value,
+                cinemaRoomId: document.getElementById('cinemaRoomSelect').value,
+                showDate: document.getElementById('showDate').value,
+                startTime: document.getElementById('startTime').value,
+                endTime: document.getElementById('endTime').value,
+                price: parseFloat(document.getElementById('price').value),
+                isActive: document.getElementById('isActive').checked
+            };
+            
+            // Validate form data
+            if (!formData.movieId || !formData.cinemaRoomId || !formData.showDate || 
+                !formData.startTime || !formData.endTime || !formData.price) {
+                showNotification('Vui lòng điền đầy đủ thông tin', 'warning');
+                return;
+            }
+            
+            if (formData.price <= 0) {
+                showNotification('Giá vé phải lớn hơn 0', 'warning');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${apiBaseUrl}/api/v1/showtime/create-new`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('Tạo lịch chiếu mới thành công!', 'success');
+                    
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('createNewShowtimeModal'));
+                    modal.hide();
+                    
+                    // Reset form
+                    document.getElementById('createShowtimeForm').reset();
+                    
+                    // Reload data
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showNotification('Lỗi khi tạo lịch chiếu: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error saving new showtime:', error);
+                showNotification('Lỗi khi lưu lịch chiếu mới', 'danger');
+            }
         }
 
         function openFilterModal() {
@@ -1089,9 +1249,55 @@
             }
         }
 
-        function changeMonth(direction) {
+        async function changeMonth(direction) {
             currentDate.setMonth(currentDate.getMonth() + direction);
+            await loadMonthlyData();
             generateCalendar();
+        }
+
+        async function loadMonthlyData() {
+            try {
+                const month = currentDate.getMonth() + 1;
+                const year = currentDate.getFullYear();
+                
+                showLoadingOverlay(true);
+                
+                const response = await fetch(`/ShowtimeManagement/Showtimes/GetMonthlyData?month=${month}&year=${year}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    showtimeData = result.data || [];
+                } else {
+                    console.error('Failed to load monthly data:', result.message);
+                    showNotification('Không thể tải dữ liệu lịch chiếu', 'error');
+                    showtimeData = [];
+                }
+            } catch (error) {
+                console.error('Error loading monthly data:', error);
+                showNotification('Lỗi khi tải dữ liệu', 'error');
+                showtimeData = [];
+            } finally {
+                showLoadingOverlay(false);
+            }
+        }
+
+        function showLoadingOverlay(show) {
+            const container = document.querySelector('.calendar-container');
+            let overlay = container.querySelector('.loading-overlay');
+            
+            if (show) {
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.className = 'loading-overlay';
+                    overlay.innerHTML = '<i class="fas fa-spinner fa-spin loading-spinner-small"></i>';
+                    container.appendChild(overlay);
+                }
+                overlay.style.display = 'flex';
+            } else {
+                if (overlay) {
+                    overlay.style.display = 'none';
+                }
+            }
         }
 
         function generateCalendar() {
@@ -1166,16 +1372,26 @@
                 return showtimeDate === dateStr;
             });
 
-            return dayShowtimes.map(showtime => `
-                <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')">
-                    <img src="${showtime.moviePoster || '/images/no-poster.jpg'}" 
-                         alt="${showtime.movieTitle}" 
-                         class="calendar-showtime-poster"
-                         onerror="this.src='/images/no-poster.jpg'">
-                    <div class="calendar-showtime-title">${showtime.movieTitle}</div>
-                    <div class="calendar-showtime-time">${formatTime(showtime.startTime)}</div>
-                </div>
-            `).join('');
+            return dayShowtimes.map(showtime => {
+                const posterUrl = showtime.moviePoster && showtime.moviePoster.trim() !== '' 
+                    ? showtime.moviePoster 
+                    : '/images/default-movie-poster.jpg';
+                
+                return `
+                    <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')">
+                        <img src="${posterUrl}" 
+                             alt="${showtime.movieTitle}" 
+                             class="calendar-showtime-poster"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                             onload="this.style.opacity='1';">
+                        <div class="calendar-showtime-fallback" style="display:none; height:45px; background:#f8f9fa; border-radius:4px; align-items:center; justify-content:center; margin-bottom:4px;">
+                            <i class="fas fa-film text-muted"></i>
+                        </div>
+                        <div class="calendar-showtime-title">${showtime.movieTitle}</div>
+                        <div class="calendar-showtime-time">${formatTime(showtime.startTime)}</div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function formatTime(timeSpan) {
@@ -1284,5 +1500,7 @@
             generateCalendar();
         });
     </script>
+    
+    @await Html.PartialAsync("_CreateNewModal")
 </body>
 </html>

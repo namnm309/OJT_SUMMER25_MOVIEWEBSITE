@@ -25,11 +25,11 @@ namespace ControllerLayer.Controllers
             return await _showtimeService.GetAllShowtimes();
         }
 
-        [HttpGet("GetByDateRange")]
-        public async Task<IActionResult> GetShowtimesByDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        [HttpGet("GetByMonth")]
+        public async Task<IActionResult> GetShowtimesByMonth([FromQuery] int month, [FromQuery] int year)
         {
-            _logger.LogInformation("Get showtimes by date range: {StartDate} to {EndDate}", startDate, endDate);
-            return await _showtimeService.GetShowtimesByDateRange(startDate, endDate);
+            _logger.LogInformation("Get showtimes by month: {Month}/{Year}", month, year);
+            return await _showtimeService.GetShowtimesByMonth(month, year);
         }
 
         [HttpGet("{id}")]
@@ -44,6 +44,27 @@ namespace ControllerLayer.Controllers
         {
             _logger.LogInformation("Create showtime");
             return await _showtimeService.CreateShowtime(dto);
+        }
+
+        [HttpPost("create-new")]
+        public async Task<IActionResult> CreateNewShowtime([FromBody] ShowtimeCreateNewDto dto)
+        {
+            _logger.LogInformation("Create new showtime");
+            return await _showtimeService.CreateNewShowtime(dto);
+        }
+
+        [HttpGet("movies-dropdown")]
+        public async Task<IActionResult> GetMoviesForDropdown()
+        {
+            _logger.LogInformation("Get movies for dropdown");
+            return await _showtimeService.GetMoviesForDropdown();
+        }
+
+        [HttpGet("cinema-rooms-dropdown")]
+        public async Task<IActionResult> GetCinemaRoomsForDropdown()
+        {
+            _logger.LogInformation("Get cinema rooms for dropdown");
+            return await _showtimeService.GetCinemaRoomsForDropdown();
         }
 
         [HttpPut("{id}")]
@@ -86,5 +107,34 @@ namespace ControllerLayer.Controllers
             _logger.LogInformation("Get showtimes for room: {RoomId}", roomId);
             return await _showtimeService.GetShowtimesByRoom(roomId);
         }
+
+        [HttpGet("Debug")]
+        public async Task<IActionResult> DebugShowtimes()
+        {
+            try
+            {
+                _logger.LogInformation("Debug: Getting all showtimes");
+                var allResult = await _showtimeService.GetAllShowtimes();
+                
+                _logger.LogInformation("Debug: Getting showtimes by month");
+                var monthResult = await _showtimeService.GetShowtimesByMonth(1, 2025);
+                
+                return Json(new { 
+                    success = true,
+                    allShowtimes = allResult,
+                    monthShowtimes = monthResult,
+                    message = "Debug API worked successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in debug API");
+                return Json(new { 
+                    success = false, 
+                    error = ex.Message,
+                    stackTrace = ex.ToString()
+                });
+            }
+        }
     }
-} 
+}

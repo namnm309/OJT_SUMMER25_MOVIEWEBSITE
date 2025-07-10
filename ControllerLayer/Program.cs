@@ -76,6 +76,7 @@ namespace ControllerLayer
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
@@ -89,6 +90,16 @@ namespace ControllerLayer
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero
                 };
+            })
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/api/user/login";
+                options.LogoutPath = "/api/user/logout";
+                options.AccessDeniedPath = "/api/user/access-denied";
+                options.ExpireTimeSpan = TimeSpan.FromHours(2);
+                options.SlidingExpiration = true;
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             });
 
 
@@ -190,18 +201,18 @@ namespace ControllerLayer
             // Tạm comment AuthService vì cần mail service
             // builder.Services.AddScoped<IAuthService, AuthService>();
 
-            // Cấu hình Authentication với Cookie
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/api/user/login";
-                    options.LogoutPath = "/api/user/logout"; 
-                    options.AccessDeniedPath = "/api/user/access-denied";
-                    options.ExpireTimeSpan = TimeSpan.FromHours(2);
-                    options.SlidingExpiration = true;
-                    options.Cookie.HttpOnly = true;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-                });
+            // Cấu hình Authentication với Cookie - ĐÃ HỢP NHẤT Ở TRÊN
+            // builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //     .AddCookie(options =>
+            //     {
+            //         options.LoginPath = "/api/user/login";
+            //         options.LogoutPath = "/api/user/logout"; 
+            //         options.AccessDeniedPath = "/api/user/access-denied";
+            //         options.ExpireTimeSpan = TimeSpan.FromHours(2);
+            //         options.SlidingExpiration = true;
+            //         options.Cookie.HttpOnly = true;
+            //         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            //     });
 
             builder.Services.AddAuthorization();
 

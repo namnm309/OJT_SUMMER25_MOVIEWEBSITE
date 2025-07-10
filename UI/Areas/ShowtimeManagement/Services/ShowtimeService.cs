@@ -21,8 +21,37 @@ namespace UI.Areas.ShowtimeManagement.Services
         {
             try
             {
-                var endDate = startDate.AddDays(6);
-                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/showtime/GetByDateRange?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
+                // Use GetAllShowtimes instead of GetByDateRange
+                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/showtime");
+                
+                if (result.Success && result.Data.TryGetProperty("data", out var dataElement))
+                {
+                    var allShowtimes = JsonSerializer.Deserialize<List<ShowtimeDto>>(dataElement.GetRawText(), 
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    
+                    if (allShowtimes != null)
+                    {
+                        // Filter by week on the client side
+                        var endDate = startDate.AddDays(6);
+                        return allShowtimes.Where(s => s.ShowDate.Date >= startDate.Date && s.ShowDate.Date <= endDate.Date).ToList();
+                    }
+                }
+                
+                return new List<ShowtimeDto>();
+            }
+            catch (Exception ex)
+            {
+                // Lỗi khi tải dữ liệu từ API
+                throw new Exception($"Lỗi tải lịch chiếu: {ex.Message}");
+            }
+        }
+
+        public async Task<List<ShowtimeDto>> GetShowtimesForMonthAsync(int month, int year)
+        {
+            try
+            {
+                // Use the new GetByMonth API
+                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/showtime/GetByMonth?month={month}&year={year}");
                 
                 if (result.Success && result.Data.TryGetProperty("data", out var dataElement))
                 {
@@ -31,13 +60,12 @@ namespace UI.Areas.ShowtimeManagement.Services
                     return showtimes ?? new List<ShowtimeDto>();
                 }
                 
-                // API trả về thành công nhưng không có dữ liệu
-                throw new Exception("Không có lịch chiếu trong khoảng thời gian này");
+                return new List<ShowtimeDto>();
             }
             catch (Exception ex)
             {
                 // Lỗi khi tải dữ liệu từ API
-                throw new Exception($"Lỗi tải lịch chiếu: {ex.Message}");
+                throw new Exception($"Lỗi tải lịch chiếu tháng {month}/{year}: {ex.Message}");
             }
         }
 
@@ -209,7 +237,5 @@ namespace UI.Areas.ShowtimeManagement.Services
             
             return false;
         }
-
-
     }
 }

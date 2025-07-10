@@ -31,6 +31,7 @@ namespace ControllerLayer.Controllers
         }
 
         [HttpGet("dropdown/movies")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAvailableMovies()
         {
             return await _bookingTicketService.GetAvailableMovies();
