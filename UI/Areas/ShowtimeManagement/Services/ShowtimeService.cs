@@ -93,7 +93,7 @@ namespace UI.Areas.ShowtimeManagement.Services
         {
             try
             {
-                var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/GetActive");
+                var result = await _apiService.GetAsync<JsonElement>("/booking-ticket/dropdown/movies");
                 
                 if (result.Success && result.Data.TryGetProperty("data", out var dataElement))
                 {
@@ -116,7 +116,7 @@ namespace UI.Areas.ShowtimeManagement.Services
         {
             try
             {
-                var result = await _apiService.GetAsync<JsonElement>("/api/v1/cinemaroom");
+                var result = await _apiService.GetAsync<JsonElement>("/cinemaroom/ViewRoom");
                 
                 if (result.Success && result.Data.TryGetProperty("data", out var dataElement))
                 {
@@ -148,7 +148,7 @@ namespace UI.Areas.ShowtimeManagement.Services
                     price = model.Price
                 };
 
-                var result = await _apiService.PostAsync<JsonElement>("/api/v1/showtime", data);
+                var result = await _apiService.PostAsync<JsonElement>("/showtime/create-new", data);
                 
                 if (result.Success)
                 {

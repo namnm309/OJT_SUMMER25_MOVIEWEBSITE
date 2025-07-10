@@ -179,7 +179,18 @@ namespace UI.Areas.MovieManagement.Controllers
         public async Task<IActionResult> Create(MovieCreateViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { success = false, message = "Dữ liệu không hợp lệ" });
+            {
+                // Log validation errors để debug
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) })
+                    .ToList();
+                
+                _logger.LogWarning("ModelState validation failed: {@Errors}", errors);
+                
+                var errorMessage = string.Join("; ", errors.SelectMany(e => e.Errors));
+                return Json(new { success = false, message = $"Dữ liệu không hợp lệ: {errorMessage}" });
+            }
                 
             try
             {
@@ -193,13 +204,7 @@ namespace UI.Areas.MovieManagement.Controllers
                     ProductionCompany = model.ProductionCompany,
                     Director = model.Director,
                     RunningTime = model.RunningTime,
-                    Version = model.Version switch 
-                    {
-                        "2D" => 1,    // Phim 2D thường
-                        "3D" => 2,    // Phim 3D
-                        "4DX" => 3,   // Phim 4DX có hiệu ứng đặc biệt
-                        _ => 1        // Mặc định là 2D
-                    },
+                    Version = model.Version, // Trực tiếp sử dụng số từ form
                     TrailerUrl = model.TrailerUrl,
                     Content = model.Content,
                     GenreIds = model.GenreIds, // Danh sách ID thể loại được chọn từ form
@@ -212,10 +217,14 @@ namespace UI.Areas.MovieManagement.Controllers
                         new {
                             ImageUrl = model.ImageUrl,
                             IsPrimary = true,
-                            Description = model.Title,
+                            Description = model.Title, // Có thể sửa thành description riêng nếu cần
                             DisplayOrder = 1
                         }
-                    }
+                    },
+                    // Thêm các field thiếu
+                    IsRecommended = model.IsRecommended,
+                    IsFeatured = model.IsFeatured,
+                    Rating = model.Rating
                 };
                 
                 var result = await _apiService.PostAsync<JsonElement>("/api/v1/movie/Create", movieDto);
@@ -234,6 +243,29 @@ namespace UI.Areas.MovieManagement.Controllers
             }
         }
         
+        [HttpPost]
+        public async Task<IActionResult> CreateMovieAjax([FromBody] JsonElement movieData)
+        {
+            try
+            {
+                _logger.LogInformation("Received movie data via AJAX: {MovieData}", movieData);
+                
+                // Gửi trực tiếp đến API backend
+                var result = await _apiService.PostAsync<JsonElement>("/api/v1/movie/Create", movieData);
+                
+                if (result.Success)
+                {
+                    return Json(new { success = true, message = "Thêm phim mới thành công" });
+                }
+                
+                return Json(new { success = false, message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi tạo phim mới qua AJAX");
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi tạo phim mới" });
+            }
+        }
 
 
         [HttpPost]

@@ -5565,8 +5565,8 @@
                                 // Đảm bảo datetime được chuyển đổi đúng định dạng
                                 const localDate = new Date(dateValue);
                                 
-                                // Format date as yyyy-MM-ddTHH:mm:ss without timezone
-                                const formattedDate = localDate.toISOString().split('.')[0];
+                                // Format date as yyyy-MM-ddTHH:mm:ssZ (UTC format)
+                                const formattedDate = localDate.toISOString().split('.')[0] + 'Z';
                                 
                                 showTimes.push({
                                     showDate: formattedDate,
@@ -5592,8 +5592,8 @@
                 // Build movie data according to MovieCreateDto format
                 const movieData = {
                     title: formData.get('title') || '',
-                    releaseDate: releaseDate ? new Date(releaseDate).toISOString().split('.')[0] : '',
-                    endDate: endDate ? new Date(endDate).toISOString().split('.')[0] : '',
+                    releaseDate: releaseDate ? new Date(releaseDate).toISOString().split('.')[0] + 'Z' : '',
+                    endDate: endDate ? new Date(endDate).toISOString().split('.')[0] + 'Z' : '',
                     director: formData.get('director') || '',
                     actors: formData.get('actors') || '',
                     productionCompany: formData.get('productionCompany') || '',
@@ -5676,44 +5676,16 @@
                 // Thêm debug log để kiểm tra dữ liệu trước khi gửi
                 console.log('Dữ liệu JSON gửi đi:', JSON.stringify(movieData, null, 2));
                 
-                // Tạo một đối tượng tương thích với controller
-                const controllerData = {
-                    Title: movieData.title,
-                    ReleaseDate: movieData.releaseDate,
-                    EndDate: movieData.endDate,
-                    Director: movieData.director,
-                    Actors: movieData.actors,
-                    ProductionCompany: movieData.productionCompany,
-                    RunningTime: movieData.runningTime,
-                    Version: movieData.version,  // Sử dụng giá trị số trực tiếp (1, 2, 3) thay vì chuyển đổi thành chuỗi "2D", "3D", "4DX"
-                    Rating: movieData.rating,
-                    TrailerUrl: movieData.trailerUrl,
-                    Content: movieData.content,
-                    IsFeatured: movieData.isFeatured,
-                    IsRecommended: movieData.isRecommended,
-                    GenreIds: movieData.genreIds,
-                    ShowTimes: movieData.showTimes.map(st => ({
-                        RoomId: st.roomId,
-                        ShowDate: st.showDate
-                    })),
-                    ImageUrl: movieData.images.find(img => img.isPrimary)?.imageUrl || movieData.images[0]?.imageUrl || "",
-                    Images: movieData.images.map(img => ({
-                        ImageUrl: img.imageUrl,
-                        Description: img.description,
-                        DisplayOrder: img.displayOrder,
-                        IsPrimary: img.isPrimary
-                    }))
-                };
+                // Gửi dữ liệu trực tiếp theo format API (lowercase)
+                console.log('Dữ liệu gửi đến controller:', JSON.stringify(movieData, null, 2));
                 
-                console.log('Dữ liệu gửi đến controller:', JSON.stringify(controllerData, null, 2));
-                
-                const response = await fetch('/MovieManagement/Movies/Create', {
+                const response = await fetch('/MovieManagement/Movies/CreateMovieAjax', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'RequestVerificationToken': token || ''
                     },
-                    body: JSON.stringify(controllerData)
+                    body: JSON.stringify(movieData)
                 });
 
                 // Kiểm tra response status

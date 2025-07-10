@@ -103,7 +103,7 @@ namespace UI.Areas.BookingManagement.Controllers
         {
             try
             {
-                var result = await _apiService.GetAsync<dynamic>($"/api/v1/booking-ticket/dropdown/movies/{movieId}/dates");
+                 var result = await _apiService.GetAsync<dynamic>($"/api/v1/booking-ticket/dropdown/movies/{movieId}/dates");
 
                 if (result.Success)
                 {

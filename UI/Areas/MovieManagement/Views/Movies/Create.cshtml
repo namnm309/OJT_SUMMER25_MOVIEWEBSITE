@@ -362,8 +362,9 @@
                                     <label asp-for="Version" class="form-label">Phiên bản</label>
                                     <select asp-for="Version" class="form-select" required>
                                         <option value="">-- Chọn phiên bản --</option>
-                                        <option value="2D">2D</option>
-                                        <option value="3D">3D</option>
+                                        <option value="1">2D</option>
+                                        <option value="2">3D</option>
+                                        <option value="3">4DX</option>
                                     </select>
                                     <span asp-validation-for="Version" class="text-danger"></span>
                                 </div>
@@ -393,6 +394,26 @@
                                 <label asp-for="Content" class="form-label">Nội dung phim</label>
                                 <textarea asp-for="Content" class="form-control" rows="4" placeholder="Mô tả nội dung phim..."></textarea>
                             <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Rating" class="form-label">Điểm đánh giá</label>
+                                <input asp-for="Rating" class="form-control" type="number" min="0" max="10" step="0.1" placeholder="VD: 8.5" />
+                                <span asp-validation-for="Rating" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-check mt-4">
+                                    <input asp-for="IsFeatured" class="form-check-input" type="checkbox" />
+                                    <label asp-for="IsFeatured" class="form-check-label">Phim nổi bật</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-check mt-4">
+                                    <input asp-for="IsRecommended" class="form-check-input" type="checkbox" />
+                                    <label asp-for="IsRecommended" class="form-check-label">Phim đề xuất</label>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -750,13 +771,16 @@
                     return false;
                 }
 
-                // Add primary image to Images array
+                // Check if primary image already exists in Images array, if not add it
                 var primaryImageUrl = $('#ImageUrl').val();
-                if (primaryImageUrl) {
+                var hasExistingImages = $('input[name^="Images[0].ImageUrl"]').length > 0;
+                
+                if (primaryImageUrl && !hasExistingImages) {
                     $(this).append(`
                         <input type="hidden" name="Images[0].ImageUrl" value="${primaryImageUrl}" />
                         <input type="hidden" name="Images[0].IsPrimary" value="true" />
                         <input type="hidden" name="Images[0].DisplayOrder" value="1" />
+                        <input type="hidden" name="Images[0].Description" value="Poster chính" />
                     `);
                 }
 

@@ -52,7 +52,9 @@ namespace ControllerLayer
                         "http://localhost:5073",
                         "https://localhost:5073",
                         "http://localhost:5000",
-                        "https://localhost:5001")
+                        "https://localhost:5001",
+                        "http://localhost:5274",
+                        "https://localhost:5274")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials(); // Cho phép chia sẻ cookie giữa UI và API
