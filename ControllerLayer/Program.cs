@@ -1,5 +1,6 @@
 using ApplicationLayer.Services.UserManagement;
 using ApplicationLayer.Services.MovieManagement;
+using ApplicationLayer.Services.ShowtimeManagement;
 using InfrastructureLayer.Data;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -161,6 +162,8 @@ namespace ControllerLayer
             builder.Services.AddScoped<IPromotionService, PromotionService>();
 
             builder.Services.AddScoped<ICinemaRoomService, CinemaRoomService>();
+
+            builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
 
             builder.Services.AddScoped<IPointHistoryService, PointHistoryService>();
 

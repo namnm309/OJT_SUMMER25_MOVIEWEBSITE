@@ -1,0 +1,722 @@
+@model CinemaRoomUpdateViewModel
+@{
+    ViewData["Title"] = "Chỉnh sửa phòng chiếu";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="fas fa-edit text-warning me-2"></i>
+                Chỉnh sửa phòng chiếu
+            </h2>
+            <p class="text-muted mb-0">Cập nhật thông tin phòng chiếu trong hệ thống</p>
+        </div>
+        <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Quay lại
+        </a>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Edit Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Thông tin phòng chiếu
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" asp-route-id="@ViewBag.RoomId" method="post" class="needs-validation" novalidate>
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="RoomName" class="form-label">
+                                    <i class="fas fa-tag me-1"></i>Tên phòng chiếu
+                                </label>
+                                <input asp-for="RoomName" class="form-control" 
+                                       placeholder="Nhập tên phòng chiếu (VD: Phòng A01)">
+                                <span asp-validation-for="RoomName" class="invalid-feedback"></span>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Để trống nếu không muốn thay đổi. Tên phòng phải có độ dài từ 1-50 ký tự
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="TotalSeats" class="form-label">
+                                    <i class="fas fa-chair me-1"></i>Tổng số ghế
+                                </label>
+                                <input asp-for="TotalSeats" type="number" min="1" max="500" 
+                                       class="form-control" 
+                                       placeholder="Nhập tổng số ghế (VD: 100)">
+                                <span asp-validation-for="TotalSeats" class="invalid-feedback"></span>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Để trống nếu không muốn thay đổi. Số ghế phải từ 1-500
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="NumberOfRows" class="form-label required">
+                                    <i class="fas fa-arrows-alt-v me-1"></i>Số hàng
+                                </label>
+                                <input asp-for="NumberOfRows" type="number" min="1" max="50" 
+                                       class="form-control" required
+                                       placeholder="Nhập số hàng">
+                                <span asp-validation-for="NumberOfRows" class="invalid-feedback"></span>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Số hàng từ 1-50
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="NumberOfColumns" class="form-label required">
+                                    <i class="fas fa-arrows-alt-h me-1"></i>Số cột
+                                </label>
+                                <input asp-for="NumberOfColumns" type="number" min="1" max="50" 
+                                       class="form-control" required
+                                       placeholder="Nhập số cột">
+                                <span asp-validation-for="NumberOfColumns" class="invalid-feedback"></span>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Số cột từ 1-50
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Seat Layout Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="mb-3">
+                                    <i class="fas fa-chair me-2"></i>Sơ đồ ghế ngồi
+                                </h5>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Hướng dẫn:</strong> Chọn loại ghế cho từng dãy hoặc từng ghế để thay đổi cấu hình phòng chiếu.
+                                </div>
+                                
+                                <!-- Seat Layout Controls -->
+                                <div class="d-flex flex-wrap gap-3 mb-4">
+                                    <div class="seat-type-selector">
+                                        <label class="form-label">Chọn loại ghế:</label>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-outline-success seat-type-btn" data-type="0">
+                                                <i class="fas fa-chair me-1"></i>Thường
+                                            </button>
+                                            <button type="button" class="btn btn-outline-warning seat-type-btn" data-type="1">
+                                                <i class="fas fa-chair me-1"></i>VIP
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger seat-type-btn" data-type="2">
+                                                <i class="fas fa-couch me-1"></i>Ghế đôi
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="selection-mode">
+                                        <label class="form-label">Chế độ chọn:</label>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-outline-primary selection-mode-btn active" data-mode="seat">
+                                                <i class="fas fa-chair me-1"></i>Từng ghế
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary selection-mode-btn" data-mode="row">
+                                                <i class="fas fa-grip-lines me-1"></i>Cả hàng
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary selection-mode-btn" data-mode="column">
+                                                <i class="fas fa-grip-lines-vertical me-1"></i>Cả cột
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Seat Layout Visualization -->
+                                <div class="seat-layout-container">
+                                    <div class="screen mb-4">
+                                        <i class="fas fa-tv me-2"></i>MÀN HÌNH
+                                    </div>
+                                    
+                                    <div id="seatLayout" class="seat-grid">
+                                        <!-- Seats will be generated here by JavaScript -->
+                                    </div>
+                                    
+                                    <!-- Seat Legend -->
+                                    <div class="seat-legend mt-4">
+                                        <div class="legend-item">
+                                            <div class="seat-icon normal"></div>
+                                            <span>Ghế thường</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <div class="seat-icon vip"></div>
+                                            <span>Ghế VIP</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <div class="seat-icon couple"></div>
+                                            <span>Ghế đôi</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <div class="seat-icon selected"></div>
+                                            <span>Ghế đã chọn</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Hidden input to store seat configuration -->
+                                <input type="hidden" id="seatConfig" name="SeatConfig" />
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Hủy
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save me-2"></i>Cập nhật phòng chiếu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="fas fa-lightbulb me-2 text-warning"></i>
+                        Hướng dẫn cập nhật
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Cập nhật từng phần:</strong> Bạn chỉ cần điền vào các trường muốn thay đổi. 
+                        Các trường để trống sẽ giữ nguyên giá trị cũ.
+                    </div>
+                    <ul class="mb-0 small">
+                        <li><strong>Tên phòng:</strong> Cập nhật tên hiển thị của phòng chiếu</li>
+                        <li><strong>Số ghế:</strong> Thay đổi tổng số ghế trong phòng</li>
+                        <li><strong>Sơ đồ ghế:</strong> Thay đổi loại ghế cho từng dãy hoặc từng ghế</li>
+                        <li class="text-warning"><strong>Lưu ý:</strong> Không thể xóa phòng chiếu đang có lịch chiếu</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Bootstrap validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        // Auto hide alerts after 5 seconds
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert:not(.alert-info)');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Seat Layout Management
+        document.addEventListener('DOMContentLoaded', function() {
+            const roomId = '@ViewBag.RoomId';
+            let selectedSeatType = 0; // Default: Normal
+            let selectionMode = 'seat'; // Default: Single seat selection
+            let seatData = []; // Will store seat data from API
+            
+            // Get current seat data from API
+            fetchSeatData();
+            
+            // Initialize event listeners
+            initEventListeners();
+            
+            // Fetch seat data from API
+            async function fetchSeatData() {
+                try {
+                    const response = await fetch(`/CinemaManagement/CinemaRoom/Details/${roomId}`, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.Code === 200 && result.Data) {
+                        const data = result.Data;
+                        
+                        // Update form fields with room data
+                        if (!document.getElementById('RoomName').value) {
+                            document.getElementById('RoomName').value = data.roomName || '';
+                        }
+                        
+                        if (!document.getElementById('TotalSeats').value) {
+                            document.getElementById('TotalSeats').value = data.totalSeats || '';
+                        }
+                        
+                        // Calculate room dimensions if not already set
+                        if (!document.getElementById('NumberOfRows').value || !document.getElementById('NumberOfColumns').value) {
+                            const dimensions = calculateRoomDimensions(data);
+                            document.getElementById('NumberOfRows').value = dimensions.rows;
+                            document.getElementById('NumberOfColumns').value = dimensions.columns;
+                        }
+                        
+                        // Process seat data
+                        if (data.seats && Array.isArray(data.seats)) {
+                            seatData = data.seats;
+                            renderSeatLayout();
+                        }
+                    } else {
+                        console.error('Error fetching seat data:', result.Message);
+                        showAlert('Không thể tải dữ liệu ghế ngồi. Vui lòng thử lại sau.', 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error fetching seat data:', error);
+                    showAlert('Lỗi kết nối khi tải dữ liệu ghế ngồi.', 'danger');
+                }
+            }
+            
+            // Calculate room dimensions from seat data
+            function calculateRoomDimensions(data) {
+                let maxRow = 0;
+                let maxCol = 0;
+                
+                if (data.seats && Array.isArray(data.seats)) {
+                    data.seats.forEach(seat => {
+                        const row = seat.rowIndex || 0;
+                        const col = seat.columnIndex || 0;
+                        maxRow = Math.max(maxRow, row);
+                        maxCol = Math.max(maxCol, col);
+                    });
+                }
+                
+                return {
+                    rows: maxRow || 1,
+                    columns: maxCol || 1
+                };
+            }
+            
+            // Initialize event listeners
+            function initEventListeners() {
+                // Seat type selection
+                document.querySelectorAll('.seat-type-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.seat-type-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        selectedSeatType = parseInt(this.dataset.type);
+                    });
+                });
+                
+                // Selection mode
+                document.querySelectorAll('.selection-mode-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.selection-mode-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        selectionMode = this.dataset.mode;
+                    });
+                });
+                
+                // Form submission - prepare seat config
+                document.querySelector('form').addEventListener('submit', function(e) {
+                    prepareSeatConfig();
+                });
+            }
+            
+            // Render seat layout based on current data
+            function renderSeatLayout() {
+                const seatLayout = document.getElementById('seatLayout');
+                seatLayout.innerHTML = '';
+                
+                const rows = parseInt(document.getElementById('NumberOfRows').value) || 1;
+                const cols = parseInt(document.getElementById('NumberOfColumns').value) || 1;
+                
+                // Create row headers
+                const headerRow = document.createElement('div');
+                headerRow.className = 'seat-row header-row';
+                
+                const emptyCorner = document.createElement('div');
+                emptyCorner.className = 'seat-header corner';
+                headerRow.appendChild(emptyCorner);
+                
+                for (let c = 1; c <= cols; c++) {
+                    const colHeader = document.createElement('div');
+                    colHeader.className = 'seat-header col-header';
+                    colHeader.textContent = c;
+                    colHeader.dataset.col = c;
+                    colHeader.addEventListener('click', () => handleColumnSelection(c));
+                    headerRow.appendChild(colHeader);
+                }
+                
+                seatLayout.appendChild(headerRow);
+                
+                // Create rows with seats
+                for (let r = 1; r <= rows; r++) {
+                    const rowElem = document.createElement('div');
+                    rowElem.className = 'seat-row';
+                    
+                    // Row header
+                    const rowHeader = document.createElement('div');
+                    rowHeader.className = 'seat-header row-header';
+                    rowHeader.textContent = String.fromCharCode(64 + r); // A, B, C, ...
+                    rowHeader.dataset.row = r;
+                    rowHeader.addEventListener('click', () => handleRowSelection(r));
+                    rowElem.appendChild(rowHeader);
+                    
+                    // Create seats in the row
+                    for (let c = 1; c <= cols; c++) {
+                        const seat = document.createElement('div');
+                        seat.className = 'seat';
+                        seat.dataset.row = r;
+                        seat.dataset.col = c;
+                        
+                        // Find seat data if exists
+                        const seatInfo = seatData.find(s => 
+                            (s.rowIndex === r || s.RowIndex === r) && 
+                            (s.columnIndex === c || s.ColumnIndex === c));
+                        
+                        if (seatInfo) {
+                            const seatType = seatInfo.seatType !== undefined ? seatInfo.seatType : 
+                                            (seatInfo.SeatType !== undefined ? seatInfo.SeatType : 0);
+                            
+                            seat.dataset.type = seatType;
+                            seat.dataset.id = seatInfo.id || seatInfo.Id || '';
+                            seat.dataset.code = seatInfo.seatCode || seatInfo.SeatCode || `${String.fromCharCode(64 + r)}${c}`;
+                            
+                            // Apply seat type class
+                            updateSeatClass(seat, seatType);
+                        } else {
+                            seat.dataset.type = '0'; // Default: Normal
+                            seat.dataset.code = `${String.fromCharCode(64 + r)}${c}`;
+                            updateSeatClass(seat, 0);
+                        }
+                        
+                        // Display seat code
+                        seat.textContent = c;
+                        
+                        // Add click event
+                        seat.addEventListener('click', () => handleSeatClick(seat));
+                        
+                        rowElem.appendChild(seat);
+                    }
+                    
+                    seatLayout.appendChild(rowElem);
+                }
+            }
+            
+            // Update seat class based on type
+            function updateSeatClass(seatElement, type) {
+                seatElement.classList.remove('normal', 'vip', 'couple');
+                
+                switch (parseInt(type)) {
+                    case 1:
+                        seatElement.classList.add('vip');
+                        break;
+                    case 2:
+                        seatElement.classList.add('couple');
+                        break;
+                    default:
+                        seatElement.classList.add('normal');
+                        break;
+                }
+            }
+            
+            // Handle seat click based on selection mode
+            function handleSeatClick(seatElement) {
+                if (selectionMode === 'seat') {
+                    // Update single seat
+                    seatElement.dataset.type = selectedSeatType;
+                    updateSeatClass(seatElement, selectedSeatType);
+                }
+            }
+            
+            // Handle row selection
+            function handleRowSelection(rowIndex) {
+                if (selectionMode === 'row') {
+                    document.querySelectorAll(`.seat[data-row="${rowIndex}"]`).forEach(seat => {
+                        seat.dataset.type = selectedSeatType;
+                        updateSeatClass(seat, selectedSeatType);
+                    });
+                }
+            }
+            
+            // Handle column selection
+            function handleColumnSelection(colIndex) {
+                if (selectionMode === 'column') {
+                    document.querySelectorAll(`.seat[data-col="${colIndex}"]`).forEach(seat => {
+                        seat.dataset.type = selectedSeatType;
+                        updateSeatClass(seat, selectedSeatType);
+                    });
+                }
+            }
+            
+            // Prepare seat configuration for form submission
+            function prepareSeatConfig() {
+                const seatConfig = [];
+                
+                document.querySelectorAll('.seat').forEach(seat => {
+                    seatConfig.push({
+                        row: parseInt(seat.dataset.row),
+                        column: parseInt(seat.dataset.col),
+                        type: parseInt(seat.dataset.type),
+                        id: seat.dataset.id || null,
+                        code: seat.dataset.code
+                    });
+                });
+                
+                document.getElementById('seatConfig').value = JSON.stringify(seatConfig);
+            }
+            
+            // Show alert message
+            function showAlert(message, type = 'info') {
+                const alertContainer = document.createElement('div');
+                alertContainer.className = `alert alert-${type} alert-dismissible fade show`;
+                alertContainer.innerHTML = `
+                    <i class="fas fa-${type === 'danger' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                const formCard = document.querySelector('.card');
+                formCard.parentNode.insertBefore(alertContainer, formCard);
+                
+                setTimeout(() => {
+                    alertContainer.classList.remove('show');
+                    setTimeout(() => alertContainer.remove(), 300);
+                }, 5000);
+            }
+            
+            // Update layout when rows/columns change
+            document.getElementById('NumberOfRows').addEventListener('change', renderSeatLayout);
+            document.getElementById('NumberOfColumns').addEventListener('change', renderSeatLayout);
+        });
+    </script>
+}
+
+<style>
+    .form-control:focus, .form-select:focus {
+        border-color: #ffc107;
+        box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+    }
+    
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .alert-info {
+        border-left: 4px solid #0dcaf0;
+    }
+    
+    /* Seat Layout Styles */
+    .seat-layout-container {
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        border: 1px solid #e9ecef;
+    }
+    
+    .screen {
+        background: linear-gradient(to bottom, #374151, #1f2937);
+        color: white;
+        text-align: center;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        margin-bottom: 2rem;
+        font-weight: 600;
+        position: relative;
+    }
+    
+    .screen::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 5%;
+        right: 5%;
+        height: 10px;
+        background: rgba(0,0,0,0.1);
+        border-radius: 50%;
+        filter: blur(3px);
+    }
+    
+    .seat-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+    
+    .seat-row {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .seat-header {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        background-color: #e9ecef;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        user-select: none;
+    }
+    
+    .seat-header:hover {
+        background-color: #dee2e6;
+    }
+    
+    .seat-header.corner {
+        background-color: transparent;
+        cursor: default;
+    }
+    
+    .seat {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: bold;
+        transition: all 0.2s;
+        color: white;
+    }
+    
+    .seat:hover {
+        transform: scale(1.1);
+    }
+    
+    .seat.normal {
+        background-color: #10b981; /* Green */
+    }
+    
+    .seat.vip {
+        background-color: #f59e0b; /* Yellow */
+    }
+    
+    .seat.couple {
+        background-color: #ef4444; /* Red */
+    }
+    
+    .seat.selected {
+        border: 2px solid #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+    }
+    
+    /* Legend */
+    .seat-legend {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 1.5rem;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .seat-icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 0.25rem;
+    }
+    
+    .seat-icon.normal {
+        background-color: #10b981;
+    }
+    
+    .seat-icon.vip {
+        background-color: #f59e0b;
+    }
+    
+    .seat-icon.couple {
+        background-color: #ef4444;
+    }
+    
+    .seat-icon.selected {
+        background-color: white;
+        border: 2px solid #3b82f6;
+    }
+    
+    /* Button groups */
+    .btn-group .btn {
+        border-color: #dee2e6;
+    }
+    
+    .btn-group .btn.active {
+        border-color: transparent;
+    }
+    
+    .btn-outline-success.active {
+        background-color: #10b981;
+        color: white;
+    }
+    
+    .btn-outline-warning.active {
+        background-color: #f59e0b;
+        color: white;
+    }
+    
+    .btn-outline-danger.active {
+        background-color: #ef4444;
+        color: white;
+    }
+    
+    .btn-outline-primary.active {
+        background-color: #3b82f6;
+        color: white;
+    }
+    
+    /* Required field label */
+    .form-label.required::after {
+        content: " *";
+        color: #ef4444;
+    }
+</style> 

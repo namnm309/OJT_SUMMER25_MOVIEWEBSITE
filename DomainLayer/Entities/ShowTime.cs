@@ -10,8 +10,16 @@ namespace DomainLayer.Entities
         [Required]
         public DateTime? ShowDate { get; set; }
 
-        //[Required]
-        //public ShowTimeStatus Status { get; set; } = ShowTimeStatus.Available;
+        [Required]
+        public TimeSpan StartTime { get; set; }
+
+        [Required]
+        public TimeSpan EndTime { get; set; }
+
+        [Required]
+        public decimal Price { get; set; }
+
+        public bool IsActive { get; set; } = true;
 
         // Foreign keys
         [Required]

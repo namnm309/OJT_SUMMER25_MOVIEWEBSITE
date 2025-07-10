@@ -1,0 +1,589 @@
+@model System.Text.Json.JsonElement
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Chi tiết phòng chiếu - Cinema City";
+    Layout = null;
+    
+    // Parse room data
+    string roomName = "";
+    Guid roomId = Guid.Empty;
+    int totalSeats = 0;
+    var seats = new List<JsonElement>();
+    
+    try
+    {
+        if (Model.ValueKind == JsonValueKind.Object)
+        {
+            roomName = Model.TryGetProperty("roomName", out var nameElement) ? nameElement.GetString() ?? "" : "";
+            roomId = Model.TryGetProperty("roomId", out var idElement) ? idElement.GetGuid() : Guid.Empty;
+            totalSeats = Model.TryGetProperty("totalSeats", out var totalElement) ? totalElement.GetInt32() : 0;
+            
+            if (Model.TryGetProperty("seats", out var seatsElement) && seatsElement.ValueKind == JsonValueKind.Array)
+            {
+                seats = seatsElement.EnumerateArray().ToList();
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        ViewBag.Error = $"Lỗi khi parse dữ liệu: {ex.Message}";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Modern Design System */
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            
+            --radius-sm: 0.375rem;
+            --radius: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            
+            --transition: all 0.2s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.5;
+        }
+
+        .content-wrapper {
+            padding: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-title-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--gray-100);
+            background: var(--gray-50);
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Room Info Grid */
+        .room-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            background: var(--gray-50);
+            padding: 1rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-600);
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        /* Seat Layout */
+        .seat-layout {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .screen {
+            background: linear-gradient(135deg, var(--gray-800), var(--gray-600));
+            color: white;
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .screen::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 10%;
+            right: 10%;
+            height: 8px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), transparent);
+            border-radius: 0 0 50% 50%;
+        }
+
+        .seats-grid {
+            display: grid;
+            gap: 0.5rem;
+            justify-content: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .seat-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .row-label {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        .seat {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            border: 1.5px solid transparent;
+        }
+
+        .seat.normal {
+            background: var(--success);
+            color: white;
+        }
+
+        .seat.vip {
+            background: var(--warning);
+            color: white;
+        }
+
+        .seat.couple {
+            background: var(--danger);
+            color: white;
+        }
+
+        .seat:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Legend */
+        .seat-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .legend-seat {
+            width: 20px;
+            height: 20px;
+            border-radius: var(--radius-sm);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--gray-600);
+            border: 1.5px solid var(--gray-300);
+        }
+
+        .btn-outline:hover {
+            background: var(--gray-100);
+            color: var(--gray-800);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-top: 0.25rem;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1rem;
+            border: 1px solid;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: var(--info);
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content-wrapper">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="page-title">
+                <div class="page-title-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                Chi tiết phòng chiếu: @roomName
+        </div>
+            <div class="page-actions">
+                <a href="@Url.Action("Edit", new { id = roomId })" class="btn btn-primary">
+                    <i class="fas fa-edit"></i>
+                    Chỉnh sửa
+            </a>
+                <a href="@Url.Action("Index")" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i>
+                    Quay lại danh sách
+            </a>
+        </div>
+    </div>
+
+        @if (ViewBag.Error != null)
+    {
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                @ViewBag.Error
+        </div>
+    }
+
+        <!-- Room Information -->
+        <div class="card">
+                <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-info-circle"></i>
+                        Thông tin phòng chiếu
+                </h3>
+                </div>
+                <div class="card-body">
+                <div class="room-info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Tên phòng</div>
+                        <div class="info-value">@roomName</div>
+                                </div>
+                    <div class="info-item">
+                        <div class="info-label">Mã phòng</div>
+                        <div class="info-value">@roomId.ToString().Substring(0, 8).ToUpper()</div>
+                            </div>
+                    <div class="info-item">
+                        <div class="info-label">Tổng số ghế</div>
+                        <div class="info-value">@totalSeats ghế</div>
+                                </div>
+                    <div class="info-item">
+                        <div class="info-label">Trạng thái</div>
+                        <div class="info-value">
+                            <span class="badge badge-success">
+                                <i class="fas fa-circle"></i>
+                                Hoạt động
+                            </span>
+                                </div>
+                            </div>
+                        </div>
+
+                <!-- Seat Stats -->
+                <div class="stats-grid">
+                    @{
+                        var normalSeats = seats.Count(s => s.TryGetProperty("seatType", out var type) && type.GetInt32() == 0);
+                        var vipSeats = seats.Count(s => s.TryGetProperty("seatType", out var type) && type.GetInt32() == 1);
+                        var coupleSeats = seats.Count(s => s.TryGetProperty("seatType", out var type) && type.GetInt32() == 2);
+                    }
+                    <div class="stat-item">
+                        <div class="stat-number">@normalSeats</div>
+                        <div class="stat-label">Ghế thường</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">@vipSeats</div>
+                        <div class="stat-label">Ghế VIP</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">@coupleSeats</div>
+                        <div class="stat-label">Ghế đôi</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">@seats.Count</div>
+                        <div class="stat-label">Tổng cộng</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seat Layout -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-chair"></i>
+                    Sơ đồ ghế ngồi
+                </h3>
+                </div>
+                <div class="card-body">
+                <div class="seat-layout">
+                        <!-- Screen -->
+                            <div class="screen">
+                        <i class="fas fa-tv me-2"></i>
+                        MÀN HÌNH
+                        </div>
+
+                    <!-- Seats Grid -->
+                    <div class="seats-grid">
+                        @{
+                            // Group seats by row
+                            var seatsByRow = seats
+                                .Where(s => s.TryGetProperty("rowIndex", out _))
+                                .GroupBy(s => s.GetProperty("rowIndex").GetInt32())
+                                .OrderBy(g => g.Key);
+                        }
+                        
+                        @foreach (var rowGroup in seatsByRow)
+                        {
+                            <div class="seat-row">
+                                <!-- Row Label -->
+                                <div class="row-label">
+                                    @((char)('A' + rowGroup.Key - 1))
+                        </div>
+
+                                <!-- Seats in Row -->
+                                @foreach (var seat in rowGroup.OrderBy(s => s.GetProperty("columnIndex").GetInt32()))
+                                {
+                                    var seatCode = seat.TryGetProperty("seatCode", out var codeElement) ? codeElement.GetString() : "";
+                                    var seatType = seat.TryGetProperty("seatType", out var typeElement) ? typeElement.GetInt32() : 0;
+                                    var seatClass = seatType switch 
+                                    {
+                                        1 => "vip",
+                                        2 => "couple", 
+                                        _ => "normal"
+                                    };
+                                    
+                                    <div class="seat @seatClass" 
+                                         title="@seatCode - @(seatType switch { 1 => "VIP", 2 => "Ghế đôi", _ => "Thường" })">
+                                        @seatCode?.Substring(1) // Remove letter, show only numbers
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="seat-legend">
+                        <div class="legend-item">
+                            <div class="legend-seat normal"></div>
+                            <span>Ghế thường</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-seat vip"></div>
+                            <span>Ghế VIP</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-seat couple"></div>
+                            <span>Ghế đôi</span>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

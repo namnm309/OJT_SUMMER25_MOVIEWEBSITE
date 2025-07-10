@@ -1,0 +1,171 @@
+@model CinemaRoomCreateViewModel
+@{
+    ViewData["Title"] = "Thêm phòng chiếu";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="fas fa-plus text-primary me-2"></i>
+                Thêm phòng chiếu mới
+            </h2>
+            <p class="text-muted mb-0">Tạo phòng chiếu mới trong hệ thống</p>
+        </div>
+        <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Quay lại
+        </a>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Create Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Thông tin phòng chiếu
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="RoomName" class="form-label required">
+                                    <i class="fas fa-tag me-1"></i>Tên phòng chiếu
+                                </label>
+                                <input asp-for="RoomName" class="form-control" 
+                                       placeholder="Nhập tên phòng chiếu (VD: Phòng A01)" required>
+                                <span asp-validation-for="RoomName" class="invalid-feedback"></span>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Tên phòng chiếu phải có độ dài từ 1-50 ký tự
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="TotalSeats" class="form-label required">
+                                    <i class="fas fa-chair me-1"></i>Tổng số ghế
+                                </label>
+                                <input asp-for="TotalSeats" type="number" min="1" max="500" 
+                                       class="form-control" 
+                                       placeholder="Nhập tổng số ghế (VD: 100)" required>
+                                <span asp-validation-for="TotalSeats" class="invalid-feedback"></span>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Số ghế phải trong khoảng từ 1 đến 500 ghế
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Lưu phòng chiếu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="fas fa-lightbulb me-2 text-warning"></i>
+                        Hướng dẫn
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0 small">
+                        <li>Tên phòng chiếu nên đặt theo quy tắc dễ nhận biết (VD: A01, B02, VIP01)</li>
+                        <li>Tổng số ghế sẽ được sử dụng để tạo layout ghế ngồi sau này</li>
+                        <li>Sau khi tạo phòng chiếu, bạn có thể cấu hình chi tiết ghế ngồi</li>
+                        <li>Phòng chiếu mới tạo sẽ có trạng thái "Hoạt động" mặc định</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Bootstrap validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        // Auto hide alerts after 5 seconds
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Auto focus on first input
+        document.addEventListener('DOMContentLoaded', function() {
+            var firstInput = document.querySelector('input[name="RoomName"]');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        });
+    </script>
+}
+
+<style>
+    .required::after {
+        content: " *";
+        color: #dc3545;
+    }
+    
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+</style> 

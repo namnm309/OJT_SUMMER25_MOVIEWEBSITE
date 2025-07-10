@@ -4,6 +4,7 @@ using ApplicationLayer.DTO.EmployeeManagement;
 using ApplicationLayer.DTO.JWT;
 using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.DTO.PromotionManagement;
+using ApplicationLayer.DTO.ShowtimeManagement;
 using ApplicationLayer.DTO.UserManagement;
 using AutoMapper;
 using DomainLayer.Entities;
@@ -74,9 +75,32 @@ namespace ApplicationLayer.Mapper
 
             //Cinema Room
             CreateMap<CinemaRoom, CinemaRoomListDto>();
+            CreateMap<CinemaRoomCreateDto, CinemaRoom>();
 
             //Seat
             CreateMap<Seat, SeatViewDto>();
+            CreateMap<Seat, SeatDetailDto>();
+
+            //Showtime
+            CreateMap<ShowtimeCreateDto, ShowTime>()
+                .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.CinemaRoomId));
+            
+            CreateMap<ShowtimeUpdateDto, ShowTime>()
+                .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.CinemaRoomId));
+            
+            CreateMap<ShowTime, ShowtimeListDto>()
+                .ForMember(dest => dest.MovieTitle, opt => opt.MapFrom(src => src.Movie.Title))
+                .ForMember(dest => dest.MoviePoster, opt => opt.MapFrom(src => 
+                    src.Movie.MovieImages.FirstOrDefault(img => img.IsPrimary) != null 
+                        ? src.Movie.MovieImages.FirstOrDefault(img => img.IsPrimary)!.ImageUrl 
+                        : src.Movie.MovieImages.FirstOrDefault() != null 
+                            ? src.Movie.MovieImages.FirstOrDefault()!.ImageUrl 
+                            : string.Empty))
+                .ForMember(dest => dest.MovieDuration, opt => opt.MapFrom(src => src.Movie.RunningTime))
+                .ForMember(dest => dest.CinemaRoomId, opt => opt.MapFrom(src => src.RoomId))
+                .ForMember(dest => dest.CinemaRoomName, opt => opt.MapFrom(src => src.Room.RoomName))
+                .ForMember(dest => dest.TotalSeats, opt => opt.MapFrom(src => src.Room.TotalSeats))
+                .ForMember(dest => dest.BookedSeats, opt => opt.MapFrom(src => src.Bookings.Count));
 
             //Booking
             CreateMap<Movie, MovieDropdownDto>()

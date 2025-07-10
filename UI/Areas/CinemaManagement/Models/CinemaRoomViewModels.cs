@@ -11,6 +11,31 @@ namespace UI.Areas.CinemaManagement.Models
         [Required]
         [Range(1, 500)]
         public int TotalSeats { get; set; }
+
+        [Required]
+        [Range(1, 50, ErrorMessage = "Số hàng phải từ 1 đến 50")]
+        public int NumberOfRows { get; set; }
+
+        [Required]
+        [Range(1, 50, ErrorMessage = "Số cột phải từ 1 đến 50")]
+        public int NumberOfColumns { get; set; }
+    }
+
+    public class CinemaRoomUpdateViewModel
+    {
+        [MaxLength(50)]
+        public string? RoomName { get; set; }
+        
+        [Range(1, 500)]
+        public int? TotalSeats { get; set; }
+        
+        public bool? IsActive { get; set; }
+
+        [Range(1, 50, ErrorMessage = "Số hàng phải từ 1 đến 50")]
+        public int? NumberOfRows { get; set; }
+
+        [Range(1, 50, ErrorMessage = "Số cột phải từ 1 đến 50")]
+        public int? NumberOfColumns { get; set; }
     }
 
     public class SeatUpdateViewModel

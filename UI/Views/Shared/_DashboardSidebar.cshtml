@@ -77,6 +77,14 @@
             </div>
 
             <div class="new-nav-item">
+                <a href="@Url.Action("Index", "CinemaRoom", new { area = "CinemaManagement" })" 
+                   class="new-nav-link @(ViewContext.RouteData.Values["Area"]?.ToString() == "CinemaManagement" ? "active" : "")">
+                    <i class="fas fa-building"></i>
+                    <span>Quản lý phòng chiếu</span>
+                </a>
+            </div>
+
+            <div class="new-nav-item">
                 <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" 
                    class="new-nav-link @(ViewContext.RouteData.Values["Area"]?.ToString() == "PromotionManagement" ? "active" : "")">
                     <i class="fas fa-gift"></i>

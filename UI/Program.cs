@@ -60,6 +60,10 @@ namespace UI
             builder.Services.AddScoped<UI.Areas.ShowtimeManagement.Services.IShowtimeService,
                           UI.Areas.ShowtimeManagement.Services.ShowtimeService>();
 
+            // Đăng ký CinemaManagementUIService
+            builder.Services.AddScoped<UI.Areas.CinemaManagement.Services.ICinemaManagementUIService,
+                          UI.Areas.CinemaManagement.Services.CinemaManagementUIService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
