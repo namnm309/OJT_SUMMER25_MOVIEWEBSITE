@@ -1240,22 +1240,131 @@ document.addEventListener('click', function (e) {
 
 // Action button functions
 function bookTickets() {
-    console.log('🎫 [BOOK TICKETS] Function called');
-
-    // Kiểm tra đăng nhập trước khi đặt vé
-    const isAuthenticated = document.querySelector('.user-profile') !== null;
-
-    if (!isAuthenticated) {
-        // Chưa đăng nhập - chuyển đến trang login
-        if (confirm('Bạn cần đăng nhập để đặt vé. Chuyển đến trang đăng nhập?')) {
-            window.location.href = '/Account/Login';
-        }
+    const currentMovie = movies[currentMovieIndex];
+    if (!currentMovie || !currentMovie.id) {
+        console.warn('No movie ID available');
         return;
     }
+    
+    openShowtimeModal(currentMovie.id);
+}
 
-    // Đã đăng nhập - chuyển đến trang đặt vé
-    console.log('🎫 User authenticated, redirecting to booking');
-    window.location.href = '/BookingManagement/Booking/SelectMovie';
+function openShowtimeModal(movieId) {
+    // Tạo và hiển thị modal
+    const modal = createShowtimeModal();
+    document.body.appendChild(modal);
+
+    // Load dates
+    loadMovieDates(movieId);
+}
+
+function loadMovieDates(movieId) {
+    const datesContainer = document.getElementById('movieDates');
+    datesContainer.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải ngày chiếu...</div>';
+
+    fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+                displayMovieDates(data.data, movieId);
+            } else {
+                datesContainer.innerHTML = '<div class="empty-state">Không có ngày chiếu nào cho phim này.</div>';
+            }
+        })
+        .catch(error => {
+            datesContainer.innerHTML = '<div class="error-state">Có lỗi xảy ra khi tải ngày chiếu.</div>';
+        });
+}
+
+function displayMovieDates(dates, movieId) {
+    const datesContainer = document.getElementById('movieDates');
+    const datesHtml = dates.map(date =>
+        `<button class="date-btn" data-date="${date.code}">
+            <div class="date-text">${date.text}</div>
+            <div class="day-text">${getDayOfWeek(date.code)}</div>
+        </button>`
+    ).join('');
+
+    datesContainer.innerHTML = datesHtml;
+
+    // Xử lý sự kiện click cho các nút ngày
+    document.querySelectorAll('.date-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            const selectedDate = this.getAttribute('data-date');
+            loadMovieTimes(movieId, selectedDate);
+        });
+    });
+}
+
+function loadMovieTimes(movieId, date) {
+    const timesContainer = document.getElementById('movieTimes');
+    timesContainer.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải suất chiếu...</div>';
+    timesContainer.style.display = 'block';
+
+    fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(date + ' 10:00:00+07')}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+                displayMovieTimes(data.data);
+            } else {
+                timesContainer.innerHTML = '<div class="empty-state">Không có suất chiếu nào cho ngày này.</div>';
+            }
+        })
+        .catch(error => {
+            timesContainer.innerHTML = '<div class="error-state">Có lỗi xảy ra khi tải suất chiếu.</div>';
+        });
+}
+
+function displayMovieTimes(times) {
+    const timesContainer = document.getElementById('movieTimes');
+    const timesHtml = times.map(time =>
+        `<button class="time-btn" data-showtime-id="${time.id}">
+            <div class="time-text">${time.time}</div>
+            <div class="room-text">Phòng chiếu</div>
+            <div class="seats-text">Còn ghế trống</div>
+        </button>`
+    ).join('');
+
+    timesContainer.innerHTML = timesHtml;
+
+    // Xử lý sự kiện click cho các nút giờ chiếu
+    document.querySelectorAll('.time-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const showtimeId = this.getAttribute('data-showtime-id');
+            window.location.href = `/BookingManagement/Booking/SelectSeat?showtimeId=${showtimeId}`;
+        });
+    });
+}
+
+function createShowtimeModal() {
+    const modal = document.createElement('div');
+    modal.className = 'showtime-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chọn Suất Chiếu</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="movieDates" class="dates-container"></div>
+                <div id="movieTimes" class="times-container" style="display: none;"></div>
+            </div>
+        </div>
+    `;
+
+    // Xử lý đóng modal
+    const closeBtn = modal.querySelector('.close-btn');
+    closeBtn.onclick = () => modal.remove();
+
+    return modal;
+}
+
+function getDayOfWeek(dateString) {
+    const date = new Date(dateString);
+    const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+    return days[date.getDay()];
 }
 
 function showMovieInfo() {

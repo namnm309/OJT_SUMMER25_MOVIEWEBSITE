@@ -191,10 +191,43 @@ body {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 10px;
-    color: #fff;
+    color: #ffffff;
     font-size: 15px;
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.2); /* Tăng độ sáng của background khi focus */
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    color: #ffffff; /* Đảm bảo màu chữ vẫn là trắng khi đang nhập */
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+}
+
+/* Đảm bảo màu chữ khi đang nhập */
+.form-control:focus::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Đảm bảo màu chữ cho autofill */
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus,
+.form-control:-webkit-autofill:active {
+    -webkit-text-fill-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.1) inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7); /* Tăng độ tương phản cho placeholder */
+    font-size: 13px;
 }
 
     .form-control.with-icon {

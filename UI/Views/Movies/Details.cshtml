@@ -55,19 +55,100 @@
     <link rel="stylesheet" href="~/css/MovieDetails/movie-details-mostly.css" asp-append-version="true" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Video Background */
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .video-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(26,26,26,0.4) 0%, rgba(26,26,26,0.8) 70%, rgba(26,26,26,1) 100%);
+            pointer-events: none;
+        }
+
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+    <style>
+        .hero-video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120vw;
+            height: 120vh;
+            transform: translate(-50%, -50%) scale(1.1);
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .hero-video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(107deg, 
+                rgba(0, 0, 0, 0.3) 0%,
+                rgba(0, 0, 0, 0.15) 40%,
+                rgba(0, 0, 0, 0.05) 70%,
+                rgba(0, 0, 0, 0) 100%
+            );
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body class="details-page">
     @Html.Partial("_Header")
     <!-- Hero Section -->
     <section class="hero-section" style="margin-top: 0; padding-top: 120px;">
-        <!-- Đổi margin-top thành padding-top -->
         <div class="hero-background" style="top: 0; height: 100vh;">
-            <!-- Đảm bảo ảnh nền full height -->
-            <img src="@(backgroundImage ?? "https://via.placeholder.com/1920x1080/333/fff?text=Movie+Background")"
-                 alt="@(movieData?.Title ?? "Movie Background")"
-                 class="hero-bg"
-                 style="object-fit: cover; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"
-                 onerror="this.src='https://via.placeholder.com/1920x1080/333/fff?text=Movie+Background'">
+            @if (!string.IsNullOrEmpty(embedTrailerUrl))
+            {
+                            <div class="hero-video-container">
+                                <iframe class="hero-video" 
+                                        src="@embedTrailerUrl&controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&playlist=@(embedTrailerUrl.Split("/").Last())"
+                                        frameborder="0"
+                                        allowfullscreen
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                <div class="hero-video-overlay"></div>
+                            </div>
+            }
+            else
+            {
+                            <img src="@(backgroundImage ?? "https://via.placeholder.com/1920x1080/333/fff?text=Movie+Background")"
+                                 alt="@(movieData?.Title ?? "Movie Background")"
+                                 class="hero-bg"
+                                 style="object-fit: cover; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"
+                                 onerror="this.src='https://via.placeholder.com/1920x1080/333/fff?text=Movie+Background'">
+            }
         </div>
         <div class="hero-overlay"></div>
         <div class="hero-content" style="padding-top: 0;">
@@ -79,45 +160,45 @@
                             <h1 class="movie-title-main">@(movieData?.Title ?? "Tên phim")</h1>
                             @if (hasValidData && !string.IsNullOrEmpty(movieData?.ProductionCompany))
                             {
-                                <p class="movie-tagline">@movieData.ProductionCompany</p>
+                                            <p class="movie-tagline">@movieData.ProductionCompany</p>
                             }
                             <div class="movie-meta-info">
                                 @if (hasValidData && movieData?.Rating > 0)
                                 {
-                                    <span><i class="fas fa-star"></i> @movieData.Rating.ToString("F1")</span>
+                                                <span><i class="fas fa-star"></i> @movieData.Rating.ToString("F1")</span>
                                 }
                                 @if (hasValidData && movieData?.RunningTime > 0)
                                 {
-                                    <span><i class="fas fa-clock"></i> @movieData.RunningTime phút</span>
+                                                <span><i class="fas fa-clock"></i> @movieData.RunningTime phút</span>
                                 }
                                 @if (hasValidData && movieData != null)
                                 {
-                                    <span><i class="fas fa-calendar"></i> @movieData.ReleaseDate.Year</span>
+                                                <span><i class="fas fa-calendar"></i> @movieData.ReleaseDate.Year</span>
                                 }
                             </div>
                             @if (hasValidData && movieData.Genres?.Any() == true)
                             {
-                                <div class="genre-list">
+                                            <div class="genre-list">
                                     @foreach (var genre in movieData.Genres)
                                     {
-                                        <a href="#" class="genre-item">@genre.Name</a>
+                                                                <a href="#" class="genre-item">@genre.Name</a>
                                     }
-                                </div>
+                                            </div>
                             }
                             <div class="credits-info">
                                 @if (hasValidData && !string.IsNullOrEmpty(movieData?.Director))
                                 {
-                                    <div class="credit-item">
-                                        <span class="credit-label">Đạo diễn:</span>
-                                        <span class="credit-value">@movieData.Director</span>
-                                    </div>
+                                                <div class="credit-item">
+                                                    <span class="credit-label">Đạo diễn:</span>
+                                                    <span class="credit-value">@movieData.Director</span>
+                                                </div>
                                 }
                                 @if (actorsList.Any())
                                 {
-                                    <div class="credit-item">
-                                        <span class="credit-label">Diễn viên:</span>
-                                        <span class="credit-value">@string.Join(", ", actorsList.Take(3))</span>
-                                    </div>
+                                                <div class="credit-item">
+                                                    <span class="credit-label">Diễn viên:</span>
+                                                    <span class="credit-value">@string.Join(", ", actorsList.Take(3))</span>
+                                                </div>
                                 }
                             </div>
                             <div class="synopsis">
@@ -125,10 +206,10 @@
                             </div>
                             <!-- Nút đặt vé -->
                             <div class="booking-actions">
-                                <a href="https://localhost:7069/BookingManagement/Booking/SelectMovie" class="btn-book-ticket">
+                                <button onclick="bookTickets()" class="btn-book-ticket">
                                     <i class="fas fa-ticket-alt"></i>
                                     <span>Đặt vé ngay</span>
-                                </a>
+                                </button>
                             </div>
                             <div class="social-links">
                                 <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
@@ -160,77 +241,15 @@
                 <div class="col-lg-8">
                     <div class="showtimes-header">
                         <h2>Lịch chiếu phim</h2>
-                        <div class="date-selector">
-                            <button class="date-btn active">Hôm nay<br><span>@DateTime.Now.ToString("dd/MM")</span></button>
-                            <button class="date-btn">Ngày mai<br><span>@DateTime.Now.AddDays(1).ToString("dd/MM")</span></button>
-                            <button class="date-btn">Thứ 7<br><span>@DateTime.Now.AddDays(2).ToString("dd/MM")</span></button>
-                            <button class="date-btn">Chủ nhật<br><span>@DateTime.Now.AddDays(3).ToString("dd/MM")</span></button>
+                        <div class="date-selector" id="mainDateSelector">
+                            <!-- Dates will be loaded here -->
                         </div>
                     </div>
                     <!-- Cinema Showtimes -->
-                    <div class="cinema-showtimes">
-                        <!-- CGV Vincom -->
-                        <div class="cinema-item">
-                            <div class="cinema-info">
-                                <h3 class="cinema-name">CGV Vincom Center</h3>
-                                <p class="cinema-address">191 Bà Triệu, Hai Bà Trưng, Hà Nội</p>
-                                <span class="distance">2.5km</span>
-                            </div>
-                            <div class="showtimes-list">
-                                <div class="format-group">
-                                    <span class="format-label">2D Phụ đề</span>
-                                    <div class="time-slots">
-                                        <button class="time-slot">09:30</button>
-                                        <button class="time-slot">12:15</button>
-                                        <button class="time-slot">15:00</button>
-                                        <button class="time-slot">17:45</button>
-                                        <button class="time-slot">20:30</button>
-                                        <button class="time-slot">23:15</button>
-                                    </div>
-                                </div>
-                                <div class="format-group">
-                                    <span class="format-label">IMAX</span>
-                                    <div class="time-slots">
-                                        <button class="time-slot premium">10:00</button>
-                                        <button class="time-slot premium">13:30</button>
-                                        <button class="time-slot premium">19:00</button>
-                                        <button class="time-slot premium">22:00</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Lotte Cinema -->
-                        <div class="cinema-item">
-                            <div class="cinema-info">
-                                <h3 class="cinema-name">Lotte Cinema Landmark</h3>
-                                <p class="cinema-address">E6 Cầu Giấy, Cầu Giấy, Hà Nội</p>
-                                <span class="distance">3.2km</span>
-                            </div>
-                            <div class="showtimes-list">
-                                <div class="format-group">
-                                    <span class="format-label">2D Phụ đề</span>
-                                    <div class="time-slots">
-                                        <button class="time-slot">08:45</button>
-                                        <button class="time-slot">11:30</button>
-                                        <button class="time-slot">14:15</button>
-                                        <button class="time-slot">17:00</button>
-                                        <button class="time-slot">19:45</button>
-                                        <button class="time-slot">22:30</button>
-                                    </div>
-                                </div>
-                                <div class="format-group">
-                                    <span class="format-label">4DX</span>
-                                    <div class="time-slots">
-                                        <button class="time-slot premium">12:00</button>
-                                        <button class="time-slot premium">18:30</button>
-                                        <button class="time-slot premium">21:15</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="cinema-showtimes" id="mainCinemaShowtimes">
+                        <!-- Showtimes will be loaded here -->
                     </div>
                 </div>
-
                 <!-- Sidebar (Thu gọn) -->
                 <div class="col-lg-4">
                     <!-- Trailer Section -->
@@ -238,23 +257,23 @@
                         <div class="trailer-container">
                             @if (!string.IsNullOrEmpty(embedTrailerUrl))
                             {
-                                <div class="trailer-video">
-                                    <iframe src="@embedTrailerUrl"
-                                            frameborder="0"
-                                            allowfullscreen
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                            class="trailer-iframe"></iframe>
-                                </div>
+                                            <div class="trailer-video">
+                                                <iframe src="@embedTrailerUrl"
+                                                        frameborder="0"
+                                                        allowfullscreen
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                        class="trailer-iframe"></iframe>
+                                            </div>
                             }
                             else
                             {
-                                <div class="trailer-thumbnail">
-                                    <img src="@(backgroundImage ?? "https://via.placeholder.com/400x225/333/fff?text=No+Trailer")" alt="@(movieData?.Title ?? "Movie") Trailer" />
-                                    <button class="play-trailer" onclick="playTrailer()">
-                                        <i class="fas fa-play"></i>
-                                        <span>Play trailer</span>
-                                    </button>
-                                </div>
+                                            <div class="trailer-thumbnail">
+                                                <img src="@(backgroundImage ?? "https://via.placeholder.com/400x225/333/fff?text=No+Trailer")" alt="@(movieData?.Title ?? "Movie") Trailer" />
+                                                <button class="play-trailer" onclick="playTrailer()">
+                                                    <i class="fas fa-play"></i>
+                                                    <span>Play trailer</span>
+                                                </button>
+                                            </div>
                             }
                             <div class="trailer-info">
                                 <p class="trailer-label">Official Trailer</p>
@@ -269,31 +288,31 @@
                         <div class="quick-info">
                             @if (hasValidData && movieData?.RunningTime > 0)
                             {
-                                <div class="info-item">
-                                    <span class="info-label">Thời lượng:</span>
-                                    <span class="info-value">@movieData.RunningTime phút</span>
-                                </div>
+                                            <div class="info-item">
+                                                <span class="info-label">Thời lượng:</span>
+                                                <span class="info-value">@movieData.RunningTime phút</span>
+                                            </div>
                             }
                             @if (hasValidData && movieData != null)
                             {
-                                <div class="info-item">
-                                    <span class="info-label">Khởi chiếu:</span>
-                                    <span class="info-value">@movieData.ReleaseDate.ToString("dd/MM/yyyy")</span>
-                                </div>
+                                            <div class="info-item">
+                                                <span class="info-label">Khởi chiếu:</span>
+                                                <span class="info-value">@movieData.ReleaseDate.ToString("dd/MM/yyyy")</span>
+                                            </div>
                             }
                             @if (hasValidData && movieData.Genres?.Any() == true)
                             {
-                                <div class="info-item">
-                                    <span class="info-label">Thể loại:</span>
-                                    <span class="info-value">@string.Join(", ", movieData.Genres.Select(g => g.Name))</span>
-                                </div>
+                                            <div class="info-item">
+                                                <span class="info-label">Thể loại:</span>
+                                                <span class="info-value">@string.Join(", ", movieData.Genres.Select(g => g.Name))</span>
+                                            </div>
                             }
                             @if (hasValidData && !string.IsNullOrEmpty(movieData?.ProductionCompany))
                             {
-                                <div class="info-item">
-                                    <span class="info-label">Nhà sản xuất:</span>
-                                    <span class="info-value">@movieData.ProductionCompany</span>
-                                </div>
+                                            <div class="info-item">
+                                                <span class="info-label">Nhà sản xuất:</span>
+                                                <span class="info-value">@movieData.ProductionCompany</span>
+                                            </div>
                             }
                         </div>
                     </div>
@@ -320,18 +339,408 @@
     </section>
     </div>
 
+    <!-- Showtime Modal -->
+    <style>
+    .showtime-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .showtime-modal.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 30px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        border: 1px solid rgba(255,255,255,0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        opacity: 0.8;
+        transition: opacity 0.3s;
+    }
+
+    .close-btn:hover {
+        opacity: 1;
+    }
+
+    .dates-container, .times-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .date-btn, .time-btn {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        border: 2px solid rgba(255,255,255,0.2);
+        padding: 12px 8px;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .date-btn:hover, .time-btn:hover {
+        background: rgba(255,255,255,0.25);
+        border-color: rgba(255,255,255,0.4);
+        transform: translateY(-2px);
+    }
+
+    .date-btn.active, .time-btn.active {
+        background: #df2144;
+        border-color: #df2144;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(223, 33, 68, 0.4);
+    }
+
+    .date-text {
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+        font-weight: 600;
+    }
+
+    .day-text {
+        font-size: 0.75rem;
+        opacity: 0.8;
+    }
+
+    .time-text {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .room-text {
+        font-size: 0.7rem;
+        opacity: 0.8;
+        margin-bottom: 2px;
+    }
+
+    .seats-text {
+        font-size: 0.65rem;
+        opacity: 0.7;
+    }
+
+    .loading-state, .empty-state, .error-state {
+        text-align: center;
+        color: white;
+        padding: 20px;
+        opacity: 0.8;
+    }
+
+    .loading-state i {
+        margin-right: 8px;
+    }
+    </style>
+
+    <div id="showtimeModal" class="showtime-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chọn suất chiếu</h2>
+                <button class="close-btn" onclick="closeShowtimeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="dates-container">
+                    <!-- Dates will be loaded here -->
+                </div>
+                <div class="times-container">
+                    <!-- Times will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="~/js/movie-details-mostly.js" asp-append-version="true"></script>
     <script>
+        // Truyền trạng thái đăng nhập từ server sang client
+        const isAuthenticated = @(User.Identity?.IsAuthenticated == true ? "true" : "false");
+
+        // Load main showtimes when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const movieId = '@Model?.Id';
+            if (movieId) {
+                loadMainShowtimes(movieId);
+            }
+        });
+
+        async function loadMainShowtimes(movieId) {
+            try {
+                // Load dates first
+                const datesResponse = await fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`);
+                const datesResult = await datesResponse.json();
+                const dates = datesResult.data;
+
+                if (dates && dates.length > 0) {
+                    displayMainDates(dates, movieId);
+                    // Load showtimes for first date
+                    loadMainShowtimesForDate(movieId, dates[0].code);
+                } else {
+                    document.getElementById('mainDateSelector').innerHTML = '<div class="text-center text-muted">Không có ngày chiếu nào</div>';
+                    document.getElementById('mainCinemaShowtimes').innerHTML = '<div class="text-center text-muted py-5">Không có suất chiếu nào</div>';
+                }
+            } catch (error) {
+                console.error('Error loading main showtimes:', error);
+                document.getElementById('mainDateSelector').innerHTML = '<div class="text-center text-muted">Có lỗi xảy ra</div>';
+                document.getElementById('mainCinemaShowtimes').innerHTML = '<div class="text-center text-muted py-5">Có lỗi xảy ra khi tải lịch chiếu</div>';
+            }
+        }
+
+        function displayMainDates(dates, movieId) {
+            const datesHtml = dates.map((date, index) => {
+                const dateObj = new Date(date.code);
+                const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(today.getDate() + 1);
+
+                let dayLabel = '';
+                if (dateObj.toDateString() === today.toDateString()) {
+                    dayLabel = 'Hôm nay';
+                } else if (dateObj.toDateString() === tomorrow.toDateString()) {
+                    dayLabel = 'Ngày mai';
+                } else {
+                    const days = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+                    dayLabel = days[dateObj.getDay()];
+                }
+
+                return `
+                    <button class="date-btn ${index === 0 ? 'active' : ''}" onclick="selectMainDate('${movieId}', '${date.code}', this)">
+                        ${dayLabel}<br><span>${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}</span>
+                    </button>
+                `;
+            }).join('');
+
+            document.getElementById('mainDateSelector').innerHTML = datesHtml;
+        }
+
+        async function selectMainDate(movieId, date, buttonElement) {
+            // Update active state
+            document.querySelectorAll('#mainDateSelector .date-btn').forEach(btn => btn.classList.remove('active'));
+            buttonElement.classList.add('active');
+
+            // Load showtimes for selected date
+            loadMainShowtimesForDate(movieId, date);
+        }
+
+        async function loadMainShowtimesForDate(movieId, date) {
+            const container = document.getElementById('mainCinemaShowtimes');
+            container.innerHTML = '<div class="text-center py-5"><i class="fas fa-spinner fa-spin"></i> Đang tải lịch chiếu...</div>';
+
+            try {
+                const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(date + ' 10:00:00+07')}`);
+                const result = await response.json();
+                const times = result.data;
+
+                if (times && times.length > 0) {
+                    displayMainShowtimes(times);
+                } else {
+                    container.innerHTML = '<div class="text-center text-muted py-5">Không có suất chiếu nào cho ngày này</div>';
+                }
+            } catch (error) {
+                console.error('Error loading showtimes for date:', error);
+                container.innerHTML = '<div class="text-center text-muted py-5">Có lỗi xảy ra khi tải lịch chiếu</div>';
+            }
+        }
+
+        function displayMainShowtimes(times) {
+            // Group times by room/cinema (assuming we have room info)
+            const groupedTimes = {};
+            times.forEach(time => {
+                const roomKey = time.roomName || 'Phòng chiếu';
+                if (!groupedTimes[roomKey]) {
+                    groupedTimes[roomKey] = [];
+                }
+                groupedTimes[roomKey].push(time);
+            });
+
+            const showtimesHtml = Object.keys(groupedTimes).map(roomName => {
+                const roomTimes = groupedTimes[roomName];
+                const timeButtons = roomTimes.map(time => 
+                    `<button class="time-slot" onclick="selectMainShowtime('${time.id}')">${time.time}</button>`
+                ).join('');
+
+                return `
+                    <div class="cinema-item">
+                        <div class="cinema-info">
+                            <h3 class="cinema-name">Cinema City</h3>
+                            <p class="cinema-address">Hà Nội</p>
+                            <span class="distance">-</span>
+                        </div>
+                        <div class="showtimes-list">
+                            <div class="format-group">
+                                <span class="format-label">${roomName}</span>
+                                <div class="time-slots">
+                                    ${timeButtons}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('mainCinemaShowtimes').innerHTML = showtimesHtml;
+        }
+
+        function selectMainShowtime(showtimeId) {
+            // Kiểm tra trạng thái đăng nhập bằng JavaScript
+            if (isAuthenticated) {
+                // Người dùng đã đăng nhập, chuyển hướng đến trang chọn ghế
+                window.location.href = `/BookingManagement/Booking/SelectSeat?showtimeId=${showtimeId}`;
+            } else {
+                // Người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
+                const returnUrl = encodeURIComponent(`/BookingManagement/Booking/SelectSeat?showtimeId=${showtimeId}`);
+                window.location.href = `/Account/Login?returnUrl=${returnUrl}`;
+            }
+        }
+
         function openTrailer(url) {
             if (url) {
                 window.open(url, '_blank');
             }
         }
+
         function playTrailer() {
-            // Implement trailer play functionality
             console.log('Play trailer clicked');
+        }
+
+        function bookTickets() {
+            const movieId = '@Model?.Id';
+            if (!movieId) {
+                console.warn('No movie ID available');
+                return;
+            }
+            openShowtimeModal(movieId);
+        }
+
+        function openShowtimeModal(movieId) {
+            const modal = document.getElementById('showtimeModal');
+            modal.classList.add('active');
+            loadMovieDates(movieId);
+        }
+
+        function closeShowtimeModal() {
+            const modal = document.getElementById('showtimeModal');
+            modal.classList.remove('active');
+        }
+
+        async function loadMovieDates(movieId) {
+            const datesContainer = document.querySelector('.dates-container');
+            datesContainer.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải ngày chiếu...</div>';
+
+            try {
+                const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`);
+                const result = await response.json();
+                const dates = result.data;
+
+                if (dates && dates.length > 0) {
+                    const datesHtml = dates.map(date => `
+                        <button class="date-btn" onclick="loadMovieTimes('${movieId}', '${date.code}')">
+                            <div class="date-text">${date.text}</div>
+                            <div class="day-text">${getDayOfWeek(date.code)}</div>
+                        </button>
+                    `).join('');
+                    datesContainer.innerHTML = datesHtml;
+                } else {
+                    datesContainer.innerHTML = '<div class="empty-state">Không có ngày chiếu nào cho phim này.</div>';
+                }
+            } catch (error) {
+                console.error('Error loading dates:', error);
+                datesContainer.innerHTML = '<div class="error-state">Có lỗi xảy ra khi tải ngày chiếu.</div>';
+            }
+        }
+
+        async function loadMovieTimes(movieId, date) {
+            const timesContainer = document.querySelector('.times-container');
+            timesContainer.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải suất chiếu...</div>';
+
+            // Highlight selected date
+            document.querySelectorAll('.date-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            try {
+                const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(date + ' 10:00:00+07')}`);
+                const result = await response.json();
+                const times = result.data;
+
+                if (times && times.length > 0) {
+                    const timesHtml = times.map(time => `
+                        <button class="time-btn" onclick="selectShowtime('${time.id}')">
+                            <div class="time-text">${time.time}</div>
+                            <div class="room-text">${time.roomName || 'Phòng chiếu'}</div>
+                            <div class="seats-text">${time.availableSeats || 'Còn ghế trống'}</div>
+                        </button>
+                    `).join('');
+                    timesContainer.innerHTML = timesHtml;
+                } else {
+                    timesContainer.innerHTML = '<div class="empty-state">Không có suất chiếu nào cho ngày này.</div>';
+                }
+            } catch (error) {
+                console.error('Error loading times:', error);
+                timesContainer.innerHTML = '<div class="error-state">Có lỗi xảy ra khi tải suất chiếu.</div>';
+            }
+        }
+
+        function selectShowtime(showtimeId) {
+            // Kiểm tra trạng thái đăng nhập bằng JavaScript
+            if (isAuthenticated) {
+                // Người dùng đã đăng nhập, chuyển hướng đến trang chọn ghế
+                window.location.href = `/BookingManagement/Booking/SelectSeat?showtimeId=${showtimeId}`;
+            } else {
+                // Người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
+                const returnUrl = encodeURIComponent(`/BookingManagement/Booking/SelectSeat?showtimeId=${showtimeId}`);
+                window.location.href = `/Account/Login?returnUrl=${returnUrl}`;
+            }
+        }
+
+        function getDayOfWeek(dateString) {
+            const date = new Date(dateString);
+            const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+            return days[date.getDay()];
+        }
+
+        function formatTime(timeString) {
+            return timeString.substring(0, 5); // Returns HH:mm format
         }
     </script>
 </body>
-</html>
+

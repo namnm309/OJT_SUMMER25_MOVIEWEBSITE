@@ -22,15 +22,15 @@ namespace UI.Controllers
         public async Task<IActionResult> Index()
         {
             var viewModel = new HomeViewModel();
-            
+
             try
             {
                 // Load initial data with pagination - Medium Dynamic
                 await LoadInitialData(viewModel);
-                
+
                 // Set promotions data
                 SetPromotionsData(viewModel);
-                
+
                 _logger.LogInformation("✅ HOMEPAGE LOADED with Medium Dynamic Pagination");
                 _logger.LogInformation("🎬 Hero movies: {Count}", viewModel.HeroMovies?.Count ?? 0);
                 _logger.LogInformation("⭐ Recommended movies: {Count}", viewModel.RecommendedMovies?.Count ?? 0);
@@ -43,7 +43,7 @@ namespace UI.Controllers
                 SetFallbackData(viewModel);
                 SetPromotionsData(viewModel);
             }
-            
+
             return View(viewModel);
         }
 
@@ -63,11 +63,11 @@ namespace UI.Controllers
                     Status = 2, // NowShowing
                     IsFeatured = true, // Phim nổi bật
                     IsRecommended = true, // Phim đề xuất
-                    Genres = new List<GenreViewModel> 
-                    { 
-                        new GenreViewModel { Id = "1", Name = "Lịch sử" }, 
-                        new GenreViewModel { Id = "2", Name = "Tiểu sử" }, 
-                        new GenreViewModel { Id = "3", Name = "Chính kịch" } 
+                    Genres = new List<GenreViewModel>
+                    {
+                        new GenreViewModel { Id = "1", Name = "Lịch sử" },
+                        new GenreViewModel { Id = "2", Name = "Tiểu sử" },
+                        new GenreViewModel { Id = "3", Name = "Chính kịch" }
                     },
                     PrimaryImageUrl = "https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
                     ImageUrl = "https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
@@ -86,11 +86,11 @@ namespace UI.Controllers
                     Status = 1, // ComingSoon - sắp chiếu
                     IsFeatured = false,
                     IsRecommended = true, // Phim đề xuất
-                    Genres = new List<GenreViewModel> 
-                    { 
-                        new GenreViewModel { Id = "4", Name = "Hành động" }, 
-                        new GenreViewModel { Id = "5", Name = "Phiêu lưu" }, 
-                        new GenreViewModel { Id = "6", Name = "Khoa học viễn tưởng" } 
+                    Genres = new List<GenreViewModel>
+                    {
+                        new GenreViewModel { Id = "4", Name = "Hành động" },
+                        new GenreViewModel { Id = "5", Name = "Phiêu lưu" },
+                        new GenreViewModel { Id = "6", Name = "Khoa học viễn tưởng" }
                     },
                     PrimaryImageUrl = "https://image.tmdb.org/t/p/original/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
                     ImageUrl = "https://image.tmdb.org/t/p/original/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
@@ -109,11 +109,11 @@ namespace UI.Controllers
                     Status = 2, // NowShowing
                     IsFeatured = true, // Phim nổi bật
                     IsRecommended = false,
-                    Genres = new List<GenreViewModel> 
-                    { 
-                        new GenreViewModel { Id = "4", Name = "Hành động" }, 
-                        new GenreViewModel { Id = "5", Name = "Phiêu lưu" }, 
-                        new GenreViewModel { Id = "6", Name = "Khoa học viễn tưởng" } 
+                    Genres = new List<GenreViewModel>
+                    {
+                        new GenreViewModel { Id = "4", Name = "Hành động" },
+                        new GenreViewModel { Id = "5", Name = "Phiêu lưu" },
+                        new GenreViewModel { Id = "6", Name = "Khoa học viễn tưởng" }
                     },
                     PrimaryImageUrl = "https://image.tmdb.org/t/p/original/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
                     ImageUrl = "https://image.tmdb.org/t/p/original/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
@@ -124,7 +124,7 @@ namespace UI.Controllers
                 {
                     Id = "4",
                     Title = "Dune",
-                    Director = "Denis Villeneuve", 
+                    Director = "Denis Villeneuve",
                     Content = "Paul Atreides, một chàng trai thông minh và tài năng sinh ra với số phận vĩ đại...",
                     RunningTime = 155,
                     ReleaseDate = new DateTime(2021, 10, 22),
@@ -132,11 +132,11 @@ namespace UI.Controllers
                     Status = 1, // ComingSoon - sắp chiếu
                     IsFeatured = true, // Phim nổi bật
                     IsRecommended = true, // Phim đề xuất
-                    Genres = new List<GenreViewModel> 
-                    { 
-                        new GenreViewModel { Id = "4", Name = "Hành động" }, 
-                        new GenreViewModel { Id = "5", Name = "Phiêu lưu" }, 
-                        new GenreViewModel { Id = "6", Name = "Khoa học viễn tưởng" } 
+                    Genres = new List<GenreViewModel>
+                    {
+                        new GenreViewModel { Id = "4", Name = "Hành động" },
+                        new GenreViewModel { Id = "5", Name = "Phiêu lưu" },
+                        new GenreViewModel { Id = "6", Name = "Khoa học viễn tưởng" }
                     },
                     PrimaryImageUrl = "https://image.tmdb.org/t/p/original/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
                     ImageUrl = "https://image.tmdb.org/t/p/original/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
@@ -155,10 +155,10 @@ namespace UI.Controllers
                     Status = 2, // NowShowing
                     IsFeatured = false,
                     IsRecommended = true, // Phim đề xuất
-                    Genres = new List<GenreViewModel> 
-                    { 
-                        new GenreViewModel { Id = "6", Name = "Khoa học viễn tưởng" }, 
-                        new GenreViewModel { Id = "3", Name = "Chính kịch" } 
+                    Genres = new List<GenreViewModel>
+                    {
+                        new GenreViewModel { Id = "6", Name = "Khoa học viễn tưởng" },
+                        new GenreViewModel { Id = "3", Name = "Chính kịch" }
                     },
                     PrimaryImageUrl = "https://image.tmdb.org/t/p/original/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
                     ImageUrl = "https://image.tmdb.org/t/p/original/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
@@ -171,13 +171,13 @@ namespace UI.Controllers
             var featuredMoviesFallback = fallbackMovies.Where(m => m.IsFeatured).ToList();
             viewModel.HeroMovies = featuredMoviesFallback.Any() ? featuredMoviesFallback : fallbackMovies.Take(5).ToList();
             viewModel.FeaturedMovie = viewModel.HeroMovies.FirstOrDefault();
-            
+
             // Phim đề xuất: IsRecommended = true
             viewModel.RecommendedMovies = fallbackMovies.Where(m => m.IsRecommended).ToList();
-            
+
             // Phim sắp chiếu: Status = 1 (ComingSoon)
             viewModel.ComingSoonMovies = fallbackMovies.Where(m => m.Status == 1).ToList();
-            
+
             _logger.LogWarning("🔄 USING FALLBACK DATA for homepage");
             _logger.LogInformation("🎬 Featured movies (Hero): {Count} movies", viewModel.HeroMovies.Count);
             _logger.LogInformation("⭐ Recommended movies: {Count} movies", viewModel.RecommendedMovies.Count);
@@ -187,7 +187,7 @@ namespace UI.Controllers
         private List<GenreViewModel> MapGenres(JsonElement movieJson)
         {
             var genres = new List<GenreViewModel>();
-            
+
             if (movieJson.TryGetProperty("genres", out var genresProp) && genresProp.ValueKind == JsonValueKind.Array)
             {
                 foreach (var genreElement in genresProp.EnumerateArray())
@@ -198,21 +198,21 @@ namespace UI.Controllers
                         Name = genreElement.TryGetProperty("name", out var nameProp) ? nameProp.GetString() ?? string.Empty : string.Empty,
                         Description = genreElement.TryGetProperty("description", out var descProp) ? descProp.GetString() : null
                     };
-                    
+
                     if (!string.IsNullOrEmpty(genre.Name))
                     {
                         genres.Add(genre);
                     }
                 }
             }
-            
+
             return genres;
         }
 
         private List<MovieImageViewModel> MapImages(JsonElement movieJson)
         {
             var images = new List<MovieImageViewModel>();
-            
+
             if (movieJson.TryGetProperty("images", out var imagesProp) && imagesProp.ValueKind == JsonValueKind.Array)
             {
                 foreach (var imageElement in imagesProp.EnumerateArray())
@@ -225,12 +225,12 @@ namespace UI.Controllers
                         IsPrimary = imageElement.TryGetProperty("isPrimary", out var primaryProp) ? primaryProp.GetBoolean() : false,
                         DisplayOrder = imageElement.TryGetProperty("displayOrder", out var orderProp) ? orderProp.GetInt32() : 1
                     };
-                    
+
                     images.Add(image);
                 }
             }
-            
-                        return images;
+
+            return images;
         }
 
         private void SetPromotionsData(HomeViewModel viewModel)
@@ -249,7 +249,7 @@ namespace UI.Controllers
                 },
                 new PromotionViewModel
                 {
-                    Id = "2", 
+                    Id = "2",
                     Title = "Combo bắp nước chỉ 99K",
                     StartDate = DateTime.Now.AddDays(-3),
                     EndDate = DateTime.Now.AddDays(21),
@@ -280,7 +280,7 @@ namespace UI.Controllers
             };
         }
 
-    public IActionResult Privacy()
+        public IActionResult Privacy()
         {
             return View();
         }
@@ -297,10 +297,10 @@ namespace UI.Controllers
         {
             // Load Hero Movies (Featured) - Page 1, 5 items
             await LoadHeroMovies(viewModel, page: 1, pageSize: 5);
-            
+
             // Load Recommended Movies - Page 1, 6 items  
             await LoadRecommendedMovies(viewModel, page: 1, pageSize: 6);
-            
+
             // Load Coming Soon Movies - Page 1, 4 items
             await LoadComingSoonMovies(viewModel, page: 1, pageSize: 4);
         }
@@ -311,13 +311,13 @@ namespace UI.Controllers
             {
                 var apiUrl = $"/api/v1/movie/ViewPagination?page={page}&pageSize={pageSize}";
                 var result = await _apiService.GetAsync<JsonElement>(apiUrl);
-                
+
                 if (result.Success && result.Data.TryGetProperty("data", out var paginationData))
                 {
                     var data = JsonSerializer.Deserialize<JsonElement>(paginationData.GetRawText());
                     var moviesArray = data.GetProperty("data");
                     var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(moviesArray.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    
+
                     // Filter featured movies
                     var featuredMovies = movies?.Where(m => m.IsFeatured).ToList() ?? new List<MovieViewModel>();
                     viewModel.HeroMovies = featuredMovies.Any() ? featuredMovies : movies?.Take(5).ToList() ?? new List<MovieViewModel>();
@@ -336,7 +336,7 @@ namespace UI.Controllers
             try
             {
                 var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/GetRecommended");
-                
+
                 if (result.Success && result.Data.TryGetProperty("data", out var dataProp))
                 {
                     var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -355,7 +355,7 @@ namespace UI.Controllers
             try
             {
                 var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/GetComingSoon");
-                
+
                 if (result.Success && result.Data.TryGetProperty("data", out var dataProp))
                 {
                     var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -371,7 +371,7 @@ namespace UI.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetRecommendedMovies(
-            int page = 1, 
+            int page = 1,
             int pageSize = 6,
             string sortBy = "createdAt",
             string sortOrder = "desc",
@@ -381,30 +381,32 @@ namespace UI.Controllers
             {
                 var apiUrl = "/api/v1/movie/GetRecommended";
                 var result = await _apiService.GetAsync<JsonElement>(apiUrl);
-                
+
                 if (result.Success && result.Data.TryGetProperty("data", out var dataProp))
                 {
                     var allMovies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    
+
                     // Apply genre filter if provided
                     if (!string.IsNullOrEmpty(genre) && genre != "all")
                     {
                         allMovies = allMovies?.Where(m => m.Genres?.Any(g => g.Name.ToLower().Contains(genre.ToLower())) == true).ToList();
                     }
-                    
+
                     // Apply sorting
                     allMovies = ApplySorting(allMovies, sortBy, sortOrder);
-                    
+
                     // Apply pagination
                     var totalItems = allMovies?.Count ?? 0;
                     var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
                     var skip = (page - 1) * pageSize;
                     var pagedMovies = allMovies?.Skip(skip).Take(pageSize).ToList() ?? new List<MovieViewModel>();
-                    
-                    return Json(new {
+
+                    return Json(new
+                    {
                         success = true,
                         data = pagedMovies,
-                        pagination = new {
+                        pagination = new
+                        {
                             currentPage = page,
                             totalPages = totalPages,
                             totalItems = totalItems,
@@ -414,7 +416,7 @@ namespace UI.Controllers
                         }
                     });
                 }
-                
+
                 return Json(new { success = false, message = "Không thể lấy phim đề xuất" });
             }
             catch (Exception ex)
@@ -427,7 +429,7 @@ namespace UI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetComingSoonMovies(
             int page = 1,
-            int pageSize = 4, 
+            int pageSize = 4,
             string sortBy = "releaseDate",
             string sortOrder = "asc",
             string genre = null,
@@ -438,27 +440,29 @@ namespace UI.Controllers
             {
                 var apiUrl = "/api/v1/movie/GetComingSoon";
                 var result = await _apiService.GetAsync<JsonElement>(apiUrl);
-                
+
                 if (result.Success && result.Data.TryGetProperty("data", out var dataProp))
                 {
                     var allMovies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    
+
                     // Apply filters
                     allMovies = ApplyFilters(allMovies, genre, fromDate, toDate);
-                    
+
                     // Apply sorting
                     allMovies = ApplySorting(allMovies, sortBy, sortOrder);
-                    
+
                     // Apply pagination
                     var totalItems = allMovies?.Count ?? 0;
                     var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
                     var skip = (page - 1) * pageSize;
                     var pagedMovies = allMovies?.Skip(skip).Take(pageSize).ToList() ?? new List<MovieViewModel>();
-                    
-                    return Json(new {
+
+                    return Json(new
+                    {
                         success = true,
                         data = pagedMovies,
-                        pagination = new {
+                        pagination = new
+                        {
                             currentPage = page,
                             totalPages = totalPages,
                             totalItems = totalItems,
@@ -468,7 +472,7 @@ namespace UI.Controllers
                         }
                     });
                 }
-                
+
                 return Json(new { success = false, message = "Không thể lấy phim sắp chiếu" });
             }
             catch (Exception ex)
@@ -481,34 +485,34 @@ namespace UI.Controllers
         private List<MovieViewModel> ApplyFilters(List<MovieViewModel> movies, string genre, DateTime? fromDate, DateTime? toDate)
         {
             if (movies == null) return new List<MovieViewModel>();
-            
+
             // Genre filter
             if (!string.IsNullOrEmpty(genre) && genre != "all")
             {
                 movies = movies.Where(m => m.Genres?.Any(g => g.Name.ToLower().Contains(genre.ToLower())) == true).ToList();
             }
-            
+
             // Date range filter
             if (fromDate.HasValue)
             {
                 movies = movies.Where(m => m.ReleaseDate >= fromDate.Value).ToList();
             }
-            
+
             if (toDate.HasValue)
             {
                 movies = movies.Where(m => m.ReleaseDate <= toDate.Value).ToList();
             }
-            
+
             return movies;
         }
 
         private List<MovieViewModel> ApplySorting(List<MovieViewModel> movies, string sortBy, string sortOrder)
         {
             if (movies == null) return new List<MovieViewModel>();
-            
+
             var orderedMovies = sortBy.ToLower() switch
             {
-                "title" => sortOrder.ToLower() == "desc" 
+                "title" => sortOrder.ToLower() == "desc"
                     ? movies.OrderByDescending(m => m.Title)
                     : movies.OrderBy(m => m.Title),
                 "releasedate" => sortOrder.ToLower() == "desc"
@@ -521,8 +525,27 @@ namespace UI.Controllers
                     ? movies.OrderByDescending(m => m.ReleaseDate)
                     : movies.OrderBy(m => m.ReleaseDate)
             };
-            
+
             return orderedMovies.ToList();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMovieShowtimes(Guid movieId)
+        {
+            try
+            {
+                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/movie/GetShowtimes?movieId={movieId}");
+                if (result.Success && result.Data.TryGetProperty("data", out var dataProp))
+                {
+                    return Json(new { success = true, data = dataProp });
+                }
+                return Json(new { success = false, message = "Không thể lấy lịch chiếu" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting movie showtimes");
+                return Json(new { success = false, message = "Lỗi server" });
+            }
         }
 
         #endregion

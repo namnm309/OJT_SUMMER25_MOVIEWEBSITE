@@ -1142,6 +1142,7 @@
                     </div>
 
                     <!-- Pagination -->
+<!-- Pagination -->
                     @{
                         var totalPages = ViewBag.Total != null && ViewBag.PageSize != null ? (int)Math.Ceiling((double)(int)ViewBag.Total / (int)ViewBag.PageSize) : 0;
                         var currentPage = ViewBag.CurrentPage ?? 1;
@@ -1178,9 +1179,9 @@
                                 <form method="get" onchange="this.submit()" style="display: inline-block; margin-left: 1rem;">
                                     <input type="hidden" name="search" value="@ViewBag.Search" />
                                     <select name="pageSize" class="page-btn" style="width: auto; padding: 0 1rem;">
-                                        <option value="5" @@(currentPageSize == 5 ? "selected" : "")>5/trang</option>
-                                        <option value="10" @@(currentPageSize == 10 ? "selected" : "")>10/trang</option>
-                                        <option value="20" @@(currentPageSize == 20 ? "selected" : "")>20/trang</option>
+                                        <option value="5" selected="@(currentPageSize == 5 ? "selected" : null)">5/trang</option>
+                                        <option value="10" selected="@(currentPageSize == 10 ? "selected" : null)">10/trang</option>
+                                        <option value="20" selected="@(currentPageSize == 20 ? "selected" : null)">20/trang</option>
                                     </select>
                                 </form>
                             </div>

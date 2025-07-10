@@ -298,3 +298,159 @@
     margin: 0 auto;
     padding: 0 15px;
 }
+
+.showtime-item {
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.showtime-item:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.showtime-date {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.showtime-time {
+    color: #007bff;
+}
+
+.showtime-room {
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+.showtime-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.close-btn:hover {
+    opacity: 1;
+}
+
+.dates-container, .times-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.date-btn, .time-btn {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.2);
+    padding: 12px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.date-btn:hover, .time-btn:hover {
+    background: rgba(255,255,255,0.25);
+    border-color: rgba(255,255,255,0.4);
+    transform: translateY(-2px);
+}
+
+.date-btn.selected, .time-btn.selected {
+    background: #df2144;
+    border-color: #df2144;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(223, 33, 68, 0.4);
+}
+
+.date-text {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.day-text {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.time-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.room-text {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    margin-bottom: 2px;
+}
+
+.seats-text {
+    font-size: 0.65rem;
+    opacity: 0.7;
+}
+
+.loading-state, .empty-state, .error-state {
+    text-align: center;
+    color: white;
+    padding: 20px;
+    opacity: 0.8;
+}
+
+.loading-state i {
+    margin-right: 8px;
+}
