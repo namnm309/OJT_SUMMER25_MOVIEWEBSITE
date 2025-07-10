@@ -35,6 +35,7 @@ namespace InfrastructureLayer.Data
         public DbSet<PointHistory> PointHistories { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Transaction> Transaction { get; set; }
 
 
         // Cấu hình chi tiết Entity - sử dụng khi cần cấu hình phức tạp ngoài Data Annotations 

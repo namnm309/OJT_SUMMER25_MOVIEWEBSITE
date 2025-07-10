@@ -9,7 +9,7 @@ using InfrastructureLayer.Repository;
 using InfrastructureLayer.Data;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using ApplicationLayer.Services.Helper;
+using InfrastructureLayer.Core.Mail;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
