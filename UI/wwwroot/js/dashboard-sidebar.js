@@ -20,7 +20,10 @@ class DashboardSidebar {
         
         dropdownToggles.forEach(toggle => {
             toggle.addEventListener('click', (e) => {
-                e.preventDefault();
+                // Chỉ ngăn điều hướng nếu href là '#'
+                if (toggle.getAttribute('href') === '#') {
+                    e.preventDefault();
+                }
                 this.toggleDropdown(toggle);
             });
         });

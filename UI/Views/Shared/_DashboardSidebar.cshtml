@@ -48,9 +48,8 @@
 
             <!-- Dropdown cho Quản lý đặt vé -->
             <div class="new-nav-item has-dropdown">
-                <a href="#" class="new-nav-link dropdown-toggle 
-                   @(ViewContext.RouteData.Values["Area"]?.ToString() == "BookingManagement" ? "active" : "")" 
-                   data-bs-toggle="dropdown">
+                <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link 
+                   @(ViewContext.RouteData.Values["Area"]?.ToString() == "BookingManagement" ? "active" : "")">
                     <i class="fas fa-ticket-alt"></i>
                     <span>Quản lý đặt vé</span>
                 </a>
