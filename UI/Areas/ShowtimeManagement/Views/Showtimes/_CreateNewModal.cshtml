@@ -59,29 +59,13 @@
                                 <div class="invalid-feedback">Vui lòng nhập giờ bắt đầu</div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group mb-3">
-                                <label for="endTime" class="form-label">
-                                    <i class="fas fa-clock me-1"></i>
-                                    Giờ kết thúc <span class="text-danger">*</span>
-                                </label>
-                                <input type="time" class="form-control" id="endTime" name="EndTime" required>
-                                <div class="invalid-feedback">Vui lòng nhập giờ kết thúc</div>
-                            </div>
-                        </div>
+                        <!-- Giờ kết thúc sẽ được tính tự động, ẩn đi -->
+                        <input type="hidden" id="endTime" name="EndTime" />
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label for="price" class="form-label">
-                                    <i class="fas fa-money-bill me-1"></i>
-                                    Giá vé (VNĐ) <span class="text-danger">*</span>
-                                </label>
-                                <input type="number" class="form-control" id="price" name="Price" min="0" max="1000000" step="1000" required>
-                                <div class="invalid-feedback">Vui lòng nhập giá vé hợp lệ (0 - 1,000,000 VNĐ)</div>
-                            </div>
-                        </div>
+                        <!-- Giá vé mặc định 0, ẩn đi -->
+                        <input type="hidden" id="price" name="Price" value="0" />
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label class="form-label">
@@ -105,10 +89,6 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class="fas fa-times me-1"></i>
                         Hủy
-                    </button>
-                    <button type="button" class="btn btn-info" id="checkConflictBtn">
-                        <i class="fas fa-search me-1"></i>
-                        Kiểm tra xung đột
                     </button>
                     <button type="submit" class="btn btn-primary" id="saveNewShowtimeBtn">
                         <i class="fas fa-save me-1"></i>
@@ -197,13 +177,17 @@
 }
 
 .invalid-feedback {
-    display: block;
+    display: none; /* Ẩn mặc định */
     font-size: 0.875rem;
     color: #ef4444;
 }
 
-.form-control.is-invalid, .form-select.is-invalid {
-    border-color: #ef4444;
+/* Hiển thị khi có class was-validated hoặc is-invalid */
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.was-validated .form-select:invalid ~ .invalid-feedback,
+.form-control.is-invalid ~ .invalid-feedback,
+.form-select.is-invalid ~ .invalid-feedback {
+    display: block;
 }
 
 .alert {
@@ -221,5 +205,9 @@
 .alert-danger {
     background-color: #fee2e2;
     color: #991b1b;
+}
+
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: #ef4444;
 }
 </style>

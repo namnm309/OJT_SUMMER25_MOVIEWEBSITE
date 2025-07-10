@@ -94,11 +94,11 @@ namespace ControllerLayer.Controllers
 
             if (result.Success)
             {
-                return Ok(new { Message = result.message });
+                return Ok(new { success = true, message = result.message });
             }
             else
             {
-                return BadRequest(new { Message = result.message });
+                return BadRequest(new { success = false, message = result.message });
             }
         }
 

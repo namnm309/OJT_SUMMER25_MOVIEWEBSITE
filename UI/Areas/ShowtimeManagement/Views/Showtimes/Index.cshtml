@@ -826,6 +826,7 @@
                                 <th>Phòng chiếu</th>
                                 <th>Ngày chiếu</th>
                                 <th>Giờ chiếu</th>
+                                <th>Giờ kết thúc</th>
                                 <th>Giá vé</th>
                                         <th>Trạng thái</th>
                                         <th>Tình trạng</th>
@@ -878,6 +879,9 @@
                                                 </td>
                                                 <td>
                                                     <strong>@showtime.StartTime.ToString(@"hh\:mm")</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>@showtime.EndTime.ToString(@"hh\:mm")</strong>
                                                 </td>
                                                 <td>
                                                     <span class="text-success fw-bold">@showtime.Price.ToString("N0") VNĐ</span>
@@ -962,7 +966,8 @@
     
     <script>
         // Base API URL
-        const apiBaseUrl = 'http://localhost:5274';
+        // Sử dụng HTTPS để trùng với backend và tránh lỗi mixed-scheme/CORS
+        const apiBaseUrl = 'https://localhost:7049';
 
         // Search functionality
         function searchShowtimes() {
@@ -1025,13 +1030,21 @@
                 // Load movies
                 const moviesResponse = await fetch(`${apiBaseUrl}/api/v1/booking-ticket/dropdown/movies`);
                 const moviesResult = await moviesResponse.json();
-                
-                if (moviesResult.success) {
+
+                // Một số API trả về { data: [...] } hoặc { Data: [...] } hoặc trả thẳng mảng
+                const moviesData = moviesResult.data || moviesResult.Data || moviesResult;
+
+                if (Array.isArray(moviesData) && moviesData.length) {
                     const movieSelect = document.getElementById('movieSelect');
                     movieSelect.innerHTML = '<option value="">-- Chọn phim --</option>';
-                    moviesResult.data.forEach(movie => {
-                        movieSelect.innerHTML += `<option value="${movie.id}">${movie.title}</option>`;
+                    moviesData.forEach(movie => {
+                        // movie có thể có 'id' / 'Id', 'title' / 'Title'
+                        const movieId = movie.id || movie.Id;
+                        const movieTitle = movie.title || movie.Title;
+                        movieSelect.innerHTML += `<option value="${movieId}" data-duration="${movie.duration || movie.Duration || 0}">${movieTitle}</option>`;
                     });
+                } else {
+                    showNotification('Không tìm thấy dữ liệu phim', 'danger');
                 }
                 
                 // Load cinema rooms
@@ -1068,7 +1081,7 @@
             }
             
             try {
-                const response = await fetch(`${apiBaseUrl}/api/v1/showtime/check-conflict?movieId=${movieId}&cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
+                const response = await fetch(`${apiBaseUrl}/api/v1/showtime/CheckConflict?movieId=${movieId}&cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
                 const result = await response.json();
                 
                 if (result.success) {
@@ -1087,25 +1100,34 @@
         }
         
         async function saveNewShowtime() {
+            calculateEndTime(); // đảm bảo endTime cập nhật
+
+            // Kiểm tra xung đột trước khi gửi
+            const hasConflict = await autoCheckConflict();
+            if (hasConflict) {
+                return; // Ngừng nếu trùng lịch
+            }
+
+            const startRaw = document.getElementById('startTime').value;
+            const endRaw = document.getElementById('endTime').value;
+
+            // Bổ sung :00 nếu thiếu giây
+            const normalizeTime = (t) => t && (t.length === 5 ? `${t}:00` : t);
+
             const formData = {
                 movieId: document.getElementById('movieSelect').value,
                 cinemaRoomId: document.getElementById('cinemaRoomSelect').value,
                 showDate: document.getElementById('showDate').value,
-                startTime: document.getElementById('startTime').value,
-                endTime: document.getElementById('endTime').value,
+                startTime: normalizeTime(startRaw),
+                endTime: normalizeTime(endRaw),
                 price: parseFloat(document.getElementById('price').value),
                 isActive: document.getElementById('isActive').checked
             };
             
             // Validate form data
             if (!formData.movieId || !formData.cinemaRoomId || !formData.showDate || 
-                !formData.startTime || !formData.endTime || !formData.price) {
+                !formData.startTime || !formData.endTime) {
                 showNotification('Vui lòng điền đầy đủ thông tin', 'warning');
-                return;
-            }
-            
-            if (formData.price <= 0) {
-                showNotification('Giá vé phải lớn hơn 0', 'warning');
                 return;
             }
             
@@ -1118,9 +1140,13 @@
                     body: JSON.stringify(formData)
                 });
                 
-                const result = await response.json();
-                
-                if (result.success) {
+                const resultText = await response.text();
+                let result;
+                try { result = JSON.parse(resultText); } catch { result = { message: resultText }; }
+
+                const isOk = response.ok || result.code === 200 || result.success === true;
+
+                if (isOk) {
                     showNotification('Tạo lịch chiếu mới thành công!', 'success');
                     
                     // Close modal
@@ -1128,14 +1154,14 @@
                     modal.hide();
                     
                     // Reset form
-                    document.getElementById('createShowtimeForm').reset();
+                    document.getElementById('createNewShowtimeForm').reset();
                     
                     // Reload data
                     setTimeout(() => {
                         location.reload();
                     }, 1500);
                 } else {
-                    showNotification('Lỗi khi tạo lịch chiếu: ' + result.message, 'danger');
+                    showNotification('Lỗi khi tạo lịch chiếu: ' + (result.message || result.error || 'Unknown error'), 'danger');
                 }
             } catch (error) {
                 console.error('Error saving new showtime:', error);
@@ -1241,7 +1267,8 @@
                 calendarView.classList.add('active');
                 tableView.classList.remove('active');
                 document.querySelector('[onclick="switchView(\'calendar\')"]').classList.add('active');
-                generateCalendar();
+                // Load dữ liệu tháng hiện tại sau đó render lịch
+                loadMonthlyData().then(generateCalendar);
                     } else {
                 calendarView.classList.remove('active');
                 tableView.classList.add('active');
@@ -1368,7 +1395,7 @@
         function generateShowtimesForDay(date) {
             const dateStr = date.toISOString().split('T')[0];
             const dayShowtimes = showtimeData.filter(st => {
-                const showtimeDate = new Date(st.showDate).toISOString().split('T')[0];
+                const showtimeDate = (st.showDate || '').substring(0,10); // yyyy-MM-dd
                 return showtimeDate === dateStr;
             });
 
@@ -1494,10 +1521,80 @@
             }
         }
 
+        // Tính giờ kết thúc dựa vào thời lượng phim & giờ bắt đầu
+        function calculateEndTime() {
+            const movieSelect = document.getElementById('movieSelect');
+            const startTimeInput = document.getElementById('startTime');
+            const endTimeInput = document.getElementById('endTime');
+
+            if (!movieSelect || !startTimeInput || !endTimeInput) return;
+
+            const duration = parseInt(movieSelect.selectedOptions[0]?.dataset.duration || '0');
+            const startVal = startTimeInput.value;
+            if (!startVal) return;
+            if (!duration) {
+                showNotification('Phim chưa có thời lượng nên không tính được giờ kết thúc', 'warning');
+                return;
+            }
+
+            const [h, m] = startVal.split(':').map(Number);
+            if (isNaN(h) || isNaN(m)) return;
+
+            const startDate = new Date();
+            startDate.setHours(h, m, 0, 0);
+            const endDate = new Date(startDate.getTime() + duration * 60000);
+
+            const endHours = String(endDate.getHours()).padStart(2, '0');
+            const endMinutes = String(endDate.getMinutes()).padStart(2, '0');
+            endTimeInput.value = `${endHours}:${endMinutes}`;
+        }
+
+        // Lắng nghe thay đổi để cập nhật EndTime
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('movieSelect')?.addEventListener('change', calculateEndTime);
+            document.getElementById('startTime')?.addEventListener('change', calculateEndTime);
+        });
+
+        async function autoCheckConflict() {
+            const cinemaRoomId = document.getElementById('cinemaRoomSelect').value;
+            const showDate = document.getElementById('showDate').value;
+            let startTime = document.getElementById('startTime').value;
+            let endTime = document.getElementById('endTime').value;
+            const fix = (t)=> t && (t.length===5? `${t}:00`: t);
+            startTime = fix(startTime);
+            endTime = fix(endTime);
+
+            if (!cinemaRoomId || !showDate || !startTime || !endTime) return false; // Thiếu dữ liệu -> bỏ qua
+
+            try {
+                const resp = await fetch(`${apiBaseUrl}/api/v1/showtime/CheckConflict?cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
+                const result = await resp.json();
+                // API trả về data = true nếu KHÔNG xung đột.
+                if (result.success && result.data === false) {
+                    showNotification('Có xung đột lịch chiếu! Vui lòng chọn thời gian khác.', 'danger');
+                    return true;
+                }
+            } catch (err) {
+                console.error('Error auto checking conflict', err);
+            }
+            return false;
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Showtime Management Dashboard loaded');
-            generateCalendar();
+            // Load dữ liệu tháng hiện tại sau đó render lịch
+            loadMonthlyData().then(generateCalendar);
+
+            // Gắn submit handler cho form tạo lịch chiếu mới
+            const form = document.getElementById('createNewShowtimeForm');
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault(); // Ngăn reload trang
+                    form.classList.add('was-validated');
+                    saveNewShowtime(); // Gọi hàm lưu
+                });
+            }
         });
     </script>
     

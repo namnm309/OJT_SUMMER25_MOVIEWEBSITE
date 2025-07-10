@@ -280,12 +280,17 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                 return ErrorResp.BadRequest("Đã có lịch chiếu khác trong khoảng thời gian này tại phòng chiếu này.");
             }
 
+            // Chuyển ShowDate sang UTC để tránh lỗi Npgsql "Cannot write DateTime with Kind=Unspecified" 
+            var showDateUtc = dto.ShowDate.Kind == DateTimeKind.Utc 
+                ? dto.ShowDate 
+                : DateTime.SpecifyKind(dto.ShowDate, DateTimeKind.Utc);
+
             var showtime = new ShowTime
             {
                 Id = Guid.NewGuid(),
                 MovieId = dto.MovieId,
                 RoomId = dto.CinemaRoomId,
-                ShowDate = dto.ShowDate,
+                ShowDate = showDateUtc,
                 StartTime = dto.StartTime,
                 EndTime = dto.EndTime,
                 Price = dto.Price,

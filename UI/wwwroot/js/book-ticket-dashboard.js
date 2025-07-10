@@ -1172,10 +1172,10 @@ class BookTicketDashboard {
     async createCustomer() {
         try {
             const formData = {
-                fullName: $('#createFullName').val(),
-                email: $('#createEmail').val(),
-                phoneNumber: $('#createPhone').val(),
-                identityCard: $('#createIdentityCard').val()
+                fullName: $('#newCustomerFullName').val(),
+                email: $('#newCustomerEmail').val(),
+                phoneNumber: $('#newCustomerPhone').val(),
+                identityCard: $('#newCustomerIdentity').val()
             };
 
             const response = await fetch('/BookTicket/CreateCustomer', {
