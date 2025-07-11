@@ -107,8 +107,6 @@ namespace UI.Areas.PromotionManagement.Controllers
         }
 
 
-
-
         [HttpGet]
         public IActionResult Create()
         {
@@ -201,8 +199,6 @@ namespace UI.Areas.PromotionManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(PromotionDto model, IFormFile imageFile)
         {
-            
-
             try
             {
                 // Xử lý upload ảnh nếu có
