@@ -154,8 +154,6 @@ namespace ControllerLayer
             builder.Services.AddSingleton<IMailService>(new MailService("smtp.gmail.com", 587, smtpUsername, smtpPassword));
 
 
-
-
             // Đăng ký Repository và Services
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
