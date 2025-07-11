@@ -115,6 +115,14 @@
             align-items: center;
             gap: 0.5rem;
         }
+
+        .btn-pagination {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
         
         .btn-add-promotion:hover {
             transform: translateY(-2px);
@@ -797,9 +805,9 @@
                         <span id="paginationInfo">Đang tải...</span>
                     </div>
                     <div id="pagination-controls" style="margin-top: 20px; display: flex; align-items: center; gap: 10px;">
-                        <button id="prevPageBtn" onclick="goToPage(currentPage - 1)">Trước</button>
+                        <button id="prevPageBtn" onclick="goToPage(currentPage - 1)" class="btn-pagination">Trước</button>
                         <div id="pageNumbers" style="display: flex; gap: 5px;"></div>
-                        <button id="nextPageBtn" onclick="goToPage(currentPage + 1)">Sau</button>
+                        <button id="nextPageBtn" onclick="goToPage(currentPage + 1)" class="btn-pagination">Sau</button>
                     </div>
                     <div id="paginationInfo" style="margin-top: 10px; font-style: italic;"></div>
 
