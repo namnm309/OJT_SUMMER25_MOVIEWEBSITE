@@ -110,7 +110,7 @@ namespace ControllerLayer
 
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "JWT System API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Movie Cinema", Version = "v1" });
 
                 // Add a bearer token to Swagger
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

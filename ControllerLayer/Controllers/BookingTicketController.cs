@@ -259,5 +259,11 @@ namespace ControllerLayer.Controllers
         {
             return await _bookingTicketService.CancelBookingAsync(bookingId, request.Reason);
         }
+
+        [HttpPost("confirm")]
+        public async Task<IActionResult> ConfirmBooking([FromBody] ConfirmBookingRequest req)
+        {
+            return await _seatService.ConfirmBookingAsync(req);
+        }
     }
 }
