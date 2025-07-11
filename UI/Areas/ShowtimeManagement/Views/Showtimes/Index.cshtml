@@ -11,22 +11,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- New Dashboard CSS -->
+    
     <link rel="stylesheet" href="~/css/new-dashboard.css" />
     
     <style>
-        /* Showtime Management Specific Styles */
+        
         .showtime-management-content {
             padding: 2rem;
         }
         
-        /* Page Header */
+        
         .showtime-page-header {
             margin-bottom: 2rem;
         }
@@ -47,7 +47,7 @@
             font-size: 1rem;
         }
         
-        /* Controls Section */
+        
         .showtime-controls {
             background: var(--content-bg);
             border: 1px solid var(--content-border);
@@ -144,7 +144,7 @@
             color: var(--primary-purple);
         }
         
-        /* Showtime Table Container */
+        
         .showtime-table-container {
             background: var(--content-bg);
             border: 1px solid var(--content-border);
@@ -176,7 +176,7 @@
             font-size: 1.5rem;
         }
 
-        /* Showtime Table */
+        
         .showtime-table {
             width: 100%;
             border-collapse: collapse;
@@ -213,7 +213,7 @@
             font-size: 14px;
         }
 
-        /* Movie Info in Table */
+        
         .movie-info {
             display: flex;
             align-items: center;
@@ -240,7 +240,7 @@
             font-size: 12px;
         }
 
-        /* Status Badges */
+        
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -291,7 +291,7 @@
             background: rgba(217, 119, 6, 0.1);
         }
 
-        /* Action Buttons */
+        
         .action-buttons {
             display: flex;
             gap: 8px;
@@ -329,7 +329,7 @@
             border-color: #ef4444;
         }
 
-        /* Loading Styles */
+        
         .loading-spinner {
             display: flex;
             align-items: center;
@@ -347,7 +347,7 @@
             color: var(--text-muted);
         }
         
-        /* Empty State */
+        
         .empty-state {
             text-align: center;
             padding: 4rem 2rem;
@@ -360,7 +360,7 @@
             opacity: 0.5;
         }
 
-        /* Bulk Actions */
+        
         .bulk-actions {
             display: flex;
             gap: 8px;
@@ -394,7 +394,7 @@
             border-color: #ef4444;
         }
 
-        /* Modal Styles */
+        
         .modal-content {
             border: none;
             border-radius: 16px;
@@ -421,7 +421,7 @@
             padding: 1rem 2rem;
         }
 
-        /* Calendar View Styles */
+        
         .view-toggle {
             display: flex;
             background: var(--content-secondary);
@@ -582,6 +582,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: var(--shadow-sm);
+            overflow: hidden;
         }
 
         .calendar-showtime-item:hover {
@@ -596,6 +597,29 @@
             object-fit: cover;
             border-radius: 4px;
             margin-bottom: 4px;
+            transition: opacity 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .calendar-showtime-poster:not([src]),
+        .calendar-showtime-poster[src=""],
+        .calendar-showtime-poster[src="/images/no-poster.jpg"] {
+            opacity: 0;
+            background: linear-gradient(45deg, #e9ecef 25%, transparent 25%, transparent 50%, #e9ecef 50%, #e9ecef 75%, transparent 75%, transparent);
+            background-size: 8px 8px;
+            position: relative;
+        }
+
+        .calendar-showtime-poster:not([src])::after,
+        .calendar-showtime-poster[src=""]::after,
+        .calendar-showtime-poster[src="/images/no-poster.jpg"]::after {
+            content: "🎬";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            opacity: 0.7;
         }
 
         .calendar-showtime-title {
@@ -615,7 +639,7 @@
             font-weight: 500;
         }
 
-        /* Showtime Detail Modal */
+        
         .showtime-detail-modal .modal-dialog {
             max-width: 800px;
         }
@@ -681,141 +705,15 @@
 </head>
 
 <body>
-    <!-- New Dashboard Layout -->
+    
     <div class="new-dashboard-layout">
-        <!-- Sidebar -->
-        <aside class="new-dashboard-sidebar">
-            <!-- Sidebar Header -->
-            <div class="new-sidebar-header">
-                <a href="@Url.Action("Index","Home", new { area = "" })" class="new-sidebar-brand">
-                    <div class="new-brand-logo"></div>
-                    <div class="new-brand-text">
-                        <h2>Cinema City</h2>
-                        <p>Admin Panel</p>
-                    </div>
-                </a>
-            </div>
-            
-            <!-- Navigation -->
-            <nav class="new-sidebar-nav">
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Tổng quan</div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("AdminDashboard","Dashboard", new { area = "" })" class="new-nav-link">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index","Home", new { area = "" })" class="new-nav-link">
-                            <i class="fas fa-home"></i>
-                            <span>Trang chủ</span>
-                        </a>
-                    </div>
-                </div>
+        
+        @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
 
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Quản lý</div>
-                        <div class="new-nav-item">
-                            <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-nav-link">
-                                <i class="fas fa-film"></i>
-                                <span>Quản lý phim</span>
-                            </a>
-                        </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link">
-                            <i class="fas fa-ticket-alt"></i>
-                            <span>Quản lý đặt vé</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Showtimes", new { area = "ShowtimeManagement" })" class="new-nav-link active">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Quản lý lịch chiếu</span>
-                        </a>
-                    </div>
-                        <div class="new-nav-item">
-                            <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-nav-link">
-                                <i class="fas fa-gift"></i>
-                                <span>Quản lý khuyến mãi</span>
-                            </a>
-                        </div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-star"></i>
-                            <span>Quản lý sự kiện</span>
-                        </a>
-                    </div>
-                        <div class="new-nav-item">
-                            <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-nav-link">
-                                <i class="fas fa-users"></i>
-                                <span>Quản lý người dùng</span>
-                            </a>
-                        </div>
-                </div>
-
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Hệ thống</div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>Báo cáo</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-cog"></i>
-                            <span>Cài đặt</span>
-                        </a>
-                    </div>
-                </div>
-            </nav>
-            
-            <!-- User Profile in Sidebar -->
-            <div class="new-sidebar-user">
-                <div class="new-user-profile">
-                    <div class="new-user-avatar">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            @User.Identity.Name?.Substring(0, 1).ToUpper()
-                        }
-                        else
-                        {
-                            <span>A</span>
-                        }
-                    </div>
-                    <div class="new-user-info">
-                        <h4>
-                            @if (User.Identity?.IsAuthenticated == true)
-                            {
-                                @(User.Identity.Name?.Length > 12 ? User.Identity.Name.Substring(0, 12) + "..." : User.Identity.Name)
-                            }
-                            else
-                            {
-                                <span>Admin</span>
-                            }
-                        </h4>
-                        <p>Administrator</p>
-                    </div>
-                </div>
-                <div class="new-user-actions">
-                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="new-user-action-btn">
-                        <i class="fas fa-user"></i>
-                    </a>
-                    <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="new-user-action-btn" style="border: none;">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
+        
         <main class="new-dashboard-main">
             <div class="showtime-management-content">
-                <!-- Page Header -->
+                
                     <div class="showtime-page-header">
                         <h1 class="showtime-page-title">
                             <i class="fas fa-calendar-alt"></i>
@@ -826,7 +724,7 @@
                         </p>
                 </div>
 
-                    <!-- Controls Section -->
+                    
                     <div class="showtime-controls">
                         <div class="showtime-controls-header">
                             <div class="showtime-search-box">
@@ -864,7 +762,7 @@
                     </div>
                 </div>
 
-                    <!-- Calendar View -->
+                    
                     <div class="calendar-view active" id="calendarView">
                         <div class="calendar-container">
                             <div class="calendar-header">
@@ -892,12 +790,12 @@
                                     <div class="calendar-weekday">Thứ 7</div>
                                     <div class="calendar-weekday">Chủ nhật</div>
                             </div>
-                                <!-- Calendar days will be generated by JavaScript -->
+                                
                     </div>
                                 </div>
                     </div>
 
-                    <!-- Table View -->
+                    
                     <div class="table-view" id="tableView">
                         <div class="showtime-table-container" id="showtimeTableContainer">
                         <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
@@ -928,6 +826,7 @@
                                 <th>Phòng chiếu</th>
                                 <th>Ngày chiếu</th>
                                 <th>Giờ chiếu</th>
+                                <th>Giờ kết thúc</th>
                                 <th>Giá vé</th>
                                         <th>Trạng thái</th>
                                         <th>Tình trạng</th>
@@ -982,6 +881,9 @@
                                                     <strong>@showtime.StartTime.ToString(@"hh\:mm")</strong>
                                                 </td>
                                                 <td>
+                                                    <strong>@showtime.EndTime.ToString(@"hh\:mm")</strong>
+                                                </td>
+                                                <td>
                                                     <span class="text-success fw-bold">@showtime.Price.ToString("N0") VNĐ</span>
                                                 </td>
                                                 <td>
@@ -1031,7 +933,7 @@
         </main>
     </div>
 
-    <!-- Showtime Detail Modal -->
+    
     <div class="modal fade showtime-detail-modal" id="showtimeDetailModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -1040,7 +942,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="showtimeDetailBody">
-                    <!-- Content will be loaded by JavaScript -->
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -1057,13 +959,17 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery -->
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     
     <script>
-        // Search functionality
+
+        // Sử dụng HTTPS để trùng với backend và tránh lỗi mixed-scheme/CORS
+        const apiBaseUrl = 'https://localhost:7049';
+
+
         function searchShowtimes() {
             const searchTerm = document.getElementById('showtimeSearch').value.toLowerCase();
             const tableBody = document.getElementById('showtimeTableBody');
@@ -1081,7 +987,7 @@
             });
         }
 
-        // Select all functionality
+
         function toggleSelectAll() {
             const selectAllCheckbox = document.getElementById('selectAll');
             const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
@@ -1093,7 +999,7 @@
             updateBulkActionButtons();
         }
 
-        // Update bulk action buttons
+
         function updateBulkActionButtons() {
             const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
             const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
@@ -1104,9 +1010,163 @@
             bulkUpdateBtn.disabled = !hasSelected;
         }
 
-        // Modal functions
-        function openCreateShowtimeModal() {
-            showNotification('Chức năng thêm lịch chiếu đang được phát triển', 'info');
+
+        async function openCreateShowtimeModal() {
+            try {
+
+                await loadMoviesAndRooms();
+                
+
+                const modal = new bootstrap.Modal(document.getElementById('createNewShowtimeModal'));
+                modal.show();
+            } catch (error) {
+                console.error('Error opening create showtime modal:', error);
+                showNotification('Lỗi khi mở form thêm lịch chiếu', 'danger');
+            }
+        }
+        
+        async function loadMoviesAndRooms() {
+            try {
+
+                const moviesResponse = await fetch(`${apiBaseUrl}/api/v1/booking-ticket/dropdown/movies`);
+                const moviesResult = await moviesResponse.json();
+
+                // Một số API trả về { data: [...] } hoặc { Data: [...] } hoặc trả thẳng mảng
+                const moviesData = moviesResult.data || moviesResult.Data || moviesResult;
+
+                if (Array.isArray(moviesData) && moviesData.length) {
+                    const movieSelect = document.getElementById('movieSelect');
+                    movieSelect.innerHTML = '<option value="">-- Chọn phim --</option>';
+                    moviesData.forEach(movie => {
+                        // movie có thể có 'id' / 'Id', 'title' / 'Title'
+                        const movieId = movie.id || movie.Id;
+                        const movieTitle = movie.title || movie.Title;
+                        movieSelect.innerHTML += `<option value="${movieId}" data-duration="${movie.duration || movie.Duration || 0}">${movieTitle}</option>`;
+                    });
+                } else {
+                    showNotification('Không tìm thấy dữ liệu phim', 'danger');
+                }
+                
+
+                const roomsResponse = await fetch(`${apiBaseUrl}/api/v1/cinemaroom/ViewRoom`);
+                const roomsResult = await roomsResponse.json();
+                
+                const roomsData = roomsResult.data || roomsResult;
+
+                if (Array.isArray(roomsData)) {
+                    const roomSelect = document.getElementById('cinemaRoomSelect');
+                    roomSelect.innerHTML = '<option value="">-- Chọn phòng chiếu --</option>';
+                    roomsData.forEach(room => {
+                        roomSelect.innerHTML += `<option value="${room.id}">${room.roomName}</option>`;
+                    });
+                } else {
+                    showNotification('Lỗi khi tải dữ liệu phòng chiếu', 'danger');
+                }
+            } catch (error) {
+                console.error('Error loading movies and rooms:', error);
+                showNotification('Lỗi khi tải dữ liệu phim và phòng chiếu', 'danger');
+            }
+        }
+        
+        async function checkScheduleConflict() {
+            const movieId = document.getElementById('movieSelect').value;
+            const cinemaRoomId = document.getElementById('cinemaRoomSelect').value;
+            const showDate = document.getElementById('showDate').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            
+            if (!movieId || !cinemaRoomId || !showDate || !startTime || !endTime) {
+                showNotification('Vui lòng điền đầy đủ thông tin trước khi kiểm tra xung đột', 'warning');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${apiBaseUrl}/api/v1/showtime/CheckConflict?movieId=${movieId}&cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (result.data.hasConflict) {
+                        showNotification('Có xung đột lịch chiếu! Vui lòng chọn thời gian khác.', 'danger');
+                    } else {
+                        showNotification('Không có xung đột lịch chiếu. Có thể tạo lịch chiếu này.', 'success');
+                    }
+                } else {
+                    showNotification('Lỗi khi kiểm tra xung đột: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error checking schedule conflict:', error);
+                showNotification('Lỗi khi kiểm tra xung đột lịch chiếu', 'danger');
+            }
+        }
+        
+        async function saveNewShowtime() {
+            calculateEndTime(); // đảm bảo endTime cập nhật
+
+            // Kiểm tra xung đột trước khi gửi
+            const hasConflict = await autoCheckConflict();
+            if (hasConflict) {
+                return; // Ngừng nếu trùng lịch
+            }
+
+            const startRaw = document.getElementById('startTime').value;
+            const endRaw = document.getElementById('endTime').value;
+
+            // Bổ sung :00 nếu thiếu giây
+            const normalizeTime = (t) => t && (t.length === 5 ? `${t}:00` : t);
+
+            const formData = {
+                movieId: document.getElementById('movieSelect').value,
+                cinemaRoomId: document.getElementById('cinemaRoomSelect').value,
+                showDate: document.getElementById('showDate').value,
+                startTime: normalizeTime(startRaw),
+                endTime: normalizeTime(endRaw),
+                price: parseFloat(document.getElementById('price').value),
+                isActive: document.getElementById('isActive').checked
+            };
+            
+
+            if (!formData.movieId || !formData.cinemaRoomId || !formData.showDate || 
+                !formData.startTime || !formData.endTime) {
+                showNotification('Vui lòng điền đầy đủ thông tin', 'warning');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${apiBaseUrl}/api/v1/showtime/create-new`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const resultText = await response.text();
+                let result;
+                try { result = JSON.parse(resultText); } catch { result = { message: resultText }; }
+
+                const isOk = response.ok || result.code === 200 || result.success === true;
+
+                if (isOk) {
+                    showNotification('Tạo lịch chiếu mới thành công!', 'success');
+                    
+
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('createNewShowtimeModal'));
+                    modal.hide();
+                    
+
+                    document.getElementById('createNewShowtimeForm').reset();
+                    
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showNotification('Lỗi khi tạo lịch chiếu: ' + (result.message || result.error || 'Unknown error'), 'danger');
+                }
+            } catch (error) {
+                console.error('Error saving new showtime:', error);
+                showNotification('Lỗi khi lưu lịch chiếu mới', 'danger');
+            }
         }
 
         function openFilterModal() {
@@ -1117,7 +1177,7 @@
             showNotification('Đang xuất dữ liệu...', 'info');
         }
 
-        // CRUD functions
+
         function viewShowtime(id) {
             showNotification(`Xem chi tiết lịch chiếu ID: ${id}`, 'info');
         }
@@ -1158,7 +1218,7 @@
             showNotification(`Đã cập nhật trạng thái cho ${checkedBoxes.length} lịch chiếu`, 'success');
         }
 
-        // Notification system
+
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
@@ -1191,7 +1251,7 @@
             }, 5000);
         }
 
-        // Calendar functionality
+
         let currentDate = new Date();
         let currentShowtimeId = null;
         let showtimeData = @Html.Raw(Json.Serialize(Model.Showtimes ?? new List<UI.Areas.ShowtimeManagement.Models.ShowtimeDto>()));
@@ -1207,7 +1267,8 @@
                 calendarView.classList.add('active');
                 tableView.classList.remove('active');
                 document.querySelector('[onclick="switchView(\'calendar\')"]').classList.add('active');
-                generateCalendar();
+                // Load dữ liệu tháng hiện tại sau đó render lịch
+                loadMonthlyData().then(generateCalendar);
                     } else {
                 calendarView.classList.remove('active');
                 tableView.classList.add('active');
@@ -1215,9 +1276,55 @@
             }
         }
 
-        function changeMonth(direction) {
+        async function changeMonth(direction) {
             currentDate.setMonth(currentDate.getMonth() + direction);
+            await loadMonthlyData();
             generateCalendar();
+        }
+
+        async function loadMonthlyData() {
+            try {
+                const month = currentDate.getMonth() + 1;
+                const year = currentDate.getFullYear();
+                
+                showLoadingOverlay(true);
+                
+                const response = await fetch(`/ShowtimeManagement/Showtimes/GetMonthlyData?month=${month}&year=${year}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    showtimeData = result.data || [];
+                } else {
+                    console.error('Failed to load monthly data:', result.message);
+                    showNotification('Không thể tải dữ liệu lịch chiếu', 'error');
+                    showtimeData = [];
+                }
+            } catch (error) {
+                console.error('Error loading monthly data:', error);
+                showNotification('Lỗi khi tải dữ liệu', 'error');
+                showtimeData = [];
+            } finally {
+                showLoadingOverlay(false);
+            }
+        }
+
+        function showLoadingOverlay(show) {
+            const container = document.querySelector('.calendar-container');
+            let overlay = container.querySelector('.loading-overlay');
+            
+            if (show) {
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.className = 'loading-overlay';
+                    overlay.innerHTML = '<i class="fas fa-spinner fa-spin loading-spinner-small"></i>';
+                    container.appendChild(overlay);
+                }
+                overlay.style.display = 'flex';
+            } else {
+                if (overlay) {
+                    overlay.style.display = 'none';
+                }
+            }
         }
 
         function generateCalendar() {
@@ -1227,18 +1334,18 @@
             const lastDay = new Date(year, month + 1, 0);
             const firstDayOfWeek = (firstDay.getDay() + 6) % 7; // Convert to Monday = 0
             
-            // Update title
+
             const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
                               'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
             document.getElementById('calendarTitle').textContent = `${monthNames[month]}/${year}`;
 
             const calendarGrid = document.getElementById('calendarGrid');
             
-            // Clear existing days
+
             const existingDays = calendarGrid.querySelectorAll('.calendar-day');
             existingDays.forEach(day => day.remove());
 
-            // Generate calendar days
+
             let dayCount = 1;
             for (let week = 0; week < 6; week++) {
                 for (let day = 0; day < 7; day++) {
@@ -1248,12 +1355,12 @@
                     const dayIndex = week * 7 + day;
                     
                     if (dayIndex < firstDayOfWeek) {
-                        // Previous month days
+
                         const prevMonthDay = new Date(year, month, -(firstDayOfWeek - dayIndex - 1));
                         dayElement.classList.add('other-month');
                         dayElement.innerHTML = `<div class="calendar-day-number">${prevMonthDay.getDate()}</div>`;
                     } else if (dayCount <= lastDay.getDate()) {
-                        // Current month days
+
                         const currentDay = new Date(year, month, dayCount);
                         const isToday = currentDay.toDateString() === new Date().toDateString();
                         
@@ -1269,7 +1376,7 @@
                         `;
                         dayCount++;
                     } else {
-                        // Next month days
+
                         const nextMonthDay = dayCount - lastDay.getDate();
                         dayElement.classList.add('other-month');
                         dayElement.innerHTML = `<div class="calendar-day-number">${nextMonthDay}</div>`;
@@ -1288,24 +1395,34 @@
         function generateShowtimesForDay(date) {
             const dateStr = date.toISOString().split('T')[0];
             const dayShowtimes = showtimeData.filter(st => {
-                const showtimeDate = new Date(st.showDate).toISOString().split('T')[0];
+                const showtimeDate = (st.showDate || '').substring(0,10); // yyyy-MM-dd
                 return showtimeDate === dateStr;
             });
 
-            return dayShowtimes.map(showtime => `
-                <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')">
-                    <img src="${showtime.moviePoster || '/images/no-poster.jpg'}" 
-                         alt="${showtime.movieTitle}" 
-                         class="calendar-showtime-poster"
-                         onerror="this.src='/images/no-poster.jpg'">
-                    <div class="calendar-showtime-title">${showtime.movieTitle}</div>
-                    <div class="calendar-showtime-time">${formatTime(showtime.startTime)}</div>
-                </div>
-            `).join('');
+            return dayShowtimes.map(showtime => {
+                const posterUrl = showtime.moviePoster && showtime.moviePoster.trim() !== '' 
+                    ? showtime.moviePoster 
+                    : '/images/default-movie-poster.jpg';
+                
+                return `
+                    <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')">
+                        <img src="${posterUrl}" 
+                             alt="${showtime.movieTitle}" 
+                             class="calendar-showtime-poster"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                             onload="this.style.opacity='1';">
+                        <div class="calendar-showtime-fallback" style="display:none; height:45px; background:#f8f9fa; border-radius:4px; align-items:center; justify-content:center; margin-bottom:4px;">
+                            <i class="fas fa-film text-muted"></i>
+                        </div>
+                        <div class="calendar-showtime-title">${showtime.movieTitle}</div>
+                        <div class="calendar-showtime-time">${formatTime(showtime.startTime)}</div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function formatTime(timeSpan) {
-            // Assuming timeSpan is in format "HH:mm:ss" or similar
+
             return timeSpan.substring(0, 5);
         }
 
@@ -1404,11 +1521,83 @@
             }
         }
 
-        // Initialize
+        // Tính giờ kết thúc dựa vào thời lượng phim & giờ bắt đầu
+        function calculateEndTime() {
+            const movieSelect = document.getElementById('movieSelect');
+            const startTimeInput = document.getElementById('startTime');
+            const endTimeInput = document.getElementById('endTime');
+
+            if (!movieSelect || !startTimeInput || !endTimeInput) return;
+
+            const duration = parseInt(movieSelect.selectedOptions[0]?.dataset.duration || '0');
+            const startVal = startTimeInput.value;
+            if (!startVal) return;
+            if (!duration) {
+                showNotification('Phim chưa có thời lượng nên không tính được giờ kết thúc', 'warning');
+                return;
+            }
+
+            const [h, m] = startVal.split(':').map(Number);
+            if (isNaN(h) || isNaN(m)) return;
+
+            const startDate = new Date();
+            startDate.setHours(h, m, 0, 0);
+            const endDate = new Date(startDate.getTime() + duration * 60000);
+
+            const endHours = String(endDate.getHours()).padStart(2, '0');
+            const endMinutes = String(endDate.getMinutes()).padStart(2, '0');
+            endTimeInput.value = `${endHours}:${endMinutes}`;
+        }
+
+        // Lắng nghe thay đổi để cập nhật EndTime
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('movieSelect')?.addEventListener('change', calculateEndTime);
+            document.getElementById('startTime')?.addEventListener('change', calculateEndTime);
+        });
+
+        async function autoCheckConflict() {
+            const cinemaRoomId = document.getElementById('cinemaRoomSelect').value;
+            const showDate = document.getElementById('showDate').value;
+            let startTime = document.getElementById('startTime').value;
+            let endTime = document.getElementById('endTime').value;
+            const fix = (t)=> t && (t.length===5? `${t}:00`: t);
+            startTime = fix(startTime);
+            endTime = fix(endTime);
+
+            if (!cinemaRoomId || !showDate || !startTime || !endTime) return false; // Thiếu dữ liệu -> bỏ qua
+
+            try {
+                const resp = await fetch(`${apiBaseUrl}/api/v1/showtime/CheckConflict?cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
+                const result = await resp.json();
+                // API trả về data = true nếu KHÔNG xung đột.
+                if (result.success && result.data === false) {
+                    showNotification('Có xung đột lịch chiếu! Vui lòng chọn thời gian khác.', 'danger');
+                    return true;
+                }
+            } catch (err) {
+                console.error('Error auto checking conflict', err);
+            }
+            return false;
+        }
+
+
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Showtime Management Dashboard loaded');
-            generateCalendar();
+            // Load dữ liệu tháng hiện tại sau đó render lịch
+            loadMonthlyData().then(generateCalendar);
+
+            // Gắn submit handler cho form tạo lịch chiếu mới
+            const form = document.getElementById('createNewShowtimeForm');
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault(); // Ngăn reload trang
+                    form.classList.add('was-validated');
+                    saveNewShowtime(); // Gọi hàm lưu
+                });
+            }
         });
     </script>
+    
+    @await Html.PartialAsync("_CreateNewModal")
 </body>
 </html>

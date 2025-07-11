@@ -1,0 +1,53 @@
+
+
+
+.recommended-overlay {
+    opacity: 0.3 !important;
+    pointer-events: auto !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+.recommended-item:hover .recommended-overlay {
+    opacity: 1 !important;
+}
+
+
+.recommended-view-btn {
+    position: relative !important;
+    z-index: 10000 !important;
+    pointer-events: auto !important;
+    display: flex !important;
+    background: #4a3aff !important;
+    color: white !important;
+    text-decoration: none !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    cursor: pointer !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.recommended-view-btn:hover {
+    background: #5a4aff !important;
+    color: white !important;
+    text-decoration: none !important;
+    transform: translateY(-2px) !important;
+}
+
+
+.recommended-view-btn * {
+    pointer-events: none !important;
+}
+
+
+.debug-mode .recommended-view-btn {
+    background: lime !important;
+    color: black !important;
+    border: 3px solid red !important;
+    font-weight: bold !important;
+    animation: blink 1s infinite !important;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.7; }
+} 

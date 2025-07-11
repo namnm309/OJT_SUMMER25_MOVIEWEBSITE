@@ -28,7 +28,7 @@
     transform: translateY(-3px) !important;
 }
 
-/* Fix cho overlay */
+
 .movie-card .movie-poster-overlay {
     background: rgba(0, 0, 0, 0.5);
 } 

@@ -2,7 +2,7 @@
 @using System.Text.Json
 @model UI.Models.HomeViewModel
 @{
-	ViewData["Title"] = "Trang Chủ - Cinema City";
+	ViewData["Title"] = "Cinema City";
 }
 
 @section Styles {
@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="~/css/HomePage/header.css" />
 	<link rel="stylesheet" href="~/css/Shared/_header.css" />
 	<link rel="stylesheet" href="~/css/HomePage/hero.css" />
-	<!--  <link rel="stylesheet" href="~/css/HomePage/home.css" /> -->
+	
 	<link rel="stylesheet" href="~/css/HomePage/moviecard.css" />
 	<link rel="stylesheet" href="~/css/HomePage/layout.css" />
 	<link rel="stylesheet" href="~/css/HomePage/button.css" />
@@ -24,25 +24,26 @@
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
 <div class="home-new-style">
-	<!-- Hero Section -->
+	
 	<div class="hero-section" id="heroSection">
-		<!-- Background Video/Image -->
+		
 		<div class="hero-background" id="heroBackground">
 			@{
 				var initialImage = Model?.FeaturedMovie != null
 				? GetMovieImageUrl(Model.FeaturedMovie)
 				: "https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=Cinema+City";
 			}
-			<!-- Hero image - hidden by default, only for video backgrounds -->
+			
 			<div class="hero-image" id="heroImage" style="background-image: url('@initialImage'); display: none; opacity: 0;"></div>
 
-			<!-- Videos will be handled dynamically by JavaScript -->
+			
 		</div>
 		<!-- Header từ trang Details -->
 		@Html.Partial("_Header")
 
-		<!-- Movie Content -->
+		
 		<div class="movie-content" id="movieContent">
 			@if (Model?.FeaturedMovie != null)
 			{
@@ -96,7 +97,7 @@
 			}
 		</div>
 
-		<!-- Movie Controls -->
+		
 		<div class="movie-controls">
 			<div class="control-left">
 				<button class="nav-btn" onclick="previousMovie()">
@@ -106,75 +107,13 @@
 
 			<div class="pagination-dots" id="paginationDots">
 				@if (Model?.HeroMovies != null && Model.HeroMovies.Any())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				{
-
-
-
-
-
-
-
 					for (int i = 0; i < Model.HeroMovies.Count; i++)
-
-
-
-
-
-
-
 					{
 						<span class="dot @(i == 0 ? "active" : "")" data-index="@i"></span>
 					}
-
-
-
-
-
-
-
-
-
-
-
 				}
-
-
-
-
-
-
-
-
-
-
-
 				else
-
-
-
-
-
-
-
-
-
-
-
 				{
 					<span class="dot active"></span>
 				}
@@ -188,65 +127,65 @@
 		</div>
 	</div>
 
-	<!-- Phim đề xuất mới -->
+	<!-- Phim Đề Xuất - Thiết kế mới nhất quán -->
 	<div class="recommended-section-new">
 		<div class="section-title-bar">
-			<h2><i class="fas fa-thumbs-up"></i> Phim đề xuất</h2>
+			<h2><i class="fas fa-star"></i> Phim Đề Xuất</h2>
 			<a href="@Url.Action("Index", "Movies")" class="view-all-link">
 				Xem tất cả <i class="fas fa-chevron-right"></i>
 			</a>
 		</div>
 
-		<!-- Modern Pagination Controls for Recommended Movies - TRƯỚC danh sách phim -->
-		<div class="section-pagination" id="recommendedPagination">
-			<div class="pagination-controls">
-				<div class="sort-filter-controls">
-					<div class="filter-group">
-						<label class="filter-label">
-							<i class="fas fa-sort-amount-down"></i>
-							<span>Sắp xếp</span>
-						</label>
-						<select id="recommendedSort" class="pagination-select">
-							<option value="createdAt-desc">🕒 Mới nhất</option>
-							<option value="title-asc">🔤 Tên A-Z</option>
-							<option value="title-desc">🔤 Tên Z-A</option>
-							<option value="rating-desc">⭐ Đánh giá cao nhất</option>
-							<option value="rating-asc">⭐ Đánh giá thấp nhất</option>
-						</select>
-					</div>
-
-					<div class="filter-group">
-						<label class="filter-label">
-							<i class="fas fa-theater-masks"></i>
-							<span>Thể loại</span>
-						</label>
-						<select id="recommendedGenre" class="pagination-select">
-							<option value="all">🎭 Tất cả thể loại</option>
-							<option value="hành động">💥 Hành động</option>
-							<option value="tình cảm">💕 Tình cảm</option>
-							<option value="kinh dị">👻 Kinh dị</option>
-							<option value="hài">😂 Hài</option>
-						</select>
-					</div>
-
-					<div class="filter-group">
-						<label class="filter-label">
-							<i class="fas fa-list"></i>
-							<span>Hiển thị</span>
-						</label>
-						<select id="recommendedPageSize" class="pagination-select">
-							<option value="6">📄 6 phim</option>
-							<option value="9">📄 9 phim</option>
-							<option value="12">📄 12 phim</option>
-						</select>
-					</div>
+		<!-- Bộ lọc và sắp xếp cho Phim Đề Xuất -->
+		<div class="pagination-controls">
+			<div class="sort-filter-controls">
+				<div class="filter-group">
+					<label class="filter-label">
+						<i class="fas fa-sort"></i>
+						<span>Sắp xếp theo</span>
+					</label>
+					<select id="recommendedSort" class="pagination-select">
+						<option value="createdAt-desc">Mới nhất</option>
+						<option value="rating-desc">Đánh giá cao nhất</option>
+						<option value="title-asc">Tên A-Z</option>
+						<option value="releaseDate-desc">Ngày phát hành gần nhất</option>
+					</select>
 				</div>
 
-				<div class="pagination-info" id="recommendedInfo">
-					<div class="info-content">
-						<i class="fas fa-info-circle"></i>
-						<span>Trang 1 / 1 (0 phim)</span>
-					</div>
+				<div class="filter-group">
+					<label class="filter-label">
+						<i class="fas fa-theater-masks"></i>
+						<span>Thể loại</span>
+					</label>
+					<select id="recommendedGenre" class="pagination-select">
+						<option value="all">Tất cả thể loại</option>
+						<option value="hành động">Hành động</option>
+						<option value="tình cảm">Tình cảm</option>
+						<option value="kinh dị">Kinh dị</option>
+						<option value="hài">Hài</option>
+						<option value="khoa học viễn tưởng">Khoa học viễn tưởng</option>
+						<option value="phiêu lưu">Phiêu lưu</option>
+					</select>
+				</div>
+
+				<div class="filter-group">
+					<label class="filter-label">
+						<i class="fas fa-eye"></i>
+						<span>Hiển thị</span>
+					</label>
+					<select id="recommendedPageSize" class="pagination-select">
+						<option value="6">6 phim</option>
+						<option value="8">8 phim</option>
+						<option value="12">12 phim</option>
+					</select>
+				</div>
+			</div>
+
+			<!-- Thông tin phân trang cho Phim Đề Xuất -->
+			<div class="pagination-info" id="recommendedInfo">
+				<div class="info-content">
+					<i class="fas fa-info-circle"></i>
+					<span>Trang 1 / 1 (0 phim)</span>
 				</div>
 			</div>
 		</div>
@@ -326,6 +265,7 @@
 	</div>
 
 	<!-- Phim Sắp Chiếu - Full Width như Phim đề xuất -->
+	
 	<!-- Phim Sắp Chiếu - Thiết kế mới -->
 	<div class="recommended-section-new">
 		<div class="section-title-bar">
@@ -389,7 +329,7 @@
 			</div>
 		</div>
 
-		<!-- Grid phim -->
+		
 		<div class="recommended-grid">
 			@if (Model?.ComingSoonMovies != null && Model.ComingSoonMovies.Any())
 			{
@@ -409,7 +349,7 @@
 							<img src="@imageUrl" alt="@movie.Title" loading="lazy"
 								 onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
 
-							<!-- Overlay khi hover -->
+							
 							<div class="recommended-overlay">
 								<a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="recommended-view-btn">
 									<i class="fas fa-info-circle"></i>
@@ -500,7 +440,7 @@
 										Xem Chi Tiết
 									</a>
 								</div>
-								<!-- Promotion Badge -->
+								
 								<div class="recommended-promotion-badge">
 									<i class="fas fa-percentage"></i> Khuyến Mãi
 								</div>
@@ -701,18 +641,18 @@
 			movieDetails: '@Url.Action("Details", "Movies")'
 		};
 
-		// User dropdown functionality
+
 		document.addEventListener('DOMContentLoaded', function () {
 			const userDropdown = document.getElementById('userDropdown');
 			const dropdownMenu = document.querySelector('.dropdown-menu');
 
 			if (userDropdown && dropdownMenu) {
-				// Handle click on entire button area
+
 				userDropdown.addEventListener('click', function (e) {
 					e.preventDefault();
 					e.stopPropagation();
 
-					// Toggle dropdown immediately without delay
+
 					const isShowing = dropdownMenu.classList.contains('show');
 
 					if (isShowing) {
@@ -724,12 +664,12 @@
 					}
 				});
 
-				// Also handle click on any child element of button
+
 				userDropdown.addEventListener('click', function (e) {
 					e.stopPropagation();
 				}, true);
 
-				// Close dropdown when clicking outside
+
 				document.addEventListener('click', function (e) {
 					if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
 						dropdownMenu.classList.remove('show');
@@ -737,7 +677,7 @@
 					}
 				});
 
-				// Close dropdown when pressing Escape key
+
 				document.addEventListener('keydown', function (e) {
 					if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
 						dropdownMenu.classList.remove('show');
@@ -748,17 +688,17 @@
 			}
 		});
 
-		// Search functionality
+
 		document.addEventListener('DOMContentLoaded', function () {
 			const searchInput = document.getElementById('movieSearchInput');
 			const searchButton = document.getElementById('searchButton');
 
-			// Search on button click
+
 			searchButton?.addEventListener('click', function () {
 				performSearch();
 			});
 
-			// Search on Enter key press
+
 			searchInput?.addEventListener('keypress', function (e) {
 				if (e.key === 'Enter') {
 					performSearch();
@@ -768,13 +708,42 @@
 			async function performSearch() {
 				const keyword = searchInput.value.trim();
 
-				// Redirect to search results page
+
 				const searchUrl = '@Url.Action("Search", "Movies")' + (keyword ? `?keyword=${encodeURIComponent(keyword)}` : '');
 				window.location.href = searchUrl;
 			}
 		});
+
+
+		if (window.location.search.includes('debug=true')) {
+			document.addEventListener('DOMContentLoaded', function() {
+				const testButton = document.createElement('button');
+				testButton.textContent = 'TEST NAVIGATE TO MOVIE';
+				testButton.style.position = 'fixed';
+				testButton.style.top = '10px';
+				testButton.style.right = '10px';
+				testButton.style.zIndex = '99999';
+				testButton.style.background = 'red';
+				testButton.style.color = 'white';
+				testButton.style.padding = '10px';
+				testButton.style.border = 'none';
+				testButton.style.cursor = 'pointer';
+				
+				testButton.addEventListener('click', function() {
+					console.log('🧪 Test button clicked');
+					window.location.href = '/Movies/Details/11111111-1111-1111-1111-0000000000a1';
+				});
+				
+				document.body.appendChild(testButton);
+			});
+		}
 	</script>
 	<script src="~/js/homepage.js"></script>
+<script src="~/js/homepage-debug.js"></script>
+	<script src="~/js/movie-card-debug.js"></script>
+	<script src="~/js/dropdown-debug.js"></script>
+	<script src="~/js/force-navigation.js"></script>
+	<script src="~/js/pagination-debug.js"></script>
 }
 
 @functions {

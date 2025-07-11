@@ -8,10 +8,10 @@ namespace UI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+
             builder.Services.AddControllersWithViews();
 
-            // Add HttpContextAccessor for accessing current HTTP context
+
             builder.Services.AddHttpContextAccessor();
 
             // Add HttpClient for API calls với credential sharing
@@ -28,7 +28,7 @@ namespace UI
                 };
             });
 
-            // Add Authentication with Cookies
+
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -60,13 +60,17 @@ namespace UI
             builder.Services.AddScoped<UI.Areas.ShowtimeManagement.Services.IShowtimeService,
                           UI.Areas.ShowtimeManagement.Services.ShowtimeService>();
 
+            // Đăng ký CinemaManagementUIService
+            builder.Services.AddScoped<UI.Areas.CinemaManagement.Services.ICinemaManagementUIService,
+                          UI.Areas.CinemaManagement.Services.CinemaManagementUIService>();
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+
                 app.UseHsts();
             }
 

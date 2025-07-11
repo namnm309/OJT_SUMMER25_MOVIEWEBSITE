@@ -26,9 +26,9 @@ namespace UI.Areas.BookingManagement.Models
         public string? Notes { get; set; }
     }
 
-    /// <summary>
-    /// ViewModel for admin booking confirmation
-    /// </summary>
+
+
+
     public class ConfirmAdminBookingViewModel
     {
         [Required]
@@ -50,9 +50,9 @@ namespace UI.Areas.BookingManagement.Models
         public string StaffId { get; set; }
     }
 
-    /// <summary>
-    /// ViewModel for booking confirmation response
-    /// </summary>
+
+
+
     public class BookingConfirmationViewModel
     {
         public string BookingCode { get; set; }

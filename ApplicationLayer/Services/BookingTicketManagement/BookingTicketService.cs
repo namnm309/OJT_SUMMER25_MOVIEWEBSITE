@@ -13,6 +13,7 @@ using InfrastructureLayer.Core.Mail;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationLayer.Services.BookingTicketManagement
 {
@@ -35,6 +36,11 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         // New methods for score conversion booking
         Task<IActionResult> GetBookingConfirmationDetailAsync(Guid showTimeId, List<Guid> seatIds, string memberId);
         Task<IActionResult> ConfirmBookingWithScoreAsync(BookingConfirmWithScoreRequestDto request);
+
+        // Booking list management methods
+        Task<IActionResult> GetBookingListAsync(BookingFilterDto filter);
+        Task<IActionResult> UpdateBookingStatusAsync(Guid bookingId, string newStatus);
+        Task<IActionResult> CancelBookingAsync(Guid bookingId, string reason);
     }
 
     public class BookingTicketService : IBookingTicketService
@@ -1012,6 +1018,229 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             {
                 _logger.LogError(ex, "Error confirming booking with score conversion");
                 return ErrorResp.InternalServerError("Error processing booking confirmation");
+            }
+        }
+
+        public async Task<IActionResult> GetBookingListAsync(BookingFilterDto filter)
+        {
+            try
+            {
+                var query = _context.Bookings
+                    .Include(b => b.User)
+                    .Include(b => b.ShowTime)
+                        .ThenInclude(st => st.Movie)
+                    .Include(b => b.ShowTime)
+                        .ThenInclude(st => st.Room)
+                    .Include(b => b.BookingDetails)
+                        .ThenInclude(bd => bd.Seat)
+                    .AsQueryable();
+
+                // Apply filters
+                if (filter.FromDate.HasValue)
+                {
+                    query = query.Where(b => b.BookingDate >= filter.FromDate.Value);
+                }
+
+                if (filter.ToDate.HasValue)
+                {
+                    query = query.Where(b => b.BookingDate <= filter.ToDate.Value.AddDays(1));
+                }
+
+                if (!string.IsNullOrEmpty(filter.MovieTitle))
+                {
+                    query = query.Where(b => b.ShowTime.Movie.Title.Contains(filter.MovieTitle));
+                }
+
+                if (!string.IsNullOrEmpty(filter.BookingStatus))
+                {
+                    if (Enum.TryParse<BookingStatus>(filter.BookingStatus, out var status))
+                    {
+                        query = query.Where(b => b.Status == status);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filter.CustomerSearch))
+                {
+                    query = query.Where(b => 
+                        b.FullName.Contains(filter.CustomerSearch) ||
+                        b.PhoneNumber.Contains(filter.CustomerSearch) ||
+                        b.Email.Contains(filter.CustomerSearch));
+                }
+
+                if (!string.IsNullOrEmpty(filter.BookingCode))
+                {
+                    query = query.Where(b => b.BookingCode.Contains(filter.BookingCode));
+                }
+
+                // Get total count
+                var totalRecords = await query.CountAsync();
+
+                // Apply sorting
+                switch (filter.SortBy.ToLower())
+                {
+                    case "bookingdate":
+                        query = filter.SortDirection.ToLower() == "asc" 
+                            ? query.OrderBy(b => b.BookingDate)
+                            : query.OrderByDescending(b => b.BookingDate);
+                        break;
+                    case "customername":
+                        query = filter.SortDirection.ToLower() == "asc"
+                            ? query.OrderBy(b => b.FullName)
+                            : query.OrderByDescending(b => b.FullName);
+                        break;
+                    case "movietitle":
+                        query = filter.SortDirection.ToLower() == "asc"
+                            ? query.OrderBy(b => b.ShowTime.Movie.Title)
+                            : query.OrderByDescending(b => b.ShowTime.Movie.Title);
+                        break;
+                    case "totalamount":
+                        query = filter.SortDirection.ToLower() == "asc"
+                            ? query.OrderBy(b => b.TotalPrice)
+                            : query.OrderByDescending(b => b.TotalPrice);
+                        break;
+                    default:
+                        query = query.OrderByDescending(b => b.BookingDate);
+                        break;
+                }
+
+                // Apply pagination
+                var bookings = await query
+                    .Skip((filter.Page - 1) * filter.PageSize)
+                    .Take(filter.PageSize)
+                    .ToListAsync();
+
+                // Map to DTOs
+                var bookingDtos = bookings.Select(b => new BookingListDto
+                {
+                    Id = b.Id,
+                    BookingCode = b.BookingCode,
+                    CustomerName = b.FullName,
+                    CustomerPhone = b.PhoneNumber,
+                    CustomerEmail = b.Email,
+                    MovieTitle = b.ShowTime?.Movie?.Title ?? "N/A",
+                    CinemaRoom = b.ShowTime?.Room?.RoomName ?? "N/A",
+                    ShowDate = b.ShowTime?.ShowDate ?? DateTime.MinValue,
+                    ShowTime = b.ShowTime?.ShowDate?.TimeOfDay ?? TimeSpan.Zero,
+                    SeatNumbers = string.Join(", ", b.BookingDetails.Select(bd => bd.Seat.SeatCode).OrderBy(s => s)),
+                    TotalAmount = b.TotalPrice,
+                    BookingStatus = b.Status.ToString(),
+                    BookingDate = b.BookingDate,
+                    PaymentMethod = "Cash", // Default for now
+                    UsedPoints = (int)(b.PointsUsed ?? 0)
+                }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)totalRecords / filter.PageSize);
+
+                var response = new BookingListResponseDto
+                {
+                    Bookings = bookingDtos,
+                    TotalRecords = totalRecords,
+                    CurrentPage = filter.Page,
+                    TotalPages = totalPages,
+                    PageSize = filter.PageSize
+                };
+
+                return SuccessResp.Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting booking list");
+                return ErrorResp.InternalServerError("Error retrieving booking list");
+            }
+        }
+
+        public async Task<IActionResult> UpdateBookingStatusAsync(Guid bookingId, string newStatus)
+        {
+            try
+            {
+                var booking = await _bookingRepo.FindByIdAsync(bookingId);
+                if (booking == null)
+                {
+                    return ErrorResp.NotFound("Booking not found");
+                }
+
+                if (Enum.TryParse<BookingStatus>(newStatus, out var status))
+                {
+                    booking.Status = status;
+                    await _bookingRepo.UpdateAsync(booking);
+                    
+                    return SuccessResp.Ok(new { message = "Booking status updated successfully" });
+                }
+                else
+                {
+                    return ErrorResp.BadRequest("Invalid booking status");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating booking status for booking {BookingId}", bookingId);
+                return ErrorResp.InternalServerError("Error updating booking status");
+            }
+        }
+
+        public async Task<IActionResult> CancelBookingAsync(Guid bookingId, string reason)
+        {
+            try
+            {
+                var booking = await _bookingRepo.FindByIdAsync(bookingId, "BookingDetails", "ShowTime");
+                if (booking == null)
+                {
+                    return ErrorResp.NotFound("Booking not found");
+                }
+
+                // Check if booking can be cancelled (e.g., not already cancelled, showtime hasn't started yet)
+                if (booking.Status == BookingStatus.Cancelled)
+                {
+                    return ErrorResp.BadRequest("Booking is already cancelled");
+                }
+
+                if (booking.ShowTime?.ShowDate < DateTime.Now)
+                {
+                    return ErrorResp.BadRequest("Cannot cancel booking for past showtimes");
+                }
+
+                // Update booking status
+                booking.Status = BookingStatus.Cancelled;
+                await _bookingRepo.UpdateAsync(booking);
+
+                // Free up the seats
+                foreach (var detail in booking.BookingDetails)
+                {
+                    var seat = await _seatRepository.GetByIdAsync(detail.SeatId);
+                    if (seat != null)
+                    {
+                        seat.IsActive = true; // Make seat available again
+                        await _seatRepository.UpdateSeatAsync(seat);
+                    }
+                }
+
+                // If points were used, refund them
+                if (booking.PointsUsed.HasValue && booking.PointsUsed > 0)
+                {
+                    var user = await _userRepo.FindByIdAsync(booking.UserId);
+                    if (user != null)
+                    {
+                        user.Score += booking.PointsUsed.Value;
+                        await _userRepo.UpdateAsync(user);
+
+                        // Create point history record for refund
+                        await _pointHistoryRepo.CreateAsync(new PointHistory
+                        {
+                            UserId = user.Id,
+                            Points = booking.PointsUsed.Value,
+                            Type = PointType.Earned,
+                            Description = $"Refund for cancelled booking {booking.BookingCode}: {reason}",
+                            BookingId = booking.Id
+                        });
+                    }
+                }
+
+                return SuccessResp.Ok(new { message = "Booking cancelled successfully" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error cancelling booking {BookingId}", bookingId);
+                return ErrorResp.InternalServerError("Error cancelling booking");
             }
         }
     }

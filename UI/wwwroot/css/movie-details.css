@@ -136,7 +136,7 @@ html::after {
     box-sizing: border-box;
 }
 
-/* Sidebar */
+
 .details-sidebar {
     position: sticky;
     top: 6rem;
@@ -386,7 +386,7 @@ html::after {
     font-weight: 500;
 }
 
-/* Metadata phim */
+
 .movie-meta {
     display: flex;
     flex-wrap: wrap;
@@ -749,7 +749,7 @@ html::after {
     font-weight: 500;
 }
 
-/* Style form */
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -869,7 +869,7 @@ html::after {
     display: none;
 }
 
-/* Modal trailer */
+
 .trailer-modal {
     position: fixed;
     top: 0;

@@ -13,11 +13,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Cinema City</title>
     
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -36,7 +36,7 @@
             flex-direction: column;
         }
 
-        /* Header Styles - Reuse from homepage */
+        
         .profile-header {
             background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
             backdrop-filter: blur(10px);
@@ -96,7 +96,7 @@
             color: #df2144;
         }
 
-        /* Profile Content */
+        
         .profile-container {
             flex: 1;
             max-width: 1200px;
@@ -124,7 +124,7 @@
             font-size: 18px;
         }
 
-        /* Profile Card */
+        
         .profile-card {
             background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(45, 45, 45, 0.9) 100%);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -134,7 +134,7 @@
             backdrop-filter: blur(10px);
         }
 
-        /* Avatar Section */
+        
         .avatar-section {
             text-align: center;
             margin-bottom: 40px;
@@ -201,7 +201,7 @@
             font-size: 18px;
         }
 
-        /* Form Sections */
+        
         .form-section {
             margin-bottom: 30px;
         }
@@ -221,7 +221,7 @@
             color: #df2144;
         }
 
-        /* Form Controls */
+        
         .form-label {
             color: rgba(255, 255, 255, 0.9);
             font-weight: 500;
@@ -261,14 +261,14 @@
             color: white;
         }
 
-        /* Text Danger */
+        
         .text-danger {
             color: #ff4466;
             font-size: 13px;
             margin-top: 5px;
         }
 
-        /* Buttons */
+        
         .btn-primary {
             background: linear-gradient(135deg, #df2144 0%, #c01b3a 100%);
             border: none;
@@ -300,7 +300,7 @@
             color: white;
         }
 
-        /* Alerts */
+        
         .alert {
             border-radius: 10px;
             padding: 15px 20px;
@@ -320,7 +320,7 @@
             border: 1px solid rgba(220, 53, 69, 0.3);
         }
 
-        /* Footer - Same as homepage */
+        
         .cinema-footer {
             background: #1a1a1a;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -408,7 +408,7 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
-        /* Responsive */
+        
         @@media (max-width: 768px) {
             .profile-card {
                 padding: 20px;
@@ -426,7 +426,7 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
+    
     <header class="profile-header">
         <div class="header-content">
             <div class="brand-section">
@@ -447,7 +447,7 @@
         </div>
     </header>
 
-    <!-- Profile Content -->
+    
     <main class="profile-container">
         <div class="profile-header-title">
             <h1>Thông Tin Cá Nhân</h1>
@@ -478,7 +478,7 @@
                         <input type="hidden" asp-for="Role" />
                         <input type="hidden" asp-for="Score" />
                         
-                <!-- Avatar Section -->
+                
                 <div class="avatar-section">
                     <div class="avatar-container">
                         <img src="@(string.IsNullOrEmpty(Model.Avatar) ? "https://ui-avatars.com/api/?name=" + Model.FullName + "&background=df2144&color=fff&size=150" : Model.Avatar)" 
@@ -493,7 +493,7 @@
                     <input type="hidden" asp-for="Avatar" id="avatarUrl" />
                 </div>
 
-                <!-- Basic Information -->
+                
                 <div class="form-section">
                     <h3 class="section-title">
                         <i class="fas fa-user"></i>
@@ -527,7 +527,7 @@
                             </div>
                         </div>
 
-                <!-- Personal Information -->
+                
                 <div class="form-section">
                     <h3 class="section-title">
                         <i class="fas fa-id-card"></i>
@@ -566,7 +566,7 @@
                             </div>
                         </div>
 
-                <!-- Security -->
+                
                 <div class="form-section">
                     <h3 class="section-title">
                         <i class="fas fa-shield-alt"></i>
@@ -588,7 +588,7 @@
                             </div>
                         </div>
 
-                <!-- Action Buttons -->
+                
                         <div class="d-flex justify-content-between mt-4">
                     <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
                         <i class="fas fa-arrow-left me-2"></i>
@@ -603,7 +603,7 @@
         </div>
     </main>
 
-    <!-- Footer -->
+    
     <footer class="cinema-footer">
         <div class="footer-container">
             <div class="footer-top">
@@ -647,12 +647,12 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Avatar preview
+
         function updateAvatar() {
             const url = prompt("Nhập URL hình ảnh avatar:");
             if (url) {
@@ -661,7 +661,7 @@
             }
         }
 
-        // Form validation visual feedback
+
         document.querySelectorAll('.form-control').forEach(input => {
             input.addEventListener('blur', function() {
                 if (this.value && !this.hasAttribute('readonly')) {

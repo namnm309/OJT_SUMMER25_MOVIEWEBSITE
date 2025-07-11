@@ -1,4 +1,4 @@
-﻿/* Reset và base styles */
+/* Reset và base styles */
 * {
     box-sizing: border-box;
 }
@@ -21,7 +21,7 @@ body {
     overflow: hidden;
 }
 
-/* Left side - Background image (40%) */
+
 .loki-background {
     flex: 0 0 40%;
     position: relative;
@@ -48,7 +48,7 @@ body {
     z-index: 2;
 }
 
-/* Right side - Register form (60%) */
+
 .login-side {
     flex: 0 0 60%;
     position: relative;
@@ -80,7 +80,7 @@ body {
         z-index: 1;
     }
 
-/* Netflix logo */
+
 .netflix-logo-center {
     position: absolute;
     top: 30px;
@@ -92,7 +92,7 @@ body {
     z-index: 10;
 }
 
-/* Top bar */
+
 .top-bar {
     position: absolute;
     top: 30px;
@@ -129,7 +129,7 @@ body {
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
     }
 
-/* Login container */
+
 .login-container {
     width: 100%;
     max-width: 550px;
@@ -138,7 +138,7 @@ body {
     z-index: 2;
 }
 
-/* Auth card */
+
 .auth-card {
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(25px);
@@ -148,7 +148,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* Auth header */
+
 .auth-header {
     text-align: center;
     margin-bottom: 20px;
@@ -167,7 +167,7 @@ body {
     margin: 0;
 }
 
-/* Form grid */
+
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -179,7 +179,7 @@ body {
     width: 100%;
 }
 
-/* Form styles */
+
 .form-group {
     margin-bottom: 12px;
     position: relative;
@@ -231,7 +231,7 @@ body {
         font-size: 12px;
     }
 
-/* Select styles */
+
 .form-select {
     width: 100%;
     padding: 12px 16px;
@@ -256,7 +256,7 @@ body {
         color: white;
     }
 
-/* Auth button */
+
 .auth-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
@@ -277,7 +277,7 @@ body {
         box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
     }
 
-/* Auth footer */
+
 .auth-footer {
     margin-top: 20px;
     text-align: center;
@@ -301,7 +301,7 @@ body {
         text-decoration: underline;
     }
 
-/* Alert styles */
+
 .alert {
     margin-bottom: 15px;
     border-radius: 10px;
@@ -316,7 +316,7 @@ body {
     color: #28a745;
 }
 
-/* Validation styles */
+
 .text-danger {
     color: #ff6b6b;
     font-size: 10px;
@@ -324,7 +324,7 @@ body {
     display: block;
 }
 
-/* Responsive design */
+
 @media (max-width: 768px) {
     .main-container {
         flex-direction: column;

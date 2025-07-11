@@ -11,151 +11,25 @@
     <title>@ViewData["Title"] - Cinema City</title>
     <link rel="icon" type="image/svg+xml" href="~/cinema-favicon-projector.svg" />
     
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- New Dashboard CSS -->
+    
     <link rel="stylesheet" href="~/css/new-dashboard.css" />
 </head>
 <body>
-    <!-- New Dashboard Layout -->
+    
     <div class="new-dashboard-layout">
-        <!-- Sidebar -->
-        <aside class="new-dashboard-sidebar">
-            <!-- Sidebar Header -->
-            <div class="new-sidebar-header">
-                <a href="@Url.Action("Index", "Home")" class="new-sidebar-brand">
-                    <div class="new-brand-logo"></div>
-                    <div class="new-brand-text">
-                        <h2>Cinema City</h2>
-                        <p>Staff Panel</p>
-                    </div>
-                </a>
-            </div>
-            
-            <!-- Navigation -->
-            <nav class="new-sidebar-nav">
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Tổng quan</div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("StaffDashboard", "Dashboard")" class="new-nav-link active">
-                            <i class="fas fa-chart-pie"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Home")" class="new-nav-link">
-                            <i class="fas fa-home"></i>
-                            <span>Trang chủ</span>
-                        </a>
-                    </div>
-                </div>
+        
+        @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
 
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Quản lý</div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-nav-link">
-                            <i class="fas fa-film"></i>
-                            <span>Quản lý phim</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link">
-                            <i class="fas fa-ticket-alt"></i>
-                            <span>Quản lý đặt vé</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Showtimes", new { area = "ShowtimeManagement" })" class="new-nav-link">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Quản lý lịch chiếu</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-nav-link">
-                            <i class="fas fa-gift"></i>
-                            <span>Quản lý khuyến mãi</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-star"></i>
-                            <span>Quản lý sự kiện</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-nav-link">
-                            <i class="fas fa-users"></i>
-                            <span>Quản lý người dùng</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Hỗ trợ</div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-headset"></i>
-                            <span>Hỗ trợ khách hàng</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>Báo cáo</span>
-                        </a>
-                    </div>
-                </div>
-            </nav>
-            
-            <!-- User Profile in Sidebar -->
-            <div class="new-sidebar-user">
-                <div class="new-user-profile">
-                    <div class="new-user-avatar">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            @User.Identity.Name?.Substring(0, 1).ToUpper()
-                        }
-                        else
-                        {
-                            <span>S</span>
-                        }
-                    </div>
-                    <div class="new-user-info">
-                        <h4>
-                            @if (User.Identity?.IsAuthenticated == true)
-                            {
-                                @(User.Identity.Name?.Length > 12 ? User.Identity.Name.Substring(0, 12) + "..." : User.Identity.Name)
-                            }
-                            else
-                            {
-                                <span>Staff</span>
-                            }
-                        </h4>
-                        <p>Nhân viên</p>
-                    </div>
-                </div>
-                <div class="new-user-actions">
-                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="new-user-action-btn">
-                        <i class="fas fa-user"></i>
-                    </a>
-                    <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="new-user-action-btn" style="border: none;">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
+        
         <main class="new-dashboard-main">
             <div class="new-dashboard-content">
-                <!-- Page Header -->
+                
                 <div class="new-page-header animate-fade-in">
                     <h1 class="new-page-title">
                         <i class="fas fa-briefcase"></i>
@@ -164,7 +38,7 @@
                     <p class="new-page-subtitle">Quản lý hoạt động hàng ngày của rạp chiếu phim</p>
                 </div>
                 
-                <!-- Staff Stats Grid -->
+                
                 <div class="new-stats-grid animate-fade-in">
                     <div class="new-stat-card">
                         <div class="new-stat-header">
@@ -223,9 +97,9 @@
                     </div>
                 </div>
 
-                <!-- Content Grid -->
+                
                 <div class="new-content-grid animate-slide-in">
-                    <!-- Main Panel -->
+                    
                     <div class="new-content-card">
                         <div class="new-card-header">
                             <h3 class="new-card-title">
@@ -261,7 +135,7 @@
                         </div>
                     </div>
 
-                    <!-- Side Panel -->
+                    
                     <div class="new-content-card">
                         <div class="new-card-header">
                             <h3 class="new-card-title">
@@ -310,9 +184,9 @@
                     </div>
                 </div>
 
-                <!-- Additional Content Row -->
+                
                 <div class="new-content-grid animate-slide-in" style="margin-top: 2rem;">
-                    <!-- Shift Information -->
+                    
                     <div class="new-content-card">
                         <div class="new-card-header">
                             <h3 class="new-card-title">
@@ -351,7 +225,7 @@
                         </div>
                     </div>
 
-                    <!-- Quick Statistics -->
+                    
                     <div class="new-content-card">
                         <div class="new-card-header">
                             <h3 class="new-card-title">
@@ -395,12 +269,12 @@
         </main>
     </div>
 
-    <!-- Scripts -->
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Highlight active menu item based on current page
+
         document.addEventListener('DOMContentLoaded', function() {
             const currentPath = window.location.pathname.toLowerCase();
             const navLinks = document.querySelectorAll('.new-nav-link');
@@ -408,9 +282,9 @@
             navLinks.forEach(link => {
                 const href = link.getAttribute('href')?.toLowerCase();
                 if (href && currentPath.includes(href)) {
-                    // Remove active from all links
+
                     navLinks.forEach(l => l.classList.remove('active'));
-                    // Add active to current link
+
                     link.classList.add('active');
                 }
             });

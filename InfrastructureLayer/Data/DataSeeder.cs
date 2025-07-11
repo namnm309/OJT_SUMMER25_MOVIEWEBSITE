@@ -70,7 +70,25 @@ namespace InfrastructureLayer.Data
             {
                 Console.WriteLine("🎬 Đang tạo dữ liệu mẫu...");
 
-                // 1. Tạo Cinema Rooms
+                // 1. Tạo Genres trước
+                if (!await context.Genres.AnyAsync())
+                {
+                    Console.WriteLine("  Tạo thể loại phim...");
+                    var genres = new List<Genre>
+                    {
+                        new Genre { Id = Guid.NewGuid(), GenreName = "Hành động", Description = "Phim hành động" },
+                        new Genre { Id = Guid.NewGuid(), GenreName = "Khoa học viễn tưởng", Description = "Phim khoa học viễn tưởng" },
+                        new Genre { Id = Guid.NewGuid(), GenreName = "Kinh dị", Description = "Phim kinh dị" },
+                        new Genre { Id = Guid.NewGuid(), GenreName = "Hài kịch", Description = "Phim hài kịch" },
+                        new Genre { Id = Guid.NewGuid(), GenreName = "Lãng mạn", Description = "Phim lãng mạn" },
+                        new Genre { Id = Guid.NewGuid(), GenreName = "Thần thoại", Description = "Phim thần thoại" }
+                    };
+
+                    await context.Genres.AddRangeAsync(genres);
+                    await context.SaveChangesAsync();
+                }
+
+                // 2. Tạo Cinema Rooms
                 if (!await context.CinemaRooms.AnyAsync())
                 {
                     Console.WriteLine("  Tạo phòng chiếu...");
@@ -95,7 +113,7 @@ namespace InfrastructureLayer.Data
                     await context.CinemaRooms.AddRangeAsync(room1, room2);
                     await context.SaveChangesAsync();
 
-                    // 2. Tạo Seats cho từng phòng
+                    // 3. Tạo Seats cho từng phòng
                     Console.WriteLine("  Tạo ghế...");
                     var seats = new List<Seat>();
 
@@ -145,7 +163,7 @@ namespace InfrastructureLayer.Data
                     await context.SaveChangesAsync();
                 }
 
-                // 3. Tạo Movies
+                // 4. Tạo Movies
                 if (!await context.Movies.AnyAsync())
                 {
                     Console.WriteLine("  Tạo phim...");
@@ -173,7 +191,20 @@ namespace InfrastructureLayer.Data
                     await context.Movies.AddAsync(movie1);
                     await context.SaveChangesAsync();
 
-                    // 4. Tạo ShowTimes
+                    // Thêm Genre cho Movie
+                    var sciFiGenre = await context.Genres.FirstOrDefaultAsync(g => g.GenreName == "Khoa học viễn tưởng");
+                    if (sciFiGenre != null)
+                    {
+                        var movieGenre = new MovieGenre
+                        {
+                            MovieId = movie1.Id,
+                            GenreId = sciFiGenre.Id
+                        };
+                        await context.MovieGenres.AddAsync(movieGenre);
+                        await context.SaveChangesAsync();
+                    }
+
+                    // 5. Tạo ShowTimes
                     Console.WriteLine("  Tạo lịch chiếu...");
                     var room1Id = await context.CinemaRooms.Where(r => r.RoomName == "Phòng A1").Select(r => r.Id).FirstOrDefaultAsync();
                     var room2Id = await context.CinemaRooms.Where(r => r.RoomName == "Phòng B1").Select(r => r.Id).FirstOrDefaultAsync();

@@ -1,11 +1,9 @@
-/* ===============================================
-   SHARED FOOTER CSS - Modern Dark Theme with Purple Accent
-   =============================================== */
 
-/* Fonts */
+
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* Footer Container */
+
 .shared-footer {
     background: linear-gradient(180deg, #141414 0%, #0a0a0a 100%);
     color: #ffffff;
@@ -17,14 +15,14 @@
     border-top: 1px solid rgba(139, 92, 246, 0.1);
 }
 
-/* Footer Container */
+
 .shared-footer-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
-/* Gradient Divider */
+
 .shared-footer-divider {
     height: 4px;
     background: linear-gradient(90deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.6) 50%, rgba(139, 92, 246, 0.1) 100%);
@@ -55,7 +53,7 @@
     }
 }
 
-/* Footer Top Section */
+
 .shared-footer-top {
     display: flex;
     flex-wrap: wrap;
@@ -123,7 +121,7 @@
     color: rgba(255, 255, 255, 0.6);
 }
 
-/* Footer Links */
+
 .shared-footer-links {
     display: flex;
     flex-wrap: wrap;
@@ -186,7 +184,7 @@
                     color: rgba(139, 92, 246, 0.8);
                 }
 
-/* Footer Middle Section */
+
 .shared-footer-middle {
     display: flex;
     flex-wrap: wrap;
@@ -263,7 +261,7 @@
         margin-right: 8px;
     }
 
-/* Footer Bottom Section */
+
 .shared-footer-bottom {
     padding-top: 30px;
     text-align: center;
@@ -284,7 +282,7 @@
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* Responsive Design */
+
 @media (min-width: 768px) {
     .shared-contact-info, .shared-app-download {
         flex: 0 0 48%;
@@ -302,7 +300,7 @@
     }
 }
 
-/* Animation Improvements */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -319,7 +317,7 @@
     animation: fadeIn 0.8s ease-out forwards;
 }
 
-/* Dark Mode Enhancements */
+
 @media (prefers-color-scheme: dark) {
     .shared-social-icon, .shared-app-button {
         border-color: rgba(139, 92, 246, 0.5);
@@ -330,7 +328,7 @@
     }
 }
 
-/* High Contrast Mode Support */
+
 @media (forced-colors: active) {
     .shared-footer-divider, .shared-footer-column h4::after {
         background: CanvasText;
@@ -341,7 +339,7 @@
     }
 }
 
-/* Scrollbar Styling */
+
 .shared-footer ::-webkit-scrollbar {
     width: 8px;
     height: 8px;

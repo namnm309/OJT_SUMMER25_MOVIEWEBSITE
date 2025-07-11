@@ -38,6 +38,6 @@ namespace UI.Areas.EmployeeManagement.Models
 
     public class EmployeeUpdateViewModel : EmployeeCreateViewModel
     {
-        // Inherit all fields from Create
+
     }
 } 

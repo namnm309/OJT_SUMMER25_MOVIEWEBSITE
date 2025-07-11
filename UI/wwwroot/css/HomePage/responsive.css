@@ -1,6 +1,6 @@
-﻿/* Responsive styles for different screen sizes */
 
-/* Tablet styles */
+
+
 @media (max-width: 768px) {
     .hero-section {
         padding: 20px 30px;
@@ -56,7 +56,7 @@
     }
 }
 
-/* Mobile styles */
+
 @media (max-width: 480px) {
     .hero-section {
         padding: 15px 20px;
@@ -137,7 +137,7 @@
 
 }
 
-/* Large screen adjustments */
+
 @media (min-width: 1400px) {
     .hero-section {
         padding: 50px 120px;

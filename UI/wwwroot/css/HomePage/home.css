@@ -5,7 +5,7 @@ main[role="main"] {
     z-index: 10;
 }
 
-/* css origin */
+
 .cinema-homepage {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
@@ -15,7 +15,7 @@ main[role="main"] {
     min-height: 100vh;
 }
 
-/* Hero Section */
+
 .hero-section {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
     min-height: 707px;
@@ -38,7 +38,7 @@ main[role="main"] {
         z-index: 1;
     }
 
-/* Navigation */
+
 .hero-nav {
     width: 100%;
     margin-bottom: 20px;
@@ -201,7 +201,7 @@ main[role="main"] {
     margin-top: 4px;
 }
 
-/* Movie Content */
+
 .movie-content {
     display: flex;
     flex-direction: column;
@@ -329,7 +329,7 @@ main[role="main"] {
     color: white;
 }
 
-/* Movie Controls */
+
 .movie-controls {
     display: flex;
     align-items: center;
@@ -495,7 +495,7 @@ main[role="main"] {
     transform: translateX(26px);
 }
 
-/* Recommended Movies Section */
+
 .recommended-section {
     margin: 27px auto 0;
     max-width: 1252px;
@@ -672,7 +672,7 @@ main[role="main"] {
         color: white;
     }
 
-/* Featured Banner */
+
 .featured-banner {
     background: linear-gradient(99deg, rgba(12, 12, 12, 0.99) 16.77%, rgba(14, 14, 14, 0.55) 33.91%, rgba(0, 0, 0, 0.00) 52.53%), url('https://image.tmdb.org/t/p/original/vI3aUGTuRRdM7J78KIdW98LdxE3.jpg') lightgray 50% / cover no-repeat;
     margin: 28px auto 0;
@@ -763,9 +763,7 @@ main[role="main"] {
         transform: translateY(-2px);
     }
 
-/* =====================
-   🎨 MODERN PAGINATION DESIGN
-   ===================== */
+
 
 .section-pagination {
     margin-top: 20px;
@@ -775,7 +773,7 @@ main[role="main"] {
     border: none;
 }
 
-/* Main Pagination Card */
+
 .pagination-controls {
     background: linear-gradient(145deg, rgba(15, 15, 20, 0.95) 0%, rgba(25, 25, 35, 0.9) 100%);
     backdrop-filter: blur(20px);
@@ -793,7 +791,7 @@ main[role="main"] {
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-    /* Subtle gradient separator below pagination */
+    
     .pagination-controls::after {
         content: '';
         position: absolute;
@@ -805,7 +803,7 @@ main[role="main"] {
         z-index: 1;
     }
 
-/* Keep separator when loading */
+
 .section-pagination.loading .pagination-controls::after {
     content: '';
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1) 20%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 80%, transparent );
@@ -832,7 +830,7 @@ main[role="main"] {
     transform: translateY(-2px);
 }
 
-/* ===== FILTER CONTROLS SECTION ===== */
+
 .sort-filter-controls {
     display: flex;
     align-items: center;
@@ -841,7 +839,7 @@ main[role="main"] {
     flex: 1;
 }
 
-/* Filter Group Container */
+
 .filter-group {
     display: flex;
     flex-direction: column;
@@ -849,7 +847,7 @@ main[role="main"] {
     min-width: 160px;
 }
 
-/* Filter Labels */
+
 .filter-label {
     display: flex;
     align-items: center;
@@ -875,7 +873,7 @@ main[role="main"] {
     transform: scale(1.1);
 }
 
-/* Select Styling */
+
 .pagination-select {
     background: linear-gradient(145deg, rgba(35, 35, 45, 0.8) 0%, rgba(25, 25, 35, 0.9) 100%);
     border: 1.5px solid rgba(255, 255, 255, 0.15);
@@ -917,7 +915,7 @@ main[role="main"] {
             background: rgba(223, 33, 68, 0.1);
         }
 
-/* ===== LOAD MORE BUTTON ===== */
+
 .btn-load-more {
     background: linear-gradient(145deg, #df2144 0%, #c91e3a 50%, #b01b35 100%);
     border: none;
@@ -982,7 +980,7 @@ main[role="main"] {
         transform: rotate(180deg) scale(1.1);
     }
 
-/* ===== PAGINATION INFO ===== */
+
 .pagination-info {
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
     padding: 12px 18px;
@@ -1010,7 +1008,7 @@ main[role="main"] {
         font-size: 12px;
     }
 
-/* ===== LOADING STATES ===== */
+
 .section-pagination.loading .pagination-controls {
     pointer-events: none;
     opacity: 0.7;
@@ -1056,9 +1054,9 @@ main[role="main"] {
     }
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
 
-/* Tablet Portrait */
+
+
 @media (max-width: 992px) {
     .pagination-controls {
         flex-direction: column;
@@ -1100,7 +1098,7 @@ main[role="main"] {
     }
 }
 
-/* Tablet Landscape & Small Desktop */
+
 @media (max-width: 768px) {
     .pagination-controls {
         gap: 18px;
@@ -1181,9 +1179,9 @@ main[role="main"] {
     }
 }
 
-/* ===== ADVANCED VISUAL EFFECTS ===== */
 
-/* Entrance Animation */
+
+
 @media (prefers-reduced-motion: no-preference) {
     .pagination-controls {
         animation: fadeInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
@@ -1214,7 +1212,7 @@ main[role="main"] {
     }
 }
 
-/* Micro-Interactions */
+
 .pagination-select:focus,
 .btn-load-more:hover {
     animation: pulseGlow 2s ease-in-out infinite;
@@ -1229,7 +1227,7 @@ main[role="main"] {
     color: rgba(255, 255, 255, 0.9);
 }
 
-/* Button Ripple Effect */
+
 .btn-load-more {
     position: relative;
     overflow: hidden;
@@ -1256,7 +1254,7 @@ main[role="main"] {
     }
 }
 
-/* Loading Progress Bar - overrides normal shimmer */
+
 .section-pagination.loading .pagination-controls::before {
     content: '';
     position: absolute;
@@ -1279,7 +1277,7 @@ main[role="main"] {
     }
 }
 
-/* Keyframe Animations */
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -1342,7 +1340,7 @@ main[role="main"] {
     }
 }
 
-/* Hover States for Better UX */
+
 .pagination-controls:hover .filter-group {
     transform: translateY(-1px);
 }
@@ -1356,7 +1354,7 @@ main[role="main"] {
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
 }
 
-/* ===== DARK MODE ENHANCEMENTS ===== */
+
 @media (prefers-color-scheme: dark) {
     .pagination-controls {
         background: linear-gradient(145deg, rgba(8, 8, 12, 0.95) 0%, rgba(15, 15, 20, 0.9) 100%);
@@ -1374,9 +1372,9 @@ main[role="main"] {
     }
 }
 
-/* ===== SPECIAL BADGES FOR UNIFIED UI ===== */
 
-/* Release Date Badge for Coming Soon Movies */
+
+
 .recommended-release-date {
     position: absolute;
     top: 12px;
@@ -1406,7 +1404,7 @@ main[role="main"] {
     box-shadow: 0 4px 12px rgba(223, 33, 68, 0.4);
 }
 
-/* Promotion Badge for Promotion Items */
+
 .recommended-promotion-badge {
     position: absolute;
     top: 12px;
@@ -1436,7 +1434,7 @@ main[role="main"] {
     box-shadow: 0 4px 12px rgba(255, 165, 0, 0.4);
 }
 
-/* Description for Promotion Items */
+
 .recommended-description {
     display: flex;
     align-items: center;
@@ -1452,13 +1450,13 @@ main[role="main"] {
         flex-shrink: 0;
     }
 
-/* Enhanced Overlays for Different Content Types */
+
 .recommended-overlay .recommended-view-btn {
     background: linear-gradient(135deg, rgba(223, 33, 68, 0.9) 0%, rgba(201, 30, 58, 0.9) 100%);
     transition: all 0.3s ease;
 }
 
-/* Special styling for promotion view buttons */
+
 .recommended-promotion-badge + .recommended-overlay .recommended-view-btn {
     background: linear-gradient(135deg, rgba(255, 165, 0, 0.9) 0%, rgba(255, 140, 0, 0.9) 100%);
 }
@@ -1469,7 +1467,7 @@ main[role="main"] {
         box-shadow: 0 6px 20px rgba(255, 165, 0, 0.4);
     }
 
-/* ===== RESPONSIVE ADJUSTMENTS FOR UNIFIED UI ===== */
+
 
 @media (max-width: 768px) {
     .recommended-release-date,

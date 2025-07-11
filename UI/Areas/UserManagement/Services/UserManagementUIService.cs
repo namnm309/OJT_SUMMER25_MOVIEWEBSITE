@@ -6,28 +6,28 @@ namespace UI.Areas.UserManagement.Services
 {
     public interface IUserManagementUIService
     {
-        // T1: Login
+
         Task<ApiResponse<dynamic>> LoginAsync(LoginViewModel model);
         
-        // T2: Register
+
         Task<ApiResponse<dynamic>> RegisterAsync(RegisterViewModel model);
         
-        // T3: Edit Profile
+
         Task<ApiResponse<dynamic>> GetProfileAsync();
         Task<ApiResponse<dynamic>> UpdateProfileAsync(UserProfileViewModel model);
         Task<ApiResponse<dynamic>> ChangePasswordAsync(ChangePasswordViewModel model);
         
-        // T4: View List Members (Admin)
+
         Task<ApiResponse<dynamic>> GetMembersAsync();
         
-        // T5: View Booked Tickets
+
         Task<ApiResponse<dynamic>> GetBookedTicketsAsync();
         Task<ApiResponse<dynamic>> CancelTicketAsync(Guid bookingId);
         
-        // T6: View History of Score
+
         Task<ApiResponse<dynamic>> GetScoreHistoryAsync(DateTime? fromDate = null, DateTime? toDate = null, string historyType = "adding");
         
-        // Common
+
         Task<ApiResponse<dynamic>> LogoutAsync();
         Task<ApiResponse<dynamic>> GetCurrentUserAsync();
     }

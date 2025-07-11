@@ -26,6 +26,13 @@ namespace UI.Areas.BookingManagement.Controllers
             return View();
         }
 
+        // Trang danh sách đặt vé
+        public IActionResult BookingList()
+        {
+            ViewBag.CurrentPage = "BookingList";
+            return View();
+        }
+
         // API endpoints cho tính năng đặt vé
         [HttpGet]
         public async Task<IActionResult> GetMovies()
@@ -172,6 +179,108 @@ namespace UI.Areas.BookingManagement.Controllers
             {
                 _logger.LogError(ex, "Error processing VNPay payment");
                 return Json(new { success = false, message = "Có lỗi xảy ra khi xử lý thanh toán" });
+            }
+        }
+
+        // API endpoints cho danh sách đặt vé
+        [HttpGet]
+        public async Task<IActionResult> GetBookingList(
+            DateTime? fromDate = null,
+            DateTime? toDate = null,
+            string? movieTitle = null,
+            string? bookingStatus = null,
+            string? customerSearch = null,
+            string? bookingCode = null,
+            int page = 1,
+            int pageSize = 10,
+            string sortBy = "BookingDate",
+            string sortDirection = "desc")
+        {
+            try
+            {
+                var response = await _bookingService.GetBookingListAsync(new
+                {
+                    FromDate = fromDate,
+                    ToDate = toDate,
+                    MovieTitle = movieTitle,
+                    BookingStatus = bookingStatus,
+                    CustomerSearch = customerSearch,
+                    BookingCode = bookingCode,
+                    Page = page,
+                    PageSize = pageSize,
+                    SortBy = sortBy,
+                    SortDirection = sortDirection
+                });
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting booking list");
+                return Json(new { success = false, message = "Có lỗi xảy ra khi tải danh sách đặt vé" });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBookingDetail(Guid bookingId)
+        {
+            try
+            {
+                var response = await _bookingService.GetBookingDetailAsync(bookingId);
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting booking detail for {BookingId}", bookingId);
+                return Json(new { success = false, message = "Có lỗi xảy ra khi tải chi tiết đặt vé" });
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateBookingStatus(Guid bookingId, [FromBody] dynamic statusData)
+        {
+            try
+            {
+                string newStatus = statusData.newStatus;
+                var response = await _bookingService.UpdateBookingStatusAsync(bookingId, newStatus);
+                
+                if (response.Success)
+                {
+                    return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = response.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating booking status for {BookingId}", bookingId);
+                return Json(new { success = false, message = "Có lỗi xảy ra khi cập nhật trạng thái" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CancelBooking(Guid bookingId, [FromBody] dynamic cancelData)
+        {
+            try
+            {
+                string reason = cancelData.reason;
+                var response = await _bookingService.CancelBookingAsync(bookingId, reason);
+                
+                if (response.Success)
+                {
+                    return Json(new { success = true, message = "Hủy đặt vé thành công" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = response.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error cancelling booking {BookingId}", bookingId);
+                return Json(new { success = false, message = "Có lỗi xảy ra khi hủy đặt vé" });
             }
         }
     }

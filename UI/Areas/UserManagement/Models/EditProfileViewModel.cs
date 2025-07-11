@@ -46,7 +46,7 @@ namespace UI.Areas.UserManagement.Models
         [Display(Name = "Avatar URL")]
         public string Avatar { get; set; } = string.Empty;
 
-        // Password change section
+
         [StringLength(255, MinimumLength = 6, ErrorMessage = "New password must be between 6 and 255 characters")]
         [DataType(DataType.Password)]
         [Display(Name = "New Password (leave blank to keep current)")]
@@ -57,7 +57,7 @@ namespace UI.Areas.UserManagement.Models
         [Compare("NewPassword", ErrorMessage = "Password and confirm password do not match")]
         public string? ConfirmNewPassword { get; set; }
 
-        // Display info
+
         public double Score { get; set; }
         public string Role { get; set; } = string.Empty;
     }

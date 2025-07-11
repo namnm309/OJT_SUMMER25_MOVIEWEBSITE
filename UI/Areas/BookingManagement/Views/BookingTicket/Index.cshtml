@@ -10,158 +10,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Cinema City</title>
     
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Dashboard CSS -->
+    
     <link rel="stylesheet" href="~/css/new-dashboard.css" />
-    <!-- Book Ticket CSS -->
+    
     <link rel="stylesheet" href="~/css/book-ticket.css" />
-    <!-- Book Ticket Fix CSS -->
+    
     <link rel="stylesheet" href="~/css/book-ticket-fix.css" />
     
 </head>
 <body>
     
-    <!-- Dashboard Layout -->
+    
     <div class="new-dashboard-layout">
         
-        <!-- Sidebar -->
-        <aside class="new-dashboard-sidebar">
-            <!-- Sidebar Header -->
-            <div class="new-sidebar-header">
-                <a href="@Url.Action("Index","Home", new { area = "" })" class="new-sidebar-brand">
-                    <div class="new-brand-logo"></div>
-                    <div class="new-brand-text">
-                        <h2>Cinema City</h2>
-                        <p>Admin Panel</p>
-                    </div>
-                </a>
-            </div>
-            
-            <!-- Navigation -->
-            <nav class="new-sidebar-nav">
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Tổng quan</div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("AdminDashboard", "Dashboard", new { area = "" })" class="new-nav-link">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Home", new { area = "" })" class="new-nav-link">
-                            <i class="fas fa-home"></i>
-                            <span>Trang chủ</span>
-                        </a>
-                    </div>
-                </div>
+        
+        @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
 
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Quản lý</div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-nav-link">
-                            <i class="fas fa-film"></i>
-                            <span>Quản lý phim</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link active">
-                            <i class="fas fa-ticket-alt"></i>
-                            <span>Quản lý đặt vé</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Showtimes", new { area = "ShowtimeManagement" })" class="new-nav-link">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Quản lý lịch chiếu</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-nav-link">
-                            <i class="fas fa-gift"></i>
-                            <span>Quản lý khuyến mãi</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-star"></i>
-                            <span>Quản lý sự kiện</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-nav-link">
-                            <i class="fas fa-users"></i>
-                            <span>Quản lý người dùng</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Hệ thống</div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>Báo cáo</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-cog"></i>
-                            <span>Cài đặt</span>
-                        </a>
-                    </div>
-                </div>
-            </nav>
-            
-            <!-- User Profile in Sidebar -->
-            <div class="new-sidebar-user">
-                <div class="new-user-profile">
-                    <div class="new-user-avatar">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            @User.Identity.Name?.Substring(0, 1).ToUpper()
-                        }
-                        else
-                        {
-                            <span>A</span>
-                        }
-                    </div>
-                    <div class="new-user-info">
-                        <h4>
-                            @if (User.Identity?.IsAuthenticated == true)
-                            {
-                                @(User.Identity.Name?.Length > 12 ? User.Identity.Name.Substring(0, 12) + "..." : User.Identity.Name)
-                            }
-                            else
-                            {
-                                <span>Admin</span>
-                            }
-                        </h4>
-                        <p>@(User.IsInRole("Admin") ? "Administrator" : "Staff")</p>
-                    </div>
-                </div>
-                <div class="new-user-actions">
-                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="new-user-action-btn">
-                        <i class="fas fa-user"></i>
-                    </a>
-                    <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="new-user-action-btn" style="border: none;">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
+        
         <main class="new-dashboard-main">
             <div class="movie-management-content">
-                <!-- Page Header -->
+                
                 <div class="movie-page-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -185,9 +59,9 @@
                     <p class="movie-page-subtitle">Hỗ trợ khách hàng đặt vé xem phim tại quầy</p>
                 </div>
                 
-                <!-- Booking Content -->
+                
                 <div class="booking-container">
-                    <!-- Progress Steps -->
+                    
                     <div class="booking-steps">
                         <div class="step active" data-step="1">
                             <div class="step-number">1</div>
@@ -203,9 +77,9 @@
                         </div>
                     </div>
 
-                    <!-- Step Content -->
+                    
                     <div class="step-content">
-                        <!-- Step 1: Movie & Showtime Selection -->
+                        
                         <div class="step-panel active" id="step1">
                             <div class="row">
                                 <div class="col-md-8">
@@ -218,11 +92,11 @@
                                                 <label for="movieSelect" class="form-label">Chọn phim:</label>
                                                 <select class="form-select" id="movieSelect">
                                                     <option value="">-- Chọn phim --</option>
-                                                    <!-- Movies will be loaded here -->
+                                                    
                                                 </select>
                                             </div>
                                             <div class="selected-movie-info" id="selectedMovieInfo" style="display: none;">
-                                                <!-- Selected movie info will be displayed here -->
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -242,7 +116,7 @@
                             </div>
                         </div>
 
-                        <!-- Step 2: Seat Selection -->
+                        
                         <div class="step-panel" id="step2">
                             <div class="row">
                                 <div class="col-md-8">
@@ -255,7 +129,7 @@
                                                 <div class="screen">MÀN HÌNH</div>
                                             </div>
                                             <div class="seat-map" id="seatMap">
-                                                <!-- Seat map will be loaded here -->
+                                                
                                             </div>
                                             <div class="seat-legend">
                                                 <div class="legend-item">
@@ -293,7 +167,7 @@
                             </div>
                         </div>
 
-                        <!-- Step 3: Confirmation & Payment -->
+                        
                         <div class="step-panel" id="step3">
                             <div class="row">
                                 <div class="col-md-8">
@@ -316,7 +190,7 @@
                                                 <div id="searchMessage" class="mt-2" style="display: none;"></div>
                                             </div>
                                             <div class="customer-info" id="customerInfo" style="display: none;">
-                                                <!-- Customer info will be displayed here -->
+                                                
                                             </div>
                                             
                                             <div class="points-usage mt-3">
@@ -352,7 +226,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="order-summary" id="orderSummary">
-                                                <!-- Order summary will be displayed here -->
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -361,7 +235,7 @@
                         </div>
                     </div>
 
-                    <!-- Navigation Buttons -->
+                    
                     <div class="booking-navigation">
                         <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
                             <i class="fas fa-arrow-left me-2"></i>Quay lại
@@ -378,7 +252,7 @@
         </main>
     </div>
 
-    <!-- Loading Overlay -->
+    
     <div class="loading-overlay" id="loadingOverlay" style="display: none;">
         <div class="loading-spinner">
             <i class="fas fa-spinner fa-spin"></i>
@@ -500,7 +374,7 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/book-ticket-dashboard.js"></script>

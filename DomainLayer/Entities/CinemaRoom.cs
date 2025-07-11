@@ -13,6 +13,14 @@ namespace DomainLayer.Entities
         [Required]
         public int TotalSeats { get; set; }
         
+        [Required]
+        public int NumberOfRows { get; set; }
+        
+        [Required]
+        public int NumberOfColumns { get; set; }
+        
+        public decimal DefaultSeatPrice { get; set; } = 100000;
+        
         public bool IsActive { get; set; } = true;
 
         // Navigation properties

@@ -1,6 +1,6 @@
 /* CSS cho phần Phim Sắp Chiếu và Khuyến Mãi */
 
-/* Container chung */
+
 .dual-sections-container {
     display: flex;
     gap: 30px;
@@ -15,7 +15,7 @@
     }
 }
 
-/* Section chung */
+
 .custom-section {
     flex: 1;
     background: rgba(255, 255, 255, 0.05);
@@ -32,7 +32,7 @@
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
 
-/* Header section */
+
 .section-title-bar {
     background: linear-gradient(135deg, #667eea, #764ba2);
     padding: 20px;
@@ -304,7 +304,7 @@
 }
 
 /* Phim đề xuất */
-/* Updated sections with booking pages color scheme */
+
 .search-section {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
@@ -456,12 +456,14 @@
     justify-content: flex-end;
     padding: 20px;
     opacity: 0;
+    pointer-events: none;
     transition: all 0.4s ease;
     border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
 .recommended-item:hover .recommended-overlay {
     opacity: 1;
+    pointer-events: auto;
     background: linear-gradient(to bottom, rgba(139, 92, 246, 0.1) 30%, rgba(139, 92, 246, 0.95) 100%);
 }
 
@@ -582,7 +584,7 @@
     border-top: 1px solid rgba(139, 92, 246, 0.1);
 }
 
-/* Pagination controls */
+
 .pagination-controls {
     background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(79, 70, 229, 0.05));
     border: 1px solid rgba(139, 92, 246, 0.2);
@@ -627,34 +629,44 @@
     }
 
 .pagination-select {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(79, 70, 229, 0.1));
-    border: 1px solid rgba(139, 92, 246, 0.3);
+    background: rgba(40, 40, 80, 0.8);
+    border: 1px solid rgba(139, 92, 246, 0.4);
     border-radius: 12px;
-    padding: 1.2rem 1.5rem; /* Tăng padding */
+    padding: 1rem 1.2rem;
     color: white;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 500;
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
     cursor: pointer;
-    /* Đảm bảo không bị overflow */
     width: 100%;
     box-sizing: border-box;
-    min-height: 50px; /* Đảm bảo chiều cao tối thiểu */
+    min-height: 45px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23A855F7' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 1rem) center;
+    padding-right: 2.5rem;
 }
 
     .pagination-select:focus {
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(79, 70, 229, 0.15));
+        background: rgba(50, 50, 100, 0.9);
         border-color: #8B5CF6;
-        box-shadow: 0 0 0 0.3rem rgba(139, 92, 246, 0.25);
+        box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.3);
         outline: none;
         transform: translateY(-1px);
     }
 
     .pagination-select:hover {
         border-color: #A855F7;
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(79, 70, 229, 0.12));
+        background: rgba(50, 50, 100, 0.8);
         transform: translateY(-1px);
+    }
+
+    .pagination-select option {
+        background: #2a2a50;
+        color: white;
+        padding: 0.5rem;
     }
 
 /* Tạo khoảng cách giữa controls và buttons */
@@ -842,11 +854,12 @@
 }
 
 .home-new-style .pagination-select {
-    background-color: rgba(45, 52, 54, 0.9);
-    color: white;
-    border: 1px solid rgba(108, 92, 231, 0.3);
-    border-radius: 8px;
-    padding: 8px 15px;
+    background: rgba(40, 40, 80, 0.9) !important;
+    color: white !important;
+    border: 1px solid rgba(139, 92, 246, 0.5) !important;
+    border-radius: 12px !important;
+    padding: 1rem 1.2rem !important;
+    backdrop-filter: blur(10px) !important;
 }
 
 /* Cập nhật CSS cho btn-load-more */
@@ -866,7 +879,7 @@
         box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
     }
 
-/* Responsive improvements */
+
 @media (max-width: 1200px) {
     .recommended-grid {
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -1118,35 +1131,7 @@
         font-size: 1rem;
     }
 
-/* Select dropdown mới */
-.pagination-select {
-    background: rgba(40, 40, 80, 0.6);
-    border: 1px solid rgba(120, 110, 240, 0.3);
-    border-radius: 10px;
-    padding: 0.8rem 1rem;
-    color: white;
-    font-size: 0.9rem;
-    width: 100%;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238270ff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: calc(100% - 1rem) center;
-    padding-right: 2.5rem;
-}
 
-    .pagination-select:focus {
-        outline: none;
-        border-color: #4a3aff;
-        box-shadow: 0 0 0 3px rgba(74, 58, 255, 0.25);
-        background-color: rgba(50, 50, 100, 0.7);
-    }
-
-    .pagination-select:hover {
-        border-color: #8270ff;
-        background-color: rgba(50, 50, 100, 0.7);
-    }
 
 /* Nút xem thêm */
 .btn-load-more {
@@ -1207,7 +1192,7 @@
         color: #8270ff;
     }
 
-/* Grid phim */
+
 .recommended-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -1234,7 +1219,7 @@
         border-color: rgba(120, 110, 240, 0.5);
     }
 
-/* Poster phim */
+
 .recommended-poster {
     position: relative;
     width: 100%;
@@ -1253,7 +1238,7 @@
     transform: scale(1.08);
 }
 
-/* Overlay khi hover */
+
 .recommended-overlay {
     position: absolute;
     top: 0;
@@ -1266,11 +1251,13 @@
     justify-content: flex-end;
     padding: 1.5rem;
     opacity: 0;
+    pointer-events: none;
     transition: opacity 0.4s ease;
 }
 
 .recommended-item:hover .recommended-overlay {
     opacity: 1;
+    pointer-events: auto;
 }
 
 /* Nút xem chi tiết */
@@ -1405,7 +1392,7 @@
         font-size: 0.8rem;
     }
 
-/* Responsive */
+
 @media (max-width: 1200px) {
     .recommended-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

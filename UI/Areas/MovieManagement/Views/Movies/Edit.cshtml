@@ -348,7 +348,7 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Preview poster image when URL changes
+
             $('#ImageUrl').on('input', function() {
                 var imageUrl = $(this).val();
                 if (imageUrl) {
@@ -358,7 +358,7 @@
                 }
             });
             
-            // Form validation
+
             $('form').on('submit', function(e) {
                 var genresSelected = $('input[name="Genres"]:checked').length > 0;
                 if (!genresSelected) {
@@ -367,7 +367,7 @@
                 }
             });
             
-            // Check selected genres based on model
+
             var selectedGenres = @Html.Raw(Json.Serialize(Model.Genres ?? new List<string>()));
             if (selectedGenres && selectedGenres.length > 0) {
                 selectedGenres.forEach(function(genreId) {

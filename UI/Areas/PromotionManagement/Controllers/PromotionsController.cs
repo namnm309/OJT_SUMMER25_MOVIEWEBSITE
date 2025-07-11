@@ -197,5 +197,131 @@ namespace UI.Areas.PromotionManagement.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllPromotions()
+        {
+            try
+            {
+                _logger.LogInformation("Getting all promotions for dashboard");
+                var result = await _apiService.GetAsync<JsonElement>("/api/v1/promotions");
+
+                if (result.Success)
+                {
+                    return Json(result);
+                }
+
+                return Json(new { success = false, message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all promotions");
+                return Json(new { success = false, message = "Có lỗi xảy ra khi tải danh sách khuyến mãi" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAjax([FromBody] PromotionViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState
+                        .Where(x => x.Value.Errors.Count > 0)
+                        .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) })
+                        .ToList();
+                    
+                    return Json(new { success = false, message = "Dữ liệu không hợp lệ", errors });
+                }
+
+                var promotionsData = new
+                {
+                    title = model.Title,
+                    startDate = model.StartDate,
+                    endDate = model.EndDate,
+                    discountPercent = model.DiscountPercent,
+                    description = model.Description,
+                    imageUrl = model.ImageUrl,
+                };
+
+                var result = await _apiService.PostAsync<JsonElement>("/api/v1/promotions", promotionsData);
+
+                if (result.Success)
+                {
+                    return Json(new { success = true, message = "Thêm khuyến mãi thành công!" });
+                }
+
+                return Json(new { success = false, message = result.Message ?? "Có lỗi xảy ra khi thêm khuyến mãi" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating promotion via AJAX");
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi thêm khuyến mãi" });
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateAjax([FromBody] PromotionViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState
+                        .Where(x => x.Value.Errors.Count > 0)
+                        .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) })
+                        .ToList();
+                    
+                    return Json(new { success = false, message = "Dữ liệu không hợp lệ", errors });
+                }
+
+                var promotionsData = new
+                {
+                    id = model.Id,
+                    title = model.Title,
+                    startDate = model.StartDate,
+                    endDate = model.EndDate,
+                    discountPercent = model.DiscountPercent,
+                    description = model.Description,
+                    imageUrl = model.ImageUrl,
+                };
+
+                var result = await _apiService.PutAsync<JsonElement>("/api/v1/promotions", promotionsData);
+
+                if (result.Success)
+                {
+                    return Json(new { success = true, message = "Cập nhật khuyến mãi thành công!" });
+                }
+
+                return Json(new { success = false, message = result.Message ?? "Có lỗi xảy ra khi cập nhật khuyến mãi" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating promotion via AJAX");
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi cập nhật khuyến mãi" });
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAjax(string id)
+        {
+            try
+            {
+                var result = await _apiService.DeleteAsync($"/api/v1/promotions/{id}");
+
+                if (result.Success)
+                {
+                    return Json(new { success = true, message = "Xóa khuyến mãi thành công!" });
+                }
+
+                return Json(new { success = false, message = result.Message ?? "Có lỗi xảy ra khi xóa khuyến mãi" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting promotion via AJAX");
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi xóa khuyến mãi" });
+            }
+        }
     }
 } 

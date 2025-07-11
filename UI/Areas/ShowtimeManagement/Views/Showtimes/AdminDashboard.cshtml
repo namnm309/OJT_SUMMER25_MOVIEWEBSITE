@@ -11,22 +11,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- New Dashboard CSS -->
+    
     <link rel="stylesheet" href="~/css/new-dashboard.css" />
     
     <style>
-        /* Showtime Management Specific Styles */
+        
         .showtime-management-content {
             padding: 2rem;
         }
         
-        /* Page Header */
+        
         .showtime-page-header {
             margin-bottom: 2rem;
         }
@@ -47,7 +47,7 @@
             font-size: 1rem;
         }
         
-        /* Controls Section */
+        
         .showtime-controls {
             background: var(--content-bg);
             border: 1px solid var(--content-border);
@@ -144,7 +144,7 @@
             color: var(--primary-purple);
         }
         
-        /* Showtime Table Container */
+        
         .showtime-table-container {
             background: var(--content-bg);
             border: 1px solid var(--content-border);
@@ -176,7 +176,7 @@
             font-size: 1.5rem;
         }
 
-        /* Showtime Table */
+        
         .showtime-table {
             width: 100%;
             border-collapse: collapse;
@@ -213,7 +213,7 @@
             font-size: 14px;
         }
 
-        /* Movie Info in Table */
+        
         .movie-info {
             display: flex;
             align-items: center;
@@ -240,7 +240,7 @@
             font-size: 12px;
         }
 
-        /* Status Badges */
+        
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -291,7 +291,7 @@
             background: rgba(217, 119, 6, 0.1);
         }
 
-        /* Action Buttons */
+        
         .action-buttons {
             display: flex;
             gap: 8px;
@@ -329,7 +329,7 @@
             border-color: #ef4444;
         }
 
-        /* Loading Styles */
+        
         .loading-spinner {
             display: flex;
             align-items: center;
@@ -347,7 +347,7 @@
             color: var(--text-muted);
         }
         
-        /* Empty State */
+        
         .empty-state {
                 text-align: center;
             padding: 4rem 2rem;
@@ -360,7 +360,7 @@
             opacity: 0.5;
         }
 
-        /* Bulk Actions */
+        
         .bulk-actions {
             display: flex;
             gap: 8px;
@@ -394,7 +394,7 @@
             border-color: #ef4444;
         }
 
-        /* Modal Styles */
+        
         .modal-content {
             border: none;
             border-radius: 16px;
@@ -425,84 +425,14 @@
 
 <body>
     <div class="new-dashboard-layout">
-        <!-- Sidebar -->
-        <aside class="new-dashboard-sidebar">
-            <div class="new-sidebar-header">
-                <a href="@Url.Action("Index", "Home")" class="new-sidebar-brand">
-                    <div class="new-brand-logo"></div>
-                    <div class="new-brand-text">
-                    <h2>Cinema City</h2>
-                    <p>Admin Dashboard</p>
-                </div>
-            </a>
-            </div>
+        
+        @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
 
-            <nav class="new-sidebar-nav">
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Tổng quan</div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("AdminDashboard", "Dashboard")" class="new-nav-link">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Quản lý nội dung</div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-nav-link">
-                            <i class="fas fa-film"></i>
-                            <span>Quản lý phim</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("AdminDashboard", "Showtimes", new { area = "ShowtimeManagement" })" class="new-nav-link active">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Lịch chiếu</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "CinemaRooms", new { area = "CinemaManagement" })" class="new-nav-link">
-                            <i class="fas fa-door-open"></i>
-                            <span>Phòng chiếu</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Kinh doanh</div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link">
-                            <i class="fas fa-ticket-alt"></i>
-                            <span>Đặt vé</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-nav-link">
-                            <i class="fas fa-gift"></i>
-                            <span>Khuyến mãi</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Hệ thống</div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-nav-link">
-                            <i class="fas fa-users"></i>
-                            <span>Người dùng</span>
-                        </a>
-                    </div>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
+        
         <main class="new-dashboard-main">
             <div class="new-dashboard-content">
                 <div class="showtime-management-content">
-                    <!-- Page Header -->
+                    
                     <div class="showtime-page-header">
                         <h1 class="showtime-page-title">
                             <i class="fas fa-calendar-alt"></i>
@@ -513,7 +443,7 @@
                         </p>
                 </div>
 
-                    <!-- Controls Section -->
+                    
                     <div class="showtime-controls">
                         <div class="showtime-controls-header">
                             <div class="showtime-search-box">
@@ -541,7 +471,7 @@
                     </div>
                 </div>
 
-                    <!-- Showtime Table -->
+                    
                     <div class="showtime-table-container" id="showtimeTableContainer">
                         <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
                             <div class="d-flex align-items-center gap-3">
@@ -673,13 +603,13 @@
         </main>
     </div>
 
-    <!-- Bootstrap JS -->
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery -->
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     
     <script>
-        // Search functionality
+
         function searchShowtimes() {
             const searchTerm = document.getElementById('showtimeSearch').value.toLowerCase();
             const tableBody = document.getElementById('showtimeTableBody');
@@ -697,7 +627,7 @@
             });
         }
 
-        // Select all functionality
+
         function toggleSelectAll() {
             const selectAllCheckbox = document.getElementById('selectAll');
             const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
@@ -709,7 +639,7 @@
             updateBulkActionButtons();
         }
 
-        // Update bulk action buttons
+
         function updateBulkActionButtons() {
             const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
             const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
@@ -720,7 +650,7 @@
             bulkUpdateBtn.disabled = !hasSelected;
         }
 
-        // Modal functions
+
         function openCreateShowtimeModal() {
             showNotification('Chức năng thêm lịch chiếu đang được phát triển', 'info');
         }
@@ -733,7 +663,7 @@
             showNotification('Đang xuất dữ liệu...', 'info');
         }
 
-        // CRUD functions
+
         function viewShowtime(id) {
             showNotification(`Xem chi tiết lịch chiếu ID: ${id}`, 'info');
         }
@@ -774,7 +704,7 @@
             showNotification(`Đã cập nhật trạng thái cho ${checkedBoxes.length} lịch chiếu`, 'success');
         }
 
-        // Notification system
+
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
@@ -807,7 +737,7 @@
             }, 5000);
         }
 
-        // Initialize
+
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Showtime Management Dashboard loaded');
         });

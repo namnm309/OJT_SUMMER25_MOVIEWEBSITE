@@ -1,4 +1,4 @@
-/* Featured Banner Section */
+
 .featured-banner {
     width: 100%;
     min-height: 500px;
@@ -30,7 +30,7 @@
     z-index: 1;
 }
 
-/* Banner Content */
+
 .banner-content {
     display: flex;
     align-items: center;
@@ -44,7 +44,7 @@
     justify-content: center;
 }
 
-/* Banner Info */
+
 .banner-info {
     display: flex;
     flex-direction: column;
@@ -53,7 +53,7 @@
     flex: 1;
 }
 
-/* Banner Header */
+
 .banner-header {
     display: flex;
     align-items: center;
@@ -78,7 +78,7 @@
     font-style: italic;
 }
 
-/* Banner Plot Section */
+
 .banner-plot {
     margin-bottom: 20px;
 }
@@ -111,7 +111,7 @@
     text-align: justify;
 }
 
-/* Banner Genre Section */
+
 .banner-genre {
     margin-bottom: 20px;
 }
@@ -144,7 +144,7 @@
     font-weight: 500;
 }
 
-/* Banner Ratings */
+
 .banner-ratings {
     display: flex;
     align-items: center;
@@ -176,7 +176,7 @@
     color: #e0e0e0;
 }
 
-/* Banner Button */
+
 .btn-banner {
     background: linear-gradient(135deg, #df2144 0%, #c01d3a 100%);
     border: none;
@@ -244,7 +244,7 @@
     object-fit: cover;
 }
 
-/* Responsive Design */
+
 @media (max-width: 1200px) {
     .featured-banner {
         padding: 30px 50px;
@@ -309,7 +309,7 @@
     }
 }
 
-/* Animation Effects */
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -331,7 +331,7 @@
 .banner-info > *:nth-child(4) { animation-delay: 0.4s; }
 .banner-info > *:nth-child(5) { animation-delay: 0.5s; }
 
-/* Performance Optimizations */
+
 .featured-banner,
 .banner-content,
 .btn-banner {
@@ -339,7 +339,7 @@
     transform: translateZ(0);
 }
 
-/* Loading container trong banner */
+
 .featured-banner .loading-container {
     display: flex;
     flex-direction: column;

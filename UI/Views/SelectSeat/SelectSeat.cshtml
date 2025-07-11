@@ -495,15 +495,15 @@
             var selectedSeats = [];
             var requiredSeats = parseInt($('#seatQuantity').val());
             
-            // Load movie and showtime details from API
+
             loadMovieAndShowtimeDetails();
             
-            // Function to load movie and showtime details
+
             function loadMovieAndShowtimeDetails() {
                 var showtimeId = $('#showtimeId').val();
                 console.log('Loading details for showtimeId:', showtimeId);
                 
-                // First, get showtime details
+
                 $.ajax({
                     url: `https://localhost:7049/api/v1/booking-ticket/${showtimeId}/details`,
                     success: function(response) {
@@ -512,13 +512,13 @@
                         if (response && response.data) {
                             var showtimeData = response.data;
                             
-                            // Update showtime info
+
                             if (showtimeData.showDate) {
                                 var showDate = new Date(showtimeData.showDate);
                                 $('.movie-meta p:contains("Ngày chiếu")').html(`<i class="fas fa-calendar-day"></i> Ngày chiếu: ${showDate.toLocaleDateString('vi-VN')}`);
                             }
                             
-                            // Get movie details if movieId is available
+
                             if (showtimeData.movieId) {
                                 loadMovieDetails(showtimeData.movieId);
                             }
@@ -548,7 +548,7 @@
                                 if (response && response.data) {
                                     var movieData = response.data;
                                     
-                                    // Update movie info
+
                                     if (movieData.title) {
                                         $('.movie-title').text(movieData.title);
                                     }
@@ -581,17 +581,17 @@
                         });
                     }
                     
-                    // Call updateSelectionDisplay and validateSelection on page load
+
                     updateSelectionDisplay();
                     validateSelection();
                     
-                    // Update required seats when dropdown changes
+
                     $('#seatQuantity').change(function() {
                         requiredSeats = parseInt($(this).val());
                         $('#requiredSeatsCount').text(requiredSeats);
-                        // Clear selected seats if the new required quantity is less than currently selected
+
                                 if (selectedSeats.length > requiredSeats) {
-                        // Deselect excess seats
+
                         for (let i = selectedSeats.length - 1; i >= requiredSeats; i--) {
                             const seatToDeselect = selectedSeats[i];
                             $(`.seat[data-seat-id="${seatToDeselect.id}"]`).removeClass('seat-selected');
@@ -602,7 +602,7 @@
                             validateSelection();
                         });
 
-                        // Seat click handler
+
                         $('.seat-available').click(function() {
                             if ($(this).data('disabled')) return;
 
@@ -612,13 +612,13 @@
                             var seatPrice = $(this).data('seat-price');
 
                             if ($(this).hasClass('seat-selected')) {
-                                // Deselect seat
+
                                 $(this).removeClass('seat-selected');
                                 selectedSeats = selectedSeats.filter(function(seat) {
                                     return seat.id !== seatId;
                                 });
                             } else {
-                                // Select seat
+
                                 if (selectedSeats.length < requiredSeats) {
                                     $(this).addClass('seat-selected');
                                     selectedSeats.push({
@@ -640,7 +640,7 @@
                             $('#selectedSeatsCount').text(selectedSeats.length);
                             $('#requiredSeatsCount').text(requiredSeats);
 
-                            // Update selected seats list
+
                             var selectedSeatsHtml = '';
                             selectedSeats.forEach(function(seat) {
                                 selectedSeatsHtml += `<span class="seat-badge">${seat.code}</span>`;
@@ -648,7 +648,7 @@
 
                             $('#selectedSeatsList').html(selectedSeatsHtml || '<span class="text-muted">Chưa chọn ghế nào</span>');
 
-                            // Calculate total price
+
                             var totalPrice = 0;
                             selectedSeats.forEach(function(seat) {
                                 totalPrice += parseFloat(seat.price);
@@ -656,15 +656,15 @@
 
                             $('#totalPrice').text(totalPrice.toLocaleString('vi-VN'));
 
-                            // Enable/disable continue button based on client-side count
-                            // This is a preliminary check. The validateSelection will do the final server-side check.
+
+
                             var isClientSideValid = selectedSeats.length === requiredSeats;
                             $('#continueBtn').prop('disabled', !isClientSideValid);
 
                             console.log('Selected seats (Client-side):', selectedSeats.length, 'Required:', requiredSeats, 'Disabled:', !isClientSideValid);
                         }
 
-                        // Validate the selection with server
+
                         function validateSelection() {
                             var showtimeId = $('#showtimeId').val();
 
@@ -674,8 +674,8 @@
                          return;
                 }
 
-                            // Only validate with server if client-side selection count matches required quantity
-                            // This prevents unnecessary server calls if the client-side count is already off.
+
+
                             if (selectedSeats.length !== requiredSeats) {
                                  $('#validationMessage').text('Vui lòng chọn đầy đủ số lượng ghế.');
                                  $('#continueBtn').prop('disabled', true);
@@ -701,7 +701,7 @@
                                             $('#validationMessage').text(response.message);
                                             $('#continueBtn').prop('disabled', true);
 
-                                            // Deselect invalid seats
+
                                             if (response.invalidSeatIds) {
                                                 $('.seat-selected').each(function() {
                                                     var seatId = $(this).data('seat-id');
@@ -726,11 +726,11 @@
                             });
                         }
 
-                        // Continue button click handler
+
                         $('#continueBtn').click(function() {
                             var showtimeId = $('#showtimeId').val();
 
-                            // Prepare data to submit
+
                             var bookingData = {
                                 ShowtimeId: showtimeId,
                                 SelectedSeatIds: selectedSeats.map(seat => seat.id),
@@ -750,8 +750,8 @@
                                 data: JSON.stringify(bookingData),
                                 success: function(response) {
                                     if (response.success && response.isValid) {
-                                        // Assuming successful booking would redirect or show a final confirmation.
-                                        // For demonstration, just update UI and clear selection.
+
+
                                         $('#validationMessage').removeClass('text-danger')
                                                    .addClass('text-success')
                                                    .text('Đặt ghế thành công! Chuyển hướng đến trang thanh toán...');
@@ -760,7 +760,7 @@
                                             .addClass('btn-success-state') // Add a success visual state
                                             .html('<i class="fas fa-check mr-2"></i>THÀNH CÔNG');
 
-                                        // Disable all selected seats visually and functionally
+
                                         selectedSeats.forEach(function(seat) {
                                             $(`.seat[data-seat-id="${seat.id}"]`)
                                                 .removeClass('seat-selected seat-available')
@@ -768,14 +768,14 @@
                                                 .data('disabled', true);
                                         });
 
-                                        // Clear selected seats array
+
                                         selectedSeats = [];
                                         updateSelectionDisplay(); // Update display to show 0 selected seats
 
-                                        // Redirect after a short delay for user to see success message
-                                        // setTimeout(function() {
-                                        //     window.location.href = '@Url.Action("Payment", "Booking")'; // Example redirect
-                                        // }, 2000);
+
+
+
+
 
                                     } else {
                                         $('#validationMessage').removeClass('text-success')
@@ -784,7 +784,7 @@
                                         $btn.prop('disabled', false)
                                             .removeClass('btn-success-state')
                                             .html('<i class="fas fa-arrow-right mr-2"></i>TIẾP TỤC');
-                                        // Potentially re-enable invalid seats if server indicates
+
                                         if (response.invalidSeatIds) {
                                             response.invalidSeatIds.forEach(function(invalidId) {
                                                 $(`.seat[data-seat-id="${invalidId}"]`)
@@ -810,7 +810,7 @@
                 });
             }
             
-            // Seat click handler
+
             $('.seat-available').click(function() {
                 if ($(this).data('disabled')) return;
 
@@ -820,13 +820,13 @@
                 var seatPrice = $(this).data('seat-price');
 
                 if ($(this).hasClass('seat-selected')) {
-                    // Deselect seat
+
                     $(this).removeClass('seat-selected');
                     selectedSeats = selectedSeats.filter(function(seat) {
                         return seat.id !== seatId;
                     });
                 } else {
-                    // Select seat
+
                     if (selectedSeats.length < requiredSeats) {
                         $(this).addClass('seat-selected');
                         selectedSeats.push({
@@ -848,7 +848,7 @@
                 $('#selectedSeatsCount').text(selectedSeats.length);
                 $('#requiredSeatsCount').text(requiredSeats);
 
-                // Update selected seats list
+
                 var selectedSeatsHtml = '';
                 selectedSeats.forEach(function(seat) {
                     selectedSeatsHtml += `<span class="seat-badge">${seat.code}</span>`;
@@ -856,7 +856,7 @@
 
                 $('#selectedSeatsList').html(selectedSeatsHtml || '<span class="text-muted">Chưa chọn ghế nào</span>');
 
-                // Calculate total price
+
                 var totalPrice = 0;
                 selectedSeats.forEach(function(seat) {
                     totalPrice += parseFloat(seat.price);
@@ -864,15 +864,15 @@
 
                 $('#totalPrice').text(totalPrice.toLocaleString('vi-VN'));
 
-                // Enable/disable continue button based on client-side count
-                // This is a preliminary check. The validateSelection will do the final server-side check.
+
+
                 var isClientSideValid = selectedSeats.length === requiredSeats;
                 $('#continueBtn').prop('disabled', !isClientSideValid);
 
                 console.log('Selected seats (Client-side):', selectedSeats.length, 'Required:', requiredSeats, 'Disabled:', !isClientSideValid);
             }
 
-            // Validate the selection with server
+
             function validateSelection() {
                 var showtimeId = $('#showtimeId').val();
 
@@ -882,8 +882,8 @@
              return;
         }
 
-                // Only validate with server if client-side selection count matches required quantity
-                // This prevents unnecessary server calls if the client-side count is already off.
+
+
                 if (selectedSeats.length !== requiredSeats) {
                      $('#validationMessage').text('Vui lòng chọn đầy đủ số lượng ghế.');
                      $('#continueBtn').prop('disabled', true);
@@ -909,7 +909,7 @@
                                 $('#validationMessage').text(response.message);
                                 $('#continueBtn').prop('disabled', true);
 
-                                // Deselect invalid seats
+
                                 if (response.invalidSeatIds) {
                                     $('.seat-selected').each(function() {
                                         var seatId = $(this).data('seat-id');
@@ -934,11 +934,11 @@
                 });
             }
 
-            // Continue button click handler
+
             $('#continueBtn').click(function() {
                 var showtimeId = $('#showtimeId').val();
 
-                // Prepare data to submit
+
                 var bookingData = {
                     ShowtimeId: showtimeId,
                     SelectedSeatIds: selectedSeats.map(seat => seat.id),
@@ -958,8 +958,8 @@
                     data: JSON.stringify(bookingData),
                     success: function(response) {
                         if (response.success && response.isValid) {
-                            // Assuming successful booking would redirect or show a final confirmation.
-                            // For demonstration, just update UI and clear selection.
+
+
                             $('#validationMessage').removeClass('text-danger')
                                                    .addClass('text-success')
                                                    .text('Đặt ghế thành công! Chuyển hướng đến trang thanh toán...');
@@ -968,7 +968,7 @@
                                 .addClass('btn-success-state') // Add a success visual state
                                 .html('<i class="fas fa-check mr-2"></i>THÀNH CÔNG');
 
-                            // Disable all selected seats visually and functionally
+
                             selectedSeats.forEach(function(seat) {
                                 $(`.seat[data-seat-id="${seat.id}"]`)
                                     .removeClass('seat-selected seat-available')
@@ -976,14 +976,14 @@
                                     .data('disabled', true);
                             });
 
-                            // Clear selected seats array
+
                             selectedSeats = [];
                             updateSelectionDisplay(); // Update display to show 0 selected seats
 
-                            // Redirect after a short delay for user to see success message
-                            // setTimeout(function() {
-                            //     window.location.href = '@Url.Action("Payment", "Booking")'; // Example redirect
-                            // }, 2000);
+
+
+
+
 
                         } else {
                             $('#validationMessage').removeClass('text-success')
@@ -992,7 +992,7 @@
                             $btn.prop('disabled', false)
                                 .removeClass('btn-success-state')
                                 .html('<i class="fas fa-arrow-right mr-2"></i>TIẾP TỤC');
-                            // Potentially re-enable invalid seats if server indicates
+
                             if (response.invalidSeatIds) {
                                 response.invalidSeatIds.forEach(function(invalidId) {
                                     $(`.seat[data-seat-id="${invalidId}"]`)

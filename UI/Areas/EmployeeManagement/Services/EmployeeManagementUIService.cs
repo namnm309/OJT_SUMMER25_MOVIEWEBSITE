@@ -6,18 +6,18 @@ namespace UI.Areas.EmployeeManagement.Services
 {
     public interface IEmployeeManagementUIService
     {
-        // T20: View Employee List
+
         Task<ApiResponse<dynamic>> GetEmployeesAsync();
         Task<ApiResponse<dynamic>> SearchEmployeesAsync(string searchTerm);
         
-        // T21: Add Employee
+
         Task<ApiResponse<dynamic>> AddEmployeeAsync(EmployeeCreateViewModel model);
         
-        // T22: Edit Employee  
+
         Task<ApiResponse<dynamic>> GetEmployeeAsync(Guid employeeId);
         Task<ApiResponse<dynamic>> UpdateEmployeeAsync(Guid employeeId, EmployeeUpdateViewModel model);
         
-        // T24: Delete Employee
+
         Task<ApiResponse<dynamic>> DeleteEmployeeAsync(Guid employeeId);
     }
 

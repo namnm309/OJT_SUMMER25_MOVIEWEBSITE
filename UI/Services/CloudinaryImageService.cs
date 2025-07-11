@@ -16,7 +16,7 @@ namespace UI.Services
             var apiKey = configuration["Cloudinary:ApiKey"];
             var apiSecret = configuration["Cloudinary:ApiSecret"];
 
-            // Check if Cloudinary is properly configured
+
             if (string.IsNullOrEmpty(cloudName) || string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(apiSecret) ||
                 apiKey == "your-api-key-here" || apiSecret == "your-api-secret-here")
             {
@@ -46,7 +46,7 @@ namespace UI.Services
                 if (file == null || file.Length == 0)
                     throw new ArgumentException("File is empty");
 
-                // Mock mode - return placeholder URL
+
                 if (_cloudinary == null)
                 {
                     var mockUrl = $"https://via.placeholder.com/800x600/1a1a1a/ffffff?text={Uri.EscapeDataString(file.FileName)}";
@@ -89,7 +89,7 @@ namespace UI.Services
                 if (file == null || file.Length == 0)
                     throw new ArgumentException("File is empty");
 
-                // Mock mode - return placeholder video URL
+
                 if (_cloudinary == null)
                 {
                     var mockUrl = $"https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4?mock={file.FileName}";

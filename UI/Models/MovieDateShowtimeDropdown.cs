@@ -1,4 +1,4 @@
-﻿namespace UI.Models
+namespace UI.Models
 {
     public class MovieDropdownDto
     {
@@ -12,8 +12,8 @@
         public string Time { get; set; }
     }
 
-    // This DTO can be used for the ApiResponse data structure directly
-    // since the API returns "data": [...]
+
+
     public class ApiResponseData<T>
     {
         public T Data { get; set; }

@@ -10,22 +10,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- New Dashboard CSS -->
+    
     <link rel="stylesheet" href="~/css/new-dashboard.css" />
     
     <style>
-        /* Movie Management Specific Styles */
+        
         .movie-management-content {
             padding: 2rem;
         }
         
-        /* Page Header */
+        
         .movie-page-header {
             margin-bottom: 2rem;
         }
@@ -46,7 +46,7 @@
             font-size: 1rem;
         }
         
-        /* Controls Section */
+        
         .movie-controls {
             background: var(--content-bg);
             border: 1px solid var(--content-border);
@@ -121,7 +121,7 @@
             box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
         }
         
-        /* Movie Table Container */
+        
         .movie-table-container {
             background: var(--content-bg);
             border: 1px solid var(--content-border);
@@ -153,7 +153,7 @@
             font-size: 1.5rem;
         }
 
-        /* Movie Table */
+        
         .movie-table {
             width: 100%;
             border-collapse: collapse;
@@ -190,7 +190,7 @@
             font-size: 14px;
         }
 
-        /* Loading overlay styles */
+        
         .movie-table-container.loading {
             position: relative;
             transition: opacity 0.2s ease;
@@ -228,7 +228,7 @@
             font-size: 24px;
         }
         
-                /* Pagination */
+                
         .movie-pagination {
             display: flex;
             justify-content: space-between;
@@ -321,7 +321,7 @@
             color: var(--primary-purple);
         }
 
-        /* Movie Poster */
+        
         .movie-poster {
             width: 50px;
             height: 75px;
@@ -330,7 +330,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        /* Movie Info */
+        
         .movie-info {
             max-width: 200px;
         }
@@ -354,7 +354,7 @@
             overflow: hidden;
         }
 
-        /* Status Badge */
+        
         .status-badge {
             padding: 4px 12px;
             border-radius: 20px;
@@ -417,7 +417,7 @@
             opacity: 0.8;
         }
 
-        /* Add different colors for featured vs recommended */
+        
         .toggle-switch[data-type="featured"].active {
             background: linear-gradient(135deg, #ffc107, #fd7e14);
         }
@@ -426,7 +426,7 @@
             background: linear-gradient(135deg, #28a745, #20c997);
         }
 
-        /* Rating Input */
+        
         .rating-input {
             width: 70px;
             padding: 6px 8px;
@@ -444,7 +444,7 @@
             box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
         }
 
-        /* Status Dropdown */
+        
         .status-dropdown {
             padding: 6px 12px;
             border: 1px solid var(--content-border);
@@ -462,7 +462,7 @@
             box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
         }
 
-        /* Movie Info */
+        
         .movie-info {
             max-width: 200px;
         }
@@ -484,7 +484,7 @@
             text-overflow: ellipsis;
         }
 
-        /* Movie Poster */
+        
         .movie-poster {
             width: 60px;
             height: 80px;
@@ -493,7 +493,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        /* Genre Tag */
+        
         .genre-tag {
             background: rgba(139, 92, 246, 0.1);
             color: var(--primary-purple);
@@ -508,13 +508,13 @@
             display: inline-block;
         }
 
-        /* Rating Stars */
+        
         .rating-stars {
             color: #fbbf24;
             font-size: 14px;
         }
 
-        /* Status Badges */
+        
         .status-badge {
             display: inline-block;
             padding: 4px 12px;
@@ -543,8 +543,8 @@
             border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
-        /* Action Buttons */
-        /* Loading States */
+        
+        
         .loading-spinner {
             text-align: center;
             padding: 4rem 2rem;
@@ -562,7 +562,7 @@
             font-size: 14px;
         }
         
-        /* Empty State */
+        
         .empty-state {
             text-align: center;
             padding: 4rem 2rem;
@@ -575,7 +575,7 @@
             opacity: 0.5;
         }
         
-        /* Modal Styles */
+        
         .modal {
             display: none;
             position: fixed;
@@ -826,7 +826,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Modal styles */
+        
         .modal {
             display: none;
             position: fixed;
@@ -935,7 +935,7 @@
             color: var(--text-dark, #1a202c);
         }
         
-        /* Form styles - modern and sleek */
+        
         #editMovieForm {
             display: flex;
             flex-direction: column;
@@ -1650,7 +1650,7 @@
             }
         }
         
-        /* Notification styles */
+        
         .notification {
             position: fixed;
             bottom: 20px;
@@ -1718,7 +1718,7 @@
             }
         }
         
-        /* Modern Movie Detail Styles */
+        
         .movie-detail-modern {
             position: relative;
             width: 100%;
@@ -1947,7 +1947,7 @@
             position: relative;
             width: 100%;
             height: 0;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            padding-bottom: 56.25%; 
             background-color: #000;
         }
         
@@ -1983,7 +1983,7 @@
             z-index: 2;
         }
         
-        /* Responsive Styles for Movie Detail */
+        
         @@media (max-width: 768px) {
             .movie-detail-header {
                 flex-direction: column;
@@ -2012,7 +2012,7 @@
             }
         }
 
-        /* Footer styling override */
+        
         .cinema-footer {
             margin-top: auto !important;
             position: relative !important;
@@ -2021,7 +2021,7 @@
             flex-shrink: 0 !important;
         }
 
-        /* Responsive */
+        
         @@media (max-width: 768px) {
             .movie-management-content {
                 padding: 1rem;
@@ -2061,139 +2061,15 @@
     </style>
 </head>
 <body>
-     <!-- New Dashboard Layout -->
+     
      <div class="new-dashboard-layout">
-         <!-- Sidebar -->
-         <aside class="new-dashboard-sidebar">
-             <!-- Sidebar Header -->             <div class="new-sidebar-header">
-                 <a href="@Url.Action("Index","Home", new { area = "" })" class="new-sidebar-brand">
-                     <div class="new-brand-logo"></div>
-                     <div class="new-brand-text">
-                         <h2>Cinema City</h2>
-                         <p>Admin Panel</p>
-                     </div>
-                 </a>
-             </div>
-             
-             <!-- Navigation -->
-             <nav class="new-sidebar-nav">                 <div class="new-nav-section">
-                     <div class="new-nav-section-title">Tổng quan</div>
-                     <div class="new-nav-item">
-                         <a href="@Url.Action("AdminDashboard","Dashboard", new { area = "" })" class="new-nav-link">
-                             <i class="fas fa-chart-line"></i>
-                             <span>Dashboard</span>
-                         </a>
-                     </div>
-                     <div class="new-nav-item">
-                         <a href="@Url.Action("Index","Home", new { area = "" })" class="new-nav-link">
-                             <i class="fas fa-home"></i>
-                             <span>Trang chủ</span>
-                         </a>
-                     </div>
-                 </div>
+         
+         @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
 
-                 <div class="new-nav-section">
-                     <div class="new-nav-section-title">Quản lý</div>
-                     <div class="new-nav-item">
-                         <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-nav-link active">
-                             <i class="fas fa-film"></i>
-                             <span>Quản lý phim</span>
-                         </a>
-                     </div>
-                     <div class="new-nav-item">
-                         <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link">
-                             <i class="fas fa-ticket-alt"></i>
-                             <span>Quản lý đặt vé</span>
-                         </a>
-                     </div>
-                     <div class="new-nav-item">
-                         <a href="#" class="new-nav-link">
-                             <i class="fas fa-calendar-alt"></i>
-                             <span>Quản lý lịch chiếu</span>
-                         </a>
-                     </div>
-                     <div class="new-nav-item">
-                         <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-nav-link">
-                             <i class="fas fa-gift"></i>
-                             <span>Quản lý khuyến mãi</span>
-                            </a>
-                     </div>
-                     <div class="new-nav-item">
-                         <a href="#" class="new-nav-link">
-                             <i class="fas fa-star"></i>
-                             <span>Quản lý sự kiện</span>
-                         </a>
-                     </div>
-                     <div class="new-nav-item">
-                         <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-nav-link">
-                             <i class="fas fa-users"></i>
-                             <span>Quản lý người dùng</span>
-                            </a>
-                     </div>
-                 </div>
-
-                 <div class="new-nav-section">
-                     <div class="new-nav-section-title">Hệ thống</div>
-                     <div class="new-nav-item">
-                         <a href="#" class="new-nav-link">
-                             <i class="fas fa-chart-bar"></i>
-                             <span>Báo cáo</span>
-                         </a>
-                     </div>
-                     <div class="new-nav-item">
-                         <a href="#" class="new-nav-link">
-                             <i class="fas fa-cog"></i>
-                             <span>Cài đặt</span>
-                         </a>
-                     </div>
-                 </div>
-                </nav>
-             
-             <!-- User Profile in Sidebar -->
-             <div class="new-sidebar-user">
-                 <div class="new-user-profile">
-                     <div class="new-user-avatar">
-                         @if (User.Identity?.IsAuthenticated == true)
-                         {
-                             @User.Identity.Name?.Substring(0, 1).ToUpper()
-                         }
-                         else
-                         {
-                             <span>A</span>
-                         }
-                        </div>
-                     <div class="new-user-info">
-                         <h4>
-                             @if (User.Identity?.IsAuthenticated == true)
-                             {
-                                 @(User.Identity.Name?.Length > 12 ? User.Identity.Name.Substring(0, 12) + "..." : User.Identity.Name)
-                             }
-                             else
-                             {
-                                 <span>Admin</span>
-                             }
-                         </h4>
-                         <p>Administrator</p>
-                </div>
-                 </div>
-                 <div class="new-user-actions">
-                     <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="new-user-action-btn">
-                         <i class="fas fa-user"></i>
-                     </a>
-                     <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="d-inline">
-                         @Html.AntiForgeryToken()
-                         <button type="submit" class="new-user-action-btn" style="border: none;">
-                             <i class="fas fa-sign-out-alt"></i>
-                         </button>
-                     </form>
-                 </div>
-             </div>
-         </aside>
-
-         <!-- Main Content -->
+         
          <main class="new-dashboard-main">
              <div class="movie-management-content">
-                 <!-- Page Header -->
+                 
                  <div class="movie-page-header">
                      <h1 class="movie-page-title">
                          <i class="fas fa-film"></i>
@@ -2204,7 +2080,7 @@
                  </div>
 
 
-        <!-- Controls Section -->
+        
                  <div class="movie-controls">
                      <div class="movie-controls-header">
                          <div class="movie-search-box">
@@ -2218,7 +2094,7 @@
                 </div>
             </div>
 
-        <!-- Movies Table -->
+        
         <div class="movie-table-container">
             <table class="movie-table">
                 <thead>
@@ -2246,7 +2122,7 @@
             </table>
                     </div>
         
-                <!-- Pagination -->
+                
                 <div class="movie-pagination">
             <div class="pagination-info">
                 <span id="paginationInfo">Đang tải...</span>
@@ -2269,10 +2145,10 @@
         </main>
                 </div>
                 
-<!-- Anti-forgery token for AJAX requests -->
+
 @Html.AntiForgeryToken()
 
-<!-- Movie Detail Modal -->
+
 <div id="movieDetailModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -2280,12 +2156,12 @@
             <span class="modal-close" onclick="closeModal('movieDetailModal')">&times;</span>
                     </div>
         <div class="modal-body">
-            <!-- Content will be populated by JavaScript -->
+            
                 </div>
                     </div>
                 </div>
                 
-<!-- Edit Movie Modal -->
+
 <div id="editMovieModal" class="modal">
     <div class="modal-content modal-large">
         <div class="modal-header">
@@ -2293,7 +2169,7 @@
             <span class="modal-close" onclick="closeModal('editMovieModal')">&times;</span>
                     </div>
         <div class="modal-body">
-            <!-- Content will be populated by JavaScript -->
+            
                 </div>
             </div>
                 </div>
@@ -2303,27 +2179,27 @@
                         </div>
         
                         
-    <!-- Bootstrap JS -->
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- jQuery -->
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     
-    <!-- Anti-forgery token for AJAX requests -->
+    
     @Html.AntiForgeryToken()
     
     <script>
-        // API Base URL
+
         const API_BASE = '/api/v1';
         let movies = [];
         
-        // Variables for pagination
+
         let currentPage = 1;
         let pageSize = 10;
         let totalMovies = 0;
         let totalPages = 0;
         
-        // Fallback demo data when API is not available
+
         const fallbackMovies = [
             {
                 id: 1,
@@ -2360,9 +2236,9 @@
             }
         ];
 
-        // Load movies on page load
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if required elements exist before proceeding
+
             const movieTableBody = document.getElementById('movieTableBody');
             if (!movieTableBody) {
                 console.error('movieTableBody element not found');
@@ -2370,7 +2246,7 @@
                 return;
             }
             
-            // Load initial page
+
             loadMoviesPage(currentPage, pageSize);
             
             // Event listener for page size change - thêm debounce
@@ -2428,20 +2304,20 @@
             }
         });
         
-        // Event listener for search - debounce implementation
+
         const searchInput = document.getElementById('movieSearch');
         let searchTimeout;
             
             searchInput.addEventListener('input', function() {
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(() => {
-                    // Reset to first page when searching
+
                     currentPage = 1;
                     loadMoviesPage(currentPage, pageSize, this.value.trim());
                 }, 500); // 500ms debounce delay
             });
             
-            // Add event listeners for toggle switches - Enhanced debugging
+
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('toggle-switch')) {
                     console.log('Toggle switch clicked!', e.target);
@@ -2452,7 +2328,7 @@
                     
                     console.log(`Toggle: movieId=${movieId}, currentState=${currentState}, type=${type}`);
                     
-                    // Add immediate visual feedback
+
                     e.target.style.transform = 'scale(0.95)';
                     setTimeout(() => {
                         e.target.style.transform = 'scale(1)';
@@ -2469,7 +2345,7 @@
             });
         });
 
-        // Sidebar navigation function
+
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
             const mainContent = document.querySelector('.main-content');
@@ -2478,14 +2354,14 @@
             mainContent.classList.toggle('sidebar-collapsed');
         }
 
-        // Logout function
+
         function logout() {
             if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
                 window.location.href = '/Account/Logout';
             }
         }
 
-        // Navigation functions
+
         function navigateTo(url) {
             window.location.href = url;
         }
@@ -2496,7 +2372,7 @@
         let lastAPICallTime = 0;
         const API_COOLDOWN = 500; // 500ms cooldown giữa các lần gọi API
 
-        // Load movies from pagination API using controller
+
         async function loadMoviesPage(page, pageSize, searchTerm = '') {
             try {
                 // Tránh gọi API liên tục, thêm cooldown
@@ -2579,33 +2455,33 @@
                     }
                     
                     if (result.success && result.data) {
-                        // Check if response has proper pagination data structure
+
                         if (result.data.data) {
-                            // Response format: { data: { data: [...], total: X, page: Y, pageSize: Z } }
+
                             movies = result.data.data || [];
                             totalMovies = result.data.total || 0;
                             currentPage = result.data.page || page;
                             pageSize = result.data.pageSize || pageSize;
                     } else {
-                            // Legacy format without pagination info
+
                             movies = result.data;
                             totalMovies = movies.length;
                             currentPage = page;
                         }
                         
-                        // Calculate total pages
+
                         totalPages = Math.max(1, Math.ceil(totalMovies / pageSize));
                         
                         console.log(`Loaded ${movies.length} movies (Page ${currentPage}/${totalPages}, Total: ${totalMovies})`);
                         
                                             try {
-                        // Update UI
+
                         updatePaginationInfo();
                         renderPageNumbers();
                         updateMovieHeader();
                         renderMovies();
                             
-                        // Update button states
+
                         const prevBtn = document.getElementById('prevPageBtn');
                         const nextBtn = document.getElementById('nextPageBtn');
                         
@@ -2619,7 +2495,7 @@
                     console.error('Controller returned error:', result.message);
                     console.log('API error, using fallback demo data');
                     
-                    // Use fallback data when API returns error
+
                     movies = fallbackMovies.slice();
                     totalMovies = fallbackMovies.length;
                     totalPages = Math.ceil(totalMovies / pageSize);
@@ -2639,7 +2515,7 @@
                     }
                     tableContainer.classList.remove('loading');
                     
-                    // Reset loading flag
+
                     isLoadingData = false;
                 } else {
                     console.error('Controller Error:', response.status);
@@ -2653,13 +2529,13 @@
                     }
                     tableContainer.classList.remove('loading');
                     
-                    // Reset loading flag
+
                     isLoadingData = false;
                 }
             } catch (error) {
                 console.error('Error loading movies:', error);
                 
-                // Different error messages based on error type
+
                 let errorMessage = 'Không thể tải dữ liệu phim. Vui lòng thử lại.';
                 if (error.message && error.message.includes('Failed to fetch')) {
                     errorMessage = 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.';
@@ -2669,7 +2545,7 @@
                 
                 showNotification(errorMessage + ' (Hiển thị dữ liệu demo)', 'error');
                 
-                // Use fallback data on error
+
                 console.log('Using fallback demo data');
                 movies = fallbackMovies.slice();
                 totalMovies = fallbackMovies.length;
@@ -2689,17 +2565,17 @@
                     tableContainer.classList.remove('loading');
                 }
                 
-                // Reset loading flag
+
                 isLoadingData = false;
             }
         }
 
-        // Update movie header with count - exactly like the image
+
         function updateMovieHeader() {
             const headerTitle = document.getElementById('movieListTitle');
             headerTitle.innerHTML = `<i class="fas fa-film me-2"></i>Danh sách phim (${totalMovies} phim)`;
             
-            // Debug log
+
             console.log(`Loaded ${movies.length} movies (total: ${totalMovies}) successfully`);
         }
         
@@ -2759,13 +2635,13 @@
                 }
                 
                 // Kiểm tra theo thứ tự ưu tiên
-                // 1. primaryImageUrl
+
                 if (movie.primaryImageUrl) {
                     console.log(`Movie ${movie.title || 'Unknown'}: Using primaryImageUrl: ${movie.primaryImageUrl}`);
                     return movie.primaryImageUrl;
                 }
             
-            // 2. PrimaryImageUrl (Pascal case)
+
             if (movie.PrimaryImageUrl) {
                 console.log(`Movie ${movie.title}: Using PrimaryImageUrl: ${movie.PrimaryImageUrl}`);
                 return movie.PrimaryImageUrl;
@@ -2825,11 +2701,11 @@
                 console.error('Error getting movie image:', error);
             }
             
-            // Return placeholder in case of any error
+
             return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDYwIDgwIiBmaWxsPSJub25lIj48cmVjdCB3aWR0aD0iNjAiIGhlaWdodD0iODAiIGZpbGw9IiMyYTJhMmEiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPk5vIGltYWdlPC90ZXh0Pjwvc3ZnPg==';
         }
         
-        // Update pagination info text
+
         function updatePaginationInfo() {
             const infoElement = document.getElementById('paginationInfo');
             
@@ -2844,7 +2720,7 @@
             infoElement.textContent = `Trang ${currentPage}/${totalPages} (Hiển thị ${startItem}-${endItem} của ${totalMovies})`;
         }
         
-        // Render page number buttons
+
         function renderPageNumbers() {
             const pageNumbersContainer = document.getElementById('pageNumbers');
             pageNumbersContainer.innerHTML = '';
@@ -2853,11 +2729,11 @@
                 return;
             }
             
-            // Calculate range of page numbers to display
+
             let startPage = Math.max(1, currentPage - 2);
             let endPage = Math.min(totalPages, currentPage + 2);
             
-            // Always show at least 5 pages if available
+
             if (endPage - startPage < 4) {
                 if (startPage === 1) {
                     endPage = Math.min(5, totalPages);
@@ -2866,7 +2742,7 @@
                 }
             }
             
-            // First page button if not in view
+
             if (startPage > 1) {
                 const firstPageBtn = document.createElement('div');
                 firstPageBtn.className = 'page-number';
@@ -2885,7 +2761,7 @@
                 }
             }
             
-            // Page number buttons
+
             for (let i = startPage; i <= endPage; i++) {
                 const pageBtn = document.createElement('div');
                 pageBtn.className = i === currentPage ? 'page-number active' : 'page-number';
@@ -2899,7 +2775,7 @@
                 pageNumbersContainer.appendChild(pageBtn);
             }
             
-            // Last page button if not in view
+
             if (endPage < totalPages) {
                 if (endPage < totalPages - 1) {
                     const ellipsis = document.createElement('div');
@@ -2919,7 +2795,7 @@
             }
         }
 
-        // Render movies table
+
         function renderMovies() {
             const tbody = document.getElementById('movieTableBody');
             
@@ -3046,7 +2922,7 @@
             }
         }
 
-        // Helper function to get status text
+
         function getStatusText(status) {
             switch(status) {
                 case 2: return 'Đang chiếu';    // NowShowing
@@ -3057,19 +2933,19 @@
             }
         }
 
-        // Action functions 
+
         async function changeMovieStatus(movieId, status) {
             try {
                 console.log(`changeMovieStatus called: movieId=${movieId}, status=${status}`);
                 
-                // Get anti-forgery token
+
                 const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
                 
                 if (!token) {
                     const statusText = getStatusText(parseInt(status));
                     showNotification(`Demo mode: Cập nhật trạng thái thành "${statusText}"`, 'info');
                     
-                    // Update demo data
+
                     const movie = movies.find(m => m.id === movieId);
                     if (movie) {
                         movie.status = parseInt(status);
@@ -3088,7 +2964,7 @@
                 const result = await response.json();
                 if (result.success) {
                     showNotification(result.message, 'success');
-                    // Update the movie in local array
+
                     const movie = movies.find(m => m.id === movieId);
                     if (movie) {
                         movie.status = parseInt(status);
@@ -3101,7 +2977,7 @@
                 const statusText = getStatusText(parseInt(status));
                 showNotification(`Demo mode: Cập nhật trạng thái thành "${statusText}"`, 'info');
                 
-                // Update demo data even on error
+
                 const movie = movies.find(m => m.id === movieId);
                 if (movie) {
                     movie.status = parseInt(status);
@@ -3113,14 +2989,14 @@
             try {
                 console.log(`toggleFeatured called: movieId=${movieId}, isFeatured=${isFeatured}`);
                 
-                // Get anti-forgery token
+
                 const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
                 
                 if (!token) {
                     console.error('Anti-forgery token not found');
                     showNotification('Demo mode: Cập nhật trạng thái "Phim nổi bật" thành ' + (isFeatured ? 'BẬT' : 'TẮT'), 'info');
                     
-                    // Update demo data and UI immediately
+
                     const movie = movies.find(m => m.id === movieId);
                     if (movie) {
                         movie.isFeatured = isFeatured;
@@ -3145,7 +3021,7 @@
                 const result = await response.json();
                 if (result.success) {
                     showNotification(result.message, 'success');
-                    // Update the movie in local array
+
                     const movie = movies.find(m => m.id === movieId);
                     if (movie) {
                         movie.isFeatured = isFeatured;
@@ -3163,7 +3039,7 @@
                 console.error('Error toggling featured:', error);
                 showNotification('Demo mode: Toggle "Phim nổi bật" thành ' + (isFeatured ? 'BẬT' : 'TẮT'), 'info');
                 
-                // Update demo data and UI even on error
+
                 const movie = movies.find(m => m.id === movieId);
                 if (movie) {
                     movie.isFeatured = isFeatured;
@@ -3181,14 +3057,14 @@
             try {
                 console.log(`toggleRecommended called: movieId=${movieId}, isRecommended=${isRecommended}`);
                 
-                // Get anti-forgery token
+
                 const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
                 
                 if (!token) {
                     console.error('Anti-forgery token not found');
                     showNotification('Demo mode: Cập nhật trạng thái "Phim đề xuất" thành ' + (isRecommended ? 'BẬT' : 'TẮT'), 'info');
                     
-                    // Update demo data and UI immediately
+
                     const movie = movies.find(m => m.id === movieId);
                     if (movie) {
                         movie.isRecommended = isRecommended;
@@ -3213,7 +3089,7 @@
                 const result = await response.json();
                 if (result.success) {
                     showNotification(result.message, 'success');
-                    // Update the movie in local array
+
                     const movie = movies.find(m => m.id === movieId);
                     if (movie) {
                         movie.isRecommended = isRecommended;
@@ -3231,7 +3107,7 @@
                 console.error('Error toggling recommended:', error);
                 showNotification('Demo mode: Toggle "Phim đề xuất" thành ' + (isRecommended ? 'BẬT' : 'TẮT'), 'info');
                 
-                // Update demo data and UI even on error
+
                 const movie = movies.find(m => m.id === movieId);
                 if (movie) {
                     movie.isRecommended = isRecommended;
@@ -3249,13 +3125,13 @@
             try {
                 console.log(`updateRating called: movieId=${movieId}, rating=${rating}`);
                 
-                // Get anti-forgery token
+
                 const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
                 
                 if (!token) {
                     showNotification(`Demo mode: Cập nhật rating thành ${rating}/10`, 'info');
                     
-                    // Update demo data
+
                     const movie = movies.find(m => m.id === movieId);
                     if (movie) {
                         movie.rating = parseFloat(rating);
@@ -3274,7 +3150,7 @@
                 const result = await response.json();
                 if (result.success) {
                     showNotification(result.message, 'success');
-                    // Update the movie in local array
+
                     const movie = movies.find(m => m.id === movieId);
                     if (movie) {
                         movie.rating = parseFloat(rating);
@@ -3286,7 +3162,7 @@
                 console.error('Error updating rating:', error);
                 showNotification(`Demo mode: Cập nhật rating thành ${rating}/10`, 'info');
                 
-                // Update demo data even on error
+
                 const movie = movies.find(m => m.id === movieId);
                 if (movie) {
                     movie.rating = parseFloat(rating);
@@ -3302,7 +3178,7 @@
                 console.log('View Movie API Response:', result); // Debug log
                 
                 if (result.success) {
-                    // Check if data is nested under .data property
+
                     const movieData = result.data?.data || result.data;
                     console.log('Movie Data for View:', movieData); // Debug log
                     
@@ -3350,7 +3226,7 @@
                 });
                 
                 if (result.success) {
-                    // Check if data is nested under .data property
+
                     const movieData = result.data?.data || result.data;
                     console.log('Movie Data for Edit:', movieData); // Debug log
                     
@@ -3378,7 +3254,7 @@
 
         function deleteMovie(movieId) {
             console.log(`Deleting movie ${movieId}`);
-            // TODO: Implement delete movie functionality if needed
+
         }
         
         async function hideMovie(movieId) {
@@ -3439,9 +3315,9 @@
             }
         }
 
-        // Notification function
+
         function showNotification(message, type = 'info') {
-            // Create notification element
+
             const notification = document.createElement('div');
             notification.className = `notification notification-${type}`;
             notification.innerHTML = `
@@ -3452,10 +3328,10 @@
                 </button>
             `;
             
-            // Add to page
+
             document.body.appendChild(notification);
             
-            // Auto remove after 5 seconds
+
             setTimeout(() => {
                 if (notification.parentElement) {
                     notification.remove();
@@ -3463,7 +3339,7 @@
             }, 5000);
         }
 
-        // Show empty state
+
         function showEmptyState(message = 'Chưa có phim nào trong hệ thống') {
             const tbody = document.getElementById('movieTableBody');
             if (!tbody) {
@@ -3481,10 +3357,10 @@
             `;
         }
 
-        // Show initialization error
+
         function showInitializationError() {
             console.error('Failed to initialize MovieManagement - Required elements not found');
-            // Try to show error in any available container
+
             const containers = [
                 document.querySelector('.movie-table-container'),
                 document.querySelector('.main-content'),
@@ -3666,7 +3542,7 @@
                             <input type="number" id="addRating" name="rating" value="0" min="0" max="10" step="0.1">
                         </div>
                         <div class="form-group">
-                            <!-- Empty space for layout balance -->
+                            
                         </div>
                     </div>
                     
@@ -3675,19 +3551,19 @@
                         <textarea id="addContent" name="content" rows="4" placeholder="Mô tả nội dung phim..."></textarea>
                     </div>
                     
-                    <!-- Genres Selection -->
+                    
                     <div class="form-group full-width">
                         <label for="addGenres">Thể loại phim <span class="required-field">*</span></label>
                         <div class="genres-selection">
                             <div id="addGenreCheckboxes" class="genre-checkboxes">
-                                <!-- Will be populated dynamically -->
+                                
                                 <div class="loading-genres">Đang tải thể loại phim...</div>
                             </div>
                         </div>
                         <small class="text-muted">Chọn ít nhất một thể loại</small>
                     </div>
                     
-                    <!-- Show Times Section -->
+                    
                     <div class="form-group full-width">
                         <label>Lịch chiếu <span class="required-field">*</span></label>
                         <div class="showtimes-section">
@@ -3697,7 +3573,7 @@
                                 </button>
                             </div>
                             <div id="addShowTimesContainer" class="showtimes-container">
-                                <!-- Showtimes will be added here -->
+                                
                             </div>
                         </div>
                         <small class="text-muted">Thêm ít nhất một lịch chiếu</small>
@@ -3778,7 +3654,7 @@
                                 </div>
                             </div>
                             <div id="addAdditionalImagesContainer" class="additional-images-grid">
-                                <!-- Additional images will be populated here -->
+                                
                             </div>
                         </div>
                         
@@ -3815,10 +3691,10 @@
                 </form>
             `;
             
-            // Add event listeners
+
             setupAddMovieEventListeners();
             
-            // Populate genres
+
             if (window.availableGenres && Array.isArray(window.availableGenres)) {
                 populateAddGenres(window.availableGenres);
             } else {
@@ -3826,18 +3702,18 @@
                 document.getElementById('addGenreCheckboxes').innerHTML = '<div class="no-genres">Không có thể loại phim nào</div>';
             }
             
-            // Add initial showtime entry
+
             addNewShowTimeEntry();
         }
 
-        // Modal functions
+
         function showMovieDetailModal(movieData) {
             console.log('Showing detail modal with data:', movieData); // Debug log
             
             const modal = document.getElementById('movieDetailModal');
             const modalBody = modal.querySelector('.modal-body');
             
-            // Handle different possible data structures
+
             const title = movieData.title || movieData.Title || 'Không có tiêu đề';
             const director = movieData.director || movieData.Director || 'N/A';
             const actors = movieData.actors || movieData.Actors || 'N/A';
@@ -3851,10 +3727,10 @@
             const isFeatured = movieData.isFeatured || movieData.IsFeatured || false;
             const isRecommended = movieData.isRecommended || movieData.IsRecommended || false;
             
-            // Get image URL using our helper function
+
             const posterUrl = getMovieImageUrl(movieData);
             
-            // Get genres
+
             let genresHtml = '';
             if (movieData.genres && Array.isArray(movieData.genres) && movieData.genres.length > 0) {
                 genresHtml = movieData.genres.map(g => 
@@ -3868,7 +3744,7 @@
                 genresHtml = '<span class="movie-genre-pill">Chưa phân loại</span>';
             }
             
-            // Calculate rating stars
+
             const ratingValue = parseFloat(rating) || 0;
             const fullStars = Math.floor(ratingValue);
             const halfStar = ratingValue % 1 >= 0.5;
@@ -3885,7 +3761,7 @@
                 starsHtml += '<i class="far fa-star"></i>';
             }
             
-            // Get status badge class
+
             const statusClass = status === 2 ? 'status-active' : (status === 1 ? 'status-coming' : 'status-stopped');
             const statusIcon = status === 2 ? 'fa-play-circle' : (status === 1 ? 'fa-clock' : 'fa-stop-circle');
             
@@ -3991,10 +3867,10 @@
             const modal = document.getElementById('editMovieModal');
             const modalBody = modal.querySelector('.modal-body');
             
-            // Store original movie data for update
+
             modal.setAttribute('data-movie-data', JSON.stringify(movieData));
             
-            // Handle different possible data structures
+
             const id = movieData.id || movieData.Id || '';
             const title = movieData.title || movieData.Title || '';
             const director = movieData.director || movieData.Director || '';
@@ -4010,7 +3886,7 @@
             const isRecommended = movieData.isRecommended || movieData.IsRecommended || false;
             const version = movieData.version || movieData.Version || '2D';
             
-            // Get image URL using our helper function
+
             const posterUrl = getMovieImageUrl(movieData);
             
             modalBody.innerHTML = `
@@ -4068,7 +3944,7 @@
                                    min="0" max="10" step="0.1">
             </div>
                         <div class="form-group">
-                            <!-- Empty space for layout balance -->
+                            
             </div>
         </div>
                     
@@ -4077,18 +3953,18 @@
                         <textarea id="editContent" name="content" rows="4" placeholder="Mô tả nội dung phim...">${content}</textarea>
                 </div>
                     
-                    <!-- Genres Selection -->
+                    
                     <div class="form-group full-width">
                         <label for="editGenres">Thể loại phim <span class="required-field">*</span></label>
                         <div class="genres-selection">
                             <div id="genreCheckboxes" class="genre-checkboxes">
-                                <!-- Will be populated dynamically -->
+                                
                 </div>
                         </div>
                         <small class="text-muted">Chọn ít nhất một thể loại</small>
                     </div>
                     
-                    <!-- Show Times Section -->
+                    
                     <div class="form-group full-width">
                         <label>Lịch chiếu <span class="required-field">*</span></label>
                         <div class="showtimes-section">
@@ -4098,7 +3974,7 @@
                     </button>
                             </div>
                             <div id="showTimesContainer" class="showtimes-container">
-                                <!-- Showtimes will be added here -->
+                                
                             </div>
                         </div>
                         <small class="text-muted">Thêm ít nhất một lịch chiếu</small>
@@ -4182,7 +4058,7 @@
                                 </div>
                             </div>
                             <div id="additionalImagesContainer" class="additional-images-grid">
-                                <!-- Additional images will be populated here -->
+                                
                             </div>
                         </div>
                         
@@ -4222,16 +4098,16 @@
                 </form>
             `;
             
-            // Add event listeners
+
             setupUploadEventListeners();
             
-            // Load poster description
+
             loadPosterDescription(movieData);
             
-            // Load existing additional images
+
             loadExistingAdditionalImages(movieData);
             
-            // Load genres and rooms
+
             loadGenresAndRooms(movieData);
             
             modal.style.display = 'block';
@@ -4253,7 +4129,7 @@
             const container = document.getElementById('additionalImagesContainer');
             container.innerHTML = ''; // Clear existing
 
-            // Get all images except primary
+
             const allImages = [];
             if (movieData.images || movieData.Images) {
                 const images = movieData.images || movieData.Images;
@@ -4274,15 +4150,15 @@
                 }
             }
 
-            // Display existing additional images
+
             if (allImages.length > 0) {
                 displayAdditionalImages(allImages, container);
             }
         }
 
-        // Setup all upload event listeners
+
         function setupUploadEventListeners() {
-            // Poster URL input change
+
             const imageUrlInput = document.getElementById('editImageUrl');
             const posterPreview = document.getElementById('posterPreview');
             
@@ -4297,26 +4173,26 @@
                 });
             }
 
-            // Trailer file upload
+
             const trailerFileInput = document.getElementById('trailerFileInput');
             if (trailerFileInput) {
                 trailerFileInput.addEventListener('change', handleTrailerUpload);
             }
 
-            // Poster file upload
+
             const posterFileInput = document.getElementById('posterFileInput');
             if (posterFileInput) {
                 posterFileInput.addEventListener('change', handlePosterUpload);
             }
 
-            // Additional images upload
+
             const additionalImagesInput = document.getElementById('additionalImagesInput');
             if (additionalImagesInput) {
                 additionalImagesInput.addEventListener('change', handleAdditionalImagesUpload);
             }
         }
 
-        // Tab switching functions
+
         function switchTrailerTab(tab) {
             const urlTab = document.getElementById('trailerUrlTab');
             const uploadTab = document.getElementById('trailerUploadTab');
@@ -4353,7 +4229,7 @@
             }
         }
 
-        // Upload handlers
+
         async function handleTrailerUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -4363,12 +4239,12 @@
             const resultDiv = document.getElementById('trailerUploadResult');
             
             try {
-                // Show progress
+
                 progressDiv.style.display = 'block';
                 progressBar.style.width = '0%';
                 resultDiv.innerHTML = '';
 
-                // Simulate progress
+
                 const progressInterval = setInterval(() => {
                     const currentWidth = parseInt(progressBar.style.width) || 0;
                     if (currentWidth < 90) {
@@ -4376,7 +4252,7 @@
                     }
                 }, 200);
 
-                // Upload to Cloudinary via controller
+
                 const formData = new FormData();
                 formData.append('file', file);
 
@@ -4391,13 +4267,13 @@
                 progressBar.style.width = '100%';
 
                 if (result.success) {
-                    // Update trailer URL input
+
                     const trailerUrlInput = document.getElementById('editTrailerUrl');
                     trailerUrlInput.value = result.videoUrl;
                     
                     resultDiv.innerHTML = `<div class="upload-success">✅ Upload thành công!</div>`;
                     
-                    // Switch back to URL tab
+
                     switchTrailerTab('url');
                 } else {
                     resultDiv.innerHTML = `<div class="upload-error">❌ ${result.message}</div>`;
@@ -4423,11 +4299,11 @@
             const posterPreview = document.getElementById('posterPreview');
             
             try {
-                // Show progress
+
                 progressDiv.style.display = 'block';
                 progressBar.style.width = '0%';
 
-                // Simulate progress
+
                 const progressInterval = setInterval(() => {
                     const currentWidth = parseInt(progressBar.style.width) || 0;
                     if (currentWidth < 90) {
@@ -4435,7 +4311,7 @@
                     }
                 }, 200);
 
-                // Upload to Cloudinary via controller
+
                 const formData = new FormData();
                 formData.append('file', file);
 
@@ -4450,14 +4326,14 @@
                 progressBar.style.width = '100%';
 
                 if (result.success) {
-                    // Update image URL input and preview
+
                     const imageUrlInput = document.getElementById('editImageUrl');
                     imageUrlInput.value = result.imageUrl;
                     posterPreview.src = result.imageUrl;
                     
                     showNotification('Upload poster thành công!', 'success');
                     
-                    // Switch back to URL tab
+
                     switchPosterTab('url');
                 } else {
                     showNotification('Lỗi: ' + result.message, 'error');
@@ -4483,7 +4359,7 @@
             const container = document.getElementById('additionalImagesContainer');
             
             try {
-                // Show progress
+
                 progressDiv.style.display = 'block';
                 progressBar.style.width = '0%';
 
@@ -4493,7 +4369,7 @@
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     
-                    // Update progress
+
                     const progress = ((i + 1) / totalFiles) * 100;
                     progressBar.style.width = progress + '%';
 
@@ -4519,7 +4395,7 @@
                     }
                 }
 
-                // Display uploaded images
+
                 displayAdditionalImages(uploadedImages, container);
                 
                 showNotification(`Đã upload ${uploadedImages.length}/${totalFiles} hình ảnh thành công!`, 'success');
@@ -4560,10 +4436,10 @@
             imageItem.remove();
         }
 
-        // Load genres and rooms for selection
+
         async function loadGenresAndRooms(movieData) {
             try {
-                // Load genres
+
                 const genresResponse = await fetch('/MovieManagement/Movies/GetGenres');
                 const genresResult = await genresResponse.json();
                 
@@ -4571,7 +4447,7 @@
                     populateGenres(genresResult.data.data, movieData);
                 }
                 
-                // Load rooms  
+
                 const roomsResponse = await fetch('/MovieManagement/Movies/GetCinemaRooms');
                 const roomsResult = await roomsResponse.json();
                 
@@ -4588,7 +4464,7 @@
             const container = document.getElementById('genreCheckboxes');
             container.innerHTML = '';
             
-            // Get existing genre IDs from movie data
+
             const existingGenreIds = [];
             if (movieData.genres || movieData.Genres) {
                 const movieGenres = movieData.genres || movieData.Genres;
@@ -4622,7 +4498,7 @@
             const container = document.getElementById('showTimesContainer');
             container.innerHTML = '';
             
-            // Load existing show times
+
             if (movieData.showTimes || movieData.ShowTimes) {
                 const showTimes = movieData.showTimes || movieData.ShowTimes;
                 if (Array.isArray(showTimes)) {
@@ -4630,13 +4506,13 @@
                         let showDate = showTime.showDate || showTime.ShowDate;
                         const roomId = showTime.roomId || showTime.RoomId;
                         
-                        // Convert to datetime-local format
+
                         if (showDate) {
                             try {
                             const date = new Date(showDate);
                                 // Kiểm tra xem date có hợp lệ không
                                 if (!isNaN(date.getTime())) {
-                                    // Format for datetime-local input (YYYY-MM-DDThh:mm)
+
                                     const year = date.getFullYear();
                                     const month = String(date.getMonth() + 1).padStart(2, '0');
                                     const day = String(date.getDate()).padStart(2, '0');
@@ -4659,7 +4535,7 @@
                 }
             }
             
-            // Add one empty entry if no existing times
+
             if (container.children.length === 0) {
                 addShowTimeEntry();
             }
@@ -4670,7 +4546,7 @@
             const entryDiv = document.createElement('div');
             entryDiv.className = 'showtime-entry';
             
-            // Build room options
+
             let roomOptions = '<option value="">Chọn phòng chiếu</option>';
             if (window.availableRooms) {
                 window.availableRooms.forEach(room => {
@@ -4708,7 +4584,7 @@
             const entry = button.closest('.showtime-entry');
             entry.remove();
             
-            // Ensure at least one entry remains
+
             const container = document.getElementById('showTimesContainer');
             if (container.children.length === 0) {
                 addShowTimeEntry();
@@ -4718,7 +4594,7 @@
         async function updateMovie(event, movieId) {
             event.preventDefault();
             
-            // Show loading state
+
             const updateBtn = document.getElementById('updateMovieBtn');
             const btnText = updateBtn.querySelector('.btn-text');
             const btnLoading = updateBtn.querySelector('.btn-loading');
@@ -4726,7 +4602,7 @@
             btnLoading.style.display = 'inline-block';
             updateBtn.disabled = true;
             
-            // Clear previous validation errors
+
             const validationErrorsDiv = document.getElementById('validationErrors');
             validationErrorsDiv.innerHTML = '';
             validationErrorsDiv.style.display = 'none';
@@ -4734,16 +4610,16 @@
             const form = event.target;
             const formData = new FormData(form);
             
-            // Get anti-forgery token
+
             const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
             
-            // Get version value (API expects enum string)
+
             const versionValue = formData.get('version'); // Already "TwoD", "ThreeD", "FourDX"
             
-            // Collect all images with proper MovieImageDto format
+
             const images = [];
             
-            // Add main poster as primary image
+
             const posterUrl = formData.get('imageUrl');
             const posterDescription = document.getElementById('posterDescription').value;
             if (posterUrl) {
@@ -4755,7 +4631,7 @@
                 });
             }
             
-            // Add additional images
+
             const additionalImageItems = document.querySelectorAll('.additional-image-item');
             additionalImageItems.forEach((item, index) => {
                 const img = item.querySelector('img');
@@ -4770,7 +4646,7 @@
                 }
             });
 
-            // Collect selected genres
+
             const genreIds = [];
             const checkedGenres = document.querySelectorAll('#genreCheckboxes input[type="checkbox"]:checked');
             checkedGenres.forEach(checkbox => {
@@ -4778,7 +4654,7 @@
                 genreIds.push(checkbox.value);
             });
 
-            // Collect show times
+
             const showTimes = [];
             const showTimeEntries = document.querySelectorAll('.showtime-entry');
             showTimeEntries.forEach(entry => {
@@ -4811,7 +4687,7 @@
                 }
             });
             
-            // Build movie data according to MovieUpdateDto format
+
             const movieData = {
                 id: movieId,
                 title: formData.get('title') || '',
@@ -4828,13 +4704,13 @@
                 content: formData.get('content') || '',
                 isFeatured: formData.get('isFeatured') === 'on',
                 isRecommended: formData.get('isRecommended') === 'on',
-                // Required fields for MovieUpdateDto
+
                 genreIds: genreIds,
                 showTimes: showTimes,
                 images: images
             };
 
-            // Validate required fields
+
             const validationErrors = [];
             
             if (!movieData.title) {
@@ -4869,7 +4745,7 @@
                 validationErrors.push("Vui lòng thêm ít nhất một hình ảnh cho phim");
             }
 
-            // Display validation errors if any
+
             if (validationErrors.length > 0) {
                 validationErrorsDiv.innerHTML = `
                     <div class="alert alert-danger">
@@ -4881,12 +4757,12 @@
                 `;
                 validationErrorsDiv.style.display = 'block';
                 
-                // Restore button state
+
                 btnText.style.display = 'inline-block';
                 btnLoading.style.display = 'none';
                 updateBtn.disabled = false;
                 
-                // Scroll to errors
+
                 validationErrorsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 return;
             }
@@ -4929,12 +4805,12 @@
                 if (result.success) {
                     showNotification(result.message || 'Cập nhật phim thành công!', 'success');
                     closeModal('editMovieModal');
-                    // Reload movies to show updated data
+
                     setTimeout(() => {
                         loadMoviesPage(currentPage, pageSize);
                     }, 500);
             } else {
-                    // Display API error in validation errors div
+
                     let errorMessage = 'Có lỗi xảy ra khi cập nhật phim';
                     
                     // Xử lý chi tiết lỗi từ API
@@ -4980,7 +4856,7 @@
                 // Cuộn đến phần thông báo lỗi
                 validationErrorsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } finally {
-                // Restore button state
+
                 btnText.style.display = 'inline-block';
                 btnLoading.style.display = 'none';
                 updateBtn.disabled = false;
@@ -4991,16 +4867,16 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        // Close modal when clicking outside
+
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
         }
 
-        // Navigation dropdown support (similar to Details.cshtml)
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Enable Bootstrap dropdown if present
+
             const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
             const dropdownList = [...dropdownElementList].map(dropdownToggleEl => {
                 if (typeof bootstrap !== 'undefined') {
@@ -5012,7 +4888,7 @@
 
         // Hàm hỗ trợ cho chức năng thêm phim mới
         function setupAddMovieEventListeners() {
-            // Poster URL input change
+
             const imageUrlInput = document.getElementById('addImageUrl');
             const posterPreview = document.getElementById('addPosterPreview');
             
@@ -5027,26 +4903,26 @@
                 });
             }
 
-            // Trailer file upload
+
             const trailerFileInput = document.getElementById('addTrailerFileInput');
             if (trailerFileInput) {
                 trailerFileInput.addEventListener('change', handleAddTrailerUpload);
             }
 
-            // Poster file upload
+
             const posterFileInput = document.getElementById('addPosterFileInput');
             if (posterFileInput) {
                 posterFileInput.addEventListener('change', handleAddPosterUpload);
             }
 
-            // Additional images upload
+
             const additionalImagesInput = document.getElementById('addAdditionalImagesInput');
             if (additionalImagesInput) {
                 additionalImagesInput.addEventListener('change', handleAdditionalImagesUpload);
             }
         }
 
-        // Tab switching functions
+
         function switchAddTrailerTab(tab) {
             const urlTab = document.getElementById('addTrailerUrlTab');
             const uploadTab = document.getElementById('addTrailerUploadTab');
@@ -5083,7 +4959,7 @@
             }
         }
 
-        // Upload handlers
+
         async function handleAddTrailerUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -5093,12 +4969,12 @@
             const resultDiv = document.getElementById('addTrailerUploadResult');
             
             try {
-                // Show progress
+
                 progressDiv.style.display = 'block';
                 progressBar.style.width = '0%';
                 resultDiv.innerHTML = '';
 
-                // Simulate progress
+
                 const progressInterval = setInterval(() => {
                     const currentWidth = parseInt(progressBar.style.width) || 0;
                     if (currentWidth < 90) {
@@ -5106,7 +4982,7 @@
                     }
                 }, 200);
 
-                // Upload to Cloudinary via controller
+
                 const formData = new FormData();
                 formData.append('file', file);
 
@@ -5121,13 +4997,13 @@
                 progressBar.style.width = '100%';
 
                 if (result.success) {
-                    // Update trailer URL input
+
                     const trailerUrlInput = document.getElementById('addTrailerUrl');
                     trailerUrlInput.value = result.videoUrl;
                     
                     resultDiv.innerHTML = `<div class="upload-success">✅ Upload thành công!</div>`;
                     
-                    // Switch back to URL tab
+
                     switchAddTrailerTab('url');
                 } else {
                     resultDiv.innerHTML = `<div class="upload-error">❌ ${result.message}</div>`;
@@ -5153,11 +5029,11 @@
             const posterPreview = document.getElementById('addPosterPreview');
             
             try {
-                // Show progress
+
                 progressDiv.style.display = 'block';
                 progressBar.style.width = '0%';
 
-                // Simulate progress
+
                 const progressInterval = setInterval(() => {
                     const currentWidth = parseInt(progressBar.style.width) || 0;
                     if (currentWidth < 90) {
@@ -5165,7 +5041,7 @@
                     }
                 }, 200);
 
-                // Upload to Cloudinary via controller
+
                 const formData = new FormData();
                 formData.append('file', file);
 
@@ -5180,14 +5056,14 @@
                 progressBar.style.width = '100%';
 
                 if (result.success) {
-                    // Update image URL input and preview
+
                     const imageUrlInput = document.getElementById('addImageUrl');
                     imageUrlInput.value = result.imageUrl;
                     posterPreview.src = result.imageUrl;
                     
                     showNotification('Upload poster thành công!', 'success');
                     
-                    // Switch back to URL tab
+
                     switchAddPosterTab('url');
                 } else {
                     showNotification('Lỗi: ' + result.message, 'error');
@@ -5213,7 +5089,7 @@
             const container = document.getElementById('addAdditionalImagesContainer');
             
             try {
-                // Show progress
+
                 progressDiv.style.display = 'block';
                 progressBar.style.width = '0%';
 
@@ -5223,7 +5099,7 @@
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     
-                    // Update progress
+
                     const progress = ((i + 1) / totalFiles) * 100;
                     progressBar.style.width = progress + '%';
 
@@ -5249,7 +5125,7 @@
                     }
                 }
 
-                // Display uploaded images
+
                 displayAddAdditionalImages(uploadedImages, container);
                 
                 showNotification(`Đã upload ${uploadedImages.length}/${totalFiles} hình ảnh thành công!`, 'success');
@@ -5295,7 +5171,7 @@
             const entryDiv = document.createElement('div');
             entryDiv.className = 'showtime-entry';
             
-            // Build room options
+
             let roomOptions = '<option value="">Chọn phòng chiếu</option>';
             if (window.availableRooms && Array.isArray(window.availableRooms)) {
                 window.availableRooms.forEach(room => {
@@ -5334,19 +5210,19 @@
             const entry = button.closest('.showtime-entry');
             entry.remove();
             
-            // Ensure at least one entry remains
+
             const container = document.getElementById('addShowTimesContainer');
             if (container.children.length === 0) {
                 addNewShowTimeEntry();
             }
         }
 
-        // Load genres and rooms for add movie form
+
         async function loadAddGenresAndRooms() {
             try {
                 console.log('Đang tải thể loại phim và phòng chiếu...');
                 
-                // Load genres
+
                 const genresResponse = await fetch('/MovieManagement/Movies/GetGenres');
                 const genresResult = await genresResponse.json();
                 
@@ -5369,7 +5245,7 @@
                     console.error('Không thể tải thể loại phim:', genresResult.message || 'Lỗi không xác định');
                 }
                 
-                // Load rooms  
+
                 const roomsResponse = await fetch('/MovieManagement/Movies/GetCinemaRooms');
                 const roomsResult = await roomsResponse.json();
                 
@@ -5444,7 +5320,7 @@
         async function createMovie(event) {
             event.preventDefault();
             
-            // Show loading state
+
             const createBtn = document.getElementById('createMovieBtn');
             const btnText = createBtn.querySelector('.btn-text');
             const btnLoading = createBtn.querySelector('.btn-loading');
@@ -5452,7 +5328,7 @@
             btnLoading.style.display = 'inline-block';
             createBtn.disabled = true;
             
-            // Clear previous validation errors
+
             const validationErrorsDiv = document.getElementById('addValidationErrors');
             validationErrorsDiv.innerHTML = '';
             validationErrorsDiv.style.display = 'none';
@@ -5461,7 +5337,7 @@
             const formData = new FormData(form);
             
             try {
-                // Get anti-forgery token
+
                 const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
                 if (!token) {
                     console.warn('Không tìm thấy token CSRF');
@@ -5481,7 +5357,7 @@
                     console.log('Đã tìm thấy token CSRF:', token);
                 }
                 
-                // Get version value (API expects enum number)
+
                 let versionValue;
                 switch (formData.get('version')) {
                     case 'TwoD':
@@ -5497,10 +5373,10 @@
                         versionValue = 1; // Default to 2D
                 }
                 
-                // Collect all images with proper MovieImageDto format
+
                 const images = [];
                 
-                // Add main poster as primary image
+
                 const posterUrl = formData.get('imageUrl');
                 const posterDescription = document.getElementById('addPosterDescription').value;
                 if (posterUrl) {
@@ -5512,7 +5388,7 @@
                     });
                 }
                 
-                // Add additional images
+
                 const additionalImageItems = document.querySelectorAll('#addAdditionalImagesContainer .additional-image-item');
                 additionalImageItems.forEach((item, index) => {
                     const img = item.querySelector('img');
@@ -5527,7 +5403,7 @@
                     }
                 });
 
-                // Collect selected genres
+
                 const genreIds = [];
                 const checkedGenres = document.querySelectorAll('#addGenreCheckboxes input[type="checkbox"]:checked');
                 
@@ -5542,7 +5418,7 @@
                     }
                 });
 
-                // Collect show times
+
                 const showTimes = [];
                 const showTimeEntries = document.querySelectorAll('#addShowTimesContainer .showtime-entry');
                 
@@ -5565,8 +5441,8 @@
                                 // Đảm bảo datetime được chuyển đổi đúng định dạng
                                 const localDate = new Date(dateValue);
                                 
-                                // Format date as yyyy-MM-ddTHH:mm:ss without timezone
-                                const formattedDate = localDate.toISOString().split('.')[0];
+
+                                const formattedDate = localDate.toISOString().split('.')[0] + 'Z';
                                 
                                 showTimes.push({
                                     showDate: formattedDate,
@@ -5585,15 +5461,15 @@
                     }
                 });
                 
-                // Format dates correctly
+
                 const releaseDate = formData.get('releaseDate');
                 const endDate = formData.get('endDate');
                 
-                // Build movie data according to MovieCreateDto format
+
                 const movieData = {
                     title: formData.get('title') || '',
-                    releaseDate: releaseDate ? new Date(releaseDate).toISOString().split('.')[0] : '',
-                    endDate: endDate ? new Date(endDate).toISOString().split('.')[0] : '',
+                    releaseDate: releaseDate ? new Date(releaseDate).toISOString().split('.')[0] + 'Z' : '',
+                    endDate: endDate ? new Date(endDate).toISOString().split('.')[0] + 'Z' : '',
                     director: formData.get('director') || '',
                     actors: formData.get('actors') || '',
                     productionCompany: formData.get('productionCompany') || '',
@@ -5604,13 +5480,13 @@
                     content: formData.get('content') || '',
                     isFeatured: formData.get('isFeatured') === 'on',
                     isRecommended: formData.get('isRecommended') === 'on',
-                    // Required fields for MovieCreateDto
+
                     genreIds: genreIds,
                     showTimes: showTimes,
                     images: images
                 };
 
-                // Validate required fields
+
                 const validationErrors = [];
                 
                 if (!movieData.title) {
@@ -5649,7 +5525,7 @@
                     validationErrors.push("Vui lòng thêm ít nhất một hình ảnh cho phim");
                 }
 
-                // Display validation errors if any
+
                 if (validationErrors.length > 0) {
                     validationErrorsDiv.innerHTML = `
                         <div class="alert alert-danger">
@@ -5661,12 +5537,12 @@
                     `;
                     validationErrorsDiv.style.display = 'block';
                     
-                    // Restore button state
+
                     btnText.style.display = 'inline-block';
                     btnLoading.style.display = 'none';
                     createBtn.disabled = false;
                     
-                    // Scroll to errors
+
                     validationErrorsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     return;
                 }
@@ -5676,44 +5552,16 @@
                 // Thêm debug log để kiểm tra dữ liệu trước khi gửi
                 console.log('Dữ liệu JSON gửi đi:', JSON.stringify(movieData, null, 2));
                 
-                // Tạo một đối tượng tương thích với controller
-                const controllerData = {
-                    Title: movieData.title,
-                    ReleaseDate: movieData.releaseDate,
-                    EndDate: movieData.endDate,
-                    Director: movieData.director,
-                    Actors: movieData.actors,
-                    ProductionCompany: movieData.productionCompany,
-                    RunningTime: movieData.runningTime,
-                    Version: movieData.version,  // Sử dụng giá trị số trực tiếp (1, 2, 3) thay vì chuyển đổi thành chuỗi "2D", "3D", "4DX"
-                    Rating: movieData.rating,
-                    TrailerUrl: movieData.trailerUrl,
-                    Content: movieData.content,
-                    IsFeatured: movieData.isFeatured,
-                    IsRecommended: movieData.isRecommended,
-                    GenreIds: movieData.genreIds,
-                    ShowTimes: movieData.showTimes.map(st => ({
-                        RoomId: st.roomId,
-                        ShowDate: st.showDate
-                    })),
-                    ImageUrl: movieData.images.find(img => img.isPrimary)?.imageUrl || movieData.images[0]?.imageUrl || "",
-                    Images: movieData.images.map(img => ({
-                        ImageUrl: img.imageUrl,
-                        Description: img.description,
-                        DisplayOrder: img.displayOrder,
-                        IsPrimary: img.isPrimary
-                    }))
-                };
+                // Gửi dữ liệu trực tiếp theo format API (lowercase)
+                console.log('Dữ liệu gửi đến controller:', JSON.stringify(movieData, null, 2));
                 
-                console.log('Dữ liệu gửi đến controller:', JSON.stringify(controllerData, null, 2));
-                
-                const response = await fetch('/MovieManagement/Movies/Create', {
+                const response = await fetch('/MovieManagement/Movies/CreateMovieAjax', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'RequestVerificationToken': token || ''
                     },
-                    body: JSON.stringify(controllerData)
+                    body: JSON.stringify(movieData)
                 });
 
                 // Kiểm tra response status
@@ -5740,12 +5588,12 @@
                 if (result.success) {
                     showNotification(result.message || 'Thêm phim mới thành công!', 'success');
                     closeModal('addMovieModal');
-                    // Reload movies to show updated data
+
                     setTimeout(() => {
                         loadMoviesPage(currentPage, pageSize);
                     }, 500);
                 } else {
-                    // Display API error in validation errors div
+
                     let errorMessage = 'Có lỗi xảy ra khi thêm phim';
                     
                     // Xử lý chi tiết lỗi từ API
@@ -5791,7 +5639,7 @@
                 // Cuộn đến phần thông báo lỗi
                 validationErrorsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } finally {
-                // Restore button state
+
                 btnText.style.display = 'inline-block';
                 btnLoading.style.display = 'none';
                 createBtn.disabled = false;

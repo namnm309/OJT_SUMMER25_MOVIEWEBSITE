@@ -72,7 +72,15 @@ namespace UI.Services
                 }
                 
                 var errorContent = await response.Content.ReadAsStringAsync();
-                return ApiResponse<bool>.ErrorResult($"Request failed: {response.StatusCode}", response.StatusCode);
+                string? backendMsg = null;
+                try {
+                    var errJson = JsonSerializer.Deserialize<JsonElement>(errorContent);
+                    if (errJson.TryGetProperty("message", out var msgProp)) backendMsg = msgProp.GetString();
+                    else if (errJson.TryGetProperty("Message", out var msgProp2)) backendMsg = msgProp2.GetString();
+                } catch { }
+
+                var finalMsg = backendMsg ?? $"Request failed: {response.StatusCode}";
+                return ApiResponse<bool>.ErrorResult(finalMsg, response.StatusCode);
             }
             catch (Exception ex)
             {
@@ -172,7 +180,7 @@ namespace UI.Services
                         return ApiResponse<T>.SuccessResult((T)(object)element, "Success");
                     }
                     
-                    // Parse response
+
                     var apiResponseElement = JsonSerializer.Deserialize<JsonElement>(responseContent);
                     
                     // Kiểm tra API response format { success, data/user, message } (UI format)
@@ -343,7 +351,7 @@ namespace UI.Services
             }
             else
             {
-                // Handle error response
+
                 try
                 {
                     if (string.IsNullOrWhiteSpace(responseContent))
@@ -352,9 +360,13 @@ namespace UI.Services
                     }
                     
                     var errorElement = JsonSerializer.Deserialize<JsonElement>(responseContent);
-                    var message = errorElement.TryGetProperty("message", out var msgProp) 
-                        ? msgProp.GetString() ?? $"Request failed with status: {response.StatusCode}" 
-                        : $"Request failed with status: {response.StatusCode}";
+                    string message;
+                    if (errorElement.TryGetProperty("message", out var msgProp))
+                        message = msgProp.GetString() ?? $"Request failed with status: {response.StatusCode}";
+                    else if (errorElement.TryGetProperty("Message", out var msgProp2))
+                        message = msgProp2.GetString() ?? $"Request failed with status: {response.StatusCode}";
+                    else
+                        message = $"Request failed with status: {response.StatusCode}";
                         
                     return ApiResponse<T>.ErrorResult(message, response.StatusCode);
                 }

@@ -42,7 +42,7 @@ namespace UI.Controllers
             var isActive = User.FindFirst("IsActive")?.Value;
             var createdAt = User.FindFirst("CreatedAt")?.Value;
 
-            // Pass data to ViewBag
+
             ViewBag.UserId = userId;
             ViewBag.UserName = userName;
             ViewBag.FullName = fullName;
@@ -60,7 +60,7 @@ namespace UI.Controllers
                 ViewBag.CreatedAt = "N/A";
             }
 
-            // Add placeholder stats for admin
+
             ViewBag.TotalUsers = "N/A";
             ViewBag.TotalMovies = "N/A"; 
             ViewBag.TotalBookings = "N/A";
@@ -82,7 +82,7 @@ namespace UI.Controllers
             var isActive = User.FindFirst("IsActive")?.Value;
             var createdAt = User.FindFirst("CreatedAt")?.Value;
 
-            // Pass data to ViewBag
+
             ViewBag.UserId = userId;
             ViewBag.UserName = userName;
             ViewBag.FullName = fullName;
@@ -100,7 +100,7 @@ namespace UI.Controllers
                 ViewBag.CreatedAt = "N/A";
             }
 
-            // Add placeholder stats for staff
+
             ViewBag.TodayTickets = "N/A";
             ViewBag.TotalCustomers = "N/A";
             ViewBag.WorkingHours = "N/A";
@@ -120,7 +120,7 @@ namespace UI.Controllers
             var isActive = User.FindFirst("IsActive")?.Value;
             var createdAt = User.FindFirst("CreatedAt")?.Value;
 
-            // Pass data to ViewBag
+
             ViewBag.UserId = userId;
             ViewBag.UserName = userName;
             ViewBag.FullName = fullName;
@@ -153,7 +153,7 @@ namespace UI.Controllers
             return View();
         }
 
-        // Booking Ticket Actions
+
         [Authorize(Roles = "Admin,Staff,2,3")]
         public IActionResult BookTicket()
         {

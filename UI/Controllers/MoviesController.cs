@@ -87,12 +87,12 @@ namespace UI.Controllers
                     {
                         try
                         {
-                            // Parse pagination response: result.Data contains the SuccessResp structure
+
                             if (result.Data.TryGetProperty("data", out var paginationDataProp))
                             {
                                 var paginationData = JsonSerializer.Deserialize<JsonElement>(paginationDataProp.GetRawText(), options);
                                 
-                                // Extract movies array and pagination info
+
                                 var moviesArray = paginationData.GetProperty("data");
                                 var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(moviesArray.GetRawText(), options);
                                 
@@ -125,7 +125,7 @@ namespace UI.Controllers
                     }
                     else
                     {
-                        // For non-paginated responses (recommended, coming-soon, now-showing)
+
                         if (result.Data.TryGetProperty("data", out var dataProp))
                         {
                             var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), options);
@@ -230,7 +230,7 @@ namespace UI.Controllers
             return View("SearchResults", new List<MovieViewModel>());
         }
 
-        // API endpoint for AJAX calls to get movie details
+
         [HttpGet]
         public async Task<IActionResult> GetMovieDetails(Guid movieId)
         {
@@ -252,7 +252,7 @@ namespace UI.Controllers
             }
         }
 
-        // API endpoint for AJAX calls to get showtimes
+
         [HttpGet]
         public async Task<IActionResult> GetShowtimes(Guid movieId, string date)
         {

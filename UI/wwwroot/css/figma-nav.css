@@ -1,4 +1,4 @@
-/* Simple Navigation matching Figma design exactly */
+
 .figma-nav {
   display: flex;
   align-items: center;
@@ -22,7 +22,7 @@
   width: 100%;
 }
 
-/* Brand */
+
 .figma-brand {
   display: block;
   color: rgba(0, 0, 0, 0.9);
@@ -48,7 +48,7 @@
   margin-right: 8px;
 }
 
-/* Navigation toggle for mobile */
+
 .figma-nav-toggler {
   display: none;
   background-color: rgba(0, 0, 0, 0);
@@ -73,7 +73,7 @@
   width: 30px;
 }
 
-/* Navigation collapse container */
+
 .figma-nav-collapse {
   display: flex;
   align-items: center;
@@ -81,7 +81,7 @@
   justify-content: space-between;
 }
 
-/* Navigation lists */
+
 .figma-nav-links-left,
 .figma-nav-links-right {
   display: flex;
@@ -99,7 +99,7 @@
   display: list-item;
 }
 
-/* Navigation links */
+
 .figma-nav-link {
   display: block;
   color: rgb(33, 37, 41);
@@ -131,7 +131,7 @@
   margin-right: 4px;
 }
 
-/* Dropdown */
+
 .figma-dropdown {
   position: relative;
 }
@@ -207,7 +207,7 @@
   border-top: 1px solid rgba(0, 0, 0, 0.15);
 }
 
-/* Active state styling matching original */
+
 .figma-nav-link.active::after {
   content: "";
   position: absolute;
@@ -220,7 +220,7 @@
   border-radius: 2px;
 }
 
-/* Mobile responsive */
+
 @media (max-width: 767.98px) {
   .figma-nav-toggler {
     display: block;

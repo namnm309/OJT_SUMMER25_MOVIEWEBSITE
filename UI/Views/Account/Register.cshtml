@@ -1,4 +1,4 @@
-﻿@model UI.Models.RegisterViewModel
+@model UI.Models.RegisterViewModel
 @{
     ViewData["Title"] = "Đăng ký";
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
@@ -39,7 +39,7 @@
                     <p class="auth-subtitle">Vui lòng điền thông tin để đăng ký tài khoản</p>
                 </div>
 
-                <!-- Error message container -->
+                
                 <div class="text-danger mb-3" id="registerError"></div>
 
                 <form id="registerForm" method="post" class="auth-form">
@@ -47,7 +47,7 @@
                     <div class="form-grid">
                         <!-- Cột trái -->
                         <div class="form-column">
-                            @* Username *@
+                            
                             <div class="form-group">
                                 <label asp-for="Username" class="form-label">
                                     <i class="fas fa-user me-1"></i>@Html.DisplayNameFor(m => m.Username)
@@ -59,7 +59,7 @@
                                 <span asp-validation-for="Username" class="text-danger"></span>
                             </div>
 
-                            @* Email *@
+                            
                             <div class="form-group">
                                 <label asp-for="Email" class="form-label">
                                     <i class="fas fa-envelope me-1"></i>@Html.DisplayNameFor(m => m.Email)
@@ -71,7 +71,7 @@
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
 
-                            @* Password *@
+                            
                             <div class="form-group">
                                 <label asp-for="Password" class="form-label">
                                     <i class="fas fa-lock me-1"></i>@Html.DisplayNameFor(m => m.Password)
@@ -88,7 +88,7 @@
                                 <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
 
-                            @* ConfirmPassword *@
+                            
                             <div class="form-group">
                                 <label asp-for="ConfirmPassword" class="form-label">
                                     <i class="fas fa-lock me-1"></i>@Html.DisplayNameFor(m => m.ConfirmPassword)
@@ -105,7 +105,7 @@
                                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                             </div>
 
-                            @* FullName *@
+                            
                             <div class="form-group">
                                 <label asp-for="FullName" class="form-label">
                                     <i class="fas fa-id-card me-1"></i>@Html.DisplayNameFor(m => m.FullName)
@@ -120,7 +120,7 @@
 
                         <!-- Cột phải -->
                         <div class="form-column">
-                            @* Phone *@
+                            
                             <div class="form-group">
                                 <label asp-for="Phone" class="form-label">
                                     <i class="fas fa-phone me-1"></i>@Html.DisplayNameFor(m => m.Phone)
@@ -132,7 +132,7 @@
                                 <span asp-validation-for="Phone" class="text-danger"></span>
                             </div>
 
-                            @* CCCD *@
+                            
                             <div class="form-group">
                                 <label asp-for="IdentityCard" class="form-label">
                                     <i class="fas fa-id-badge me-1"></i>@Html.DisplayNameFor(m => m.IdentityCard)
@@ -144,7 +144,7 @@
                                 <span asp-validation-for="IdentityCard" class="text-danger"></span>
                             </div>
 
-                            @* Address *@
+                            
                             <div class="form-group">
                                 <label asp-for="Address" class="form-label">
                                     <i class="fas fa-map-marker-alt me-1"></i>@Html.DisplayNameFor(m => m.Address)
@@ -156,7 +156,7 @@
                                 <span asp-validation-for="Address" class="text-danger"></span>
                             </div>
 
-                            @* BirthDate *@
+                            
                             <div class="form-group">
                                 <label asp-for="BirthDate" class="form-label">
                                     <i class="fas fa-calendar me-1"></i>@Html.DisplayNameFor(m => m.BirthDate)
@@ -168,7 +168,7 @@
                                 <span asp-validation-for="BirthDate" class="text-danger"></span>
                             </div>
 
-                            @* Gender *@
+                            
                             <div class="form-group">
                                 <label asp-for="Gender" class="form-label">
                                     <i class="fas fa-venus-mars me-1"></i>@Html.DisplayNameFor(m => m.Gender)
@@ -207,7 +207,7 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        // Toggle password visibility
+
         document.getElementById('togglePassword').addEventListener('click', function () {
             const passwordField = document.getElementById('Password');
             const icon = this.querySelector('i');
@@ -246,16 +246,16 @@
             }
         });
 
-        // Register form submission with AJAX
+
         document.getElementById('registerForm')?.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const formData = new FormData(this);
 
-            // Clear previous errors
+
             document.getElementById('registerError').textContent = '';
 
-            // Basic validation
+
             if (!formData.get('username') || !formData.get('email') || !formData.get('password') ||
                 !formData.get('confirmPassword') || !formData.get('fullName')) {
                 document.getElementById('registerError').textContent = 'Vui lòng nhập đầy đủ thông tin bắt buộc';
@@ -268,7 +268,7 @@
             }
 
             try {
-                // Prepare form data for model binding
+
                 const formBody = new URLSearchParams();
                 formBody.append('Username', formData.get('username'));
                 formBody.append('Email', formData.get('email'));
@@ -290,21 +290,21 @@
                     body: formBody.toString()
                 });
 
-                // Check if response is JSON
+
                 const contentType = response.headers.get("content-type");
                 if (contentType && contentType.indexOf("application/json") !== -1) {
                     const result = await response.json();
 
                     if (result.success) {
-                        // Redirect to login page with success message
+
                         window.location.href = '@Url.Action("Login", "Account")' + '?message=Đăng ký thành công! Vui lòng đăng nhập.';
                     } else {
                         document.getElementById('registerError').textContent = result.message || 'Đăng ký thất bại';
                     }
                 } else {
-                    // If not JSON, check if it's a redirect
+
                     if (response.ok || response.redirected) {
-                        // Redirect to login page with success message
+
                         window.location.href = '@Url.Action("Login", "Account")' + '?message=Đăng ký thành công! Vui lòng đăng nhập.';
                     } else {
                         document.getElementById('registerError').textContent = 'Có lỗi xảy ra, vui lòng thử lại';

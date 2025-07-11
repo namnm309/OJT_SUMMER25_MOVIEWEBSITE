@@ -1,9 +1,9 @@
-// User Management JavaScript Functions
 
-// Base API URL - Update this if backend port changes
+
+
 const API_BASE_URL = 'https://localhost:7049';
 
-// Extract user data from table row
+
 function extractUserDataFromRow(row) {
     const cells = row.cells;
     const userId = row.getAttribute('data-user-id');
@@ -18,7 +18,7 @@ function extractUserDataFromRow(row) {
     };
 }
 
-// 1. VIEW USER DETAILS
+
 async function viewUser(userId) {
     try {
         const response = await fetch(`${API_BASE_URL}/api/User/${userId}`, {
@@ -45,7 +45,7 @@ async function viewUser(userId) {
     }
 }
 
-// Populate view modal with user data
+
 function populateViewModal(user) {
     document.getElementById('viewUserName').textContent = user.fullName || '';
     document.getElementById('viewUsername').textContent = user.username || '';
@@ -56,7 +56,7 @@ function populateViewModal(user) {
     document.getElementById('viewCreatedAt').textContent = user.createdAt ? 
         new Date(user.createdAt).toLocaleDateString('vi-VN') : '';
     
-    // Set role badge
+
     const roleBadge = document.getElementById('viewUserRole');
     const roleText = user.role === 'Admin' ? 'Quản trị viên' : 
                     user.role === 'Staff' ? 'Nhân viên' : 'Thành viên';
@@ -66,7 +66,7 @@ function populateViewModal(user) {
     roleBadge.textContent = roleText;
     roleBadge.className = `badge ${roleClass}`;
     
-    // Style avatar (if exists)
+
     const avatarElement = document.getElementById('viewUserAvatar');
     if (avatarElement && user.fullName) {
         avatarElement.textContent = user.fullName.charAt(0).toUpperCase();
@@ -74,10 +74,10 @@ function populateViewModal(user) {
     }
 }
 
-// 2. EDIT USER
+
 async function editUser(userId) {
     try {
-        // First get user details
+
         const response = await fetch(`${API_BASE_URL}/api/User/${userId}`, {
             method: 'GET',
             headers: {
@@ -102,7 +102,7 @@ async function editUser(userId) {
     }
 }
 
-// Populate edit modal with user data
+
 function populateEditModal(user) {
     document.getElementById('editUserId').value = user.userId || '';
     document.getElementById('editUsername').value = user.username || '';
@@ -115,7 +115,7 @@ function populateEditModal(user) {
     document.getElementById('editPassword').value = ''; // Always empty for security
 }
 
-// Update user (called from edit modal)
+
 async function updateUser() {
     const userId = document.getElementById('editUserId').value;
     const formData = {
@@ -127,7 +127,7 @@ async function updateUser() {
         score: parseFloat(document.getElementById('editScore').value) || 0
     };
     
-    // Add password if provided
+
     const password = document.getElementById('editPassword').value;
     if (password) {
         formData.newPassword = password;
@@ -147,11 +147,11 @@ async function updateUser() {
         if (result.success) {
             alert('Cập nhật người dùng thành công!');
             
-            // Close modal
+
             const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
             modal.hide();
             
-            // Refresh page
+
             location.reload();
         } else {
             alert('Cập nhật thất bại: ' + (result.message || 'Lỗi không xác định'));
@@ -162,10 +162,10 @@ async function updateUser() {
     }
 }
 
-// 3. TOGGLE USER STATUS
+
 async function toggleUserStatus(userId, currentStatus) {
     try {
-        // First get user details to show in confirmation
+
         const userResponse = await fetch(`${API_BASE_URL}/api/User/${userId}`);
         const userResult = await userResponse.json();
         
@@ -176,15 +176,15 @@ async function toggleUserStatus(userId, currentStatus) {
         
         const user = userResult.data;
         
-        // Populate confirmation modal
+
         document.getElementById('toggleUserName').textContent = user.fullName;
         document.getElementById('toggleCurrentStatus').textContent = currentStatus ? 'Hoạt động' : 'Không hoạt động';
         document.getElementById('toggleNewStatus').textContent = currentStatus ? 'Không hoạt động' : 'Hoạt động';
         
-        // Store userId for confirmation
+
         document.getElementById('toggleUserId').value = userId;
         
-        // Show confirmation modal
+
         const modal = new bootstrap.Modal(document.getElementById('toggleStatusModal'));
         modal.show();
         
@@ -194,7 +194,7 @@ async function toggleUserStatus(userId, currentStatus) {
     }
 }
 
-// Confirm toggle user status
+
 async function confirmToggleStatus() {
     const userId = document.getElementById('toggleUserId').value;
     
@@ -211,11 +211,11 @@ async function confirmToggleStatus() {
         if (result.success) {
             alert('Thay đổi trạng thái thành công!');
             
-            // Close modal
+
             const modal = bootstrap.Modal.getInstance(document.getElementById('toggleStatusModal'));
             modal.hide();
             
-            // Refresh page
+
             location.reload();
         } else {
             alert('Thay đổi trạng thái thất bại: ' + (result.message || 'Lỗi không xác định'));
@@ -226,10 +226,10 @@ async function confirmToggleStatus() {
     }
 }
 
-// 4. DELETE USER
+
 async function deleteUser(userId) {
     try {
-        // First get user details to show in confirmation
+
         const userResponse = await fetch(`${API_BASE_URL}/api/User/${userId}`);
         const userResult = await userResponse.json();
         
@@ -240,12 +240,12 @@ async function deleteUser(userId) {
         
         const user = userResult.data;
         
-        // Populate confirmation modal
+
         document.getElementById('deleteUserName').textContent = user.fullName;
         document.getElementById('deleteUserEmail').textContent = user.email;
         document.getElementById('deleteUserId').value = userId;
         
-        // Show confirmation modal
+
         const modal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
         modal.show();
         
@@ -255,7 +255,7 @@ async function deleteUser(userId) {
     }
 }
 
-// Confirm delete user
+
 async function confirmDeleteUser() {
     const userId = document.getElementById('deleteUserId').value;
     
@@ -272,11 +272,11 @@ async function confirmDeleteUser() {
         if (result.success) {
             alert('Xóa người dùng thành công!');
             
-            // Close modal
+
             const modal = bootstrap.Modal.getInstance(document.getElementById('deleteUserModal'));
             modal.hide();
             
-            // Refresh page
+
             location.reload();
         } else {
             alert('Xóa người dùng thất bại: ' + (result.message || 'Lỗi không xác định'));
@@ -287,7 +287,7 @@ async function confirmDeleteUser() {
     }
 }
 
-// 5. ADD NEW USER
+
 async function addUser() {
     const formData = {
         username: document.getElementById('newUsername').value,
@@ -298,7 +298,7 @@ async function addUser() {
         role: document.getElementById('newRole').value
     };
     
-    // Basic validation
+
     if (!formData.username || !formData.fullName || !formData.email || !formData.password || !formData.role) {
         alert('Vui lòng điền đầy đủ các trường bắt buộc!');
         return;
@@ -318,14 +318,14 @@ async function addUser() {
         if (result.success) {
             alert('Thêm người dùng thành công!');
             
-            // Close modal
+
             const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
             modal.hide();
             
-            // Reset form
+
             document.getElementById('addUserForm').reset();
             
-            // Refresh page
+
             location.reload();
         } else {
             alert('Thêm người dùng thất bại: ' + (result.message || 'Lỗi không xác định'));
@@ -336,23 +336,23 @@ async function addUser() {
     }
 }
 
-// Helper function to open add user modal
+
 function openAddUserModal() {
     const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
     modal.show();
 }
 
-// Edit user from view modal
+
 function editUserFromView() {
-    // Close view modal
+
     const viewModal = bootstrap.Modal.getInstance(document.getElementById('viewUserModal'));
     viewModal.hide();
     
-    // Get user ID from view modal and open edit modal
+
     const userName = document.getElementById('viewUserName').textContent;
     const userEmail = document.getElementById('viewEmail').textContent;
     
-    // Find the user row to get the userId
+
     const rows = document.querySelectorAll('#usersTableBody tr');
     for (let row of rows) {
         const rowEmail = row.querySelector('.user-email')?.textContent;
@@ -366,9 +366,9 @@ function editUserFromView() {
     }
 }
 
-// Event handlers setup
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto-hide alerts after 5 seconds
+
     setTimeout(function() {
         const alerts = document.querySelectorAll('.alert');
         alerts.forEach(alert => {

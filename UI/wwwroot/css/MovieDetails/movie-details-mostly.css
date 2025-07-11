@@ -1,4 +1,4 @@
-/* Movie Details Page - Mostly About Style */
+
 :root {
     --primary-bg: #1a1a1a;
     --secondary-bg: #2a2a2a;
@@ -35,7 +35,7 @@ body {
     background: var(--primary-bg);
 }
 
-/* Navigation - Updated to match HomePage .hero-nav */
+
 .top-nav {
     position: fixed;
     top: 0;
@@ -80,7 +80,7 @@ body {
     max-width: 600px;
 }
 
-/* Brand */
+
 .brand {
     text-align: left;
     margin-right: 20px;
@@ -228,7 +228,7 @@ body {
     filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.8));
 }
 
-/* Navigation Center */
+
 .nav-center {
     display: flex;
     align-items: center;
@@ -275,7 +275,7 @@ body {
         background: rgba(102, 126, 234, 0.1);
     }
 
-/* Navigation Right */
+
 .nav-right {
     display: flex;
     align-items: center;
@@ -286,7 +286,7 @@ body {
     margin-left: -80px;
     justify-content: flex-end;
 }
-/* User Profile */
+
 .user-profile {
     display: flex;
     align-items: center;
@@ -321,7 +321,7 @@ body {
         color: #667eea;
     }
 
-/* Auth Buttons */
+
 .auth-buttons {
     display: flex;
     gap: 16px;
@@ -353,7 +353,7 @@ body {
     color: #667eea;
 }
 
-/* Watchlist Button */
+
 .watchlist-btn {
     display: flex;
     align-items: center;
@@ -409,7 +409,7 @@ body {
         color: var(--accent-red);
     }
 
-/* Hero Section */
+
 .hero-section {
     position: relative;
     height: 100vh;
@@ -477,7 +477,7 @@ body {
     padding: 0 15px;
 }
 
-/* Movie Info */
+
 .movie-info {
     max-width: 600px;
 }
@@ -600,7 +600,7 @@ body {
         transform: translateY(-2px);
     }
 
-/* Poster Container */
+
 .poster-container {
     display: flex;
     flex-direction: column;
@@ -667,7 +667,7 @@ body {
     font-size: 0.875rem;
 }
 
-/* Content Tabs */
+
 .content-tabs {
     background: var(--secondary-bg);
     padding: 2rem 0;
@@ -722,7 +722,7 @@ body {
         display: block;
     }
 
-/* Feed Section */
+
 .feed-header {
     display: flex;
     justify-content: space-between;
@@ -853,7 +853,7 @@ body {
         color: var(--accent-red);
     }
 
-/* Sidebar Sections */
+
 .sidebar-section {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
@@ -893,7 +893,7 @@ body {
         color: #667eea;
     }
 
-/* Trailer */
+
 .trailer-container {
     margin-bottom: 1rem;
     margin-left: 0;
@@ -955,7 +955,7 @@ body {
     margin: 0;
 }
 
-/* Stills Grid */
+
 .stills-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -980,7 +980,7 @@ body {
         object-fit: cover;
     }
 
-/* User Ratings */
+
 .rating-summary {
     display: flex;
     gap: 2rem;
@@ -1045,7 +1045,7 @@ body {
     transition: var(--transition);
 }
 
-/* Image Modal */
+
 .image-modal {
     position: fixed;
     top: 0;
@@ -1117,7 +1117,7 @@ body {
     max-height: 90vh;
 }
 
-/* Responsive Design */
+
 @media (max-width: 1200px) {
     .nav-container {
         padding: 0 1.5rem;
@@ -1289,7 +1289,7 @@ body {
 
 
 
-/* Showtimes Styles */
+
 .showtimes-header {
     display: flex;
     justify-content: space-between;
@@ -1445,7 +1445,7 @@ body {
             box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
         }
 
-/* Trailer Video Styles */
+
 .trailer-video {
     position: relative;
     width: 100%;
@@ -1471,7 +1471,7 @@ body {
     border-radius: var(--border-radius);
 }
 
-/* Quick Info Styles */
+
 .quick-info {
     display: flex;
     flex-direction: column;
@@ -1504,7 +1504,7 @@ body {
     max-width: 60%;
 }
 
-/* Rating Summary Compact */
+
 .rating-summary-compact {
     text-align: center;
 }
@@ -1534,7 +1534,7 @@ body {
         margin: 0;
     }
 
-/* Movie Details Full */
+
 .movie-details-full {
     padding: 1rem 0;
 }
@@ -1592,7 +1592,7 @@ body {
         margin: 0;
     }
 
-/* Media Gallery */
+
 .media-gallery h3 {
     color: var(--text-primary);
     font-size: 1.25rem;
@@ -1624,7 +1624,7 @@ body {
         object-fit: cover;
     }
 
-/* Booking Actions Styles */
+
 .booking-actions {
     margin: 30px 0;
     display: flex;
@@ -1668,7 +1668,7 @@ body {
         font-size: 18px;
     }
 
-/* Responsive for Showtimes */
+
 @media (max-width: 768px) {
     .showtimes-header {
         flex-direction: column;

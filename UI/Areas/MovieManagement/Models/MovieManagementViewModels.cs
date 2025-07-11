@@ -34,7 +34,7 @@ namespace UI.Areas.MovieManagement.Models
         public string? Content { get; set; }
         
         [Required(ErrorMessage = "Phiên bản phim là bắt buộc")]
-        public string Version { get; set; } = string.Empty; // 2D, 3D
+        public int Version { get; set; } = 1; // 1=2D, 2=3D, 3=4DX
         
         [Range(0.0, 10.0, ErrorMessage = "Điểm đánh giá phải từ 0.0 đến 10.0")]
         public double Rating { get; set; } = 0.0;

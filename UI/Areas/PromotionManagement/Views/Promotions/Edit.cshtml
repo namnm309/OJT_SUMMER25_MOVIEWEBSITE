@@ -1,4 +1,4 @@
-﻿@model UI.Models.PromotionViewModel
+@model UI.Models.PromotionViewModel
 @{
     ViewData["Title"] = "Chỉnh sửa khuyến mãi";
     Layout = null;
@@ -11,11 +11,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Cinema City</title>
 
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
@@ -277,13 +277,13 @@
         </form>
     </div>
 
-    <!-- Scripts -->
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         $(document).ready(function() {
-            // Preview promotion image
+
             $('#ImageUrl').on('input', function() {
                 var imageUrl = $(this).val();
                 if (imageUrl) {
@@ -293,7 +293,7 @@
                 }
             });
 
-            // Form validation
+
             $('#editPromotionForm').on('submit', function(e) {
                 if (!$('#termsCheck').is(':checked')) {
                     e.preventDefault();

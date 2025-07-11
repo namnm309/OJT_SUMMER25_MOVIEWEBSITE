@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace UI.Areas.BookingManagement.Models
 {
-    // T8: Select Movie and Showtime ViewModels
+
     public class SelectMovieViewModel
     {
         public List<MovieOption> Movies { get; set; } = new List<MovieOption>();
@@ -37,7 +37,7 @@ namespace UI.Areas.BookingManagement.Models
         public int TotalSeats { get; set; }
     }
 
-    // T9: Select Seats ViewModels
+
     public class SelectSeatViewModel
     {
         public Guid ShowTimeId { get; set; }
@@ -71,7 +71,7 @@ namespace UI.Areas.BookingManagement.Models
         VIP = 2
     }
 
-    // T10: Confirm Booking ViewModels  
+
     public class ConfirmBookingViewModel
     {
         public Guid ShowTimeId { get; set; }
@@ -92,7 +92,7 @@ namespace UI.Areas.BookingManagement.Models
         public string CustomerEmail { get; set; } = string.Empty;
         public string CustomerIdCard { get; set; } = string.Empty;
 
-        // Points/Promotion
+
         public int AvailablePoints { get; set; }
         public bool UsePoints { get; set; } = false;
         public int PointsToUse { get; set; } = 0;
@@ -103,7 +103,7 @@ namespace UI.Areas.BookingManagement.Models
         public string? Notes { get; set; }
     }
 
-    // T11: Ticket Information ViewModels
+
     public class TicketInfoViewModel
     {
         public Guid BookingId { get; set; }
@@ -118,12 +118,12 @@ namespace UI.Areas.BookingManagement.Models
         public DateTime BookingTime { get; set; }
         public BookingStatus Status { get; set; }
 
-        // Customer Info
+
         public string CustomerName { get; set; } = string.Empty;
         public string CustomerPhone { get; set; } = string.Empty;
         public string CustomerEmail { get; set; } = string.Empty;
 
-        // Points Used
+
         public int PointsUsed { get; set; }
         public decimal PointsDiscount { get; set; }
         public int PointsEarned { get; set; }
@@ -139,7 +139,7 @@ namespace UI.Areas.BookingManagement.Models
         Completed = 4
     }
 
-    // API Response Models
+
     public class BookingResponse
     {
         public bool Success { get; set; }
@@ -148,7 +148,7 @@ namespace UI.Areas.BookingManagement.Models
         public string? BookingCode { get; set; }
     }
 
-    // Search Movies
+
     public class SearchMovieViewModel
     {
         public string SearchTerm { get; set; } = string.Empty;

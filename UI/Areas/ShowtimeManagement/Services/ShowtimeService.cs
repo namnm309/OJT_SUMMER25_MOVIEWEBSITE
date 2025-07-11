@@ -21,8 +21,37 @@ namespace UI.Areas.ShowtimeManagement.Services
         {
             try
             {
-                var endDate = startDate.AddDays(6);
-                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/showtime/GetByDateRange?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
+
+                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/showtime");
+                
+                if (result.Success && result.Data.TryGetProperty("data", out var dataElement))
+                {
+                    var allShowtimes = JsonSerializer.Deserialize<List<ShowtimeDto>>(dataElement.GetRawText(), 
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    
+                    if (allShowtimes != null)
+                    {
+
+                        var endDate = startDate.AddDays(6);
+                        return allShowtimes.Where(s => s.ShowDate.Date >= startDate.Date && s.ShowDate.Date <= endDate.Date).ToList();
+                    }
+                }
+                
+                return new List<ShowtimeDto>();
+            }
+            catch (Exception ex)
+            {
+                // Lỗi khi tải dữ liệu từ API
+                throw new Exception($"Lỗi tải lịch chiếu: {ex.Message}");
+            }
+        }
+
+        public async Task<List<ShowtimeDto>> GetShowtimesForMonthAsync(int month, int year)
+        {
+            try
+            {
+
+                var result = await _apiService.GetAsync<JsonElement>($"/api/v1/showtime/GetByMonth?month={month}&year={year}");
                 
                 if (result.Success && result.Data.TryGetProperty("data", out var dataElement))
                 {
@@ -31,13 +60,12 @@ namespace UI.Areas.ShowtimeManagement.Services
                     return showtimes ?? new List<ShowtimeDto>();
                 }
                 
-                // API trả về thành công nhưng không có dữ liệu
-                throw new Exception("Không có lịch chiếu trong khoảng thời gian này");
+                return new List<ShowtimeDto>();
             }
             catch (Exception ex)
             {
                 // Lỗi khi tải dữ liệu từ API
-                throw new Exception($"Lỗi tải lịch chiếu: {ex.Message}");
+                throw new Exception($"Lỗi tải lịch chiếu tháng {month}/{year}: {ex.Message}");
             }
         }
 
@@ -55,7 +83,7 @@ namespace UI.Areas.ShowtimeManagement.Services
             }
             catch (Exception ex)
             {
-                // Log error
+
             }
             
             return null;
@@ -65,7 +93,7 @@ namespace UI.Areas.ShowtimeManagement.Services
         {
             try
             {
-                var result = await _apiService.GetAsync<JsonElement>("/api/v1/movie/GetActive");
+                var result = await _apiService.GetAsync<JsonElement>("/booking-ticket/dropdown/movies");
                 
                 if (result.Success && result.Data.TryGetProperty("data", out var dataElement))
                 {
@@ -88,7 +116,7 @@ namespace UI.Areas.ShowtimeManagement.Services
         {
             try
             {
-                var result = await _apiService.GetAsync<JsonElement>("/api/v1/cinemaroom");
+                var result = await _apiService.GetAsync<JsonElement>("/cinemaroom/ViewRoom");
                 
                 if (result.Success && result.Data.TryGetProperty("data", out var dataElement))
                 {
@@ -120,7 +148,7 @@ namespace UI.Areas.ShowtimeManagement.Services
                     price = model.Price
                 };
 
-                var result = await _apiService.PostAsync<JsonElement>("/api/v1/showtime", data);
+                var result = await _apiService.PostAsync<JsonElement>("/showtime/create-new", data);
                 
                 if (result.Success)
                 {
@@ -204,12 +232,10 @@ namespace UI.Areas.ShowtimeManagement.Services
             }
             catch (Exception ex)
             {
-                // Log error
+
             }
             
             return false;
         }
-
-
     }
 }

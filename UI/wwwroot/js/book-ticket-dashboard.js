@@ -1,4 +1,4 @@
-// Book Ticket Dashboard JavaScript
+
 class BookTicketDashboard {
     constructor() {
         this.currentStep = 1;
@@ -20,15 +20,15 @@ class BookTicketDashboard {
 
     // gán click, keypress, change events cho các nút và input
     bindEvents() {
-        // Navigation buttons
+
         $('#nextBtn').on('click', () => this.nextStep());
         $('#prevBtn').on('click', () => this.prevStep());
         $('#confirmBtn').on('click', () => this.confirmBooking());
 
-        // Movie search
+
         $('#movieSearch').on('input', (e) => this.searchMovies(e.target.value));
 
-        // Customer search
+
         const searchButton = $('#searchCustomer');
         const phoneInput = $('#customerPhone');
 
@@ -46,15 +46,15 @@ class BookTicketDashboard {
             });
         }
 
-        // Create customer modal events
+
         $('#createCustomer').on('click', () => this.showCreateCustomerModal());
         $('#saveCustomer').on('click', () => this.createCustomer());
 
-        // Payment method change
+
         $('input[name="paymentMethod"]').on('change', () => this.updateOrderSummary());
     }
 
-    // api /BookingManagement/BookingTicket/GetMovies
+
     async loadMovies() {
         try {
             this.showLoading();
@@ -79,7 +79,7 @@ class BookTicketDashboard {
         const movieSelect = $('#movieSelect');
         const selectedMovieInfo = $('#selectedMovieInfo');
         
-        // Clear existing options except the first one
+
         movieSelect.find('option:not(:first)').remove();
         selectedMovieInfo.hide();
 
@@ -88,14 +88,14 @@ class BookTicketDashboard {
             return;
         }
 
-        // Populate dropdown with movies
+
         movies.forEach(movie => {
             const option = $(`<option value="${movie.id}">${movie.title}</option>`);
             option.data('movie', movie);
             movieSelect.append(option);
         });
 
-        // Handle movie selection
+
         movieSelect.off('change').on('change', (e) => {
             const selectedOption = $(e.target).find('option:selected');
             const movie = selectedOption.data('movie');
@@ -134,22 +134,22 @@ class BookTicketDashboard {
     async selectMovie(movie) {
         this.selectedMovie = movie;
         
-        // Load showtimes
+
         await this.loadShowtimes(movie.id);
     }
 
     //lấy ngày chiếu và giờ chiếu của phim 
-    // api /BookingManagement/BookingTicket/GetShowDates?movieId=${movieId}` 
-    // api /BookingManagement/BookingTicket/GetShowTimes?movieId=${movieId}&showDate=${encodeURIComponent(dateItem.code)}`
+
+
     async loadShowtimes(movieId) {
         try {
             this.showLoading();
-            // First get available dates for the movie
+
             const datesResponse = await fetch(`/BookingManagement/BookingTicket/GetShowDates?movieId=${movieId}`);
             const datesData = await datesResponse.json();
             
             if (datesData.success && datesData.data && datesData.data.length > 0) {
-                // For each date, get the showtimes
+
                 const showDatesWithTimes = [];
                 
                 for (const dateItem of datesData.data) {
@@ -257,11 +257,11 @@ class BookTicketDashboard {
     selectShowtime(showtime) {
         this.selectedShowtime = showtime;
         
-        // Update UI
+
         $('.showtime-btn').removeClass('active');
         $(`.showtime-btn[data-showtime-id="${showtime.id}"]`).addClass('active');
         
-        // Auto advance to step 2 and load seats
+
         setTimeout(() => {
             this.currentStep = 2;
             this.updateStepDisplay();
@@ -270,7 +270,7 @@ class BookTicketDashboard {
     }
 
     // lấy danh sách ghế của suất chiếu và show sơ đồ ghế
-    // api /BookingManagement/BookingTicket/GetSeats?showTimeId=${showtimeId}`
+
     async loadSeats(showtimeId) {
         try {
             const url = `/BookingManagement/BookingTicket/GetSeats?showTimeId=${showtimeId}`;
@@ -309,16 +309,16 @@ class BookTicketDashboard {
             return;
         }
 
-        // Group seats by row (extract row from seatCode)
+
         const seatRows = {};
         seatData.forEach((seat, index) => {
-            // Extract row letter from seatCode (e.g., "A1" -> "A")
+
             const rowName = seat.seatCode ? seat.seatCode.charAt(0) : 'A';
             if (!seatRows[rowName]) {
                 seatRows[rowName] = [];
             }
             
-            // Transform backend data to frontend format
+
             const transformedSeat = {
                 id: seat.id,
                 rowName: rowName,
@@ -332,7 +332,7 @@ class BookTicketDashboard {
             seatRows[rowName].push(transformedSeat);
         });
 
-        // Display seats
+
         Object.keys(seatRows).sort().forEach(rowName => {
             const row = $(`<div class="seat-row"><span class="row-label">${rowName}</span></div>`);
             
@@ -363,11 +363,11 @@ class BookTicketDashboard {
         const seatIndex = this.selectedSeats.findIndex(s => s.id === seatId);
 
         if (seatIndex > -1) {
-            // Deselect seat
+
             this.selectedSeats.splice(seatIndex, 1);
             seatElement.removeClass('selected');
         } else {
-            // Select seat
+
             this.selectedSeats.push(seat);
             seatElement.addClass('selected');
         }
@@ -518,7 +518,7 @@ class BookTicketDashboard {
         if (customerInfoContainer.length === 0) {
             $('.booking-container').append(`
                 <div id="customerInfo" class="customer-info-section mt-3">
-                    <!-- Customer info will be inserted here -->
+                    
                 </div>
             `);
         }
@@ -653,7 +653,7 @@ class BookTicketDashboard {
     //Validate và chuyển sang bước tiếp theo (1→2→3)
     nextStep() {
         if (this.currentStep < 3) {
-            // Validate current step
+
             if (!this.validateStep(this.currentStep)) {
                 return;
             }
@@ -661,7 +661,7 @@ class BookTicketDashboard {
             this.currentStep++;
             this.updateStepDisplay();
             
-            // Load data for next step
+
             if (this.currentStep === 2) {
                 this.loadSeats(this.selectedShowtime.id);
             } else if (this.currentStep === 3) {
@@ -678,7 +678,7 @@ class BookTicketDashboard {
     }
 
     updateStepDisplay() {
-        // Update step indicators
+
         $('.step').removeClass('active completed');
         for (let i = 1; i <= 3; i++) {
             if (i < this.currentStep) {
@@ -688,11 +688,11 @@ class BookTicketDashboard {
             }
         }
 
-        // Update step panels
+
         $('.step-panel').removeClass('active');
         $(`#step${this.currentStep}`).addClass('active');
 
-        // Update navigation buttons
+
         $('#prevBtn').toggle(this.currentStep > 1);
         $('#nextBtn').toggle(this.currentStep < 3);
         $('#confirmBtn').toggle(this.currentStep === 3);
@@ -728,7 +728,7 @@ class BookTicketDashboard {
         try {
             this.showLoading();
 
-            // Step 1: Get booking confirmation details (AC-01)
+
             const seatIdsParam = this.selectedSeats.map(seat => seat.id).join(',');
             const detailResponse = await fetch(`/BookTicket/GetBookingConfirmationDetail?showTimeId=${this.selectedShowtime.id}&seatIds=${seatIdsParam}&memberId=${this.customerInfo.id}`, {
                 method: 'GET',
@@ -745,7 +745,7 @@ class BookTicketDashboard {
                 return;
             }
 
-            // Step 2: Show confirmation modal with score conversion options (AC-02)
+
             this.showBookingConfirmationModal(detailResult.data, usedPoints);
 
         } catch (error) {
@@ -755,7 +755,7 @@ class BookTicketDashboard {
     }
 
     showBookingConfirmationModal(bookingDetail, requestedPoints) {
-        // Build confirmation modal with all booking details (AC-01)
+
         const modalHtml = `
             <div class="modal fade" id="bookingConfirmModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-lg" role="document">
@@ -765,7 +765,7 @@ class BookTicketDashboard {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
                         <div class="modal-body">
-                            <!-- Booking Information (Read-only) -->
+                            
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <h6>Thông Tin Đặt Vé</h6>
@@ -786,7 +786,7 @@ class BookTicketDashboard {
                                 </div>
                             </div>
 
-                            <!-- Score Conversion Options (AC-02) -->
+                            
                             ${bookingDetail.canConvertScore ? `
                                 <div class="card mb-3">
                                     <div class="card-header">
@@ -815,7 +815,7 @@ class BookTicketDashboard {
                                 </div>
                             ` : '<div class="alert alert-info">Không đủ điểm để chuyển đổi vé</div>'}
 
-                            <!-- Payment Method -->
+                            
                             <div class="form-group">
                                 <label>Phương thức thanh toán:</label>
                                 <div class="form-check">
@@ -837,21 +837,21 @@ class BookTicketDashboard {
             </div>
         `;
 
-        // Remove existing modal and add new one
+
         $('#bookingConfirmModal').remove();
         $('body').append(modalHtml);
 
-        // Bind events for score conversion
+
         this.bindScoreConversionEvents(bookingDetail);
 
-        // Show modal - Bootstrap 5 way
+
         const modal = new bootstrap.Modal(document.getElementById('bookingConfirmModal'));
         modal.show();
         this.hideLoading();
     }
 
     bindScoreConversionEvents(bookingDetail) {
-        // Toggle conversion options
+
         $('input[name="scoreConversion"]').change(function() {
             const useConversion = $(this).val() === 'true';
             $('#conversionOptions').toggle(useConversion);
@@ -861,7 +861,7 @@ class BookTicketDashboard {
             }
         });
 
-        // Update conversion summary
+
         $('#ticketsToConvert').on('input', function() {
             const tickets = parseInt($(this).val()) || 0;
             const maxTickets = bookingDetail.maxTicketsFromScore;
@@ -875,7 +875,7 @@ class BookTicketDashboard {
                 const pointsNeeded = tickets * bookingDetail.scorePerTicket;
                 const remainingPoints = bookingDetail.memberScore - pointsNeeded;
                 
-                // AC-03: Check if score is sufficient
+
                 if (remainingPoints < 0) {
                     $('#conversionSummary').html('<div class="text-danger">Not enough score to convert into ticket</div>');
                     $('#finalConfirmBtn').prop('disabled', true);
@@ -894,7 +894,7 @@ class BookTicketDashboard {
             }
         });
 
-        // Final confirm button
+
         $('#finalConfirmBtn').off('click').on('click', () => {
             this.executeFinalBooking(bookingDetail);
         });
@@ -908,7 +908,7 @@ class BookTicketDashboard {
             const ticketsToConvert = useScoreConversion ? parseInt($('#ticketsToConvert').val()) || 0 : 0;
             const paymentMethod = $('input[name="modalPaymentMethod"]:checked').val();
 
-            // Prepare data for new API (AC-05) - Use PascalCase for C# model binding
+
             const bookingData = {
                 ShowTimeId: this.selectedShowtime.id,
                 SeatIds: this.selectedSeats.map(seat => seat.id),
@@ -933,19 +933,19 @@ class BookTicketDashboard {
             this.hideLoading();
 
             if (result.success && result.data) {
-                // Hide confirmation modal - Bootstrap 5 way
+
                 const confirmModal = bootstrap.Modal.getInstance(document.getElementById('bookingConfirmModal'));
                 confirmModal.hide();
                 
-                // Display success result
+
                 this.displayBookingSuccess(result.data);
                 
-                // Reset form
+
                 this.resetBookingForm();
                 this.currentStep = 1;
                 this.updateStepDisplay();
             } else {
-                // AC-03: Display error if score insufficient or other errors
+
                 this.showError(result.message || 'Đặt vé không thành công');
             }
         } catch (error) {
@@ -999,29 +999,29 @@ class BookTicketDashboard {
             </div>
         `;
 
-        // Remove existing modal if any
+
         $('#bookingSuccessModal').remove();
         
-        // Add modal to body
+
         $('body').append(successModal);
         
-        // Show modal - Bootstrap 5 way
+
         const successModalInstance = new bootstrap.Modal(document.getElementById('bookingSuccessModal'));
         successModalInstance.show();
         
-        // Add manual close event handlers for better compatibility
+
         $('#bookingSuccessModal').on('click', '[data-bs-dismiss="modal"], #closeSuccessModal', function() {
             successModalInstance.hide();
         });
         
-        // Close on backdrop click
+
         $('#bookingSuccessModal').on('click', function(e) {
             if (e.target === this) {
                 successModalInstance.hide();
             }
         });
         
-        // Close on escape key
+
         $(document).on('keydown.successModal', function(e) {
             if (e.keyCode === 27) { // Escape key
                 successModalInstance.hide();
@@ -1029,7 +1029,7 @@ class BookTicketDashboard {
             }
         });
         
-        // Clean up when modal is hidden
+
         $('#bookingSuccessModal').on('hidden.bs.modal', function() {
             $(this).remove();
             $(document).off('keydown.successModal');
@@ -1037,36 +1037,36 @@ class BookTicketDashboard {
     }
 
     resetBookingForm() {
-        // Reset movie selection
+
         $('#movieSelect').val('');
         $('#selectedMovieInfo').hide();
         this.selectedMovie = null;
         
-        // Reset showtime
+
         $('#showtimeSelection').html('<p class="text-muted">Vui lòng chọn phim trước</p>');
         this.selectedShowtime = null;
         
-        // Reset seats
+
         this.selectedSeats = [];
         $('#seatMap').empty();
         this.updateSelectedSeats();
 
-        // Reset customer info
+
         $('#customerPhone').val('');
         $('#customerInfo').hide();
         this.customerInfo = null;
         this.clearSearchMessage();
 
-        // Reset points
+
         $('#usePoints').val(0).prop('disabled', true);
         
-        // Reset payment method
+
         $('input[name="paymentMethod"][value="cash"]').prop('checked', true);
         
-        // Reset order summary
+
         this.updateOrderSummary();
         
-        // Clear any error messages
+
         $('.alert').hide();
     }
 
@@ -1090,7 +1090,7 @@ class BookTicketDashboard {
         });
     }
 
-    // Utility methods
+
     formatDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleDateString('vi-VN', {
@@ -1125,12 +1125,12 @@ class BookTicketDashboard {
     }
 
     showError(message) {
-        // For general errors only (not search errors)
+
         alert('Lỗi: ' + message);
     }
 
     showSuccess(message) {
-        // For general success messages
+
         alert('Thành công: ' + message);
     }
 
@@ -1155,16 +1155,16 @@ class BookTicketDashboard {
 
     // Modal tạo khách hàng mới
     showCreateCustomerModal() {
-        // Clear form
+
         $('#createCustomerForm')[0].reset();
         
-        // Auto fill phone number from search input
+
         const searchTerm = $('#customerPhone').val().trim();
         if (searchTerm) {
             $('#newCustomerPhone').val(searchTerm);
         }
         
-        // Show modal - Bootstrap 5 way
+
         const modal = new bootstrap.Modal(document.getElementById('createCustomerModal'));
         modal.show();
     }
@@ -1172,10 +1172,10 @@ class BookTicketDashboard {
     async createCustomer() {
         try {
             const formData = {
-                fullName: $('#createFullName').val(),
-                email: $('#createEmail').val(),
-                phoneNumber: $('#createPhone').val(),
-                identityCard: $('#createIdentityCard').val()
+                fullName: $('#newCustomerFullName').val(),
+                email: $('#newCustomerEmail').val(),
+                phoneNumber: $('#newCustomerPhone').val(),
+                identityCard: $('#newCustomerIdentity').val()
             };
 
             const response = await fetch('/BookTicket/CreateCustomer', {
@@ -1189,12 +1189,12 @@ class BookTicketDashboard {
             const result = await response.json();
 
             if (result.success) {
-                // Hide modal - Bootstrap 5 way
+
                 const modal = bootstrap.Modal.getInstance(document.getElementById('createCustomerModal'));
                 modal.hide();
                 this.showSuccess('Tạo khách hàng thành công');
                 
-                // Auto search the new customer
+
                 $('#customerPhone').val(formData.phoneNumber);
                 await this.searchCustomer();
             } else {
@@ -1218,7 +1218,7 @@ class BookTicketDashboard {
     }
 }
 
-// Initialize when document is ready
+
 $(document).ready(function() {
     const dashboard = new BookTicketDashboard();
 
