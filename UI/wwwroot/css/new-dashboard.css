@@ -1,28 +1,28 @@
-/* New Dashboard CSS - Cinema City Style */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-/* CSS Variables - Homepage Style */
+
 :root {
     /* Background gradient giống homepage */
     --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
     
-    /* Sidebar colors - Purple theme */
+    
     --sidebar-bg: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
     --sidebar-hover: rgba(102, 126, 234, 0.1);
     --sidebar-active: rgba(102, 126, 234, 0.2);
     
-    /* Main content - White theme */
+    
     --content-bg: #ffffff;
     --content-secondary: #f8fafc;
     --content-border: #e2e8f0;
     
-    /* Text colors */
+    
     --text-white: #ffffff;
     --text-dark: #1e293b;
     --text-muted: #64748b;
     --text-light: rgba(255, 255, 255, 0.7);
     
-    /* Accent colors */
+    
     --primary-purple: #667eea;
     --primary-purple-dark: #5a67d8;
     --accent-blue: #4fc3f7;
@@ -30,7 +30,7 @@
     --warning: #f59e0b;
     --error: #ef4444;
     
-    /* Shadows */
+    
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
@@ -51,14 +51,14 @@ body {
     overflow-x: hidden;
 }
 
-/* Main Dashboard Layout */
+
 .new-dashboard-layout {
     display: flex;
     min-height: 100vh;
     background: var(--bg-gradient);
 }
 
-/* Sidebar Styles */
+
 .new-dashboard-sidebar {
     width: 280px;
     background: var(--sidebar-bg);
@@ -86,7 +86,7 @@ body {
     border-radius: 2px;
 }
 
-/* Sidebar Header */
+
 .new-sidebar-header {
     padding: 2rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -153,7 +153,7 @@ body {
     margin: 0;
 }
 
-/* Navigation */
+
 .new-sidebar-nav {
     padding: 1rem;
 }
@@ -202,7 +202,7 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* Dropdown Navigation Styles */
+
 .new-nav-item.has-dropdown {
     position: relative;
 }
@@ -213,7 +213,7 @@ body {
 }
 
 .new-nav-link.dropdown-toggle::after {
-    content: '\f107'; /* Font Awesome chevron down */
+    content: '\f107'; 
     font-family: 'Font Awesome 5 Free';
     font-weight: 900;
     position: absolute;
@@ -271,7 +271,7 @@ body {
     text-align: center;
 }
 
-/* Improved Active States */
+
 .new-nav-link:hover::before,
 .new-nav-link.active::before {
     transform: scaleY(1);
@@ -311,7 +311,7 @@ body {
     text-align: center;
 }
 
-/* Sidebar User Section Improvements */
+
 .new-sidebar-user {
     margin-top: auto;
     padding: 1.5rem;
@@ -396,7 +396,7 @@ body {
     box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
 }
 
-/* Authorization Fix - Cookie-based */
+
 .auth-indicator {
     position: absolute;
     top: 0.5rem;
@@ -421,7 +421,7 @@ body {
     }
 }
 
-/* Main Content Area */
+
 .new-dashboard-main {
     flex: 1;
     margin-left: 280px;
@@ -441,14 +441,14 @@ body {
     width: 100%;
 }
 
-/* Page Header */
+
 .new-page-header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--content-border);
 }
 
-/* Breadcrumb fixes */
+
 .breadcrumb {
     background: transparent;
     padding: 0;
@@ -484,7 +484,7 @@ body {
     margin: 0;
 }
 
-/* Stats Grid */
+
 .new-stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -576,7 +576,7 @@ body {
     color: var(--error);
 }
 
-/* Content Cards */
+
 .new-content-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -618,7 +618,7 @@ body {
     color: var(--primary-purple);
 }
 
-/* Quick Actions */
+
 .new-quick-actions {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -674,7 +674,7 @@ body {
     text-align: center;
 }
 
-/* Activity Feed */
+
 .new-activity-feed {
     max-height: 400px;
     overflow-y: auto;
@@ -730,7 +730,7 @@ body {
     color: var(--text-muted);
 }
 
-/* Animations */
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -761,7 +761,7 @@ body {
     animation: slideInRight 0.6s ease-out;
 }
 
-/* Responsive adjustments (minimal since desktop-only) */
+
 @media (max-width: 1400px) {
     .new-content-grid {
         grid-template-columns: 1fr;
@@ -782,7 +782,7 @@ body {
     }
 }
 
-/* Mobile Responsive Improvements */
+
 @media (max-width: 768px) {
     .new-dashboard-sidebar {
         width: 100%;

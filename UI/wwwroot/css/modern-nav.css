@@ -1,4 +1,4 @@
-/* Modern Navigation Component Styles - Inspired by Builder.io */
+
 :root {
   --nav-bg: rgb(255, 255, 255);
   --nav-border: rgb(221, 221, 221);
@@ -14,7 +14,7 @@
   --transition: all 0.2s ease;
 }
 
-/* Main Navigation Container */
+
 .modern-nav {
   background: var(--nav-bg);
   border-bottom: 1px solid var(--nav-border);
@@ -36,14 +36,14 @@
   height: 64px;
 }
 
-/* Left Section - Brand and Navigation */
+
 .nav-left {
   display: flex;
   align-items: center;
   gap: 32px;
 }
 
-/* Brand */
+
 .nav-brand {
   display: flex;
   align-items: center;
@@ -89,7 +89,7 @@
   background-clip: text;
 }
 
-/* Navigation Links */
+
 .nav-links {
   display: flex;
   align-items: center;
@@ -136,14 +136,14 @@
   font-weight: 500;
 }
 
-/* Right Section - Actions and User */
+
 .nav-right {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-/* Action Buttons */
+
 .nav-actions {
   display: flex;
   align-items: center;
@@ -188,7 +188,7 @@
   justify-content: center;
 }
 
-/* User Dropdown */
+
 .user-dropdown {
   position: relative;
 }
@@ -251,7 +251,7 @@
   transform: rotate(180deg);
 }
 
-/* User Menu */
+
 .user-menu {
   min-width: 280px;
   border: 1px solid var(--nav-border);
@@ -334,7 +334,7 @@
   color: rgb(220, 38, 38) !important;
 }
 
-/* Guest Actions */
+
 .guest-actions {
   display: flex;
   align-items: center;
@@ -382,7 +382,7 @@
   box-shadow: var(--shadow-medium);
 }
 
-/* Mobile Toggle */
+
 .mobile-toggle {
   display: none;
   flex-direction: column;
@@ -401,7 +401,7 @@
   transition: var(--transition);
 }
 
-/* Mobile Navigation */
+
 .mobile-nav {
   padding: 16px;
   border-top: 1px solid var(--nav-border);
@@ -450,7 +450,7 @@
   width: 100%;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
   .nav-container {
     padding: 12px 16px;
@@ -499,7 +499,7 @@
   }
 }
 
-/* Animation for dropdown */
+
 .user-menu {
   opacity: 0;
   transform: translateY(-10px);
@@ -511,7 +511,7 @@
   transform: translateY(0);
 }
 
-/* Focus states for accessibility */
+
 .nav-link:focus,
 .action-btn:focus,
 .user-trigger:focus,
@@ -520,7 +520,7 @@
   outline-offset: 2px;
 }
 
-/* Dark mode support (optional) */
+
 @media (prefers-color-scheme: dark) {
   :root {
     --nav-bg: rgb(31, 41, 55);

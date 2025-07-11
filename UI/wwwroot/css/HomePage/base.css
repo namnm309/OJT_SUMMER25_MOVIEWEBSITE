@@ -1,4 +1,4 @@
-/* Base styles and global settings */
+
 .cinema-homepage {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
@@ -8,7 +8,7 @@
     min-height: 100vh;
 }
 
-/* Common form elements */
+
 .form-select, .form-input {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -36,7 +36,7 @@
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* Common meta styles */
+
 .movie-meta {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -63,7 +63,7 @@
     height: 16px;
 }
 
-/* Common rating styles */
+
 .rating-item {
     display: flex;
     align-items: center;
@@ -78,7 +78,7 @@
     height: 24px;
 }
 
-/* Footer styles */
+
 .cinema-footer {
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(20px);

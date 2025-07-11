@@ -119,7 +119,7 @@
 </header>
 
 <style>
-    /* Dashboard Header Styles */
+    
     .dashboard-header {
         background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
         backdrop-filter: blur(10px);
@@ -193,12 +193,12 @@
         background: rgba(223, 33, 68, 0.1);
     }
     
-    /* Make brand link hover effect */
+    
     .brand-section a:hover .brand-name {
         color: #df2144;
     }
 
-    /* Responsive */
+    
     @@media (max-width: 768px) {
         .header-content {
             padding: 15px;
@@ -219,9 +219,9 @@
 </style>
 
 <script>
-    // Navigation dropdown support
+
     document.addEventListener('DOMContentLoaded', function() {
-        // Enable Bootstrap dropdown if present
+
         const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
         const dropdownList = [...dropdownElementList].map(dropdownToggleEl => {
             if (typeof bootstrap !== 'undefined') {
@@ -230,7 +230,7 @@
             return null;
         });
         
-        // Debug: Log current page for troubleshooting
+
         console.log('Current Page:', '@currentPage');
         console.log('User Roles:', '@String.Join(",", User.FindAll("role").Select(c => c.Value))');
     });

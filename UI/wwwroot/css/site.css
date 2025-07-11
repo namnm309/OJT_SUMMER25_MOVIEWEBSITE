@@ -21,7 +21,7 @@ body {
   margin-bottom: 60px;
 }
 
-/* Active navigation item */
+
 .navbar-nav .nav-link.active {
     color: #dc3545 !important;
     font-weight: 600;
@@ -40,7 +40,7 @@ body {
     border-radius: 2px;
 }
 
-/* Promotions specific styles */
+
 .promotion-card {
     transition: all 0.3s ease;
 }

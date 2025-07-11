@@ -10,15 +10,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
 
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Homepage Base CSS for Footer -->
+    
     <link rel="stylesheet" href="~/css/HomePage/base.css" />
-    <!-- Dashboard CSS -->
+    
     <link rel="stylesheet" href="~/css/dashboard.css" />
 
     <style>
@@ -37,7 +37,7 @@
             flex-direction: column;
         }
 
-        /* Products Hero Section */
+        
         .products-hero-section {
             background: linear-gradient(135deg, rgba(223, 33, 68, 0.15) 0%, rgba(0, 0, 0, 0.8) 100%),
                         linear-gradient(45deg, #0a0a0a 0%, #1a1a1a 50%, #2d2d2d 100%);
@@ -91,7 +91,7 @@
             margin-right: auto;
         }
 
-        /* Filter Section */
+        
         .filter-section {
             background: rgba(26, 26, 26, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -156,7 +156,7 @@
             color: white;
         }
 
-        /* Products Grid */
+        
         .products-content {
             flex: 1;
             padding: 0 2rem 4rem;
@@ -287,7 +287,7 @@
             box-shadow: 0 10px 20px rgba(223, 33, 68, 0.3);
         }
 
-        /* Pagination */
+        
         .pagination {
             display: flex;
             justify-content: center;
@@ -315,14 +315,14 @@
             border-color: #df2144;
         }
 
-        /* Page Layout Fix */
+        
         .cinema-products-page {
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
         }
 
-        /* Footer styling override */
+        
         .cinema-footer {
             margin-top: 4rem !important;
             position: relative !important;
@@ -330,7 +330,7 @@
             width: 100% !important;
         }
 
-        /* Responsive Design */
+        
         @@media (max-width: 768px) {
             .products-hero-title {
                 font-size: 2.5rem;
@@ -374,11 +374,11 @@
         ViewBag.CurrentPage = "Products";
     }
     
-    <!-- Header - Unified Dashboard Style -->
+    
     @Html.Partial("_DashboardHeader")
 
     <div class="cinema-products-page">
-        <!-- Hero Section -->
+        
         <div class="products-hero-section">
             <div class="container">
                 <div class="products-hero-content">
@@ -391,7 +391,7 @@
         </div>
 
         <div class="container">
-            <!-- Filter Section -->
+            
             <div class="filter-section">
                 <div class="row">
                     <div class="col-md-8">
@@ -412,7 +412,7 @@
                 </div>
             </div>
 
-            <!-- Products Grid -->
+            
             <div class="products-content">
                 <div class="products-grid">
                     <div class="product-card">
@@ -541,7 +541,7 @@
                     </div>
                 </div>
 
-                <!-- Pagination -->
+                
                 <nav aria-label="Phân trang sản phẩm">
                     <ul class="pagination">
                         <li class="page-item disabled">
@@ -569,33 +569,33 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    
     @Html.Partial("footer")
 
-    <!-- Scripts -->
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Search functionality
+
             const searchInput = document.getElementById('productSearch');
             const categoryFilter = document.getElementById('categoryFilter');
 
             searchInput.addEventListener('input', function() {
-                // TODO: Implement search functionality
+
                 console.log('Searching for:', this.value);
             });
 
             categoryFilter.addEventListener('change', function() {
-                // TODO: Implement category filtering
+
                 console.log('Filter by category:', this.value);
             });
 
-            // Add to cart functionality
+
             document.querySelectorAll('.btn-add').forEach(button => {
                 button.addEventListener('click', function() {
-                    // TODO: Implement add to cart
+
                     this.innerHTML = '<i class="fas fa-check me-2"></i>Đã thêm';
                     this.disabled = true;
                     setTimeout(() => {

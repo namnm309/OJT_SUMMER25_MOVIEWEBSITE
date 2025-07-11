@@ -6,18 +6,18 @@ namespace UI.Areas.MovieManagement.Services
 {
     public interface IMovieManagementUIService
     {
-        // T27: View Movie List
+
         Task<ApiResponse<dynamic>> GetMoviesAsync();
         Task<ApiResponse<dynamic>> GetMoviesPaginationAsync(int page = 1, int pageSize = 100);
         
-        // T28: Add Movie
+
         Task<ApiResponse<dynamic>> AddMovieAsync(MovieCreateViewModel model);
         
-        // T29: Edit Movie
+
         Task<ApiResponse<dynamic>> GetMovieAsync(Guid movieId);
         Task<ApiResponse<dynamic>> UpdateMovieAsync(Guid movieId, MovieUpdateViewModel model);
         
-        // T30: Delete Movie
+
         Task<ApiResponse<dynamic>> DeleteMovieAsync(Guid movieId);
     }
 

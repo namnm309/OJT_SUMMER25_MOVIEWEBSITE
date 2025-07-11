@@ -1,9 +1,9 @@
 /* CSS Dashboard hiện đại - Cinema City */
 
-/* Import Google Fonts */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-/* Override Bootstrap */
+
 :root {
     --bs-body-bg: #000000 !important;
     --bs-body-color: #ffffff !important;
@@ -48,7 +48,7 @@ body {
     flex-direction: column; /* Thêm để đảm bảo footer nằm dưới cùng */
 }
 
-/* Sidebar */
+
 
 .dashboard-sidebar {
     width: 280px;
@@ -148,7 +148,7 @@ body {
     margin: 0;
 }
 
-/* Navigation Sidebar */
+
 
 .sidebar-nav {
     padding: 0 1rem;
@@ -410,14 +410,14 @@ body {
     width: 100%;
 }
 
-/* Footer Styles */
+
 .cinema-footer {
     margin-top: auto; /* Đảm bảo footer luôn ở cuối */
     width: 100%;
     z-index: 100;
 }
 
-/* Sidebar responsive */
+
 
 .sidebar-toggle {
     display: none;
@@ -520,9 +520,7 @@ body {
     }
 }
 
-/* ===============================================
-   HERO SECTION
-   =============================================== */
+
 
 .hero-section {
     background: linear-gradient(135deg, var(--glass-bg) 0%, rgba(223, 33, 68, 0.1) 100%);
@@ -606,9 +604,7 @@ body {
     margin-top: 0.5rem;
 }
 
-/* ===============================================
-   STATS GRID
-   =============================================== */
+
 
 .stats-grid {
     display: grid;
@@ -734,9 +730,7 @@ body {
     color: #ff4757;
 }
 
-/* ===============================================
-   CONTENT GRID
-   =============================================== */
+
 
 .content-grid {
     display: grid;
@@ -757,9 +751,7 @@ body {
     gap: 2rem;
 }
 
-/* ===============================================
-   MODERN CARDS
-   =============================================== */
+
 
 .modern-card {
     background: var(--glass-bg);
@@ -807,9 +799,7 @@ body {
     color: var(--primary-red);
 }
 
-/* ===============================================
-   QUICK ACTIONS
-   =============================================== */
+
 
 .quick-actions {
     display: grid;
@@ -877,9 +867,7 @@ body {
     z-index: 1;
 }
 
-/* ===============================================
-   ACTIVITY FEED
-   =============================================== */
+
 
 .activity-item {
     display: flex;
@@ -931,9 +919,7 @@ body {
     color: var(--text-muted);
 }
 
-/* ===============================================
-   NOTIFICATIONS
-   =============================================== */
+
 
 .notification-item {
     background: var(--glass-bg);
@@ -980,9 +966,7 @@ body {
     line-height: 1.5;
 }
 
-/* ===============================================
-   SYSTEM STATUS
-   =============================================== */
+
 
 .system-status {
     display: flex;
@@ -1060,9 +1044,7 @@ body {
     }
 }
 
-/* ===============================================
-   USER INFO GRID
-   =============================================== */
+
 
 .user-info-grid {
     display: grid;
@@ -1123,9 +1105,7 @@ body {
     color: var(--text-muted);
 }
 
-/* ===============================================
-   MEMBER BENEFITS
-   =============================================== */
+
 
 .benefits-list {
     display: flex;
@@ -1178,9 +1158,7 @@ body {
     color: var(--text-muted);
 }
 
-/* ===============================================
-   POINTS SYSTEM
-   =============================================== */
+
 
 .points-info {
     display: flex;
@@ -1261,9 +1239,7 @@ body {
     color: var(--text-muted);
 }
 
-/* ===============================================
-   RESPONSIVE DESIGN
-   =============================================== */
+
 
 @media (max-width: 1200px) {
     .content-grid {
@@ -1333,9 +1309,7 @@ body {
     }
 }
 
-/* ===============================================
-   ANIMATIONS
-   =============================================== */
+
 
 @keyframes fadeInUp {
     from {

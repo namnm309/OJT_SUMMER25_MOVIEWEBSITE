@@ -4,11 +4,11 @@
     ViewData["Title"] = "Quản lý phòng chiếu - Cinema City";
     Layout = null;
     
-    // Check data availability
+
     bool hasData = false;
     int dataCount = 0;
     
-    // Model is already JsonElement - check various scenarios
+
     if (Model.ValueKind == JsonValueKind.Array && Model.GetArrayLength() > 0)
     {
         hasData = true;
@@ -16,13 +16,13 @@
     }
     else if (Model.ValueKind == JsonValueKind.Object)
     {
-        // Check if object has data property
+
         if (Model.TryGetProperty("data", out var dataArray) && dataArray.ValueKind == JsonValueKind.Array && dataArray.GetArrayLength() > 0)
         {
             hasData = true;
             dataCount = dataArray.GetArrayLength();
         }
-        // Check if object has typical room properties (single room)
+
         else if (Model.TryGetProperty("roomName", out _))
         {
             hasData = true;
@@ -41,19 +41,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- New Dashboard CSS -->
+    
     <link rel="stylesheet" href="~/css/new-dashboard.css" />
     
     <style>
-        /* Modern Design System */
+        
         :root {
-            /* Colors */
+            
             --primary: #6366f1;
             --primary-hover: #4f46e5;
             --primary-light: #e0e7ff;
@@ -67,7 +67,7 @@
             --info: #3b82f6;
             --info-light: #dbeafe;
             
-            /* Neutrals */
+            
             --gray-50: #f9fafb;
             --gray-100: #f3f4f6;
             --gray-200: #e5e7eb;
@@ -79,25 +79,25 @@
             --gray-800: #1f2937;
             --gray-900: #111827;
             
-            /* Shadows */
+            
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
             --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
             
-            /* Border Radius */
+            
             --radius-sm: 0.375rem;
             --radius: 0.5rem;
             --radius-lg: 0.75rem;
             --radius-xl: 1rem;
             
-            /* Transitions */
+            
             --transition: all 0.2s ease;
             --transition-fast: all 0.15s ease;
         }
 
-        /* Global Styles */
+        
         * {
             box-sizing: border-box;
         }
@@ -109,7 +109,7 @@
             line-height: 1.5;
         }
 
-        /* Content Container */
+        
         .content-wrapper {
             padding: 1.5rem;
             width: 100%;
@@ -117,7 +117,7 @@
             margin: 0;
         }
 
-        /* Page Header */
+        
         .page-header {
             margin-bottom: 1.5rem;
         }
@@ -150,7 +150,7 @@
             margin: 0;
         }
 
-        /* Card Component */
+        
         .card {
             background: white;
             border: 1px solid var(--gray-200);
@@ -165,7 +165,7 @@
             box-shadow: var(--shadow-md);
         }
 
-        /* Controls Bar */
+        
         .controls-bar {
             padding: 1rem 1.25rem;
             display: flex;
@@ -176,7 +176,7 @@
             border-bottom: 1px solid var(--gray-100);
         }
 
-        /* Search Box */
+        
         .search-box {
             position: relative;
             flex: 1 1 auto;
@@ -211,7 +211,7 @@
             box-shadow: 0 0 0 3px var(--primary-light);
         }
 
-        /* Buttons */
+        
         .btn {
             padding: 0.625rem 1.25rem;
             border-radius: var(--radius);
@@ -247,7 +247,7 @@
             background: var(--gray-200);
         }
 
-        /* Table */
+        
         .table-container {
             overflow-x: auto;
             width: 100%;
@@ -290,7 +290,7 @@
             color: var(--gray-700);
         }
 
-        /* Badges */
+        
         .badge {
             display: inline-flex;
             align-items: center;
@@ -322,7 +322,7 @@
             color: var(--info);
         }
 
-        /* Action Buttons */
+        
         .action-group {
             display: flex;
             gap: 0.375rem;
@@ -364,7 +364,7 @@
             color: var(--danger);
         }
 
-        /* Alerts */
+        
         .alert {
             padding: 0.75rem 1rem;
             border-radius: var(--radius);
@@ -414,7 +414,7 @@
             opacity: 1;
         }
 
-        /* Empty State */
+        
         .empty-state {
             text-align: center;
             padding: 3rem 2rem;
@@ -446,7 +446,7 @@
             font-size: 0.875rem;
         }
 
-        /* Pagination */
+        
         .pagination-wrapper {
             padding: 1rem 1.25rem;
             display: flex;
@@ -503,7 +503,7 @@
             cursor: not-allowed;
         }
 
-        /* Modal */
+        
         .modal-overlay {
             display: none;
             position: fixed;
@@ -558,7 +558,7 @@
             }
         }
 
-        /* Loading Spinner */
+        
         .loading-spinner {
             display: flex;
             flex-direction: column;
@@ -624,7 +624,7 @@
             justify-content: flex-end;
         }
 
-        /* Modal Form Styles */
+        
         .form-control-modal {
             width: 100%;
             padding: 0.625rem 1rem;
@@ -666,7 +666,7 @@
             margin-bottom: 1rem;
         }
 
-        /* Layout Preview Styles */
+        
         .layout-preview-container {
             background: var(--gray-50);
             border: 1px solid var(--gray-200);
@@ -706,7 +706,7 @@
             justify-content: center;
         }
 
-        /* Responsive */
+        
         @@media (max-width: 1024px) {
             .content-wrapper {
                 padding: 1rem;
@@ -767,15 +767,15 @@
     </style>
 </head>
 <body>
-    <!-- New Dashboard Layout -->
+    
     <div class="new-dashboard-layout">
-        <!-- Sidebar -->
+        
         @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
 
-        <!-- Main Content -->
+        
         <main class="new-dashboard-main">
             <div class="content-wrapper">
-                <!-- Page Header -->
+                
                 <header class="page-header">
                     <h1 class="page-title">
                         <span class="page-title-icon">
@@ -786,7 +786,7 @@
                     <p class="page-subtitle">Quản lý thông tin các phòng chiếu trong hệ thống rạp</p>
                 </header>
 
-                <!-- Success/Error Messages -->
+                
                 @if (TempData["Success"] != null)
                 {
                     <div class="alert alert-success">
@@ -809,9 +809,9 @@
                     </div>
                 }
 
-                <!-- Main Card -->
+                
                 <div class="card">
-                    <!-- Controls Bar -->
+                    
                     <div class="controls-bar">
                         <div class="search-box">
                             <i class="fas fa-search search-icon"></i>
@@ -827,7 +827,7 @@
                         </button>
                     </div>
 
-                    <!-- Table -->
+                    
                     <div class="table-container">
                         <table class="modern-table">
                             <thead>
@@ -844,7 +844,7 @@
                                 @{
                                     var baseIndex = ((ViewBag.CurrentPage ?? 1) - 1) * (ViewBag.PageSize ?? 10);
                                     
-                                    // Determine the actual data source to iterate
+
                                     JsonElement dataToIterate;
                                     
                                     if (Model.ValueKind == JsonValueKind.Array)
@@ -853,7 +853,7 @@
                                     }
                                     else if (Model.ValueKind == JsonValueKind.Object)
                                     {
-                                        // Try to extract data from object
+
                                         if (Model.TryGetProperty("data", out var dataArray))
                                         {
                                             dataToIterate = dataArray;
@@ -868,23 +868,23 @@
                                         }
                                         else
                                         {
-                                            // If object has room properties, treat as single room
+
                                             if (Model.TryGetProperty("roomName", out _))
                                             {
-                                                // Single room - create temporary array
+
                                                 var tempDoc = JsonDocument.Parse($"[{Model.GetRawText()}]");
                                                 dataToIterate = tempDoc.RootElement;
                                             }
                                             else
                                             {
-                                                // No valid structure found
+
                                                 dataToIterate = JsonDocument.Parse("[]").RootElement;
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        // Fallback to empty array
+
                                         dataToIterate = JsonDocument.Parse("[]").RootElement;
                                     }
                                 }
@@ -1015,8 +1015,8 @@
                         </table>
                     </div>
 
-                    <!-- Pagination -->
-<!-- Pagination -->
+                    
+
                     @{
                         var totalPages = ViewBag.Total != null && ViewBag.PageSize != null ? (int)Math.Ceiling((double)(int)ViewBag.Total / (int)ViewBag.PageSize) : 0;
                         var currentPage = ViewBag.CurrentPage ?? 1;
@@ -1066,7 +1066,7 @@
         </main>
     </div>
 
-    <!-- Delete Confirmation Modal -->
+    
     <div id="deleteModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -1104,7 +1104,7 @@
         </div>
     </div>
 
-    <!-- Create Cinema Room Modal -->
+    
     <div id="createModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 600px;">
             <div class="modal-header">
@@ -1169,7 +1169,7 @@
                         </div>
                     </div>
 
-                    <!-- Preview Layout -->
+                    
                     <div id="layoutPreview" class="mt-4" style="display: none;">
                         <hr>
                         <h6><i class="fas fa-eye me-2"></i>Xem trước layout ghế</h6>
@@ -1193,7 +1193,7 @@
         </div>
     </div>
 
-    <!-- Details Modal -->
+    
     <div id="detailsModal" class="modal-overlay">
         <div class="modal-content-wide">
             <div class="modal-header">
@@ -1211,13 +1211,13 @@
                     <span>Đang tải thông tin...</span>
                 </div>
                 <div id="detailsContent" style="display: none;">
-                    <!-- Content will be loaded here -->
+                    
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Edit Modal -->
+    
     <div id="editModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 600px;">
             <div class="modal-header">
@@ -1235,18 +1235,18 @@
                     <span>Đang tải thông tin...</span>
                 </div>
                 <div id="editContent" style="display: none;">
-                    <!-- Content will be loaded here -->
+                    
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     
     <script>
-        // Search functionality
+
         let searchTimeout;
         const searchInput = document.getElementById('cinemaSearch');
         
@@ -1259,7 +1259,7 @@
             }, 500);
         });
 
-        // Delete confirmation
+
         function confirmDelete(roomId, roomName) {
             document.getElementById('roomNameToDelete').textContent = roomName;
             const deleteUrl = '@Url.Action("Delete")';
@@ -1271,14 +1271,14 @@
             document.getElementById('deleteModal').style.display = 'none';
         }
 
-        // Close modal when clicking outside
+
         document.getElementById('deleteModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeDeleteModal();
             }
         });
 
-        // Auto hide alerts after 5 seconds
+
         setTimeout(function() {
             const alerts = document.querySelectorAll('.alert');
             alerts.forEach(function(alert) {
@@ -1287,7 +1287,7 @@
             });
         }, 5000);
 
-        // Prevent form submission on Enter in search
+
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -1295,7 +1295,7 @@
             }
         });
 
-        // Create Modal Functions
+
         function openCreateModal() {
             document.getElementById('createModal').style.display = 'block';
             setTimeout(() => document.getElementById('roomName').focus(), 100);
@@ -1345,7 +1345,7 @@
             const submitBtn = document.getElementById('submitBtn');
             const originalText = submitBtn.innerHTML;
             
-            // Disable button and show loading
+
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tạo...';
             
@@ -1369,7 +1369,7 @@
                     if (result.success) {
                         closeCreateModal();
                         
-                        // Show success message
+
                         const successAlert = document.createElement('div');
                         successAlert.className = 'alert alert-success';
                         successAlert.innerHTML = `
@@ -1381,10 +1381,10 @@
                         `;
                         document.querySelector('.page-header').after(successAlert);
                         
-                        // Reload page to show new room
+
                         setTimeout(() => window.location.reload(), 1500);
                     } else {
-                        // Show detailed validation errors
+
                         let errorMessage = result.message || 'Có lỗi xảy ra';
                         if (result.errors) {
                             const errorDetails = Object.entries(result.errors)
@@ -1402,7 +1402,7 @@
             } catch (error) {
                 console.error('Error creating room:', error);
                 
-                // Show error message
+
                 const errorAlert = document.createElement('div');
                 errorAlert.className = 'alert alert-danger';
                 errorAlert.innerHTML = `
@@ -1414,36 +1414,36 @@
                 `;
                 document.querySelector('.modal-body').prepend(errorAlert);
                 
-                // Auto remove error after 5 seconds
+
                 setTimeout(() => errorAlert.remove(), 5000);
             } finally {
-                // Re-enable button
+
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
             }
         }
 
-        // Close modal when clicking outside
+
         document.getElementById('createModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeCreateModal();
             }
         });
 
-        // Details Modal Functions
+
         async function openDetailsModal(roomId) {
             console.log(`Opening details modal for room ID: ${roomId}`); // Debug log
             const modal = document.getElementById('detailsModal');
             const loading = document.getElementById('detailsLoading');
             const content = document.getElementById('detailsContent');
             
-            // Show modal with loading
+
             modal.style.display = 'block';
             loading.style.display = 'flex';
             content.style.display = 'none';
             
             try {
-                // Construct the URL properly with area name and query parameter
+
                 const detailsUrl = '@Url.Action("Details", "CinemaRoom", new { area = "CinemaManagement" })';
                 const fullUrl = `${detailsUrl}?id=${roomId}`;
                 console.log('Fetching from URL:', fullUrl); // Debug log
@@ -1464,10 +1464,10 @@
                 const data = await response.json();
                 console.log('API Response:', data); // Debug log
                 
-                // Try to handle different response formats
+
                 console.log('Checking response format...');
                 
-                // Check if backend format { Code, Message, Data }
+
                 if (data.Code !== undefined) {
                     console.log('Backend format detected (Code, Message, Data)');
                     if (data.Code === 200 && data.Data) {
@@ -1478,7 +1478,7 @@
                         throw new Error(data.Message || 'Không thể tải thông tin phòng chiếu');
                     }
                 } 
-                // Check if API format { code, message, data }
+
                 else if (data.code !== undefined) {
                     console.log('API format detected (code, message, data)');
                     if (data.code === 200 && data.data) {
@@ -1489,7 +1489,7 @@
                         throw new Error(data.message || 'Không thể tải thông tin phòng chiếu');
                     }
                 }
-                // Check if raw data format
+
                 else {
                     console.log('Raw data format detected');
                     console.log('Room data:', data); // Debug log
@@ -1513,14 +1513,14 @@
             const content = document.getElementById('detailsContent');
             console.log('Rendering room data:', roomData); // Debug log
             
-            // Check if data is nested in a property
+
             if (roomData.data) roomData = roomData.data;
             if (roomData.Data) roomData = roomData.Data;
             
-            // Handle both PascalCase (C#) and camelCase naming
+
             let seats = [];
             if (Array.isArray(roomData)) {
-                // If roomData is an array, it might be the seats array directly
+
                 seats = roomData;
                 console.log('Data is an array, assuming it contains seats');
             } else {
@@ -1528,12 +1528,12 @@
             }
             console.log('Seats data:', seats); // Debug log
             
-            // Parse room info - try both naming conventions
+
             const roomName = roomData.roomName || roomData.RoomName || 'N/A';
             const roomId = roomData.roomId || roomData.RoomId || '';
             const totalSeats = roomData.totalSeats || roomData.TotalSeats || seats.length || 0;
             
-            // Check if seats array is valid
+
             if (!seats || !Array.isArray(seats) || seats.length === 0) {
                 content.innerHTML = `
                     <div class="alert alert-warning">
@@ -1558,12 +1558,12 @@
                 return;
             }
             
-            // Calculate seat stats - handle both naming conventions
+
             const normalSeats = seats.filter(s => (s.seatType || s.SeatType) === 0).length;
             const vipSeats = seats.filter(s => (s.seatType || s.SeatType) === 1).length;
             const coupleSeats = seats.filter(s => (s.seatType || s.SeatType) === 2).length;
             
-            // Group seats by row
+
             const seatsByRow = seats.reduce((acc, seat) => {
                 const row = seat.rowIndex || seat.RowIndex;
                 if (!acc[row]) acc[row] = [];
@@ -1571,10 +1571,10 @@
                 return acc;
             }, {});
             
-            // Sort rows and seats
+
             const sortedRows = Object.keys(seatsByRow).sort((a, b) => parseInt(a) - parseInt(b));
             
-            // Generate seat layout HTML
+
             let seatLayoutHtml = '';
             sortedRows.forEach(rowNum => {
                 const rowSeats = seatsByRow[rowNum].sort((a, b) => (a.columnIndex || a.ColumnIndex) - (b.columnIndex || b.ColumnIndex));
@@ -1612,7 +1612,7 @@
                     .badge-success { background: #d1fae5; color: #10b981; }
                 </style>
                 
-                <!-- Room Information -->
+                
                 <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden;">
                     <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #f3f4f6; background: #f9fafb;">
                         <h4 style="margin: 0; display: flex; align-items: center; gap: 0.5rem; color: #1f2937;">
@@ -1645,7 +1645,7 @@
                             </div>
                         </div>
                         
-                        <!-- Seat Stats -->
+                        
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
                             <div style="text-align: center; padding: 1rem; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
                                 <div style="font-size: 1.5rem; font-weight: 700; color: #6366f1;">${normalSeats}</div>
@@ -1667,7 +1667,7 @@
                     </div>
                 </div>
                 
-                <!-- Seat Layout -->
+                
                 <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
                     <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #f3f4f6; background: #f9fafb;">
                         <h4 style="margin: 0; display: flex; align-items: center; gap: 0.5rem; color: #1f2937;">
@@ -1676,18 +1676,18 @@
                         </h4>
                     </div>
                     <div style="padding: 2rem;">
-                        <!-- Screen -->
+                        
                         <div style="background: linear-gradient(135deg, #1f2937, #4b5563); color: white; text-align: center; padding: 0.75rem; border-radius: 8px; margin-bottom: 2rem; font-weight: 600; position: relative;">
                             <i class="fas fa-tv" style="margin-right: 0.5rem;"></i>
                             MÀN HÌNH
                         </div>
                         
-                        <!-- Seats Grid -->
+                        
                         <div style="max-width: 800px; margin: 0 auto;">
                             ${seatLayoutHtml}
                         </div>
                         
-                        <!-- Legend -->
+                        
                         <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap;">
                             <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #6b7280;">
                                 <div style="width: 20px; height: 20px; border-radius: 4px; background: #10b981;"></div>
@@ -1711,27 +1711,27 @@
             document.getElementById('detailsModal').style.display = 'none';
         }
 
-        // Close details modal when clicking outside
+
         document.getElementById('detailsModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeDetailsModal();
             }
         });
 
-        // Edit Modal Functions
+
         async function openEditModal(roomId) {
             console.log(`Opening edit modal for room ID: ${roomId}`); // Debug log
             const modal = document.getElementById('editModal');
             const loading = document.getElementById('editLoading');
             const content = document.getElementById('editContent');
             
-            // Show modal with loading
+
             modal.style.display = 'block';
             loading.style.display = 'flex';
             content.style.display = 'none';
             
             try {
-                // Fetch room details first
+
                 const detailsUrl = '@Url.Action("Details", "CinemaRoom", new { area = "CinemaManagement" })';
                 const fullDetailsUrl = `${detailsUrl}?id=${roomId}`;
                 console.log('Fetching details from URL:', fullDetailsUrl); // Debug log
@@ -1750,7 +1750,7 @@
                 const detailsData = await detailsResponse.json();
                 console.log('Room details:', detailsData); // Debug log
                 
-                // Get room data from different possible response formats
+
                 let roomData;
                 if (detailsData.Code !== undefined && detailsData.Data) {
                     roomData = detailsData.Data;
@@ -1763,7 +1763,7 @@
                 // Tính toán số hàng và số cột từ danh sách ghế nếu cần
                 calculateRoomDimensions(roomData);
                 
-                // Render edit form
+
                 renderEditForm(roomId, roomData);
             } catch (error) {
                 console.error('Error loading room for edit:', error);
@@ -1819,11 +1819,11 @@
         function renderEditForm(roomId, roomData) {
             const content = document.getElementById('editContent');
             
-            // Check if data is nested in a property
+
             if (roomData.data) roomData = roomData.data;
             if (roomData.Data) roomData = roomData.Data;
             
-            // Parse room info - try both naming conventions
+
             const roomName = roomData.roomName || roomData.RoomName || '';
             const totalSeats = roomData.totalSeats || roomData.TotalSeats || 0;
             
@@ -1963,7 +1963,7 @@
                 
                 const result = await response.json();
                 if (result.success) {
-                    // Success - reload page to show updated data
+
                     window.location.reload();
                 } else {
                     throw new Error(result.message || 'Có lỗi xảy ra khi cập nhật phòng chiếu');
@@ -1971,7 +1971,7 @@
             } catch (error) {
                 console.error('Error updating room:', error);
                 
-                // Show error message
+
                 const errorAlert = document.createElement('div');
                 errorAlert.className = 'alert alert-danger';
                 errorAlert.innerHTML = `
@@ -1983,10 +1983,10 @@
                 `;
                 document.getElementById('editContent').prepend(errorAlert);
                 
-                // Auto remove error after 5 seconds
+
                 setTimeout(() => errorAlert.remove(), 5000);
             } finally {
-                // Re-enable button
+
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
             }

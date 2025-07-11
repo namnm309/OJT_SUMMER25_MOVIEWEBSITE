@@ -21,7 +21,7 @@ namespace UI.Areas.ShowtimeManagement.Services
         {
             try
             {
-                // Use GetAllShowtimes instead of GetByDateRange
+
                 var result = await _apiService.GetAsync<JsonElement>($"/api/v1/showtime");
                 
                 if (result.Success && result.Data.TryGetProperty("data", out var dataElement))
@@ -31,7 +31,7 @@ namespace UI.Areas.ShowtimeManagement.Services
                     
                     if (allShowtimes != null)
                     {
-                        // Filter by week on the client side
+
                         var endDate = startDate.AddDays(6);
                         return allShowtimes.Where(s => s.ShowDate.Date >= startDate.Date && s.ShowDate.Date <= endDate.Date).ToList();
                     }
@@ -50,7 +50,7 @@ namespace UI.Areas.ShowtimeManagement.Services
         {
             try
             {
-                // Use the new GetByMonth API
+
                 var result = await _apiService.GetAsync<JsonElement>($"/api/v1/showtime/GetByMonth?month={month}&year={year}");
                 
                 if (result.Success && result.Data.TryGetProperty("data", out var dataElement))
@@ -83,7 +83,7 @@ namespace UI.Areas.ShowtimeManagement.Services
             }
             catch (Exception ex)
             {
-                // Log error
+
             }
             
             return null;
@@ -232,7 +232,7 @@ namespace UI.Areas.ShowtimeManagement.Services
             }
             catch (Exception ex)
             {
-                // Log error
+
             }
             
             return false;

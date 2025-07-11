@@ -1,4 +1,4 @@
-// Dashboard Analytics and Statistics
+
 class DashboardAnalytics {
     constructor(options = {}) {
         this.apiBaseUrl = options.apiBaseUrl || '/Dashboard';
@@ -17,13 +17,13 @@ class DashboardAnalytics {
     }
 
     initializeChartLibrary() {
-        // Ensure Chart.js is loaded
+
         if (typeof Chart === 'undefined') {
             console.error('Chart.js library is required for dashboard analytics');
             return;
         }
 
-        // Global Chart.js configuration
+
         Chart.defaults.font.family = '"Segoe UI", "Roboto", "Arial", sans-serif';
         Chart.defaults.color = '#6B7280';
         Chart.defaults.scale.grid.color = 'rgba(107, 114, 128, 0.1)';
@@ -70,18 +70,18 @@ class DashboardAnalytics {
     }
 
     updateKPICards(movieStats, userStats, revenueStats) {
-        // Movie KPIs
+
         this.updateKPICard('total-movies', movieStats?.totalMovies || 0, 'phim');
         this.updateKPICard('now-showing', movieStats?.nowShowingMovies || 0, 'đang chiếu');
         this.updateKPICard('coming-soon', movieStats?.comingSoonMovies || 0, 'sắp chiếu');
         this.updateKPICard('featured-movies', movieStats?.featuredMovies || 0, 'nổi bật');
 
-        // User KPIs
+
         this.updateKPICard('total-users', userStats?.totalUsers || 0, 'người dùng');
         this.updateKPICard('active-users', userStats?.activeUsers || 0, 'đang hoạt động');
         this.updateKPICard('new-users-month', userStats?.newUsersThisMonth || 0, 'người dùng mới');
 
-        // Revenue KPIs (if available)
+
         if (revenueStats) {
             this.updateKPICard('total-revenue', this.formatCurrency(revenueStats.totalRevenue), '');
             this.updateKPICard('monthly-revenue', this.formatCurrency(revenueStats.monthlyRevenue), '');
@@ -94,7 +94,7 @@ class DashboardAnalytics {
         if (element) {
             element.textContent = value + (suffix ? ` ${suffix}` : '');
             
-            // Add animation effect
+
             element.style.transform = 'scale(1.05)';
             setTimeout(() => {
                 element.style.transform = 'scale(1)';
@@ -116,7 +116,7 @@ class DashboardAnalytics {
         const ctx = document.getElementById('movies-chart');
         if (!ctx) return;
 
-        // Destroy existing chart if it exists
+
         if (this.charts.moviesChart) {
             this.charts.moviesChart.destroy();
         }
@@ -231,7 +231,7 @@ class DashboardAnalytics {
     }
 
     async renderGenreDistributionChart() {
-        // Mock genre distribution data
+
         const genreData = {
             labels: ['Hành động', 'Hài kịch', 'Kinh dị', 'Tình cảm', 'Khoa học viễn tưởng', 'Phiêu lưu'],
             datasets: [{
@@ -274,7 +274,7 @@ class DashboardAnalytics {
     }
 
     bindEvents() {
-        // Chart period selectors
+
         document.querySelectorAll('.chart-period-selector').forEach(selector => {
             selector.addEventListener('change', (e) => {
                 const chartType = e.target.dataset.chartType;
@@ -283,7 +283,7 @@ class DashboardAnalytics {
             });
         });
 
-        // Refresh button
+
         const refreshBtn = document.getElementById('dashboard-refresh');
         if (refreshBtn) {
             refreshBtn.addEventListener('click', () => {
@@ -291,7 +291,7 @@ class DashboardAnalytics {
             });
         }
 
-        // Auto refresh toggle
+
         const autoRefreshToggle = document.getElementById('auto-refresh-toggle');
         if (autoRefreshToggle) {
             autoRefreshToggle.addEventListener('change', (e) => {
@@ -303,7 +303,7 @@ class DashboardAnalytics {
             });
         }
 
-        // Export data button
+
         const exportBtn = document.getElementById('export-data');
         if (exportBtn) {
             exportBtn.addEventListener('click', () => {
@@ -311,7 +311,7 @@ class DashboardAnalytics {
             });
         }
 
-        // Real-time updates toggle
+
         const realTimeToggle = document.getElementById('realtime-toggle');
         if (realTimeToggle) {
             realTimeToggle.addEventListener('change', (e) => {
@@ -355,13 +355,13 @@ class DashboardAnalytics {
     }
 
     startRealTimeUpdates() {
-        // Implement WebSocket connection for real-time updates
-        // This is a placeholder for future implementation
+
+
         console.log('Real-time updates started');
     }
 
     stopRealTimeUpdates() {
-        // Stop WebSocket connection
+
         console.log('Real-time updates stopped');
     }
 
@@ -428,7 +428,7 @@ class DashboardAnalytics {
         this.stopAutoRefresh();
         this.stopRealTimeUpdates();
         
-        // Destroy all charts
+
         Object.values(this.charts).forEach(chart => {
             if (chart && typeof chart.destroy === 'function') {
                 chart.destroy();
@@ -439,21 +439,21 @@ class DashboardAnalytics {
     }
 }
 
-// Initialize dashboard analytics when DOM is loaded
+
 document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('.dashboard-container')) {
         window.dashboardAnalytics = new DashboardAnalytics();
     }
 });
 
-// Clean up on page unload
+
 window.addEventListener('beforeunload', () => {
     if (window.dashboardAnalytics) {
         window.dashboardAnalytics.destroy();
     }
 });
 
-// Export for use in other scripts
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DashboardAnalytics;
 } 

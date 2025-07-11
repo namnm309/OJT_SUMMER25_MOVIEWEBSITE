@@ -1,8 +1,8 @@
-// Homepage Debug Helper Functions
-// Use these functions in browser console to debug pagination issues
+
+
 
 window.homepageDebug = {
-    // Check if pagination is initialized
+
     checkInitialization() {
         console.log('📊 Pagination Status:', {
             initialized: !!window.homepagePagination,
@@ -12,7 +12,7 @@ window.homepageDebug = {
         return !!window.homepagePagination;
     },
 
-    // Check all required elements
+
     checkElements() {
         const elements = {
             recommendedInfo: document.getElementById('recommendedInfo'),
@@ -44,7 +44,7 @@ window.homepageDebug = {
         return elements;
     },
 
-    // Test recommended movies API
+
     async testRecommendedAPI() {
         console.log('🧪 Testing Recommended Movies API...');
         
@@ -67,7 +67,7 @@ window.homepageDebug = {
         }
     },
 
-    // Test coming soon movies API
+
     async testComingSoonAPI() {
         console.log('🧪 Testing Coming Soon Movies API...');
         
@@ -90,7 +90,7 @@ window.homepageDebug = {
         }
     },
 
-    // Force reload recommended movies
+
     forceReloadRecommended() {
         if (window.homepagePagination) {
             console.log('🔄 Force reloading recommended movies...');
@@ -100,7 +100,7 @@ window.homepageDebug = {
         }
     },
 
-    // Force reload coming soon movies
+
     forceReloadComingSoon() {
         if (window.homepagePagination) {
             console.log('🔄 Force reloading coming soon movies...');
@@ -110,7 +110,7 @@ window.homepageDebug = {
         }
     },
 
-    // Test filter changes
+
     testFilters() {
         console.log('🎯 Testing all filter changes...');
         
@@ -121,7 +121,7 @@ window.homepageDebug = {
         const comingSoonGenre = document.getElementById('comingSoonGenre');
         const comingSoonPageSize = document.getElementById('comingSoonPageSize');
         
-        // Test recommended filters
+
         if (recommendedSort) {
             console.log('🔄 Testing recommended sort change...');
             recommendedSort.dispatchEvent(new Event('change'));
@@ -137,7 +137,7 @@ window.homepageDebug = {
             recommendedPageSize.dispatchEvent(new Event('change'));
         }
         
-        // Test coming soon filters
+
         if (comingSoonSort) {
             console.log('🔄 Testing coming soon sort change...');
             comingSoonSort.dispatchEvent(new Event('change'));
@@ -154,7 +154,7 @@ window.homepageDebug = {
         }
     },
 
-    // Test specific filter
+
     testSpecificFilter(section, filterType) {
         const elementId = `${section}${filterType.charAt(0).toUpperCase() + filterType.slice(1)}`;
         const element = document.getElementById(elementId);
@@ -169,7 +169,7 @@ window.homepageDebug = {
         }
     },
 
-    // Test filter functionality with actual UI changes
+
     async testFilterFunctionality() {
         console.log('🧪 Testing filter functionality with UI changes...');
         
@@ -178,7 +178,7 @@ window.homepageDebug = {
             return false;
         }
 
-        // Test recommended sort change
+
         const recommendedSort = document.getElementById('recommendedSort');
         if (recommendedSort) {
             console.log('🔄 Testing recommended sort: title-asc');
@@ -187,7 +187,7 @@ window.homepageDebug = {
             await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for API response
         }
 
-        // Test recommended genre change  
+
         const recommendedGenre = document.getElementById('recommendedGenre');
         if (recommendedGenre) {
             console.log('🎭 Testing recommended genre: hành động');
@@ -196,7 +196,7 @@ window.homepageDebug = {
             await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for API response
         }
 
-        // Test coming soon sort change
+
         const comingSoonSort = document.getElementById('comingSoonSort');
         if (comingSoonSort) {
             console.log('🔄 Testing coming soon sort: title-asc');
@@ -209,7 +209,7 @@ window.homepageDebug = {
         return true;
     },
 
-    // Check if grid is properly updated
+
     checkGridContent() {
         const recommendedGrid = document.querySelector('.recommended-grid');
         const comingSoonSections = document.querySelectorAll('.recommended-section-new');
@@ -234,7 +234,7 @@ window.homepageDebug = {
         return results;
     },
 
-    // Run comprehensive test
+
     async runAllTests() {
         console.log('🧪 Running comprehensive homepage tests...');
         
@@ -251,7 +251,7 @@ window.homepageDebug = {
     }
 };
 
-// Auto-run basic checks on load
+
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         console.log('🔧 Homepage Debug loaded. Use homepageDebug.runAllTests() to start debugging.');
@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 console.log('🔧 Homepage Debug Helper loaded. Available functions:', Object.keys(window.homepageDebug));
 
-// Quick access functions for testing
+
 window.testFilter = (section, type, value) => {
     const elementId = `${section}${type.charAt(0).toUpperCase() + type.slice(1)}`;
     const element = document.getElementById(elementId);
@@ -295,7 +295,7 @@ window.clearGrid = (section = 'recommended') => {
     }
 };
 
-// Quick test commands
+
 console.log(`
 🚀 Quick Test Commands:
 - testFilter('recommended', 'sort', 'title-asc')

@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="~/css/HomePage/header.css" />
 	<link rel="stylesheet" href="~/css/Shared/_header.css" />
 	<link rel="stylesheet" href="~/css/HomePage/hero.css" />
-	<!--  <link rel="stylesheet" href="~/css/HomePage/home.css" /> -->
+	
 	<link rel="stylesheet" href="~/css/HomePage/moviecard.css" />
 	<link rel="stylesheet" href="~/css/HomePage/layout.css" />
 	<link rel="stylesheet" href="~/css/HomePage/button.css" />
@@ -26,24 +26,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
 <div class="home-new-style">
-	<!-- Hero Section -->
+	
 	<div class="hero-section" id="heroSection">
-		<!-- Background Video/Image -->
+		
 		<div class="hero-background" id="heroBackground">
 			@{
 				var initialImage = Model?.FeaturedMovie != null
 				? GetMovieImageUrl(Model.FeaturedMovie)
 				: "https://via.placeholder.com/1920x1080/1a1a1a/ffffff?text=Cinema+City";
 			}
-			<!-- Hero image - hidden by default, only for video backgrounds -->
+			
 			<div class="hero-image" id="heroImage" style="background-image: url('@initialImage'); display: none; opacity: 0;"></div>
 
-			<!-- Videos will be handled dynamically by JavaScript -->
+			
 		</div>
 		<!-- Header từ trang Details -->
 		@Html.Partial("_Header")
 
-		<!-- Movie Content -->
+		
 		<div class="movie-content" id="movieContent">
 			@if (Model?.FeaturedMovie != null)
 			{
@@ -97,7 +97,7 @@
 			}
 		</div>
 
-		<!-- Movie Controls -->
+		
 		<div class="movie-controls">
 			<div class="control-left">
 				<button class="nav-btn" onclick="previousMovie()">
@@ -329,7 +329,7 @@
 			</div>
 		</div>
 
-		<!-- Grid phim -->
+		
 		<div class="recommended-grid">
 			@if (Model?.ComingSoonMovies != null && Model.ComingSoonMovies.Any())
 			{
@@ -349,7 +349,7 @@
 							<img src="@imageUrl" alt="@movie.Title" loading="lazy"
 								 onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
 
-							<!-- Overlay khi hover -->
+							
 							<div class="recommended-overlay">
 								<a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="recommended-view-btn">
 									<i class="fas fa-info-circle"></i>
@@ -440,7 +440,7 @@
 										Xem Chi Tiết
 									</a>
 								</div>
-								<!-- Promotion Badge -->
+								
 								<div class="recommended-promotion-badge">
 									<i class="fas fa-percentage"></i> Khuyến Mãi
 								</div>
@@ -641,18 +641,18 @@
 			movieDetails: '@Url.Action("Details", "Movies")'
 		};
 
-		// User dropdown functionality
+
 		document.addEventListener('DOMContentLoaded', function () {
 			const userDropdown = document.getElementById('userDropdown');
 			const dropdownMenu = document.querySelector('.dropdown-menu');
 
 			if (userDropdown && dropdownMenu) {
-				// Handle click on entire button area
+
 				userDropdown.addEventListener('click', function (e) {
 					e.preventDefault();
 					e.stopPropagation();
 
-					// Toggle dropdown immediately without delay
+
 					const isShowing = dropdownMenu.classList.contains('show');
 
 					if (isShowing) {
@@ -664,12 +664,12 @@
 					}
 				});
 
-				// Also handle click on any child element of button
+
 				userDropdown.addEventListener('click', function (e) {
 					e.stopPropagation();
 				}, true);
 
-				// Close dropdown when clicking outside
+
 				document.addEventListener('click', function (e) {
 					if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
 						dropdownMenu.classList.remove('show');
@@ -677,7 +677,7 @@
 					}
 				});
 
-				// Close dropdown when pressing Escape key
+
 				document.addEventListener('keydown', function (e) {
 					if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
 						dropdownMenu.classList.remove('show');
@@ -688,17 +688,17 @@
 			}
 		});
 
-		// Search functionality
+
 		document.addEventListener('DOMContentLoaded', function () {
 			const searchInput = document.getElementById('movieSearchInput');
 			const searchButton = document.getElementById('searchButton');
 
-			// Search on button click
+
 			searchButton?.addEventListener('click', function () {
 				performSearch();
 			});
 
-			// Search on Enter key press
+
 			searchInput?.addEventListener('keypress', function (e) {
 				if (e.key === 'Enter') {
 					performSearch();
@@ -708,13 +708,13 @@
 			async function performSearch() {
 				const keyword = searchInput.value.trim();
 
-				// Redirect to search results page
+
 				const searchUrl = '@Url.Action("Search", "Movies")' + (keyword ? `?keyword=${encodeURIComponent(keyword)}` : '');
 				window.location.href = searchUrl;
 			}
 		});
 
-		// Debug: Add test button
+
 		if (window.location.search.includes('debug=true')) {
 			document.addEventListener('DOMContentLoaded', function() {
 				const testButton = document.createElement('button');

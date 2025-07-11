@@ -25,10 +25,10 @@ namespace UI.Controllers
 
             try
             {
-                // Load initial data with pagination - Medium Dynamic
+
                 await LoadInitialData(viewModel);
 
-                // Set promotions data
+
                 SetPromotionsData(viewModel);
 
                 _logger.LogInformation("✅ HOMEPAGE LOADED with Medium Dynamic Pagination");
@@ -167,7 +167,7 @@ namespace UI.Controllers
                 }
             };
 
-            // Apply same logic for fallback data
+
             var featuredMoviesFallback = fallbackMovies.Where(m => m.IsFeatured).ToList();
             viewModel.HeroMovies = featuredMoviesFallback.Any() ? featuredMoviesFallback : fallbackMovies.Take(5).ToList();
             viewModel.FeaturedMovie = viewModel.HeroMovies.FirstOrDefault();
@@ -295,13 +295,13 @@ namespace UI.Controllers
 
         private async Task LoadInitialData(HomeViewModel viewModel)
         {
-            // Load Hero Movies (Featured) - Page 1, 5 items
+
             await LoadHeroMovies(viewModel, page: 1, pageSize: 5);
 
-            // Load Recommended Movies - Page 1, 6 items  
+
             await LoadRecommendedMovies(viewModel, page: 1, pageSize: 6);
 
-            // Load Coming Soon Movies - Page 1, 4 items
+
             await LoadComingSoonMovies(viewModel, page: 1, pageSize: 4);
         }
 
@@ -318,7 +318,7 @@ namespace UI.Controllers
                     var moviesArray = data.GetProperty("data");
                     var movies = JsonSerializer.Deserialize<List<MovieViewModel>>(moviesArray.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    // Filter featured movies
+
                     var featuredMovies = movies?.Where(m => m.IsFeatured).ToList() ?? new List<MovieViewModel>();
                     viewModel.HeroMovies = featuredMovies.Any() ? featuredMovies : movies?.Take(5).ToList() ?? new List<MovieViewModel>();
                     viewModel.FeaturedMovie = viewModel.HeroMovies.FirstOrDefault();
@@ -386,16 +386,16 @@ namespace UI.Controllers
                 {
                     var allMovies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    // Apply genre filter if provided
+
                     if (!string.IsNullOrEmpty(genre) && genre != "all")
                     {
                         allMovies = allMovies?.Where(m => m.Genres?.Any(g => g.Name.ToLower().Contains(genre.ToLower())) == true).ToList();
                     }
 
-                    // Apply sorting
+
                     allMovies = ApplySorting(allMovies, sortBy, sortOrder);
 
-                    // Apply pagination
+
                     var totalItems = allMovies?.Count ?? 0;
                     var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
                     var skip = (page - 1) * pageSize;
@@ -445,13 +445,13 @@ namespace UI.Controllers
                 {
                     var allMovies = JsonSerializer.Deserialize<List<MovieViewModel>>(dataProp.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    // Apply filters
+
                     allMovies = ApplyFilters(allMovies, genre, fromDate, toDate);
 
-                    // Apply sorting
+
                     allMovies = ApplySorting(allMovies, sortBy, sortOrder);
 
-                    // Apply pagination
+
                     var totalItems = allMovies?.Count ?? 0;
                     var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
                     var skip = (page - 1) * pageSize;
@@ -486,13 +486,13 @@ namespace UI.Controllers
         {
             if (movies == null) return new List<MovieViewModel>();
 
-            // Genre filter
+
             if (!string.IsNullOrEmpty(genre) && genre != "all")
             {
                 movies = movies.Where(m => m.Genres?.Any(g => g.Name.ToLower().Contains(genre.ToLower())) == true).ToList();
             }
 
-            // Date range filter
+
             if (fromDate.HasValue)
             {
                 movies = movies.Where(m => m.ReleaseDate >= fromDate.Value).ToList();

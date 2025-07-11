@@ -10,32 +10,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Cinema City</title>
     
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Dashboard CSS -->
+    
     <link rel="stylesheet" href="~/css/new-dashboard.css" />
-    <!-- Book Ticket CSS -->
+    
     <link rel="stylesheet" href="~/css/book-ticket.css" />
-    <!-- Book Ticket Fix CSS -->
+    
     <link rel="stylesheet" href="~/css/book-ticket-fix.css" />
     
 </head>
 <body>
     
-    <!-- Dashboard Layout -->
+    
     <div class="new-dashboard-layout">
         
-        <!-- Sidebar -->
+        
         @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
 
-        <!-- Main Content -->
+        
         <main class="new-dashboard-main">
             <div class="movie-management-content">
-                <!-- Page Header -->
+                
                 <div class="movie-page-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -59,9 +59,9 @@
                     <p class="movie-page-subtitle">Hỗ trợ khách hàng đặt vé xem phim tại quầy</p>
                 </div>
                 
-                <!-- Booking Content -->
+                
                 <div class="booking-container">
-                    <!-- Progress Steps -->
+                    
                     <div class="booking-steps">
                         <div class="step active" data-step="1">
                             <div class="step-number">1</div>
@@ -77,9 +77,9 @@
                         </div>
                     </div>
 
-                    <!-- Step Content -->
+                    
                     <div class="step-content">
-                        <!-- Step 1: Movie & Showtime Selection -->
+                        
                         <div class="step-panel active" id="step1">
                             <div class="row">
                                 <div class="col-md-8">
@@ -92,11 +92,11 @@
                                                 <label for="movieSelect" class="form-label">Chọn phim:</label>
                                                 <select class="form-select" id="movieSelect">
                                                     <option value="">-- Chọn phim --</option>
-                                                    <!-- Movies will be loaded here -->
+                                                    
                                                 </select>
                                             </div>
                                             <div class="selected-movie-info" id="selectedMovieInfo" style="display: none;">
-                                                <!-- Selected movie info will be displayed here -->
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -116,7 +116,7 @@
                             </div>
                         </div>
 
-                        <!-- Step 2: Seat Selection -->
+                        
                         <div class="step-panel" id="step2">
                             <div class="row">
                                 <div class="col-md-8">
@@ -129,7 +129,7 @@
                                                 <div class="screen">MÀN HÌNH</div>
                                             </div>
                                             <div class="seat-map" id="seatMap">
-                                                <!-- Seat map will be loaded here -->
+                                                
                                             </div>
                                             <div class="seat-legend">
                                                 <div class="legend-item">
@@ -167,7 +167,7 @@
                             </div>
                         </div>
 
-                        <!-- Step 3: Confirmation & Payment -->
+                        
                         <div class="step-panel" id="step3">
                             <div class="row">
                                 <div class="col-md-8">
@@ -190,7 +190,7 @@
                                                 <div id="searchMessage" class="mt-2" style="display: none;"></div>
                                             </div>
                                             <div class="customer-info" id="customerInfo" style="display: none;">
-                                                <!-- Customer info will be displayed here -->
+                                                
                                             </div>
                                             
                                             <div class="points-usage mt-3">
@@ -226,7 +226,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="order-summary" id="orderSummary">
-                                                <!-- Order summary will be displayed here -->
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -235,7 +235,7 @@
                         </div>
                     </div>
 
-                    <!-- Navigation Buttons -->
+                    
                     <div class="booking-navigation">
                         <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
                             <i class="fas fa-arrow-left me-2"></i>Quay lại
@@ -252,7 +252,7 @@
         </main>
     </div>
 
-    <!-- Loading Overlay -->
+    
     <div class="loading-overlay" id="loadingOverlay" style="display: none;">
         <div class="loading-spinner">
             <i class="fas fa-spinner fa-spin"></i>
@@ -374,7 +374,7 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/book-ticket-dashboard.js"></script>

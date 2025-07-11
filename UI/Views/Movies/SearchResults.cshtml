@@ -224,7 +224,7 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
+    
     @await Html.PartialAsync("_Header")
     
     <main>
@@ -244,7 +244,7 @@
         }
     </div>
 
-    <!-- Search Box -->
+    
     <div class="search-container">
         <div class="input-group">
             <input type="text" class="search-form-control" placeholder="Tìm kiếm phim..."
@@ -258,7 +258,7 @@
         </div>
     </div>
 
-    <!-- Results -->
+    
     @if (Model != null && Model.Any())
     {
         <div class="movie-grid">
@@ -340,7 +340,7 @@
         window.location.href = searchUrl;
     }
 
-    // Search on Enter key
+
     document.getElementById('searchInput')?.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             searchMovies();
@@ -350,10 +350,10 @@
 
     </main>
     
-    <!-- Footer -->
+    
     @await Html.PartialAsync("footer")
     
-    <!-- Scripts -->
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/homepage.js"></script>

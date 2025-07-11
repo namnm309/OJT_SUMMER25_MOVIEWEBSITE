@@ -1,4 +1,4 @@
-/* ===== HERO NAVIGATION WRAPPER ===== */
+
 .hero-nav-wrapper {
     position: fixed !important;
     top: 20px !important;
@@ -19,7 +19,7 @@
     box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4), 0 8px 25px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
-/* ===== NAVIGATION ===== */
+
 .hero-nav {
     width: 100%;
     max-width: 1400px;
@@ -109,7 +109,7 @@
     display: none;
 }
 
-/* ===== BRAND ===== */
+
 .brand {
     text-align: left;
     margin-right: 8px;
@@ -164,7 +164,7 @@
     line-height: 1.2;
 }
 
-/* ===== USER PROFILE ===== */
+
 .user-profile {
     display: flex;
     align-items: center;
@@ -203,7 +203,7 @@
     color: #667eea;
 }
 
-/* ===== DROPDOWN STYLES ===== */
+
 .dropdown {
     position: relative;
     display: inline-block;
@@ -257,7 +257,7 @@
     transform: translateY(0) scale(1) !important;
 }
 
-/* Arrow pointer for dropdown */
+
 .dropdown-menu::before {
     content: '';
     position: absolute;
@@ -289,7 +289,7 @@
     content: none;
 }
 
-/* Dropdown Header with User Info */
+
 .dropdown-header {
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%) !important;
     border-radius: 12px !important;
@@ -388,7 +388,7 @@
     background: none !important;
 }
 
-/* Form styling inside dropdown */
+
 .dropdown-menu form {
     margin: 0 !important;
     padding: 0 !important;
@@ -401,7 +401,7 @@
     background: transparent !important;
 }
 
-/* ===== AUTH BUTTONS ===== */
+
 .auth-buttons {
     display: flex;
     gap: 16px;
@@ -451,7 +451,7 @@
     text-decoration: none;
 }
 
-/* ===== FONT AWESOME ICONS ===== */
+
 .fa-user:before {
     content: "\f007";
 }

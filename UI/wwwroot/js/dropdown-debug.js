@@ -29,7 +29,7 @@ function testDropdownStyling() {
             visibility: styles.visibility
         });
         
-        // Test if dropdown is visible and functional
+
         const rect = dropdown.getBoundingClientRect();
         console.log(`Dropdown ${index + 1} position:`, {
             width: rect.width,
@@ -58,12 +58,12 @@ function testDropdownFunctionality() {
         if (element) {
             console.log(`✅ ${id}: Found, options = ${element.options.length}`);
             
-            // Test change event
+
             element.addEventListener('change', function(e) {
                 console.log(`🔄 ${id} changed to: ${e.target.value}`);
             });
             
-            // Log all options
+
             Array.from(element.options).forEach((option, index) => {
                 console.log(`   Option ${index}: "${option.value}" - "${option.text}"`);
             });
@@ -73,7 +73,7 @@ function testDropdownFunctionality() {
     });
 }
 
-// Add manual test buttons
+
 function addTestButtons() {
     if (window.location.search.includes('debug=true')) {
         const testDiv = document.createElement('div');
@@ -102,7 +102,7 @@ function fixDropdownStyling() {
     
     const dropdowns = document.querySelectorAll('.pagination-select');
     dropdowns.forEach((dropdown, index) => {
-        // Apply inline styles as backup
+
         dropdown.style.background = 'rgba(40, 40, 80, 0.9)';
         dropdown.style.color = 'white';
         dropdown.style.border = '1px solid rgba(139, 92, 246, 0.5)';
@@ -116,5 +116,5 @@ function fixDropdownStyling() {
     });
 }
 
-// Initialize test buttons
+
 document.addEventListener('DOMContentLoaded', addTestButtons); 

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Chi tiết phòng chiếu - Cinema City";
     Layout = null;
     
-    // Parse room data
+
     string roomName = "";
     Guid roomId = Guid.Empty;
     int totalSeats = 0;
@@ -37,15 +37,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Modern Design System */
+        
         :root {
             --primary: #6366f1;
             --primary-hover: #4f46e5;
@@ -91,7 +91,7 @@
             margin: 0 auto;
         }
 
-        /* Header */
+        
         .page-header {
             margin-bottom: 2rem;
             display: flex;
@@ -129,7 +129,7 @@
             flex-wrap: wrap;
         }
 
-        /* Cards */
+        
         .card {
             background: white;
             border: 1px solid var(--gray-200);
@@ -163,7 +163,7 @@
             padding: 1.5rem;
         }
 
-        /* Room Info Grid */
+        
         .room-info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -191,7 +191,7 @@
             color: var(--gray-900);
         }
 
-        /* Seat Layout */
+        
         .seat-layout {
             background: var(--gray-50);
             border: 1px solid var(--gray-200);
@@ -283,7 +283,7 @@
             box-shadow: var(--shadow-md);
         }
 
-        /* Legend */
+        
         .seat-legend {
             display: flex;
             justify-content: center;
@@ -306,7 +306,7 @@
             border-radius: var(--radius-sm);
         }
 
-        /* Buttons */
+        
         .btn {
             padding: 0.625rem 1.25rem;
             border-radius: var(--radius-lg);
@@ -342,7 +342,7 @@
             color: var(--gray-800);
         }
 
-        /* Stats */
+        
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -370,7 +370,7 @@
             margin-top: 0.25rem;
         }
 
-        /* Alert */
+        
         .alert {
             padding: 1rem 1.25rem;
             border-radius: var(--radius-lg);
@@ -384,7 +384,7 @@
             border-color: var(--danger);
         }
 
-        /* Badge */
+        
         .badge {
             display: inline-flex;
             align-items: center;
@@ -419,7 +419,7 @@
 
 <body>
     <div class="content-wrapper">
-        <!-- Header -->
+        
         <div class="page-header">
             <div class="page-title">
                 <div class="page-title-icon">
@@ -447,7 +447,7 @@
         </div>
     }
 
-        <!-- Room Information -->
+        
         <div class="card">
                 <div class="card-header">
                 <h3 class="card-title">
@@ -480,7 +480,7 @@
                             </div>
                         </div>
 
-                <!-- Seat Stats -->
+                
                 <div class="stats-grid">
                     @{
                         var normalSeats = seats.Count(s => s.TryGetProperty("seatType", out var type) && type.GetInt32() == 0);
@@ -507,7 +507,7 @@
             </div>
         </div>
 
-        <!-- Seat Layout -->
+        
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
@@ -517,16 +517,16 @@
                 </div>
                 <div class="card-body">
                 <div class="seat-layout">
-                        <!-- Screen -->
+                        
                             <div class="screen">
                         <i class="fas fa-tv me-2"></i>
                         MÀN HÌNH
                         </div>
 
-                    <!-- Seats Grid -->
+                    
                     <div class="seats-grid">
                         @{
-                            // Group seats by row
+
                             var seatsByRow = seats
                                 .Where(s => s.TryGetProperty("rowIndex", out _))
                                 .GroupBy(s => s.GetProperty("rowIndex").GetInt32())
@@ -536,12 +536,12 @@
                         @foreach (var rowGroup in seatsByRow)
                         {
                             <div class="seat-row">
-                                <!-- Row Label -->
+                                
                                 <div class="row-label">
                                     @((char)('A' + rowGroup.Key - 1))
                         </div>
 
-                                <!-- Seats in Row -->
+                                
                                 @foreach (var seat in rowGroup.OrderBy(s => s.GetProperty("columnIndex").GetInt32()))
                                 {
                                     var seatCode = seat.TryGetProperty("seatCode", out var codeElement) ? codeElement.GetString() : "";
@@ -562,7 +562,7 @@
                         }
                     </div>
 
-                    <!-- Legend -->
+                    
                     <div class="seat-legend">
                         <div class="legend-item">
                             <div class="legend-seat normal"></div>
@@ -582,7 +582,7 @@
     </div>
 </div>
 
-    <!-- Scripts -->
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

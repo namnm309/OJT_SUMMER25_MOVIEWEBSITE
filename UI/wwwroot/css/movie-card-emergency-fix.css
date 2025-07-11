@@ -1,6 +1,6 @@
-/* Emergency Fix for Movie Card Buttons */
 
-/* Make overlay always semi-visible for easier testing */
+
+
 .recommended-overlay {
     opacity: 0.3 !important;
     pointer-events: auto !important;
@@ -11,7 +11,7 @@
     opacity: 1 !important;
 }
 
-/* Force button to be always clickable and visible */
+
 .recommended-view-btn {
     position: relative !important;
     z-index: 10000 !important;
@@ -33,12 +33,12 @@
     transform: translateY(-2px) !important;
 }
 
-/* Remove any conflicting styles */
+
 .recommended-view-btn * {
     pointer-events: none !important;
 }
 
-/* Debug mode - make button very obvious */
+
 .debug-mode .recommended-view-btn {
     background: lime !important;
     color: black !important;

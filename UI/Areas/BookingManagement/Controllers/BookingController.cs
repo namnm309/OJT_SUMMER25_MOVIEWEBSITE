@@ -25,7 +25,7 @@ namespace UI.Areas.BookingManagement.Controllers
             _apiService = apiService;
         }
 
-        // T7: Search Movies
+
         [HttpGet]
         public async Task<IActionResult> SearchMovies(string searchTerm = "")
         {
@@ -39,7 +39,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                // Dummy data for search results
+
                 model.Results = GetDummyMovies().Where(m =>
                     m.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                     m.Genre.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
@@ -50,7 +50,7 @@ namespace UI.Areas.BookingManagement.Controllers
             return View(model);
         }
 
-        // T8: Select Movie and Showtime
+
         [HttpGet]
         public async Task<IActionResult> SelectMovie()
         {
@@ -128,7 +128,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
                 if (response?.Success == true && response.Data != null)
                 {
-                    // Convert dynamic data to DateTime list
+
                     var dates = new List<DateTime>();
 
                     if (response.Data is IEnumerable<object> dateObjects)
@@ -164,7 +164,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
                 if (response?.Success == true && response.Data != null)
                 {
-                    // Convert dynamic data to ShowTimeOption list
+
                     var showTimes = ConvertToShowTimeOptions(response.Data);
                     return Json(new { success = true, data = showTimes });
                 }
@@ -178,7 +178,7 @@ namespace UI.Areas.BookingManagement.Controllers
             }
         }
 
-        // Helper methods to convert API response to view models
+
         private List<MovieOption> ConvertToMovieOptions(dynamic moviesData)
         {
             var movies = new List<MovieOption>();
@@ -243,7 +243,7 @@ namespace UI.Areas.BookingManagement.Controllers
             return showTimes;
         }
 
-        // T9: Select Seats
+
         [HttpGet]
         public async Task<IActionResult> SelectSeat(Guid showTimeId)
         {
@@ -276,7 +276,7 @@ namespace UI.Areas.BookingManagement.Controllers
             });
         }
 
-        // T10: Confirm Booking
+
         [HttpGet]
         public async Task<IActionResult> ConfirmBooking(Guid showTimeId, string seatIds)
         {
@@ -382,7 +382,7 @@ namespace UI.Areas.BookingManagement.Controllers
             return View(bookingResult);
         }
 
-        // Helper Methods for Dummy Data
+
         private List<MovieOption> GetDummyMovies()
         {
             return new List<MovieOption>

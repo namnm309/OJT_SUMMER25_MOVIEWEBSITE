@@ -1,6 +1,6 @@
-/* Fix for movie card click issue */
+
 .recommended-overlay {
-    /* Ensure overlay can receive pointer events when visible */
+    
     pointer-events: none !important;
 }
 
@@ -8,23 +8,23 @@
     pointer-events: auto !important;
 }
 
-/* Alternative: Always make the button clickable */
+
 .recommended-view-btn {
     pointer-events: auto !important;
     position: relative !important;
     z-index: 100 !important;
 }
 
-/* Ensure the button is visible for accessibility */
+
 @media (hover: none) {
-    /* On touch devices, make overlay always visible */
+    
     .recommended-overlay {
         opacity: 0.9 !important;
         pointer-events: auto !important;
     }
 }
 
-/* Debug styles - remove after testing */
+
 .recommended-overlay.debug {
     opacity: 1 !important;
     pointer-events: auto !important;

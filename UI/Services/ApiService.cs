@@ -180,7 +180,7 @@ namespace UI.Services
                         return ApiResponse<T>.SuccessResult((T)(object)element, "Success");
                     }
                     
-                    // Parse response
+
                     var apiResponseElement = JsonSerializer.Deserialize<JsonElement>(responseContent);
                     
                     // Kiểm tra API response format { success, data/user, message } (UI format)
@@ -351,7 +351,7 @@ namespace UI.Services
             }
             else
             {
-                // Handle error response
+
                 try
                 {
                     if (string.IsNullOrWhiteSpace(responseContent))

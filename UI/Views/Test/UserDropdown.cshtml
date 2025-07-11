@@ -113,7 +113,7 @@
             dropdownMenu.classList.toggle('show');
         });
         
-        // Close dropdown when clicking outside
+
         document.addEventListener('click', function(e) {
             if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
                 dropdownMenu.classList.remove('show');

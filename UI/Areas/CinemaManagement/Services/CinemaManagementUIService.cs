@@ -14,7 +14,7 @@ namespace UI.Areas.CinemaManagement.Services
         Task<ApiResponse<JsonElement>> UpdateCinemaRoomAsync(Guid id, CinemaRoomUpdateViewModel model);
         Task<ApiResponse<JsonElement>> DeleteCinemaRoomAsync(Guid id);
         
-        // Seat Management
+
         Task<ApiResponse<JsonElement>> GetCinemaRoomDetailAsync(Guid roomId);
         Task<ApiResponse<JsonElement>> UpdateRoomSeatsAsync(Guid roomId, List<SeatUpdateViewModel> seats);
     }
@@ -91,7 +91,7 @@ namespace UI.Areas.CinemaManagement.Services
                 _logger.LogInformation("Adding new cinema room: {RoomName}, Rows: {Rows}, Columns: {Columns}, TotalSeats: {TotalSeats}", 
                     model.RoomName, model.NumberOfRows, model.NumberOfColumns, model.TotalSeats);
                 
-                // Map ViewModel to backend DTO format
+
                 var dto = new
                 {
                     RoomName = model.RoomName,
@@ -120,7 +120,7 @@ namespace UI.Areas.CinemaManagement.Services
             {
                 _logger.LogInformation("Updating cinema room: {Id} with data: {@Model}", id, model);
                 
-                // Construct the correct URL format
+
                 var url = $"api/v1/cinemaroom/Update?Id={id}";
                 _logger.LogInformation("Sending PATCH request to URL: {Url}", url);
                 
@@ -176,7 +176,7 @@ namespace UI.Areas.CinemaManagement.Services
         {
             try
             {
-                // Use correct URL format with Id parameter
+
                 var url = $"api/v1/cinemaroom/ViewSeat?Id={roomId}";
                 _logger.LogInformation("Getting cinema room detail from URL: {Url}", url);
                 

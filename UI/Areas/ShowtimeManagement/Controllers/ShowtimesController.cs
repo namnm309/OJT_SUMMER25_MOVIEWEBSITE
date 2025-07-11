@@ -23,7 +23,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             _showtimeService = showtimeService;
         }
 
-        // GET: ShowtimeManagement/Showtimes
+
         public async Task<IActionResult> Index()
         {
             try
@@ -55,7 +55,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // GET: ShowtimeManagement/Showtimes/GetWeeklyData
+
         [HttpGet]
         public async Task<IActionResult> GetWeeklyData(DateTime startDate)
         {
@@ -70,7 +70,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // GET: ShowtimeManagement/Showtimes/GetMonthlyData
+
         [HttpGet]
         public async Task<IActionResult> GetMonthlyData(int month, int year)
         {
@@ -85,7 +85,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // GET: ShowtimeManagement/Showtimes/Create
+
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -105,7 +105,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // POST: ShowtimeManagement/Showtimes/Create
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateShowtimeViewModel model)
@@ -119,7 +119,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             return Json(result);
         }
 
-        // GET: ShowtimeManagement/Showtimes/Edit/5
+
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -151,7 +151,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // POST: ShowtimeManagement/Showtimes/Edit
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditShowtimeViewModel model)
@@ -165,7 +165,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             return Json(result);
         }
 
-        // POST: ShowtimeManagement/Showtimes/Delete/5
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
@@ -174,7 +174,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             return Json(result);
         }
 
-        // GET: ShowtimeManagement/Showtimes/CheckConflict
+
         [HttpGet]
         public async Task<IActionResult> CheckConflict(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, int duration, Guid? excludeId = null)
         {
@@ -182,7 +182,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             return Json(new { hasConflict });
         }
 
-        // GET: ShowtimeManagement/Showtimes/AdminDashboard
+
         [HttpGet]
         [Authorize(Roles = "Admin,2")]
         public async Task<IActionResult> AdminDashboard()
@@ -216,7 +216,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // API: Get Dashboard Statistics
+
         [HttpGet]
         public async Task<IActionResult> GetDashboardStats()
         {
@@ -273,7 +273,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // API: Get Monthly Statistics
+
         [HttpGet]
         public async Task<IActionResult> GetMonthlyStats(int? month = null, int? year = null)
         {
@@ -311,14 +311,14 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // API: Bulk Delete Showtimes
+
         [HttpPost]
         public async Task<IActionResult> BulkDelete([FromBody] int[] showtimeIds)
         {
             try
             {
-                // Implementation would call service to delete multiple showtimes
-                // For now, return success
+
+
                 return Json(new { success = true, message = $"Đã xóa {showtimeIds.Length} lịch chiếu" });
             }
             catch (Exception ex)
@@ -327,7 +327,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // API: Export Showtimes to Excel
+
         [HttpGet]
         public async Task<IActionResult> ExportToExcel(DateTime? startDate = null, DateTime? endDate = null)
         {
@@ -336,8 +336,8 @@ namespace UI.Areas.ShowtimeManagement.Controllers
                 var start = startDate ?? DateTime.Today.AddDays(-7);
                 var end = endDate ?? DateTime.Today;
 
-                // Implementation would generate Excel file
-                // For now, return success message
+
+
                 return Json(new { success = true, message = "Xuất file Excel thành công", downloadUrl = "/exports/showtimes.xlsx" });
             }
             catch (Exception ex)
@@ -346,7 +346,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // GET: ShowtimeManagement/Showtimes/TestAPI
+
         [HttpGet]
         public async Task<IActionResult> TestAPI()
         {
@@ -355,7 +355,7 @@ namespace UI.Areas.ShowtimeManagement.Controllers
                 var currentMonth = DateTime.Now.Month;
                 var currentYear = DateTime.Now.Year;
                 
-                // Test the new API
+
                 var allShowtimes = await _showtimeService.GetShowtimesForMonthAsync(currentMonth, currentYear);
                 
                 return Json(new { 
@@ -376,21 +376,21 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // GET: ShowtimeManagement/Showtimes/TestData
+
         [HttpGet]
         public async Task<IActionResult> TestData()
         {
             try
             {
-                // Test GetAllShowtimes
+
                 var allShowtimes = await _showtimeService.GetShowtimesForWeekAsync(DateTime.Now);
                 
-                // Test GetMonthlyData
+
                 var currentMonth = DateTime.Now.Month;
                 var currentYear = DateTime.Now.Year;
                 var monthlyShowtimes = await _showtimeService.GetShowtimesForMonthAsync(currentMonth, currentYear);
                 
-                // Test August 2025 data (based on your database screenshot)
+
                 var augustShowtimes = await _showtimeService.GetShowtimesForMonthAsync(8, 2025);
                 
                 return Json(new { 
@@ -419,16 +419,16 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // GET: ShowtimeManagement/Showtimes/DebugData
+
         [HttpGet]
         public async Task<IActionResult> DebugData()
         {
             try
             {
-                // Test August 2025 data (based on your database screenshot)
+
                 var augustShowtimes = await _showtimeService.GetShowtimesForMonthAsync(8, 2025);
                 
-                // Test current month
+
                 var currentMonth = DateTime.Now.Month;
                 var currentYear = DateTime.Now.Year;
                 var currentShowtimes = await _showtimeService.GetShowtimesForMonthAsync(currentMonth, currentYear);
@@ -475,13 +475,13 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
-        // GET: ShowtimeManagement/Showtimes/TestPoster
+
         [HttpGet]
         public async Task<IActionResult> TestPoster()
         {
             try
             {
-                // Test August 2025 data
+
                 var augustShowtimes = await _showtimeService.GetShowtimesForMonthAsync(8, 2025);
                 
                 return Json(new { 

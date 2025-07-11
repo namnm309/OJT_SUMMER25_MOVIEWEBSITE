@@ -1,6 +1,6 @@
-/* User Dropdown Sync with Homepage Colors */
 
-/* Override Bootstrap dropdown styles to match homepage */
+
+
 .dropdown-menu {
     background: rgba(0, 0, 0, 0.85) !important;
     backdrop-filter: blur(25px) !important;
@@ -27,7 +27,7 @@
     }
 }
 
-/* Dropdown Header with User Info */
+
 .dropdown-header {
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%) !important;
     border-radius: 12px !important;
@@ -62,7 +62,7 @@
     margin: 0 !important;
 }
 
-/* Dropdown Items */
+
 .dropdown-item {
     color: rgba(255, 255, 255, 0.9) !important;
     padding: 12px 20px !important;
@@ -98,7 +98,7 @@
     transform: scale(1.1) !important;
 }
 
-/* Logout Button Special Styling */
+
 .dropdown-item.text-danger {
     color: rgba(239, 68, 68, 0.9) !important;
 }
@@ -117,14 +117,14 @@
     color: #ef4444 !important;
 }
 
-/* Dropdown Divider */
+
 .dropdown-divider {
     border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
     margin: 8px 12px !important;
     opacity: 0.6 !important;
 }
 
-/* Form styling inside dropdown */
+
 .dropdown-menu form {
     margin: 0 !important;
     padding: 0 !important;
@@ -137,12 +137,12 @@
     background: transparent !important;
 }
 
-/* Enhanced button styling for form buttons */
+
 .dropdown-menu form button.dropdown-item {
     cursor: pointer !important;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
     .dropdown-menu {
         min-width: 260px !important;
@@ -160,20 +160,20 @@
     }
 }
 
-/* Dark mode compatibility */
+
 @media (prefers-color-scheme: dark) {
     .dropdown-menu {
         background: rgba(0, 0, 0, 0.9) !important;
     }
 }
 
-/* Focus states for accessibility */
+
 .dropdown-item:focus {
     outline: 2px solid rgba(102, 126, 234, 0.5) !important;
     outline-offset: 2px !important;
 }
 
-/* Animation for dropdown toggle */
+
 .dropdown-toggle::after {
     transition: transform 0.3s ease !important;
 }
@@ -182,7 +182,7 @@
     transform: rotate(180deg) !important;
 }
 
-/* Additional polish */
+
 .dropdown-menu::before {
     content: '';
     position: absolute;
@@ -196,7 +196,7 @@
     filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.2));
 }
 
-/* Smooth transitions */
+
 * {
     transition: color 0.3s ease, background 0.3s ease, border-color 0.3s ease, transform 0.3s ease !important;
 } 

@@ -1,4 +1,4 @@
-/* Movie Details Page Styles - Consistent with Homepage */
+
 .movie-details-page {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: #303030;
@@ -6,7 +6,7 @@
     min-height: 100vh;
 }
 
-/* Hero Section */
+
 .hero-section {
     position: relative;
     min-height: 80vh;
@@ -48,7 +48,7 @@
     padding: 60px 0;
 }
 
-/* Breadcrumb */
+
 .breadcrumb-nav {
     margin-bottom: 20px;
     font-size: 14px;
@@ -74,7 +74,7 @@
     font-weight: 500;
 }
 
-/* Movie Hero Info */
+
 .movie-hero-info {
     max-width: 600px;
 }
@@ -112,7 +112,7 @@
     font-weight: 500;
 }
 
-/* Movie Meta - Consistent with homepage */
+
 .movie-meta {
     background: #2f2f2f;
     border-radius: 8px;
@@ -138,7 +138,7 @@
     height: 16px;
 }
 
-/* Action Buttons */
+
 .action-buttons {
     display: flex;
     gap: 16px;
@@ -201,7 +201,7 @@
     transform: scale(1.1);
 }
 
-/* Hero Poster */
+
 .hero-poster {
     display: flex;
     justify-content: center;
@@ -239,13 +239,13 @@
     opacity: 1;
 }
 
-/* Details Section */
+
 .details-section {
     padding: 80px 0;
     background: #303030;
 }
 
-/* Content Cards */
+
 .content-card {
     background: #2f2f2f;
     border-radius: 12px;
@@ -277,7 +277,7 @@
     margin: 0;
 }
 
-/* Cast Info */
+
 .cast-info {
     display: flex;
     flex-direction: column;
@@ -302,7 +302,7 @@
     line-height: 1.5;
 }
 
-/* Image Gallery */
+
 .image-gallery {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -332,7 +332,7 @@
     filter: brightness(1.1);
 }
 
-/* Sidebar Cards */
+
 .info-card {
     background: #2f2f2f;
     border-radius: 12px;
@@ -356,7 +356,7 @@
     color: #df2144;
 }
 
-/* Info List */
+
 .info-list {
     display: flex;
     flex-direction: column;
@@ -394,7 +394,7 @@
     margin-bottom: 4px;
 }
 
-/* Showtimes */
+
 .showtimes-list {
     display: flex;
     flex-direction: column;
@@ -449,7 +449,7 @@
     color: white;
 }
 
-/* Related Movies */
+
 .related-movies {
     display: flex;
     flex-direction: column;
@@ -496,7 +496,7 @@
     margin: 0;
 }
 
-/* Image Modal */
+
 .image-modal {
     display: none;
     position: fixed;
@@ -540,7 +540,7 @@
     border-radius: 8px;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2.5rem;

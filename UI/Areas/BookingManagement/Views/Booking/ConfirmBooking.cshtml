@@ -25,7 +25,7 @@
         padding: 2rem;
     }
 
-    /* Header Navigation */
+    
     .header-nav {
         display: flex;
         justify-content: space-between;
@@ -78,7 +78,7 @@
         font-size: 0.9rem;
     }
 
-    /* Movie Info Section - Full Width */
+    
     .movie-info-section {
         width: 100%;
         background: rgba(255, 255, 255, 0.05);
@@ -149,7 +149,7 @@
             width: 20px;
         }
 
-    /* Date/Time Selection */
+    
     .datetime-selection {
         width: 100%;
         background: rgba(255, 255, 255, 0.05);
@@ -193,14 +193,14 @@
         text-align: center;
     }
 
-    /* Main Content Layout */
+    
     .main-content {
         display: flex;
         gap: 2rem;
         align-items: flex-start;
     }
 
-    /* Customer Info - Left Side */
+    
     .customer-section {
         flex: 2;
         background: rgba(255, 255, 255, 0.05);
@@ -295,7 +295,7 @@
             min-height: 100px;
         }
 
-    /* Booking Summary - Right Side */
+    
     .booking-summary {
         flex: 1;
         background: rgba(255, 255, 255, 0.05);
@@ -441,7 +441,7 @@
                 text-decoration: underline;
             }
 
-    /* Responsive Design */
+    
     @@media (max-width: 1024px) {
         .main-content {
             flex-direction: column;
@@ -488,7 +488,7 @@
 </style>
 
 <div class="container">
-    <!-- Header Navigation -->
+    
     <div class="header-nav">
         <div class="nav-left">
             <div class="logo">WATCHER</div>
@@ -507,7 +507,7 @@
         </div>
     </div>
 
-    <!-- Movie Info Section - Full Width -->
+    
     <div class="movie-info-section">
         <div class="movie-content">
             <div class="movie-poster">
@@ -541,7 +541,7 @@
         </div>
     </div>
 
-    <!-- Date/Time Selection -->
+    
     <div class="datetime-selection">
         <div class="datetime-row">
             <div class="date-section">
@@ -563,9 +563,9 @@
         </div>
     </div>
 
-    <!-- Main Content -->
+    
     <div class="main-content">
-        <!-- Customer Info Section -->
+        
         <div class="customer-section">
             <h2 class="section-header">
                 <i class="fas fa-user"></i>
@@ -609,7 +609,7 @@
                     </div>
                 </div>
 
-                <!-- Hidden Fields -->
+                
                 <input asp-for="ShowTimeId" type="hidden">
                 <input asp-for="MovieTitle" type="hidden">
                 <input asp-for="MoviePoster" type="hidden">
@@ -638,7 +638,7 @@
             </form>
         </div>
 
-        <!-- Booking Summary -->
+        
         <div class="booking-summary">
             <h3 class="summary-header">
                 <i class="fas fa-money-bill-wave"></i>
@@ -735,7 +735,7 @@
             }
         }
 
-        // Add form id for submit button
+
         if (form) {
             form.id = 'confirmForm';
         }
@@ -1210,7 +1210,7 @@
                         window.location.href = result.redirectUrl;
                     } else {
                         alert('Lỗi: ' + result.message);
-                        // Reset button state
+
                         if (submitButton) {
                             submitButton.disabled = false;
                             submitButton.innerHTML = '<i class="fas fa-check"></i> Xác Nhận Đặt Vé';
@@ -1219,7 +1219,7 @@
                 } catch (error) {
                     console.error('Error:', error);
                     alert('Có lỗi xảy ra khi xử lý đặt vé');
-                    // Reset button state
+
                     if (submitButton) {
                         submitButton.disabled = false;
                         submitButton.innerHTML = '<i class="fas fa-check"></i> Xác Nhận Đặt Vé';

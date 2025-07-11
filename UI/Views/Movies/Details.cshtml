@@ -2,16 +2,16 @@
 @{
     ViewData["Title"] = Model?.Title ?? "Chi tiết phim";
     Layout = null; // Remove layout to have full control
-                   // Process API data
+
     var movieData = Model;
     var hasValidData = movieData != null && !string.IsNullOrEmpty(movieData.Title);
-    // Primary image for background
+
     var backgroundImage = hasValidData ? (movieData?.PrimaryImageUrl ?? movieData?.ImageUrl) : "";
     if (string.IsNullOrEmpty(backgroundImage) && hasValidData && movieData?.Images?.Any() == true)
     {
         backgroundImage = movieData.Images?.FirstOrDefault(img => img.IsPrimary)?.ImageUrl ?? movieData.Images?.FirstOrDefault()?.ImageUrl;
     }
-    // Parse actors string to array - DECLARE THE VARIABLE
+
     var actorsList = new List<string>();
     if (hasValidData && !string.IsNullOrEmpty(movieData?.Actors))
     {
@@ -21,7 +21,7 @@
                                     .ToList();
     }
 
-    // Extract trailer embed URL
+
     var embedTrailerUrl = "";
 
     if (hasValidData && !string.IsNullOrEmpty(movieData?.TrailerUrl))
@@ -45,7 +45,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-    <!-- External Stylesheets -->
+    
     <link rel="stylesheet" href="~/css/HomePage/base.css" />
     <link rel="stylesheet" href="~/css/HomePage/header.css" />
     <link rel="stylesheet" href="~/css/Shared/_header.css" asp-append-version="true" />
@@ -56,7 +56,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Video Background */
+        
         .video-background {
             position: absolute;
             top: 0;
@@ -127,7 +127,7 @@
 </head>
 <body class="details-page">
     @Html.Partial("_Header")
-    <!-- Hero Section -->
+    
     <section class="hero-section" style="margin-top: 0; padding-top: 120px;">
         <div class="hero-background" style="top: 0; height: 100vh;">
             @if (!string.IsNullOrEmpty(embedTrailerUrl))
@@ -233,26 +233,26 @@
             </div>
         </div>
     </section>
-    <!-- Main Content -->
+    
     <section class="main-content">
         <div class="container">
             <div class="row">
-                <!-- Main Showtimes -->
+                
                 <div class="col-lg-8">
                     <div class="showtimes-header">
                         <h2>Lịch chiếu phim</h2>
                         <div class="date-selector" id="mainDateSelector">
-                            <!-- Dates will be loaded here -->
+                            
                         </div>
                     </div>
-                    <!-- Cinema Showtimes -->
+                    
                     <div class="cinema-showtimes" id="mainCinemaShowtimes">
-                        <!-- Showtimes will be loaded here -->
+                        
                     </div>
                 </div>
                 <!-- Sidebar (Thu gọn) -->
                 <div class="col-lg-4">
-                    <!-- Trailer Section -->
+                    
                     <div class="sidebar-section">
                         <div class="trailer-container">
                             @if (!string.IsNullOrEmpty(embedTrailerUrl))
@@ -282,7 +282,7 @@
                         </div>
                     </div>
 
-                    <!-- Quick Info -->
+                    
                     <div class="sidebar-section">
                         <h3>Thông tin nhanh</h3>
                         <div class="quick-info">
@@ -339,7 +339,7 @@
     </section>
     </div>
 
-    <!-- Showtime Modal -->
+    
     <style>
     .showtime-modal {
         position: fixed;
@@ -481,22 +481,22 @@
             </div>
             <div class="modal-body">
                 <div class="dates-container">
-                    <!-- Dates will be loaded here -->
+                    
                 </div>
                 <div class="times-container">
-                    <!-- Times will be loaded here -->
+                    
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
+    
     <script src="~/js/movie-details-mostly.js" asp-append-version="true"></script>
     <script>
         // Truyền trạng thái đăng nhập từ server sang client
         const isAuthenticated = @(User.Identity?.IsAuthenticated == true ? "true" : "false");
 
-        // Load main showtimes when page loads
+
         document.addEventListener('DOMContentLoaded', function() {
             const movieId = '@Model?.Id';
             if (movieId) {
@@ -506,14 +506,14 @@
 
         async function loadMainShowtimes(movieId) {
             try {
-                // Load dates first
+
                 const datesResponse = await fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`);
                 const datesResult = await datesResponse.json();
                 const dates = datesResult.data;
 
                 if (dates && dates.length > 0) {
                     displayMainDates(dates, movieId);
-                    // Load showtimes for first date
+
                     loadMainShowtimesForDate(movieId, dates[0].code);
                 } else {
                     document.getElementById('mainDateSelector').innerHTML = '<div class="text-center text-muted">Không có ngày chiếu nào</div>';
@@ -554,11 +554,11 @@
         }
 
         async function selectMainDate(movieId, date, buttonElement) {
-            // Update active state
+
             document.querySelectorAll('#mainDateSelector .date-btn').forEach(btn => btn.classList.remove('active'));
             buttonElement.classList.add('active');
 
-            // Load showtimes for selected date
+
             loadMainShowtimesForDate(movieId, date);
         }
 
@@ -583,7 +583,7 @@
         }
 
         function displayMainShowtimes(times) {
-            // Group times by room/cinema (assuming we have room info)
+
             const groupedTimes = {};
             times.forEach(time => {
                 const roomKey = time.roomName || 'Phòng chiếu';
@@ -693,7 +693,7 @@
             const timesContainer = document.querySelector('.times-container');
             timesContainer.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải suất chiếu...</div>';
 
-            // Highlight selected date
+
             document.querySelectorAll('.date-btn').forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
 

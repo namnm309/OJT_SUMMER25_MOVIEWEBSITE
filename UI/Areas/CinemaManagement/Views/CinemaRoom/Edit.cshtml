@@ -5,7 +5,7 @@
 }
 
 <div class="container-fluid py-4">
-    <!-- Header Section -->
+    
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="mb-1">
@@ -19,7 +19,7 @@
         </a>
     </div>
 
-    <!-- Alert Messages -->
+    
     @if (TempData["Error"] != null)
     {
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -29,7 +29,7 @@
         </div>
     }
 
-    <!-- Edit Form -->
+    
     <div class="row justify-content-center">
         <div class="col-lg-12">
             <div class="card">
@@ -102,7 +102,7 @@
 
                         <hr class="my-4">
 
-                        <!-- Seat Layout Section -->
+                        
                         <div class="row mb-4">
                             <div class="col-12">
                                 <h5 class="mb-3">
@@ -113,7 +113,7 @@
                                     <strong>Hướng dẫn:</strong> Chọn loại ghế cho từng dãy hoặc từng ghế để thay đổi cấu hình phòng chiếu.
                                 </div>
                                 
-                                <!-- Seat Layout Controls -->
+                                
                                 <div class="d-flex flex-wrap gap-3 mb-4">
                                     <div class="seat-type-selector">
                                         <label class="form-label">Chọn loại ghế:</label>
@@ -146,17 +146,17 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Seat Layout Visualization -->
+                                
                                 <div class="seat-layout-container">
                                     <div class="screen mb-4">
                                         <i class="fas fa-tv me-2"></i>MÀN HÌNH
                                     </div>
                                     
                                     <div id="seatLayout" class="seat-grid">
-                                        <!-- Seats will be generated here by JavaScript -->
+                                        
                                     </div>
                                     
-                                    <!-- Seat Legend -->
+                                    
                                     <div class="seat-legend mt-4">
                                         <div class="legend-item">
                                             <div class="seat-icon normal"></div>
@@ -177,12 +177,12 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Hidden input to store seat configuration -->
+                                
                                 <input type="hidden" id="seatConfig" name="SeatConfig" />
                             </div>
                         </div>
 
-                        <!-- Form Actions -->
+                        
                         <div class="d-flex justify-content-end gap-2">
                             <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
                                 <i class="fas fa-times me-2"></i>Hủy
@@ -195,7 +195,7 @@
                 </div>
             </div>
 
-            <!-- Help Card -->
+            
             <div class="card mt-4">
                 <div class="card-header bg-light">
                     <h6 class="mb-0">
@@ -225,7 +225,7 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
     <script>
-        // Bootstrap validation
+
         (function() {
             'use strict';
             window.addEventListener('load', function() {
@@ -242,7 +242,7 @@
             }, false);
         })();
 
-        // Auto hide alerts after 5 seconds
+
         setTimeout(function() {
             var alerts = document.querySelectorAll('.alert:not(.alert-info)');
             alerts.forEach(function(alert) {
@@ -251,20 +251,20 @@
             });
         }, 5000);
 
-        // Seat Layout Management
+
         document.addEventListener('DOMContentLoaded', function() {
             const roomId = '@ViewBag.RoomId';
             let selectedSeatType = 0; // Default: Normal
             let selectionMode = 'seat'; // Default: Single seat selection
             let seatData = []; // Will store seat data from API
             
-            // Get current seat data from API
+
             fetchSeatData();
             
-            // Initialize event listeners
+
             initEventListeners();
             
-            // Fetch seat data from API
+
             async function fetchSeatData() {
                 try {
                     const response = await fetch(`/CinemaManagement/CinemaRoom/Details/${roomId}`, {
@@ -279,7 +279,7 @@
                     if (result.Code === 200 && result.Data) {
                         const data = result.Data;
                         
-                        // Update form fields with room data
+
                         if (!document.getElementById('RoomName').value) {
                             document.getElementById('RoomName').value = data.roomName || '';
                         }
@@ -288,14 +288,14 @@
                             document.getElementById('TotalSeats').value = data.totalSeats || '';
                         }
                         
-                        // Calculate room dimensions if not already set
+
                         if (!document.getElementById('NumberOfRows').value || !document.getElementById('NumberOfColumns').value) {
                             const dimensions = calculateRoomDimensions(data);
                             document.getElementById('NumberOfRows').value = dimensions.rows;
                             document.getElementById('NumberOfColumns').value = dimensions.columns;
                         }
                         
-                        // Process seat data
+
                         if (data.seats && Array.isArray(data.seats)) {
                             seatData = data.seats;
                             renderSeatLayout();
@@ -310,7 +310,7 @@
                 }
             }
             
-            // Calculate room dimensions from seat data
+
             function calculateRoomDimensions(data) {
                 let maxRow = 0;
                 let maxCol = 0;
@@ -330,9 +330,9 @@
                 };
             }
             
-            // Initialize event listeners
+
             function initEventListeners() {
-                // Seat type selection
+
                 document.querySelectorAll('.seat-type-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         document.querySelectorAll('.seat-type-btn').forEach(b => b.classList.remove('active'));
@@ -341,7 +341,7 @@
                     });
                 });
                 
-                // Selection mode
+
                 document.querySelectorAll('.selection-mode-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         document.querySelectorAll('.selection-mode-btn').forEach(b => b.classList.remove('active'));
@@ -350,13 +350,13 @@
                     });
                 });
                 
-                // Form submission - prepare seat config
+
                 document.querySelector('form').addEventListener('submit', function(e) {
                     prepareSeatConfig();
                 });
             }
             
-            // Render seat layout based on current data
+
             function renderSeatLayout() {
                 const seatLayout = document.getElementById('seatLayout');
                 seatLayout.innerHTML = '';
@@ -364,7 +364,7 @@
                 const rows = parseInt(document.getElementById('NumberOfRows').value) || 1;
                 const cols = parseInt(document.getElementById('NumberOfColumns').value) || 1;
                 
-                // Create row headers
+
                 const headerRow = document.createElement('div');
                 headerRow.className = 'seat-row header-row';
                 
@@ -383,12 +383,12 @@
                 
                 seatLayout.appendChild(headerRow);
                 
-                // Create rows with seats
+
                 for (let r = 1; r <= rows; r++) {
                     const rowElem = document.createElement('div');
                     rowElem.className = 'seat-row';
                     
-                    // Row header
+
                     const rowHeader = document.createElement('div');
                     rowHeader.className = 'seat-header row-header';
                     rowHeader.textContent = String.fromCharCode(64 + r); // A, B, C, ...
@@ -396,14 +396,14 @@
                     rowHeader.addEventListener('click', () => handleRowSelection(r));
                     rowElem.appendChild(rowHeader);
                     
-                    // Create seats in the row
+
                     for (let c = 1; c <= cols; c++) {
                         const seat = document.createElement('div');
                         seat.className = 'seat';
                         seat.dataset.row = r;
                         seat.dataset.col = c;
                         
-                        // Find seat data if exists
+
                         const seatInfo = seatData.find(s => 
                             (s.rowIndex === r || s.RowIndex === r) && 
                             (s.columnIndex === c || s.ColumnIndex === c));
@@ -416,7 +416,7 @@
                             seat.dataset.id = seatInfo.id || seatInfo.Id || '';
                             seat.dataset.code = seatInfo.seatCode || seatInfo.SeatCode || `${String.fromCharCode(64 + r)}${c}`;
                             
-                            // Apply seat type class
+
                             updateSeatClass(seat, seatType);
                         } else {
                             seat.dataset.type = '0'; // Default: Normal
@@ -424,10 +424,10 @@
                             updateSeatClass(seat, 0);
                         }
                         
-                        // Display seat code
+
                         seat.textContent = c;
                         
-                        // Add click event
+
                         seat.addEventListener('click', () => handleSeatClick(seat));
                         
                         rowElem.appendChild(seat);
@@ -437,7 +437,7 @@
                 }
             }
             
-            // Update seat class based on type
+
             function updateSeatClass(seatElement, type) {
                 seatElement.classList.remove('normal', 'vip', 'couple');
                 
@@ -454,16 +454,16 @@
                 }
             }
             
-            // Handle seat click based on selection mode
+
             function handleSeatClick(seatElement) {
                 if (selectionMode === 'seat') {
-                    // Update single seat
+
                     seatElement.dataset.type = selectedSeatType;
                     updateSeatClass(seatElement, selectedSeatType);
                 }
             }
             
-            // Handle row selection
+
             function handleRowSelection(rowIndex) {
                 if (selectionMode === 'row') {
                     document.querySelectorAll(`.seat[data-row="${rowIndex}"]`).forEach(seat => {
@@ -473,7 +473,7 @@
                 }
             }
             
-            // Handle column selection
+
             function handleColumnSelection(colIndex) {
                 if (selectionMode === 'column') {
                     document.querySelectorAll(`.seat[data-col="${colIndex}"]`).forEach(seat => {
@@ -483,7 +483,7 @@
                 }
             }
             
-            // Prepare seat configuration for form submission
+
             function prepareSeatConfig() {
                 const seatConfig = [];
                 
@@ -500,7 +500,7 @@
                 document.getElementById('seatConfig').value = JSON.stringify(seatConfig);
             }
             
-            // Show alert message
+
             function showAlert(message, type = 'info') {
                 const alertContainer = document.createElement('div');
                 alertContainer.className = `alert alert-${type} alert-dismissible fade show`;
@@ -519,7 +519,7 @@
                 }, 5000);
             }
             
-            // Update layout when rows/columns change
+
             document.getElementById('NumberOfRows').addEventListener('change', renderSeatLayout);
             document.getElementById('NumberOfColumns').addEventListener('change', renderSeatLayout);
         });
@@ -546,7 +546,7 @@
         border-left: 4px solid #0dcaf0;
     }
     
-    /* Seat Layout Styles */
+    
     .seat-layout-container {
         background-color: #f8f9fa;
         border-radius: 0.5rem;
@@ -631,15 +631,15 @@
     }
     
     .seat.normal {
-        background-color: #10b981; /* Green */
+        background-color: #10b981; 
     }
     
     .seat.vip {
-        background-color: #f59e0b; /* Yellow */
+        background-color: #f59e0b; 
     }
     
     .seat.couple {
-        background-color: #ef4444; /* Red */
+        background-color: #ef4444; 
     }
     
     .seat.selected {
@@ -647,7 +647,7 @@
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
     }
     
-    /* Legend */
+    
     .seat-legend {
         display: flex;
         gap: 1.5rem;
@@ -685,7 +685,7 @@
         border: 2px solid #3b82f6;
     }
     
-    /* Button groups */
+    
     .btn-group .btn {
         border-color: #dee2e6;
     }
@@ -714,7 +714,7 @@
         color: white;
     }
     
-    /* Required field label */
+    
     .form-label.required::after {
         content: " *";
         color: #ef4444;

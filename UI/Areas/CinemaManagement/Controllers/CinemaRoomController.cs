@@ -18,7 +18,7 @@ namespace UI.Areas.CinemaManagement.Controllers
             _logger = logger;
         }
 
-        // GET: CinemaManagement/CinemaRoom
+
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string? search = "")
         {
             try
@@ -45,27 +45,27 @@ namespace UI.Areas.CinemaManagement.Controllers
                 ViewBag.PageSize = pageSize;
                 ViewBag.Search = search;
 
-                // Debug: Log the actual data structure
+
                 _logger.LogInformation("API Response Data Type: {Type}", response.Data.GetType().Name);
                 _logger.LogInformation("API Response Data ValueKind: {ValueKind}", response.Data.ValueKind);
                 _logger.LogInformation("API Response Raw Data: {Data}", response.Data.GetRawText());
 
-                // Check if response data has nested structure
+
                 if (response.Data.ValueKind == JsonValueKind.Object)
                 {
-                    // Try to find data in nested properties
+
                     if (response.Data.TryGetProperty("data", out var dataProperty))
                     {
                         _logger.LogInformation("Found 'data' property with {Count} items", 
                             dataProperty.ValueKind == JsonValueKind.Array ? dataProperty.GetArrayLength() : 0);
                         
-                        // Extract pagination info if available
+
                         ViewBag.Total = response.Data.TryGetProperty("total", out var totalProp) ? totalProp.GetInt32() : 
                                        (dataProperty.ValueKind == JsonValueKind.Array ? dataProperty.GetArrayLength() : 0);
                         ViewBag.CurrentPage = response.Data.TryGetProperty("page", out var pageProp) ? pageProp.GetInt32() : page;
                         ViewBag.PageSize = response.Data.TryGetProperty("pageSize", out var sizeProp) ? sizeProp.GetInt32() : pageSize;
                         
-                        // Set ViewBag for View logic
+
                         ViewBag.HasData = dataProperty.ValueKind == JsonValueKind.Array && dataProperty.GetArrayLength() > 0;
                         ViewBag.DataCount = dataProperty.ValueKind == JsonValueKind.Array ? dataProperty.GetArrayLength() : 0;
                         
@@ -81,7 +81,7 @@ namespace UI.Areas.CinemaManagement.Controllers
                         ViewBag.CurrentPage = response.Data.TryGetProperty("Page", out var PageProp) ? PageProp.GetInt32() : page;
                         ViewBag.PageSize = response.Data.TryGetProperty("PageSize", out var SizeProp) ? SizeProp.GetInt32() : pageSize;
                         
-                        // Set ViewBag for View logic
+
                         ViewBag.HasData = DataProperty.ValueKind == JsonValueKind.Array && DataProperty.GetArrayLength() > 0;
                         ViewBag.DataCount = DataProperty.ValueKind == JsonValueKind.Array ? DataProperty.GetArrayLength() : 0;
                         
@@ -95,7 +95,7 @@ namespace UI.Areas.CinemaManagement.Controllers
                         ViewBag.Total = response.Data.TryGetProperty("total", out var totalProp) ? totalProp.GetInt32() : 
                                        (itemsProperty.ValueKind == JsonValueKind.Array ? itemsProperty.GetArrayLength() : 0);
                         
-                        // Set ViewBag for View logic
+
                         ViewBag.HasData = itemsProperty.ValueKind == JsonValueKind.Array && itemsProperty.GetArrayLength() > 0;
                         ViewBag.DataCount = itemsProperty.ValueKind == JsonValueKind.Array ? itemsProperty.GetArrayLength() : 0;
                         
@@ -103,13 +103,13 @@ namespace UI.Areas.CinemaManagement.Controllers
                     }
                     else
                     {
-                        // If no known data property found, check if the object itself contains room data
+
                         _logger.LogInformation("No nested data property found, checking object properties");
                         
-                        // Check if object has typical room properties (id, roomName, etc.)
+
                         if (response.Data.TryGetProperty("id", out _) && response.Data.TryGetProperty("roomName", out _))
                         {
-                            // Single room object, convert to array
+
                             var singleRoomArray = JsonDocument.Parse($"[{response.Data.GetRawText()}]").RootElement;
                             ViewBag.Total = 1;
                             ViewBag.HasData = true;
@@ -117,7 +117,7 @@ namespace UI.Areas.CinemaManagement.Controllers
                             return View(singleRoomArray);
                         }
                         
-                        // Last resort: return the object as is and let View handle it
+
                         _logger.LogWarning("Unknown object structure, returning raw object");
                         ViewBag.Total = 0;
                         ViewBag.HasData = false;
@@ -126,7 +126,7 @@ namespace UI.Areas.CinemaManagement.Controllers
                     }
                 }
 
-                // If it's already an array, use it directly
+
                 if (response.Data.ValueKind == JsonValueKind.Array)
                 {
                     _logger.LogInformation("Direct array with {Count} items", response.Data.GetArrayLength());
@@ -136,7 +136,7 @@ namespace UI.Areas.CinemaManagement.Controllers
                     return View(response.Data);
                 }
 
-                // Return empty array if no data structure matches
+
                 _logger.LogWarning("No valid data structure found in API response, ValueKind: {ValueKind}", response.Data.ValueKind);
                 ViewBag.Total = 0;
                 ViewBag.HasData = false;
@@ -154,13 +154,13 @@ namespace UI.Areas.CinemaManagement.Controllers
             }
         }
 
-        // GET: CinemaManagement/CinemaRoom/Create
+
         public IActionResult Create()
         {
             return View(new CinemaRoomCreateViewModel());
         }
 
-        // POST: CinemaManagement/CinemaRoom/Create
+
         [HttpPost]
         // [ValidateAntiForgeryToken] // Tạm thời disable để test
         public async Task<IActionResult> Create(CinemaRoomCreateViewModel model)
@@ -177,7 +177,7 @@ namespace UI.Areas.CinemaManagement.Controllers
                 );
                 _logger.LogWarning("ModelState validation failed: {@Errors}", errors);
 
-                // Check if it's an AJAX request
+
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                     Request.ContentType?.Contains("application/json") == true)
                 {
@@ -192,7 +192,7 @@ namespace UI.Areas.CinemaManagement.Controllers
 
                 if (response.Success)
                 {
-                    // Check if it's an AJAX request
+
                     if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                         Request.ContentType?.Contains("application/json") == true)
                     {
@@ -204,7 +204,7 @@ namespace UI.Areas.CinemaManagement.Controllers
                 }
                 else
                 {
-                    // Check if it's an AJAX request
+
                     if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                         Request.ContentType?.Contains("application/json") == true)
                     {
@@ -219,7 +219,7 @@ namespace UI.Areas.CinemaManagement.Controllers
             {
                 _logger.LogError(ex, "Error creating cinema room");
                 
-                // Check if it's an AJAX request
+
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                     Request.ContentType?.Contains("application/json") == true)
                 {
@@ -231,7 +231,7 @@ namespace UI.Areas.CinemaManagement.Controllers
             }
         }
 
-        // GET: CinemaManagement/CinemaRoom/Edit/5
+
         public async Task<IActionResult> Edit(Guid id)
         {
             try
@@ -264,7 +264,7 @@ namespace UI.Areas.CinemaManagement.Controllers
             }
         }
 
-        // POST: CinemaManagement/CinemaRoom/Edit/5
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, CinemaRoomUpdateViewModel model)
@@ -279,7 +279,7 @@ namespace UI.Areas.CinemaManagement.Controllers
             
             if (!ModelState.IsValid)
             {
-                // Check if it's an AJAX request
+
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                     Request.ContentType?.Contains("application/json") == true)
                 {
@@ -352,7 +352,7 @@ namespace UI.Areas.CinemaManagement.Controllers
 
                 if (response.Success)
                 {
-                    // Check if it's an AJAX request
+
                     if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                         Request.ContentType?.Contains("application/json") == true)
                     {
@@ -364,7 +364,7 @@ namespace UI.Areas.CinemaManagement.Controllers
                 }
                 else
                 {
-                    // Check if it's an AJAX request
+
                     if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                         Request.ContentType?.Contains("application/json") == true)
                     {
@@ -380,7 +380,7 @@ namespace UI.Areas.CinemaManagement.Controllers
             {
                 _logger.LogError(ex, "Error updating cinema room with ID: {Id}", id);
                 
-                // Check if it's an AJAX request
+
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                     Request.ContentType?.Contains("application/json") == true)
                 {
@@ -393,7 +393,7 @@ namespace UI.Areas.CinemaManagement.Controllers
             }
         }
 
-        // POST: CinemaManagement/CinemaRoom/Delete/5
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
@@ -420,7 +420,7 @@ namespace UI.Areas.CinemaManagement.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: CinemaManagement/CinemaRoom/Details/5
+
         public async Task<IActionResult> Details(Guid id)
         {
             try
@@ -431,7 +431,7 @@ namespace UI.Areas.CinemaManagement.Controllers
 
                 if (!response.Success)
                 {
-                    // Check if it's an AJAX request
+
                     if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                         Request.Headers["Accept"].ToString().Contains("application/json"))
                     {
@@ -443,12 +443,12 @@ namespace UI.Areas.CinemaManagement.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                // Check if it's an AJAX request
+
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                     Request.Headers["Accept"].ToString().Contains("application/json"))
                 {
                     _logger.LogInformation("Returning JSON success response for AJAX request");
-                    // Convert backend format to frontend format
+
                     return Json(new { Code = 200, Message = "OK", Data = response.Data });
                 }
 
@@ -459,7 +459,7 @@ namespace UI.Areas.CinemaManagement.Controllers
             {
                 _logger.LogError(ex, "Error loading cinema room details for ID: {RoomId}", id);
                 
-                // Check if it's an AJAX request
+
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
                     Request.Headers["Accept"].ToString().Contains("application/json"))
                 {

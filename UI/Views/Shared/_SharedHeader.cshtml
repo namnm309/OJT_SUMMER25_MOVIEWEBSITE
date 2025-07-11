@@ -1,10 +1,10 @@
 @using System.Security.Claims
 
-<!-- Shared Header for all pages except Homepage -->
+
 <header class="shared-header">
     <div class="shared-nav-container">
         <div class="shared-nav-content">
-            <!-- Brand Section -->
+            
             <div class="shared-brand">
                 <a href="/" class="shared-brand-link">
                     <div class="shared-brand-logo"></div>
@@ -15,7 +15,7 @@
                 </a>
             </div>
 
-            <!-- Navigation Links -->
+            
             <nav class="shared-nav-links">
                 <a href="/" class="shared-nav-link">
                     <i class="fas fa-home"></i>
@@ -35,7 +35,7 @@
                 </a>
             </nav>
 
-            <!-- Search Box -->
+            
             <div class="shared-search-box">
                 <input type="text" placeholder="Tìm kiếm phim..." class="shared-search-input" id="sharedSearchInput">
                 <button class="shared-search-btn" id="sharedSearchButton">
@@ -43,7 +43,7 @@
                 </button>
             </div>
 
-            <!-- User Section -->
+            
             <div class="shared-user-section">
                 @if (User.Identity?.IsAuthenticated == true)
                 {
@@ -117,9 +117,9 @@
 </header>
 
 <script>
-    // Shared header functionality
+
     document.addEventListener('DOMContentLoaded', function () {
-        // User dropdown
+
         const userDropdown = document.getElementById('sharedUserDropdown');
         const dropdownMenu = document.querySelector('.shared-dropdown-menu');
         
@@ -138,7 +138,7 @@
                 }
             });
             
-            // Close dropdown when clicking outside
+
             document.addEventListener('click', function(e) {
                 if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
                     dropdownMenu.classList.remove('show');
@@ -147,7 +147,7 @@
             });
         }
 
-        // Search functionality
+
         const searchInput = document.getElementById('sharedSearchInput');
         const searchButton = document.getElementById('sharedSearchButton');
 

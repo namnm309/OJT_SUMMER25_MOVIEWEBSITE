@@ -20,9 +20,9 @@
     </div>
 
     <div class="containers">
-        <!-- Main Content with 2 columns -->
+        
         <div class="main-content">
-            <!-- Left Column: Movies Grid -->
+            
             <div class="movies-column">
                 <div class="movies-section">
                     <h2 class="section-title"><i class="fas fa-film"></i> Phim Đang Chiếu</h2>
@@ -108,9 +108,9 @@
                 </div>
             </div>
 
-            <!-- Right Column: Movie Details & Showtimes -->
+            
             <div class="details-column">
-                <!-- Default state -->
+                
                 <div id="defaultState" class="default-state">
                     <div class="empty-state">
                         <i class="fas fa-hand-pointer"></i>
@@ -119,27 +119,27 @@
                     </div>
                 </div>
 
-                <!-- Selected Movie Info -->
+                
                 <div id="selectedMovieDetails" class="selected-movie-details" style="display: none;">
                     <div class="movie-header">
                         <div id="selectedMovieInfo" class="selected-movie-info">
-                            <!-- Selected movie info will be displayed here -->
+                            
                         </div>
                     </div>
 
-                    <!-- Movie Dates Section -->
+                    
                     <div id="movieDatesSection" class="dates-section">
                         <h3 class="subsection-title">Chọn Ngày Chiếu</h3>
                         <div id="movieDates" class="dates-grid">
-                            <!-- Dates will be loaded here -->
+                            
                         </div>
                     </div>
 
-                    <!-- Movie Times Section -->
+                    
                     <div id="movieTimesSection" class="times-section" style="display: none;">
                         <h3 class="subsection-title">Chọn Suất Chiếu</h3>
                         <div id="movieTimes" class="times-grid">
-                            <!-- Times will be loaded here -->
+                            
                         </div>
                     </div>
                 </div>
@@ -149,7 +149,7 @@
 </div>
 
 <style>
-    /* Reset and base styles */
+    
     * {
         margin: 0;
         padding: 0;
@@ -287,7 +287,7 @@
         border-bottom: 2px solid rgba(255,255,255,0.2);
     }
 
-    /* Hero Section */
+    
     .hero-section-select {
         background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
         height: 250px;
@@ -337,14 +337,14 @@
         opacity: 0.9;
     }
 
-    /* Container */
+    
     .containers {
         max-width: 100%;
         margin: 0 auto;
         padding: 0 40px;
     }
 
-    /* Main Content Layout */
+    
     .main-content {
         display: grid;
         grid-template-columns: 1fr 400px;
@@ -354,13 +354,13 @@
         width: 100%;
     }
 
-    /* Movies Column */
+    
     .movies-column {
         min-height: 600px;
         width: 100%;
     }
 
-    /* Movies Grid */
+    
     .movies-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -393,7 +393,7 @@
             box-shadow: 0 0 0 3px #df2144, 0 20px 40px rgba(223, 33, 68, 0.4);
         }
 
-    /* Movie Poster */
+    
     .movie-poster {
         position: relative;
         aspect-ratio: 2/3;
@@ -437,7 +437,7 @@
         opacity: 0.3;
     }
 
-    /* Overlay Content */
+    
     .overlay-content {
         color: white;
         text-align: center;
@@ -519,7 +519,7 @@
             transform: scale(1.05);
         }
 
-    /* Movie Info Home Style */
+    
     .movie-info-home {
         padding: 1.5rem;
     }
@@ -567,7 +567,7 @@
         opacity: 0.8;
     }
 
-    /* Details Column */
+    
     .details-column {
         position: sticky;
         top: 20px;
@@ -579,7 +579,7 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
-    /* Default State */
+    
     .default-state {
         height: 100%;
         display: flex;
@@ -615,7 +615,7 @@
         color: white;
     }
 
-    /* Selected Movie Details */
+    
     .selected-movie-details {
         animation: fadeInUp 0.5s ease;
     }
@@ -652,7 +652,7 @@
         text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     }
 
-    /* Dates and Times Sections */
+    
     .dates-section, .times-section {
         margin-bottom: 30px;
     }
@@ -691,7 +691,7 @@
             box-shadow: 0 4px 12px rgba(223, 33, 68, 0.4);
         }
 
-    /* Loading State */
+    
     .loading-state {
         text-align: center;
         color: white;
@@ -704,7 +704,7 @@
             margin-right: 10px;
         }
 
-    /* Responsive Design */
+    
     @@media (max-width: 1200px) {
         .main-content {
             grid-template-columns: 1fr 350px;
@@ -770,7 +770,7 @@
         console.log('Document ready fired');
         console.log('Movie cards found:', document.querySelectorAll('.movie-card').length);
 
-        // Movie card click handler
+
         // Trong phần JavaScript, sửa lại từ dòng 670-675:
         document.querySelectorAll('.movie-card').forEach(function (card) {
             card.addEventListener('click', function (e) {
@@ -803,19 +803,19 @@
 
                 console.log('Movie details:', { movieId, movieTitle, moviePoster, movieDirector, movieDuration });
 
-                // Remove previous selection
+
                 document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('selected'));
                 this.classList.add('selected');
 
                 selectedMovieId = movieId;
 
-                // Hide default state and show movie details
+
                 console.log('Hiding default state...');
                 document.getElementById('defaultState').style.display = 'none';
                 console.log('Showing movie details...');
                 document.getElementById('selectedMovieDetails').style.display = 'block';
 
-                // Update selected movie info
+
                 document.getElementById('selectedMovieInfo').innerHTML = `
             <div style="display: flex; align-items: center; gap: 15px;">
                 <img src="${moviePoster}" alt="${movieTitle}" style="width: 60px; height: 90px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
@@ -835,7 +835,7 @@
         function loadMovieDates(movieId) {
             console.log('loadMovieDates called with:', movieId);
 
-            // Show loading state
+
             document.getElementById('movieDates').innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải ngày chiếu...</div>';
             document.getElementById('movieDatesSection').style.display = 'block';
             document.getElementById('movieTimesSection').style.display = 'none';
@@ -880,7 +880,7 @@
 
             document.getElementById('movieDates').innerHTML = datesHtml;
 
-            // Date click handler
+
             document.querySelectorAll('.date-btn').forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     console.log('Date clicked:', this.getAttribute('data-date'));
@@ -896,7 +896,7 @@
         function loadMovieTimes(movieId, date) {
             console.log('loadMovieTimes called with:', { movieId, date });
 
-            // Show loading state
+
             document.getElementById('movieTimes').innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải suất chiếu...</div>';
             document.getElementById('movieTimesSection').style.display = 'block';
 
@@ -939,7 +939,7 @@
 
             document.getElementById('movieTimes').innerHTML = timesHtml;
 
-            // Time click handler
+
             document.querySelectorAll('.time-btn').forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
@@ -947,7 +947,7 @@
 
                     const showtimeId = this.getAttribute('data-showtime-id');
 
-                    // Show confirmation and redirect
+
                     setTimeout(() => {
                         window.location.href = `/BookingManagement/Booking/SelectSeat?showtimeId=${showtimeId}`;
                     }, 500);
@@ -955,7 +955,7 @@
             });
         }
 
-        // Helper functions
+
         function formatDate(dateString) {
             const date = new Date(dateString);
             const day = date.getDate().toString().padStart(2, '0');

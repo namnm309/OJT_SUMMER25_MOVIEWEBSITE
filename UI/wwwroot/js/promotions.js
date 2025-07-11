@@ -1,4 +1,4 @@
-﻿// wwwroot/js/promotions.js
+
 
 // Xử lý hiển thị ngày tháng
 function formatDate(dateString) {

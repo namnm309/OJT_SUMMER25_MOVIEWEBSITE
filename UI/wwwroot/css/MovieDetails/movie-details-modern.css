@@ -1,4 +1,4 @@
-/* Modern Movie Details Page Styles */
+
 :root {
     --primary-bg: #0a0a0a;
     --secondary-bg: #1a1a1a;
@@ -37,7 +37,7 @@ body {
     background: var(--primary-bg);
 }
 
-/* Hero Section */
+
 .hero-wrapper {
     position: relative;
     height: 100vh;
@@ -96,7 +96,7 @@ body {
     animation: fadeInUp 1s ease-out;
 }
 
-/* Breadcrumb */
+
 .breadcrumb-modern {
     display: flex;
     align-items: center;
@@ -128,7 +128,7 @@ body {
     font-weight: 500;
 }
 
-/* Genre Tags */
+
 .genre-tags {
     display: flex;
     gap: 0.75rem;
@@ -154,7 +154,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Typography */
+
 .movie-title {
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 900;
@@ -174,7 +174,7 @@ body {
     font-weight: 500;
 }
 
-/* Stats Section */
+
 .movie-stats {
     margin-bottom: 2.5rem;
 }
@@ -232,7 +232,7 @@ body {
     width: 16px;
 }
 
-/* Action Buttons */
+
 .action-section {
     display: flex;
     gap: 1rem;
@@ -307,7 +307,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Poster Section */
+
 .poster-section {
     display: flex;
     justify-content: center;
@@ -347,7 +347,7 @@ body {
     pointer-events: none;
 }
 
-/* Content Section */
+
 .content-section {
     padding: 4rem 0;
     background: var(--secondary-bg);
@@ -392,7 +392,7 @@ body {
     padding: 2rem;
 }
 
-/* Synopsis */
+
 .synopsis-content {
     font-size: 1.125rem;
     line-height: 1.8;
@@ -400,7 +400,7 @@ body {
     margin: 0;
 }
 
-/* Cast Grid */
+
 .cast-grid {
     display: grid;
     gap: 1.5rem;
@@ -428,7 +428,7 @@ body {
     font-size: 1rem;
 }
 
-/* Gallery Grid */
+
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -478,7 +478,7 @@ body {
     font-size: 2rem;
 }
 
-/* Info Grid */
+
 .info-grid {
     display: grid;
     gap: 1.5rem;
@@ -520,7 +520,7 @@ body {
     margin-bottom: 0.5rem;
 }
 
-/* Showtimes */
+
 .showtimes-grid {
     display: grid;
     gap: 1rem;
@@ -560,7 +560,7 @@ body {
     font-size: 0.875rem;
 }
 
-/* Quick Actions */
+
 .quick-actions {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -598,7 +598,7 @@ body {
     font-weight: 500;
 }
 
-/* Buttons */
+
 .btn-view-more {
     display: flex;
     align-items: center;
@@ -621,7 +621,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Image Modal */
+
 .image-modal-modern {
     position: fixed;
     top: 0;
@@ -694,7 +694,7 @@ body {
     max-height: 90vh;
 }
 
-/* Animations */
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -717,7 +717,7 @@ body {
     }
 }
 
-/* Responsive Design */
+
 @media (max-width: 1200px) {
     .hero-content-wrapper {
         padding: 0 1.5rem;

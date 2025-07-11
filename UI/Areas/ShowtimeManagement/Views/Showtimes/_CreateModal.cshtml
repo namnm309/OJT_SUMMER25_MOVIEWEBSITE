@@ -90,7 +90,7 @@
 <!--Phần js có thể để chung để dễ xử lí logic 2-->
 <script>
     $(document).ready(function() {
-        // Update end time preview when movie or start time changes
+
         function updateEndTimePreview() {
             const movieSelect = $('#MovieId');
             const startTimeInput = $('#StartTime');
@@ -108,7 +108,7 @@
                 
                 $('#endTimePreview').val(`${String(endHours).padStart(2, '0')}:${String(endMins).padStart(2, '0')}`);
                 
-                // Check for conflicts
+
                 checkScheduleConflict();
             }
         }
@@ -116,7 +116,7 @@
         $('#MovieId, #StartTime').change(updateEndTimePreview);
         $('#ShowDate, #CinemaRoomId').change(checkScheduleConflict);
         
-        // Check for schedule conflicts
+
         function checkScheduleConflict() {
             const movieId = $('#MovieId').val();
             const roomId = $('#CinemaRoomId').val();
@@ -142,7 +142,7 @@
             }
         }
         
-        // Set minimum date to today
+
         const today = new Date().toISOString().split('T')[0];
         $('#ShowDate').attr('min', today);
     });

@@ -1,6 +1,6 @@
 /* CSS cho phần Phim Sắp Chiếu và Khuyến Mãi */
 
-/* Container chung */
+
 .dual-sections-container {
     display: flex;
     gap: 30px;
@@ -15,7 +15,7 @@
     }
 }
 
-/* Section chung */
+
 .custom-section {
     flex: 1;
     background: rgba(255, 255, 255, 0.05);
@@ -32,7 +32,7 @@
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
 
-/* Header section */
+
 .section-title-bar {
     background: linear-gradient(135deg, #667eea, #764ba2);
     padding: 20px;
@@ -304,7 +304,7 @@
 }
 
 /* Phim đề xuất */
-/* Updated sections with booking pages color scheme */
+
 .search-section {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
@@ -584,7 +584,7 @@
     border-top: 1px solid rgba(139, 92, 246, 0.1);
 }
 
-/* Pagination controls */
+
 .pagination-controls {
     background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(79, 70, 229, 0.05));
     border: 1px solid rgba(139, 92, 246, 0.2);
@@ -879,7 +879,7 @@
         box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
     }
 
-/* Responsive improvements */
+
 @media (max-width: 1200px) {
     .recommended-grid {
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -1192,7 +1192,7 @@
         color: #8270ff;
     }
 
-/* Grid phim */
+
 .recommended-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -1219,7 +1219,7 @@
         border-color: rgba(120, 110, 240, 0.5);
     }
 
-/* Poster phim */
+
 .recommended-poster {
     position: relative;
     width: 100%;
@@ -1238,7 +1238,7 @@
     transform: scale(1.08);
 }
 
-/* Overlay khi hover */
+
 .recommended-overlay {
     position: absolute;
     top: 0;
@@ -1392,7 +1392,7 @@
         font-size: 0.8rem;
     }
 
-/* Responsive */
+
 @media (max-width: 1200px) {
     .recommended-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

@@ -1,4 +1,4 @@
-// Booking List Management JavaScript
+
 
 class BookingListManager {
     constructor() {
@@ -26,7 +26,7 @@ class BookingListManager {
     }
 
     setupDateDefaults() {
-        // Set default date range to last 30 days
+
         const today = new Date();
         const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
         
@@ -39,19 +39,19 @@ class BookingListManager {
     }
 
     bindEvents() {
-        // Filter events
+
         $('#fromDate, #toDate, #statusFilter, #customerSearch, #bookingCodeSearch').on('change input', () => {
             this.updateFilters();
         });
 
-        // Search on Enter
+
         $('#customerSearch, #bookingCodeSearch').on('keypress', (e) => {
             if (e.which === 13) {
                 this.applyFilters();
             }
         });
 
-        // Modal events
+
         $('#cancelBookingModal').on('hidden.bs.modal', () => {
             $('#cancelReason').val('');
             this.currentBookingId = null;
@@ -82,7 +82,7 @@ class BookingListManager {
                 sortDirection: this.filters.sortDirection
             });
 
-            // Add filters if they have values
+
             if (this.filters.fromDate) params.append('fromDate', this.filters.fromDate);
             if (this.filters.toDate) params.append('toDate', this.filters.toDate);
             if (this.filters.movieTitle) params.append('movieTitle', this.filters.movieTitle);
@@ -210,7 +210,7 @@ class BookingListManager {
 
     formatTime(timeString) {
         try {
-            // timeString format: "HH:mm:ss" or TimeSpan
+
             const parts = timeString.split(':');
             return `${parts[0]}:${parts[1]}`;
         } catch {
@@ -224,7 +224,7 @@ class BookingListManager {
 
         if (data.totalPages <= 1) return;
 
-        // Previous button
+
         if (data.currentPage > 1) {
             pagination.append(`
                 <li class="page-item">
@@ -233,7 +233,7 @@ class BookingListManager {
             `);
         }
 
-        // Page numbers
+
         const startPage = Math.max(1, data.currentPage - 2);
         const endPage = Math.min(data.totalPages, data.currentPage + 2);
 
@@ -260,7 +260,7 @@ class BookingListManager {
             pagination.append(`<li class="page-item"><a class="page-link" href="#" onclick="bookingManager.loadBookingList(${data.totalPages})">${data.totalPages}</a></li>`);
         }
 
-        // Next button
+
         if (data.currentPage < data.totalPages) {
             pagination.append(`
                 <li class="page-item">
@@ -442,17 +442,17 @@ class BookingListManager {
     }
 
     showError(message) {
-        // You can implement a toast notification here
+
         alert('Lỗi: ' + message);
     }
 
     showSuccess(message) {
-        // You can implement a toast notification here
+
         alert('Thành công: ' + message);
     }
 }
 
-// Global functions for onclick events
+
 window.applyFilters = function() {
     bookingManager.updateFilters();
     bookingManager.loadBookingList(1);
@@ -466,7 +466,7 @@ window.confirmCancelBooking = function() {
     bookingManager.confirmCancelBooking();
 };
 
-// Initialize when document is ready
+
 $(document).ready(function() {
     window.bookingManager = new BookingListManager();
 }); 

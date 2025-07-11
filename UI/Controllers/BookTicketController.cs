@@ -25,7 +25,7 @@ namespace UI.Controllers
 
             try
             {
-                // 1. Get Movies
+
                 var moviesResult = await _bookingService.GetMoviesDropdownAsync();
                 if (moviesResult.Success && moviesResult.Data != null)
                 {
@@ -87,16 +87,16 @@ namespace UI.Controllers
             }
         }
 
-        // select seat ---------------------------------------------------------------------------------------
+
         [HttpGet]
         public IActionResult SelectSeat(Guid showtimeId)
         {
             return RedirectToAction("Index", "SelectSeat", new { showtimeId });
         }
 
-        /// <summary>
+
         /// Tìm kiếm khách hàng theo số điện thoại hoặc email
-        /// </summary>
+
         /// <param name="searchTerm">Số điện thoại hoặc email</param>
         /// <returns>Thông tin khách hàng</returns>
         [HttpGet]
@@ -165,7 +165,7 @@ namespace UI.Controllers
         {
             try
             {
-                // Validation
+
                 if (model.SeatIds == null || !model.SeatIds.Any())
                 {
                     return Json(new { success = false, message = "Thiếu thông tin ghế" });
@@ -194,9 +194,9 @@ namespace UI.Controllers
             }
         }
 
-        /// <summary>
+
         /// Lấy thông tin chi tiết để xác nhận đặt vé (AC-01)
-        /// </summary>
+
         [HttpGet]
         public async Task<IActionResult> GetBookingConfirmationDetail(Guid showTimeId, string seatIds, string memberId)
         {
@@ -221,9 +221,9 @@ namespace UI.Controllers
             }
         }
 
-        /// <summary>
+
         /// Xác nhận đặt vé với tùy chọn chuyển đổi điểm (AC-02, AC-03, AC-04, AC-05)
-        /// </summary>
+
         [HttpPost]
         public async Task<IActionResult> ConfirmBookingWithScore([FromBody] BookingConfirmWithScoreViewModel model)
         {

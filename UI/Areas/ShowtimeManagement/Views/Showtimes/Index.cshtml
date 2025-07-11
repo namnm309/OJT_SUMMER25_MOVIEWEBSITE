@@ -1,4 +1,4 @@
-﻿@model UI.Areas.ShowtimeManagement.Models.ShowtimePageViewModel
+@model UI.Areas.ShowtimeManagement.Models.ShowtimePageViewModel
 @{
     ViewData["Title"] = "Quản lý lịch chiếu - Cinema City";
     Layout = null;
@@ -11,22 +11,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- FontAwesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- Google Fonts -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- New Dashboard CSS -->
+    
     <link rel="stylesheet" href="~/css/new-dashboard.css" />
     
     <style>
-        /* Showtime Management Specific Styles */
+        
         .showtime-management-content {
             padding: 2rem;
         }
         
-        /* Page Header */
+        
         .showtime-page-header {
             margin-bottom: 2rem;
         }
@@ -47,7 +47,7 @@
             font-size: 1rem;
         }
         
-        /* Controls Section */
+        
         .showtime-controls {
             background: var(--content-bg);
             border: 1px solid var(--content-border);
@@ -144,7 +144,7 @@
             color: var(--primary-purple);
         }
         
-        /* Showtime Table Container */
+        
         .showtime-table-container {
             background: var(--content-bg);
             border: 1px solid var(--content-border);
@@ -176,7 +176,7 @@
             font-size: 1.5rem;
         }
 
-        /* Showtime Table */
+        
         .showtime-table {
             width: 100%;
             border-collapse: collapse;
@@ -213,7 +213,7 @@
             font-size: 14px;
         }
 
-        /* Movie Info in Table */
+        
         .movie-info {
             display: flex;
             align-items: center;
@@ -240,7 +240,7 @@
             font-size: 12px;
         }
 
-        /* Status Badges */
+        
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -291,7 +291,7 @@
             background: rgba(217, 119, 6, 0.1);
         }
 
-        /* Action Buttons */
+        
         .action-buttons {
             display: flex;
             gap: 8px;
@@ -329,7 +329,7 @@
             border-color: #ef4444;
         }
 
-        /* Loading Styles */
+        
         .loading-spinner {
             display: flex;
             align-items: center;
@@ -347,7 +347,7 @@
             color: var(--text-muted);
         }
         
-        /* Empty State */
+        
         .empty-state {
             text-align: center;
             padding: 4rem 2rem;
@@ -360,7 +360,7 @@
             opacity: 0.5;
         }
 
-        /* Bulk Actions */
+        
         .bulk-actions {
             display: flex;
             gap: 8px;
@@ -394,7 +394,7 @@
             border-color: #ef4444;
         }
 
-        /* Modal Styles */
+        
         .modal-content {
             border: none;
             border-radius: 16px;
@@ -421,7 +421,7 @@
             padding: 1rem 2rem;
         }
 
-        /* Calendar View Styles */
+        
         .view-toggle {
             display: flex;
             background: var(--content-secondary);
@@ -639,7 +639,7 @@
             font-weight: 500;
         }
 
-        /* Showtime Detail Modal */
+        
         .showtime-detail-modal .modal-dialog {
             max-width: 800px;
         }
@@ -705,15 +705,15 @@
 </head>
 
 <body>
-    <!-- New Dashboard Layout -->
+    
     <div class="new-dashboard-layout">
-        <!-- Sidebar -->
+        
         @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
 
-        <!-- Main Content -->
+        
         <main class="new-dashboard-main">
             <div class="showtime-management-content">
-                <!-- Page Header -->
+                
                     <div class="showtime-page-header">
                         <h1 class="showtime-page-title">
                             <i class="fas fa-calendar-alt"></i>
@@ -724,7 +724,7 @@
                         </p>
                 </div>
 
-                    <!-- Controls Section -->
+                    
                     <div class="showtime-controls">
                         <div class="showtime-controls-header">
                             <div class="showtime-search-box">
@@ -762,7 +762,7 @@
                     </div>
                 </div>
 
-                    <!-- Calendar View -->
+                    
                     <div class="calendar-view active" id="calendarView">
                         <div class="calendar-container">
                             <div class="calendar-header">
@@ -790,12 +790,12 @@
                                     <div class="calendar-weekday">Thứ 7</div>
                                     <div class="calendar-weekday">Chủ nhật</div>
                             </div>
-                                <!-- Calendar days will be generated by JavaScript -->
+                                
                     </div>
                                 </div>
                     </div>
 
-                    <!-- Table View -->
+                    
                     <div class="table-view" id="tableView">
                         <div class="showtime-table-container" id="showtimeTableContainer">
                         <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
@@ -933,7 +933,7 @@
         </main>
     </div>
 
-    <!-- Showtime Detail Modal -->
+    
     <div class="modal fade showtime-detail-modal" id="showtimeDetailModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -942,7 +942,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="showtimeDetailBody">
-                    <!-- Content will be loaded by JavaScript -->
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -959,17 +959,17 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery -->
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     
     <script>
-        // Base API URL
+
         // Sử dụng HTTPS để trùng với backend và tránh lỗi mixed-scheme/CORS
         const apiBaseUrl = 'https://localhost:7049';
 
-        // Search functionality
+
         function searchShowtimes() {
             const searchTerm = document.getElementById('showtimeSearch').value.toLowerCase();
             const tableBody = document.getElementById('showtimeTableBody');
@@ -987,7 +987,7 @@
             });
         }
 
-        // Select all functionality
+
         function toggleSelectAll() {
             const selectAllCheckbox = document.getElementById('selectAll');
             const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
@@ -999,7 +999,7 @@
             updateBulkActionButtons();
         }
 
-        // Update bulk action buttons
+
         function updateBulkActionButtons() {
             const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
             const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
@@ -1010,13 +1010,13 @@
             bulkUpdateBtn.disabled = !hasSelected;
         }
 
-        // Modal functions
+
         async function openCreateShowtimeModal() {
             try {
-                // Load movies and cinema rooms for dropdowns
+
                 await loadMoviesAndRooms();
                 
-                // Show the modal
+
                 const modal = new bootstrap.Modal(document.getElementById('createNewShowtimeModal'));
                 modal.show();
             } catch (error) {
@@ -1027,7 +1027,7 @@
         
         async function loadMoviesAndRooms() {
             try {
-                // Load movies
+
                 const moviesResponse = await fetch(`${apiBaseUrl}/api/v1/booking-ticket/dropdown/movies`);
                 const moviesResult = await moviesResponse.json();
 
@@ -1047,7 +1047,7 @@
                     showNotification('Không tìm thấy dữ liệu phim', 'danger');
                 }
                 
-                // Load cinema rooms
+
                 const roomsResponse = await fetch(`${apiBaseUrl}/api/v1/cinemaroom/ViewRoom`);
                 const roomsResult = await roomsResponse.json();
                 
@@ -1124,7 +1124,7 @@
                 isActive: document.getElementById('isActive').checked
             };
             
-            // Validate form data
+
             if (!formData.movieId || !formData.cinemaRoomId || !formData.showDate || 
                 !formData.startTime || !formData.endTime) {
                 showNotification('Vui lòng điền đầy đủ thông tin', 'warning');
@@ -1149,14 +1149,14 @@
                 if (isOk) {
                     showNotification('Tạo lịch chiếu mới thành công!', 'success');
                     
-                    // Close modal
+
                     const modal = bootstrap.Modal.getInstance(document.getElementById('createNewShowtimeModal'));
                     modal.hide();
                     
-                    // Reset form
+
                     document.getElementById('createNewShowtimeForm').reset();
                     
-                    // Reload data
+
                     setTimeout(() => {
                         location.reload();
                     }, 1500);
@@ -1177,7 +1177,7 @@
             showNotification('Đang xuất dữ liệu...', 'info');
         }
 
-        // CRUD functions
+
         function viewShowtime(id) {
             showNotification(`Xem chi tiết lịch chiếu ID: ${id}`, 'info');
         }
@@ -1218,7 +1218,7 @@
             showNotification(`Đã cập nhật trạng thái cho ${checkedBoxes.length} lịch chiếu`, 'success');
         }
 
-        // Notification system
+
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
@@ -1251,7 +1251,7 @@
             }, 5000);
         }
 
-        // Calendar functionality
+
         let currentDate = new Date();
         let currentShowtimeId = null;
         let showtimeData = @Html.Raw(Json.Serialize(Model.Showtimes ?? new List<UI.Areas.ShowtimeManagement.Models.ShowtimeDto>()));
@@ -1334,18 +1334,18 @@
             const lastDay = new Date(year, month + 1, 0);
             const firstDayOfWeek = (firstDay.getDay() + 6) % 7; // Convert to Monday = 0
             
-            // Update title
+
             const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
                               'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
             document.getElementById('calendarTitle').textContent = `${monthNames[month]}/${year}`;
 
             const calendarGrid = document.getElementById('calendarGrid');
             
-            // Clear existing days
+
             const existingDays = calendarGrid.querySelectorAll('.calendar-day');
             existingDays.forEach(day => day.remove());
 
-            // Generate calendar days
+
             let dayCount = 1;
             for (let week = 0; week < 6; week++) {
                 for (let day = 0; day < 7; day++) {
@@ -1355,12 +1355,12 @@
                     const dayIndex = week * 7 + day;
                     
                     if (dayIndex < firstDayOfWeek) {
-                        // Previous month days
+
                         const prevMonthDay = new Date(year, month, -(firstDayOfWeek - dayIndex - 1));
                         dayElement.classList.add('other-month');
                         dayElement.innerHTML = `<div class="calendar-day-number">${prevMonthDay.getDate()}</div>`;
                     } else if (dayCount <= lastDay.getDate()) {
-                        // Current month days
+
                         const currentDay = new Date(year, month, dayCount);
                         const isToday = currentDay.toDateString() === new Date().toDateString();
                         
@@ -1376,7 +1376,7 @@
                         `;
                         dayCount++;
                     } else {
-                        // Next month days
+
                         const nextMonthDay = dayCount - lastDay.getDate();
                         dayElement.classList.add('other-month');
                         dayElement.innerHTML = `<div class="calendar-day-number">${nextMonthDay}</div>`;
@@ -1422,7 +1422,7 @@
         }
 
         function formatTime(timeSpan) {
-            // Assuming timeSpan is in format "HH:mm:ss" or similar
+
             return timeSpan.substring(0, 5);
         }
 
@@ -1580,7 +1580,7 @@
             return false;
         }
 
-        // Initialize
+
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Showtime Management Dashboard loaded');
             // Load dữ liệu tháng hiện tại sau đó render lịch

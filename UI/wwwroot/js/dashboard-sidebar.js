@@ -1,7 +1,4 @@
-/**
- * Dashboard Sidebar Management
- * Handles dropdown functionality and authorization status
- */
+
 
 class DashboardSidebar {
     constructor() {
@@ -33,10 +30,10 @@ class DashboardSidebar {
         const dropdown = toggle.nextElementSibling;
         const isExpanded = toggle.classList.contains('expanded');
         
-        // Close all other dropdowns
+
         this.closeAllDropdowns(toggle);
         
-        // Toggle current dropdown
+
         if (isExpanded) {
             this.closeDropdown(toggle, dropdown);
         } else {
@@ -48,7 +45,7 @@ class DashboardSidebar {
         toggle.classList.add('expanded');
         dropdown.classList.add('show');
         
-        // Add animation effect
+
         dropdown.style.maxHeight = dropdown.scrollHeight + 'px';
     }
 
@@ -56,7 +53,7 @@ class DashboardSidebar {
         toggle.classList.remove('expanded');
         dropdown.classList.remove('show');
         
-        // Animation effect
+
         dropdown.style.maxHeight = '0px';
     }
 
@@ -74,7 +71,7 @@ class DashboardSidebar {
     }
 
     setupActiveStates() {
-        // Keep dropdown open if child link is active
+
         const activeDropdownLinks = document.querySelectorAll('.new-nav-dropdown .new-nav-link.active');
         
         activeDropdownLinks.forEach(link => {
@@ -86,7 +83,7 @@ class DashboardSidebar {
             }
         });
 
-        // Add hover effects
+
         this.setupHoverEffects();
     }
 
@@ -114,7 +111,7 @@ class DashboardSidebar {
         if (authIndicator) {
             this.checkAuthorizationStatus(authIndicator);
             
-            // Check authorization every 30 seconds
+
             setInterval(() => {
                 this.checkAuthorizationStatus(authIndicator);
             }, 30000);
@@ -122,20 +119,20 @@ class DashboardSidebar {
     }
 
     checkAuthorizationStatus(indicator) {
-        // Always show green indicator - no auth checking
+
         indicator.style.background = '#10b981';
         indicator.style.boxShadow = '0 0 0 2px rgba(16, 185, 129, 0.3)';
         indicator.title = 'Đã kết nối';
     }
 
     hasValidCookieSession() {
-        // Check for ASP.NET Core Identity cookie
+
         const cookies = document.cookie.split(';');
         
         for (let cookie of cookies) {
             const [name, value] = cookie.trim().split('=');
             
-            // Check for authentication cookies
+
             if (name === '.AspNetCore.Identity.Application' || 
                 name === '.AspNetCore.Antiforgery' ||
                 name.startsWith('.AspNetCore.Session')) {
@@ -150,18 +147,18 @@ class DashboardSidebar {
     }
 
     handleExpiredSession() {
-        // Just update indicator without showing popup
-        // Silent handling - only visual indicator will show red
+
+
         console.log('Session may have expired - check auth status');
     }
 
     setupMobileToggle() {
-        // Create mobile toggle button if not exists
+
         if (window.innerWidth <= 768 && !document.querySelector('.mobile-sidebar-toggle')) {
             this.createMobileToggle();
         }
 
-        // Handle window resize
+
         window.addEventListener('resize', () => {
             if (window.innerWidth <= 768) {
                 this.enableMobileMode();
@@ -221,7 +218,7 @@ class DashboardSidebar {
         }
     }
 
-    // Public methods for external use
+
     refreshAuthStatus() {
         const authIndicator = document.querySelector('.auth-indicator');
         if (authIndicator) {
@@ -234,12 +231,12 @@ class DashboardSidebar {
     }
 }
 
-// Initialize sidebar when DOM is loaded
+
 document.addEventListener('DOMContentLoaded', () => {
     window.dashboardSidebar = new DashboardSidebar();
 });
 
-// Export for use in other scripts
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DashboardSidebar;
 } 

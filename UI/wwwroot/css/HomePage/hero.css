@@ -1,6 +1,6 @@
-﻿/* Hero Section styles with smooth background transitions */
 
-/* Hero Section */
+
+
 .hero-section {
     position: relative;
     height: 100vh;
@@ -113,7 +113,7 @@
 
 
 
-/* Hero Background */
+
 .hero-background {
     position: absolute;
     top: 0;
@@ -137,7 +137,7 @@
     z-index: 1;
 }
 
-/* Hero Video - HTML5 Video Element & Iframe */
+
 .hero-video {
     position: absolute;
     top: 0;
@@ -164,19 +164,19 @@ iframe.hero-video {
 
 /* Force iframe scale để cover đầy viewport */
 iframe.hero-video {
-    width: 120vw !important; /* Force larger than viewport */
-    height: 120vh !important; /* Force larger than viewport */
+    width: 120vw !important; 
+    height: 120vh !important; 
     min-width: 120vw !important;
     min-height: 120vh !important;
     left: 50% !important;
     top: 50% !important;
-    transform: translate(-50%, -50%) scale(1.1) !important; /* Additional scale */
+    transform: translate(-50%, -50%) scale(1.1) !important; 
     border: none !important;
     outline: none !important;
-    zoom: 1.1; /* Browser-specific scaling */
+    zoom: 1.1; 
 }
 
-    /* Specific styling for Cloudinary iframe */
+    
     iframe.hero-video[src*="player.cloudinary.com"] {
         width: 100vw !important;
         height: 100vh !important;
@@ -193,14 +193,14 @@ iframe.hero-video {
         border: none !important;
         outline: none !important;
         overflow: hidden !important;
-        /* Override Cloudinary default styles */
+        
         aspect-ratio: none !important;
         pointer-events: none !important;
-        /* Force video to cover entire viewport without black bars */
+        
         clip: rect(0, 100vw, 100vh, 0) !important;
     }
 
-        /* Override any inline styles from Cloudinary */
+        
         iframe.hero-video[src*="player.cloudinary.com"][style] {
             width: 100vw !important;
             height: 100vh !important;
@@ -212,7 +212,7 @@ iframe.hero-video {
 
     /* Remove controls và UI elements của Cloudinary */
     iframe.hero-video[src*="player.cloudinary.com"] {
-        /* Hide scrollbars */
+        
         overflow: hidden !important;
     }
 
@@ -236,7 +236,7 @@ iframe.hero-video {
             pointer-events: none;
         }
 
-/* Hero Video Overlay - to make text readable */
+
 .hero-video-overlay {
     position: absolute;
     top: 0;
@@ -261,7 +261,7 @@ iframe.hero-video {
     );
 }
 
-/* Hero Image (Fallback) */
+
 .hero-image {
     position: absolute;
     top: 0;
@@ -272,7 +272,7 @@ iframe.hero-video {
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed; /* Để hình không bị shift */
-    z-index: 1; /* Below the content */
+    z-index: 1; 
     opacity: 0; /* Mặc định ẩn */
     display: none; /* Mặc định ẩn */
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
@@ -382,7 +382,7 @@ iframe.hero-video {
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
     }
 
-/* Hide genre section in hero */
+
 .genre-section {
     display: none !important;
 }
@@ -492,12 +492,12 @@ iframe.hero-video {
         background: linear-gradient(45deg, rgb(102, 126, 234), rgb(118, 75, 162))
     }
 
-/* Enhanced transitions and performance optimizations */
+
 .movie-card {
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Performance optimizations for smooth animations */
+
 .hero-section,
 .hero-background,
 .movie-content,
@@ -506,7 +506,7 @@ iframe.hero-video {
     transform: translateZ(0);
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
     .hero-section {
         height: 100vh; /* Giữ nguyên full height trên mobile */
@@ -586,26 +586,26 @@ iframe.hero-video {
     }
 }
 
-/* Additional smooth transition effects */
+
 .fade-enter {
     opacity: 0;
-    /* transform: translateY(20px); */ /* 🔧 REMOVE: Bỏ hiệu ứng translateY */
+     /* 🔧 REMOVE: Bỏ hiệu ứng translateY */
 }
 
 .fade-enter-active {
     opacity: 1;
-    /* transform: translateY(0); */ /* 🔧 REMOVE: Bỏ hiệu ứng translateY */
+     /* 🔧 REMOVE: Bỏ hiệu ứng translateY */
     transition: opacity 0.5s ease-in-out; /* 🔧 FIX: Chỉ giữ opacity transition */
 }
 
 .fade-exit {
     opacity: 1;
-    /* transform: translateY(0); */ /* 🔧 REMOVE: Bỏ hiệu ứng translateY */
+     /* 🔧 REMOVE: Bỏ hiệu ứng translateY */
 }
 
 .fade-exit-active {
     opacity: 0;
-    /* transform: translateY(-20px); */ /* 🔧 REMOVE: Bỏ hiệu ứng translateY */
+     /* 🔧 REMOVE: Bỏ hiệu ứng translateY */
     transition: opacity 0.5s ease-in-out; /* 🔧 FIX: Chỉ giữ opacity transition */
 }
 
@@ -650,14 +650,14 @@ body, html {
     z-index: 2 !important; /* Đẩy background lên trên khi không có video */
 }
 
-/* SUPER HIGH SPECIFICITY - Override everything from Cloudinary */
+
 .hero-section .hero-background iframe.hero-video[src*="player.cloudinary.com"] {
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
     width: 640px !important;
     height: 360px !important;
-    transform: translate(-50%, -50%) scale(3) !important; /* Scale to cover fullscreen */
+    transform: translate(-50%, -50%) scale(3) !important; 
     transform-origin: center center !important;
     min-width: unset !important;
     min-height: unset !important;
@@ -679,7 +679,7 @@ body, html {
     box-sizing: border-box !important;
 }
 
-/* FALLBACK: If aspect-ratio still causes issues, force scale */
+
 iframe.hero-video[src*="player.cloudinary.com"].loaded {
     width: 120vw !important;
     height: 120vh !important;
@@ -719,7 +719,7 @@ iframe.hero-video[src*="player.cloudinary.com"].loaded {
     opacity: 1;
 }
 
-/* Continuous video styles */
+
 .continuous-video {
     position: absolute;
     top: 0;
@@ -730,12 +730,12 @@ iframe.hero-video[src*="player.cloudinary.com"].loaded {
     z-index: 2;
 }
 
-/* Smooth content transitions cho continuous mode */
+
 .hero-section.video-playing .movie-content {
     transition: opacity 0.3s ease-in-out;
 }
 
-/* Video progress indicator (optional) */
+
 .video-progress {
     position: absolute;
     bottom: 20px;

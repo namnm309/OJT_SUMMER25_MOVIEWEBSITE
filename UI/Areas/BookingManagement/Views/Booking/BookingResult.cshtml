@@ -117,12 +117,12 @@
         }
         catch (JsonException jsonEx)
         {
-            // Log JSON parsing error
+
             <div style="color: red; margin-bottom: 10px;">Lỗi phân tích JSON: @jsonEx.Message</div>
         }
         catch (Exception ex)
         {
-            // Log general error
+
             <div style="color: red; margin-bottom: 10px;">Lỗi: @ex.Message</div>
         }
     }
@@ -213,7 +213,7 @@
         color: #F5F5DC;
     }
 
-    /* Responsive adjustments */
+    
     @@media (max-width: 768px) {
         .ticket-details-section {
             width: 100%;
@@ -574,7 +574,7 @@
 
     @if (Model.Success)
     {
-    <!-- Success message -->
+    
     <div class="success-message">
         <i class="fas fa-check-circle success-icon"></i>
         <h2>Đặt Vé Thành Công!</h2>
@@ -592,7 +592,7 @@
 
     @if (Model.Success)
     {
-    <!-- Main ticket design -->
+    
     <div class="ticket-container">
         <div class="ticket">
             <!-- Phần trên của vé -->
@@ -718,7 +718,7 @@
         </div>
     </div>
 
-    <!-- Action buttons -->
+    
     <div class="action-buttons">
         <a href="@Url.Action("TicketInfo", new { bookingCode = bookingCode })" class="btn btn-primary">
             <i class="fas fa-print"></i>

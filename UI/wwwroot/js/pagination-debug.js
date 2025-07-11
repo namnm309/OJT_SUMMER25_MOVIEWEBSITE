@@ -1,7 +1,7 @@
-// Pagination Debug Script
+
 console.log('🔧 Pagination Debug Script Loaded');
 
-// Add debug functions to window
+
 window.paginationDebug = {
     testRecommended: function() {
         console.log('🔧 Testing recommended movies pagination...');
@@ -53,7 +53,7 @@ window.paginationDebug = {
         console.log('🔧 Enabling debug mode...');
         document.body.classList.add('debug-pagination');
         
-        // Make load more buttons more visible
+
         const buttons = document.querySelectorAll('.btn-load-more');
         buttons.forEach(btn => {
             btn.style.background = 'lime';
@@ -95,7 +95,7 @@ window.paginationDebug = {
             }
         };
         
-        // Manually trigger grid update
+
         if (window.homepagePagination) {
             if (section === 'recommended') {
                 window.homepagePagination.updateRecommendedGrid(mockData.data, true);
@@ -108,7 +108,7 @@ window.paginationDebug = {
     }
 };
 
-// Auto-check elements when script loads
+
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         console.log('🔧 Running automatic pagination check...');

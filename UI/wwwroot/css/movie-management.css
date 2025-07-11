@@ -1,6 +1,6 @@
 /* CSS quản lý phim Cinema City */
 
-/* Global Styles */
+
 .cinema-movie-management {
     font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
@@ -25,7 +25,7 @@
     z-index: 0;
 }
 
-/* Header Navigation */
+
 .management-header {
     position: sticky;
     top: 0;
@@ -50,7 +50,7 @@
     gap: 40px;
 }
 
-/* Brand */
+
 .brand {
     display: flex;
     align-items: center;
@@ -93,7 +93,7 @@
     font-weight: 500;
 }
 
-/* Navigation Links */
+
 .nav-links {
     display: flex;
     gap: 8px;
@@ -141,7 +141,7 @@
     border: 1px solid rgba(223, 33, 68, 0.4);
 }
 
-/* User Profile */
+
 .user-section {
     display: flex;
     align-items: center;
@@ -169,7 +169,7 @@
     box-shadow: 0 8px 25px rgba(223, 33, 68, 0.2);
 }
 
-/* Main Content */
+
 .main-content {
     position: relative;
     z-index: 1;
@@ -178,7 +178,7 @@
     padding: 40px 20px;
 }
 
-/* Hero Section */
+
 .hero-section {
     background: linear-gradient(135deg, rgba(223, 33, 68, 0.1) 0%, rgba(255, 30, 43, 0.05) 100%);
     border-radius: 24px;
@@ -298,7 +298,7 @@
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
-/* Stats Grid */
+
 .stats-section {
     margin-bottom: 40px;
 }
@@ -383,7 +383,7 @@
     font-weight: 500;
 }
 
-/* Movies Section */
+
 .movies-section {
     background: rgba(255, 255, 255, 0.02);
     backdrop-filter: blur(20px);
@@ -419,7 +419,7 @@
     font-size: 1.8rem;
 }
 
-/* Filters */
+
 .filters-container {
     padding: 32px 40px;
     background: rgba(255, 255, 255, 0.02);
@@ -485,7 +485,7 @@
     box-shadow: 0 8px 25px rgba(223, 33, 68, 0.4);
 }
 
-/* Movies Grid */
+
 .movies-container {
     padding: 40px;
 }
@@ -697,7 +697,7 @@
     font-weight: 600;
 }
 
-/* Empty State */
+
 .empty-state {
     text-align: center;
     padding: 80px 40px;
@@ -724,7 +724,7 @@
     margin-right: auto;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2.5rem;
@@ -758,7 +758,7 @@
     }
 }
 
-/* Loading Animation */
+
 .loading {
     opacity: 0.6;
     pointer-events: none;
@@ -779,7 +779,7 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Movies Table/List View */
+
 .movies-table-container {
     padding: 0;
     overflow: hidden;
@@ -835,7 +835,7 @@
     box-shadow: 0 4px 20px rgba(223, 33, 68, 0.1);
 }
 
-/* Movie Poster in Table */
+
 .table-movie-poster {
     width: 80px;
     height: 120px;
@@ -856,7 +856,7 @@
     border-radius: 8px;
 }
 
-/* Movie Info in Table */
+
 .table-movie-info {
     display: flex;
     flex-direction: column;
@@ -891,7 +891,7 @@
     color: #df2144;
 }
 
-/* Genres in Table */
+
 .table-movie-genres {
     display: flex;
     flex-wrap: wrap;
@@ -908,7 +908,7 @@
     border: 1px solid rgba(223, 33, 68, 0.3);
 }
 
-/* Status in Table */
+
 .table-status-badge {
     display: inline-flex;
     align-items: center;
@@ -938,7 +938,7 @@
     border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-/* Rating in Table */
+
 .table-movie-rating {
     display: flex;
     align-items: center;
@@ -951,7 +951,7 @@
     color: #fbbf24;
 }
 
-/* Action Buttons in Table */
+
 .table-action-buttons {
     display: flex;
     gap: 8px;
@@ -1004,7 +1004,7 @@
     transform: translateY(-2px);
 }
 
-/* Column Widths */
+
 .movies-table .col-poster { width: 100px; }
 .movies-table .col-info { width: 35%; }
 .movies-table .col-genres { width: 20%; }
@@ -1012,7 +1012,7 @@
 .movies-table .col-rating { width: 100px; }
 .movies-table .col-actions { width: 150px; }
 
-/* Responsive Table */
+
 @media (max-width: 768px) {
     .table-movie-meta {
         flex-direction: column;
@@ -1039,7 +1039,7 @@
     }
 }
 
-/* Hide grid view, show table view */
+
 .movies-grid {
     display: none !important;
 }
@@ -1048,7 +1048,7 @@
     display: block;
 }
 
-/* View Toggle Buttons */
+
 .view-toggle {
     display: flex;
     gap: 8px;
@@ -1080,7 +1080,7 @@
     color: white;
 }
 
-/* Footer Styling */
+
 .cinema-footer {
     background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
     color: white;
@@ -1279,7 +1279,7 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* Responsive Footer */
+
 @media (max-width: 768px) {
     .footer-top {
         grid-template-columns: 1fr;
@@ -1305,7 +1305,7 @@
     }
 }
 
-/* Additional Modal Styling */
+
 .modal-content {
     background: rgba(48, 48, 48, 0.95);
     backdrop-filter: blur(20px);
@@ -1359,7 +1359,7 @@
     filter: invert(1);
 }
 
-/* Placeholder poster */
+
 .placeholder-poster {
     background: linear-gradient(135deg, rgba(223, 33, 68, 0.3) 0%, rgba(255, 30, 43, 0.2) 100%);
     display: flex;
@@ -1381,7 +1381,7 @@
     border-radius: 8px;
 }
 
-/* Table Genres */
+
 .table-movie-genres {
     display: flex;
     flex-wrap: wrap;
@@ -1398,14 +1398,14 @@
     border: 1px solid rgba(223, 33, 68, 0.3);
 }
 
-/* Fix text-muted in tables for better visibility */
+
 .movies-table .text-muted {
     color: rgba(255, 255, 255, 0.6) !important;
     font-style: italic;
     font-weight: 500;
 }
 
-/* Alternative styling for empty states in table */
+
 .table-empty-state {
     color: rgba(255, 255, 255, 0.6);
     font-style: italic;
@@ -1416,7 +1416,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Movie Management Styles */
+
 .movie-management {
     background: #1a1a1a;
     color: #ffffff;
@@ -1705,7 +1705,7 @@
     box-shadow: 0 0 0 2px rgba(76,175,80,0.2);
 }
 
-/* Rating Input */
+
 .rating-input {
     width: 60px;
     padding: 6px;
@@ -1730,13 +1730,13 @@
     box-shadow: 0 0 0 2px rgba(76,175,80,0.2);
 }
 
-/* Status Colors */
+
 .status-dropdown option[value="2"] { color: #4CAF50; } /* Đang chiếu */
 .status-dropdown option[value="1"] { color: #f39c12; } /* Sắp chiếu */
 .status-dropdown option[value="3"] { color: #e74c3c; } /* Ngừng chiếu */
 .status-dropdown option[value="0"] { color: #95a5a6; } /* Chưa có */
 
-/* === NEW TOGGLE SWITCH STYLES START === */
+
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -1793,10 +1793,10 @@
     -ms-transform: translateX(20px);
     transform: translateX(20px);
 }
-/* === NEW TOGGLE SWITCH STYLES END === */
 
 
-/* Toggle Switch Styles */
+
+
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -1996,7 +1996,7 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Modal Styles */
+
 .modal-content {
     background: #2d2d2d;
     border: 1px solid #404040;
@@ -2039,7 +2039,7 @@
     color: #888;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
     .movie-table-container {
         overflow-x: auto;
@@ -2059,7 +2059,7 @@
     }
 }
 
-/* Enhanced Modal styles */
+
 .modal {
     display: none;
     position: fixed;
@@ -2138,7 +2138,7 @@
     background: #2a2a2a;
 }
 
-/* Movie detail modal */
+
 .movie-detail-content {
     color: white;
 }
@@ -2255,7 +2255,7 @@
     box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
 }
 
-/* Edit form styles */
+
 .form-row {
     display: flex;
     gap: 20px;
@@ -2312,7 +2312,7 @@
     min-height: 80px;
 }
 
-/* Trailer input group */
+
 .trailer-input-group {
     display: flex;
     gap: 10px;
@@ -2344,7 +2344,7 @@
     transform: translateY(-1px);
 }
 
-/* Image upload container */
+
 .image-upload-container {
     display: flex;
     gap: 20px;
@@ -2383,7 +2383,7 @@
     text-align: center;
 }
 
-/* Additional images */
+
 .additional-images {
     display: flex;
     gap: 15px;
@@ -2431,7 +2431,7 @@
     text-align: center;
 }
 
-/* Checkbox styling */
+
 .checkbox-row {
     margin: 25px 0;
 }
@@ -2477,7 +2477,7 @@
     /* Được xử lý bởi style checkbox ở trên */
 }
 
-/* Text muted */
+
 .text-muted {
     color: #888;
     font-size: 12px;
@@ -2529,7 +2529,7 @@
     box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
 }
 
-/* Notification styles */
+
 .notification {
     position: fixed;
     top: 20px;
@@ -2622,7 +2622,7 @@
     }
 }
 
-/* Upload Components Styles */
+
 .upload-method-tabs {
     display: flex;
     gap: 0;
@@ -2716,7 +2716,7 @@
     font-size: 14px;
 }
 
-/* Poster Upload Section */
+
 .poster-upload-section {
     margin-bottom: 30px;
     padding: 20px;
@@ -2731,7 +2731,7 @@
     font-size: 16px;
 }
 
-/* Additional Images Section */
+
 .additional-images-section {
     padding: 20px;
     background: #2a2a2a;
@@ -2809,7 +2809,7 @@
     background: #c82333;
 }
 
-/* Trailer Upload Container */
+
 .trailer-upload-container {
     background: #2a2a2a;
     padding: 15px;
@@ -2817,12 +2817,12 @@
     border: 1px solid #333;
 }
 
-/* Form row improvements for upload sections */
+
 .form-group.full-width .upload-method-tabs {
     max-width: 300px;
 }
 
-/* Genres Selection */
+
 .genres-selection {
     margin-bottom: 15px;
 }
@@ -2869,10 +2869,10 @@
 }
 
 .genre-checkmark {
-    /* Handled by native checkbox styling */
+    
 }
 
-/* Showtimes Section */
+
 .showtimes-section {
     background: #2a2a2a;
     border-radius: 8px;
@@ -2973,7 +2973,7 @@
     background: #c82333;
 }
 
-/* Image Description Inputs */
+
 .image-description-input,
 .additional-image-description {
     width: 100%;
@@ -3002,7 +3002,7 @@
     margin-top: 0;
 }
 
-/* Responsive design for upload components */
+
 @media (max-width: 768px) {
     .additional-images-grid {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -3036,7 +3036,7 @@
     }
 }
 
-/* Action Buttons */
+
 .action-buttons {
     display: flex;
     gap: 8px;
@@ -3094,7 +3094,7 @@
     background: linear-gradient(135deg, #c0392b, #a93226);
 }
 
-/* Ripple effect for buttons */
+
 .btn-action::after {
     content: '';
     position: absolute;
