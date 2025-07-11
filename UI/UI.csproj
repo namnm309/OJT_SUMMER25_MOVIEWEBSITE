@@ -9,12 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\UserManagement\Data\**" />
     <Compile Remove="wwwroot\css\NewFolder1\**" />
     <Compile Remove="wwwroot\css\NewFolder\**" />
+    <Content Remove="Areas\UserManagement\Data\**" />
     <Content Remove="wwwroot\css\NewFolder1\**" />
     <Content Remove="wwwroot\css\NewFolder\**" />
+    <EmbeddedResource Remove="Areas\UserManagement\Data\**" />
     <EmbeddedResource Remove="wwwroot\css\NewFolder1\**" />
     <EmbeddedResource Remove="wwwroot\css\NewFolder\**" />
+    <None Remove="Areas\UserManagement\Data\**" />
     
   </ItemGroup>
 
@@ -26,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\UserManagement\Controllers\" />
-    <Folder Include="Areas\UserManagement\Data\" />
     <Folder Include="Areas\UserManagement\Models\" />
     <Folder Include="Areas\UserManagement\Views\" />
   </ItemGroup>
