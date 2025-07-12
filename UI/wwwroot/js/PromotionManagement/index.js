@@ -1,15 +1,18 @@
 ﻿
+        // API Base URL
+        // const API_BASE = '/api/v1';
+        const API_BASE = 'https://localhost:7049/api/v1';
 
-        const API_BASE = '/api/v1';
+
         let promotions = [];
         
-
+        // Variables for pagination
         let currentPage = 1;
-        let pageSize = 10;
+        let pageSize = 2;
         let totalPromotions = 0;
         let totalPages = 0;
         
-
+        // Fallback demo data when API is not available
         const fallbackPromotions = [
             {
                 id: 1,
@@ -31,9 +34,9 @@
             }
         ];
 
-
+        // Load promotions on page load
         document.addEventListener('DOMContentLoaded', function() {
-
+            // Check if required elements exist before proceeding
             const promotionTableBody = document.getElementById('promotionTableBody');
             if (!promotionTableBody) {
                 console.error('promotionTableBody element not found');
@@ -41,17 +44,17 @@
                 return;
             }
             
-
+            // Load initial page
             loadPromotionsPage(currentPage, pageSize);
             
-
+            // Event listener for page size change
             const pageSizeSelect = document.getElementById('pageSizeSelect');
             let pageSizeChangeTimeout;
             
             pageSizeSelect.addEventListener('change', function() {
                 clearTimeout(pageSizeChangeTimeout);
                 
-
+                // Show loading indicator
                 const pageSizeContainer = this.closest('.pagination-size');
                 const loadingIcon = document.createElement('span');
                 loadingIcon.className = 'mini-loading';
@@ -71,7 +74,7 @@
                 }, 500); // Debounce for 500ms
             });
 
-
+            // Search functionality
             const promotionSearch = document.getElementById('promotionSearch');
             let searchTimeout;
             
@@ -83,7 +86,7 @@
                 }, 300); // Debounce for 300ms
             });
             
-
+            // Pagination event listeners
             document.getElementById('prevPageBtn').addEventListener('click', () => {
                 if (currentPage > 1) {
                     loadPromotionsPage(currentPage - 1, pageSize);
@@ -97,35 +100,37 @@
             });
         });
 
-
+        // Load promotions with pagination
         async function loadPromotionsPage(page, size) {
             try {
-                // Hiển thị loading ngay lập tức
+                // Hiển thị loading ngay lập tức, không delay
                 showTableLoading();
                 
-                // Gọi API thực từ controller UI
-                const response = await fetch('/PromotionManagement/Promotions/GetAllPromotions');
-                
+                // Tạm thời comment API call và dùng data demo để tránh lỗi
+                const response = await fetch(`${API_BASE}/promotions`);
+
+
                 if (response.ok) {
                     const result = await response.json();
-                    
-                    if (result.success && result.data && result.data.data) {
-                        // Backend trả về format: { success: true, data: { data: [...] } }
-                        promotions = result.data.data;
-                        processPromotionData(promotions, page, size);
-                    } else {
-                        console.warn('API response không có data, sử dụng fallback data');
-                        promotions = fallbackPromotions;
-                        processPromotionData(promotions, page, size);
-                    }
+
+                if (result.data && Array.isArray(result.data)) {
+                    promotions = result.data;
+                    processPromotionData(promotions, page, size);
+                } else {
+                    throw new Error('API trả về sai định dạng hoặc không có dữ liệu');
+                }
                 } else {
                     throw new Error('API không phản hồi');
                 }
                 
+                // Sử dụng data demo ngay lập tức để tránh delay gây "giật"
+                // Chỉ delay nhẹ để có cảm giác thực tế mà không bị giật
+                await new Promise(resolve => setTimeout(resolve, 100)); // Giảm từ 300ms xuống 100ms
+                
             } catch (error) {
                 console.error('Error loading promotions:', error);
                 
-                // Fallback data khi có lỗi
+                // Fallback data ngay lập tức
                 promotions = fallbackPromotions;
                 processPromotionData(promotions, page, size);
             }
@@ -133,6 +138,19 @@
 
         // Tách function xử lý data để tái sử dụng và tối ưu
         function processPromotionData(allPromotions, page, size) {
+            const now = new Date();
+            allPromotions.sort((a, b) => {
+                    const aEnd = new Date(a.endDate);
+                    const bEnd = new Date(b.endDate);
+                    const aExpired = aEnd < now;
+                    const bExpired = bEnd < now;
+
+                    if (aExpired && !bExpired) return 1;
+                    if (!aExpired && bExpired) return -1;
+
+                    return aEnd - bEnd;
+                });
+
             totalPromotions = allPromotions.length;
             totalPages = Math.ceil(totalPromotions / size);
             currentPage = page;
@@ -140,6 +158,8 @@
             const startIndex = (page - 1) * size;
             const endIndex = startIndex + size;
             const pagePromotions = allPromotions.slice(startIndex, endIndex);
+
+
             
             // Xử lý data tuần tự để tránh conflict
             displayPromotions(pagePromotions);
@@ -152,7 +172,7 @@
             }, 50); // Delay nhẹ để đảm bảo DOM update xong
         }
 
-
+        // Display promotions in table
         function displayPromotions(promotionList) {
             const tableBody = document.getElementById('promotionTableBody');
             
@@ -234,7 +254,7 @@
             }).join('');
         }
 
-
+        // Show loading state
         function showTableLoading() {
             const tableContainer = document.querySelector('.promotion-table-container');
             if (tableContainer) {
@@ -242,7 +262,7 @@
             }
         }
 
-
+        // Hide loading state  
         function hideTableLoading() {
             const tableContainer = document.querySelector('.promotion-table-container');
             if (tableContainer) {
@@ -250,7 +270,7 @@
             }
         }
 
-
+        // Show initialization error
         function showInitializationError() {
             const tableBody = document.getElementById('promotionTableBody');
             if (tableBody) {
@@ -265,7 +285,7 @@
             }
         }
 
-
+        // Update pagination info
         function updatePaginationInfo() {
             const start = (currentPage - 1) * pageSize + 1;
             const end = Math.min(currentPage * pageSize, totalPromotions);
@@ -273,7 +293,7 @@
             paginationInfo.textContent = `Hiển thị ${start}-${end} trong tổng số ${totalPromotions} khuyến mãi`;
         }
 
-
+        // Update pagination controls
         function updatePaginationControls() {
             const prevBtn = document.getElementById('prevPageBtn');
             const nextBtn = document.getElementById('nextPageBtn');
@@ -282,7 +302,7 @@
             prevBtn.disabled = currentPage <= 1;
             nextBtn.disabled = currentPage >= totalPages;
             
-
+            // Generate page numbers
             let pageNumbersHTML = '';
             const maxVisiblePages = 5;
             let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
@@ -304,7 +324,14 @@
             pageNumbers.innerHTML = pageNumbersHTML;
         }
 
+        function goToPage(page) {
+            const totalPages = Math.ceil(totalPromotions / pageSize);
+            if (page < 1 || page > totalPages) return;
 
+            processPromotionData(promotions, page, pageSize);
+        }
+
+        // Filter promotions by search term
         function filterPromotions(searchTerm) {
             if (!searchTerm) {
                 loadPromotionsPage(1, pageSize);
@@ -329,7 +356,7 @@
             updatePaginationControls();
         }
 
-
+        // Format date for display
         function formatDate(date) {
             return date.toLocaleDateString('vi-VN', {
                 day: '2-digit',
@@ -338,12 +365,12 @@
             });
         }
 
-
+        // Modal functions
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
 
-
+        // Placeholder functions for promotion actions
         function viewPromotion(promotionId) {
             const promotion = promotions.find(p => p.id == promotionId);
             if (!promotion) return;
@@ -694,6 +721,86 @@
                         <button type="submit" class="btn-save">Thêm khuyến mãi</button>
                     </div>
                 </form>
+                <style>
+                    .form-row {
+                        display: flex;
+                        gap: 20px;
+                        margin-bottom: 20px;
+                    }
+                    .form-group {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px;
+                    }
+                    .form-group.full-width {
+                        width: 100%;
+                    }
+                    .form-group label {
+                        font-size: 0.9rem;
+                        font-weight: 500;
+                        color: var(--text-dark);
+                    }
+                    .form-group input,
+                    .form-group textarea {
+                        padding: 12px 16px;
+                        background: var(--content-bg);
+                        border: 1px solid var(--content-border);
+                        border-radius: 8px;
+                        color: var(--text-dark);
+                        font-size: 1rem;
+                        transition: all 0.3s ease;
+                    }
+                    .form-group input:focus,
+                    .form-group textarea:focus {
+                        outline: none;
+                        border-color: var(--primary-purple);
+                        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                    }
+                    .form-group textarea {
+                        resize: vertical;
+                    }
+                    .form-actions {
+                        display: flex;
+                        justify-content: flex-end;
+                        gap: 10px;
+                        margin-top: 30px;
+                        padding-top: 20px;
+                        border-top: 1px solid var(--content-border);
+                    }
+                    .btn-cancel {
+                        background: var(--content-secondary);
+                        color: var(--text-dark);
+                        border: 1px solid var(--content-border);
+                        padding: 10px 24px;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    }
+                    .btn-cancel:hover {
+                        background: var(--content-bg);
+                    }
+                    .btn-save {
+                        background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
+                        color: white;
+                        border: none;
+                        padding: 10px 24px;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        min-width: 160px;
+                    }
+                    .btn-save:hover:not(:disabled) {
+                        transform: translateY(-2px);
+                        box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+                    }
+                    .btn-save:disabled {
+                        opacity: 0.7;
+                        cursor: not-allowed;
+                    }
+                </style>
             `;
             
             modal.style.display = 'block';
@@ -706,7 +813,7 @@
             const formData = new FormData(form);
             const submitBtn = form.querySelector('.btn-save');
             
-
+            // Disable submit button and show loading
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang thêm...';
             
@@ -720,7 +827,7 @@
                     imageUrl: formData.get('imageUrl')
                 };
                 
-                const response = await fetch('/PromotionManagement/Promotions/CreateAjax', {
+                const response = await fetch(`${API_BASE}/promotions`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -730,14 +837,9 @@
                 });
                 
                 if (response.ok) {
-                    const result = await response.json();
-                    if (result.success) {
-                        showNotification(result.message || 'Thêm khuyến mãi thành công!', 'success');
-                        closeModal('addPromotionModal');
-                        loadPromotionsPage(currentPage, pageSize);
-                    } else {
-                        throw new Error(result.message || 'Không thể thêm khuyến mãi');
-                    }
+                    showNotification('Thêm khuyến mãi thành công!', 'success');
+                    closeModal('addPromotionModal');
+                    loadPromotionsPage(currentPage, pageSize);
                 } else {
                     throw new Error('Không thể thêm khuyến mãi');
                 }
@@ -745,7 +847,7 @@
                 console.error('Error adding promotion:', error);
                 showNotification('Có lỗi xảy ra khi thêm khuyến mãi', 'error');
             } finally {
-
+                // Re-enable submit button
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Thêm khuyến mãi';
             }
@@ -758,12 +860,13 @@
             const formData = new FormData(form);
             const submitBtn = form.querySelector('.btn-save');
             
-
+            // Disable submit button and show loading
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang cập nhật...';
             
             try {
                 const promotionData = {
+                    id: promotionId,
                     title: formData.get('title'),
                     startDate: formData.get('startDate'),
                     endDate: formData.get('endDate'),
@@ -772,7 +875,7 @@
                     imageUrl: formData.get('imageUrl')
                 };
                 
-                const response = await fetch(`${API_BASE}/promotions/${promotionId}`, {
+                const response = await fetch(`${API_BASE}/promotions`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -792,15 +895,15 @@
                 console.error('Error updating promotion:', error);
                 showNotification('Có lỗi xảy ra khi cập nhật khuyến mãi', 'error');
             } finally {
-
+                // Re-enable submit button
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Cập nhật khuyến mãi';
             }
         }
 
-
+        // Show notification
         function showNotification(message, type = 'info') {
-
+            // Remove existing notifications
             const existingNotifications = document.querySelectorAll('.notification');
             existingNotifications.forEach(notification => notification.remove());
             
@@ -819,7 +922,7 @@
             
             document.body.appendChild(notification);
             
-
+            // Auto remove after 5 seconds
             setTimeout(() => {
                 if (notification.parentElement) {
                     notification.remove();
@@ -827,7 +930,7 @@
             }, 5000);
         }
 
-
+        // Close modal when clicking outside
         window.onclick = function(event) {
             const modals = document.querySelectorAll('.modal');
             modals.forEach(modal => {
@@ -836,4 +939,4 @@
                 }
             });
         }
-   
+ 

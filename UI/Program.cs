@@ -60,16 +60,14 @@ namespace UI
             builder.Services.AddScoped<UI.Areas.ShowtimeManagement.Services.IShowtimeService,
                           UI.Areas.ShowtimeManagement.Services.ShowtimeService>();
 
-<<<<<<< HEAD
-            // Đăng ký CinemaManagementUIService
-            builder.Services.AddScoped<UI.Areas.CinemaManagement.Services.ICinemaManagementUIService,
-                          UI.Areas.CinemaManagement.Services.CinemaManagementUIService>();
-=======
             // Register PromotionManagementUIService
             builder.Services.AddScoped<UI.Areas.PromotionManagement.Services.IPromotionManagementUIService,
                           UI.Areas.PromotionManagement.Services.PromotionManagementUIService>();
 
->>>>>>> origin/Nhi_DiscountManagement
+
+            // Đăng ký CinemaManagementUIService
+            builder.Services.AddScoped<UI.Areas.CinemaManagement.Services.ICinemaManagementUIService,
+                          UI.Areas.CinemaManagement.Services.CinemaManagementUIService>();
 
             var app = builder.Build();
 
