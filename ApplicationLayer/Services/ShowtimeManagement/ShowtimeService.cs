@@ -15,7 +15,7 @@ namespace ApplicationLayer.Services.ShowtimeManagement
 {
     public interface IShowtimeService
     {
-        Task<IActionResult> GetAllShowtimes();
+        Task<IActionResult> GetAllShowtimes(int page = 1, int pageSize = 20);
         Task<IActionResult> GetShowtimesByMonth(int month, int year);
         Task<IActionResult> GetShowtimeById(Guid id);
         Task<IActionResult> CreateShowtime(ShowtimeCreateDto dto);
@@ -52,11 +52,30 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> GetAllShowtimes()
+        public async Task<IActionResult> GetAllShowtimes(int page = 1, int pageSize = 20)
         {
-            var showtimes = await _showtimeRepo.ListAsync("Movie", "Movie.MovieImages", "Room");
-            var result = _mapper.Map<List<ShowtimeListDto>>(showtimes);
-            return SuccessResp.Ok(result);
+            if (page < 1) page = 1;
+            if (pageSize < 1) pageSize = 20;
+
+            var query = await _showtimeRepo.ListAsync("Movie", "Movie.MovieImages", "Room");
+            // Order by ShowDate desc, StartTime
+            var ordered = query.OrderByDescending(s => s.ShowDate).ThenBy(s => s.StartTime).ToList();
+
+            var totalItems = ordered.Count;
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            var paged = ordered.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var items = _mapper.Map<List<ShowtimeListDto>>(paged);
+
+            var respData = new {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = page,
+                PageSize = pageSize
+            };
+
+            return SuccessResp.Ok(respData);
         }
 
         public async Task<IActionResult> GetShowtimesByMonth(int month, int year)

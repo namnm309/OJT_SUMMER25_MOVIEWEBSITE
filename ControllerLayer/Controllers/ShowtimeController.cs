@@ -19,10 +19,10 @@ namespace ControllerLayer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllShowtimes()
+        public async Task<IActionResult> GetAllShowtimes([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
         {
-            _logger.LogInformation("Get all showtimes");
-            return await _showtimeService.GetAllShowtimes();
+            _logger.LogInformation("Get all showtimes page {Page} size {Size}", page, pageSize);
+            return await _showtimeService.GetAllShowtimes(page, pageSize);
         }
 
         [HttpGet("GetByMonth")]

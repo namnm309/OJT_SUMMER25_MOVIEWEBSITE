@@ -1,6 +1,9 @@
 @{
     ViewData["Title"] = "Đặt vé";
     Layout = null;
+    ViewBag.PageTitle = "Đặt vé";
+    ViewBag.ParentTitle = "Dashboard";
+    ViewBag.ParentUrl = Url.Action("AdminDashboard", "Dashboard");
 }
 
 <!DOCTYPE html>
@@ -37,21 +40,7 @@
             <div class="movie-management-content">
                 
                 <div class="movie-page-header">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a href="@Url.Action("Index", "Home", new { area = "" })" style="color: rgba(255, 255, 255, 0.8);">
-                                    <i class="fas fa-home"></i> Trang chủ
-                                </a>
-                            </li>
-                            <li class="breadcrumb-item">
-                                <a href="@Url.Action("AdminDashboard", "Dashboard", new { area = "" })" style="color: rgba(255, 255, 255, 0.8);">
-                                    Dashboard
-                                </a>
-                            </li>
-                            <li class="breadcrumb-item active">Đặt vé</li>
-                        </ol>
-                    </nav>
+                    @await Html.PartialAsync("~/Views/Shared/_DashboardBreadcrumb.cshtml")
                     <h1 class="movie-page-title">
                         <i class="fas fa-ticket-alt"></i>
                         Đặt vé cho khách hàng

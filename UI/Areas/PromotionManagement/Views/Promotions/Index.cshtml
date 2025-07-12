@@ -1,5 +1,8 @@
 @{
-    ViewData["Title"] = "Quản lý khuyến mãi - Cinema City";
+    ViewData["Title"] = "Quản lý khuyến mãi";
+    ViewBag.PageTitle = "Quản lý khuyến mãi";
+    ViewBag.ParentTitle = "Dashboard";
+    ViewBag.ParentUrl = Url.Action("AdminDashboard", "Dashboard");
     Layout = null;
 }
 
@@ -749,12 +752,12 @@
             <div class="promotion-management-content">
                 
                 <div class="promotion-page-header">
+                    @await Html.PartialAsync("~/Views/Shared/_DashboardBreadcrumb.cshtml")
                     <h1 class="promotion-page-title">
                         <i class="fas fa-tags"></i>
                         Quản lý khuyến mãi
-                        <span id="promotionListTitle" style="font-size:1rem; font-weight:400; margin-left:12px;"></span>
                     </h1>
-                    <p class="promotion-page-subtitle">Quản lý các chương trình khuyến mãi và ưu đãi</p>
+                    <p class="promotion-page-subtitle">Quản lý chương trình khuyến mãi & mã giảm giá</p>
                 </div>
 
                 

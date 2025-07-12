@@ -639,6 +639,75 @@
             font-weight: 500;
         }
 
+        /* ===== NEW vertical list style ===== */
+        .calendar-showtimes {
+            /* Dọc và cuộn khi >5 phim */
+            flex-direction: column;
+            gap: 2px;
+            max-height: 126px; /* 5 items × 24px + gaps */
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+        }
+        .calendar-showtimes::-webkit-scrollbar {
+            width: 4px;
+            display: block;
+        }
+        .calendar-showtime-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            min-width: 100%;
+            min-height: 24px;
+            background: var(--content-secondary);
+            border: 1px solid var(--content-border);
+            border-radius: 4px;
+            padding: 2px 4px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .calendar-showtime-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: var(--primary-purple);
+        }
+        .calendar-showtime-title {
+            flex: 1;
+            font-size: 11px;
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            position: relative;
+        }
+        /* Bullet trước tiêu đề */
+        .calendar-showtime-title::before {
+            content: "";
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary-purple);
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+
+        /* Cố định kích thước hình trong tooltip */
+        .tooltip-inner img {
+            width: 140px !important;
+            height: 200px !important;
+            object-fit: cover;
+            border-radius: 6px;
+            display: block;
+        }
+        .calendar-showtime-time {
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 6px;
+            color: var(--text-dark);
+        }
+        /* ===== end NEW ===== */
+        
         
         .showtime-detail-modal .modal-dialog {
             max-width: 800px;
@@ -701,9 +770,142 @@
         .calendar-view.active ~ .table-view {
             display: none;
         }
+
+        /* Hộp kết quả phim dưới ô tìm kiếm */
+        .movie-search-result {
+            display: none;
+            position: absolute;
+            top: 110%;
+            left: 0;
+            background: #fff;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            padding: 10px;
+            width: 320px;
+            box-shadow: var(--shadow-md);
+            z-index: 20;
+        }
+        .movie-search-result .preview-poster {
+            width: 80px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .movie-search-result ul {
+            list-style: none;
+            padding: 0;
+            margin: 4px 0 0 0;
+        }
+        .movie-search-result li {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .movie-suggestion {
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 13px;
+            border-radius: 4px;
+        }
+        .movie-suggestion:hover {
+            background: var(--content-secondary);
+        }
+        .movie-preview {
+            display: none;
+        }
+
+        /* Highlight item khi search */
+        .calendar-showtime-item.selected-movie {
+            background: #d1e7dd;
+            border-color: #198754;
+        }
+        .calendar-showtime-item.selected-movie:hover {
+            background: #c7dfd6;
+        }
+        .movie-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            border-radius: 16px;
+            margin-top: 1.5rem;
+        }
+        .pagination-info {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-pagination {
+            padding: 8px 12px;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        .btn-pagination:hover:not(:disabled) {
+            background: var(--primary-purple);
+            color: #fff;
+            border-color: var(--primary-purple);
+        }
+        .btn-pagination:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .page-numbers {
+            display: flex;
+            gap: 4px;
+        }
+        .page-number {
+            padding: 8px 12px;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            min-width: 40px;
+            text-align: center;
+        }
+        .page-number:hover {
+            background: var(--primary-purple);
+            color: #fff;
+            border-color: var(--primary-purple);
+        }
+        .page-number.active {
+            background: var(--primary-purple);
+            color: #fff;
+            border-color: var(--primary-purple);
+        }
+        .pagination-size select {
+            padding: 8px 12px;
+            border: 1px solid var(--content-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+        .btn-pagination[disabled] {
+            opacity: 0.5;
+            pointer-events: none;
+        }
     </style>
 </head>
 
+@{
+    ViewBag.PageTitle = "Quản lý lịch chiếu";
+    ViewBag.ParentTitle = "Dashboard";
+    ViewBag.ParentUrl = Url.Action("AdminDashboard", "Dashboard");
+}
 <body>
     
     <div class="new-dashboard-layout">
@@ -715,10 +917,7 @@
             <div class="showtime-management-content">
                 
                     <div class="showtime-page-header">
-                        <h1 class="showtime-page-title">
-                            <i class="fas fa-calendar-alt"></i>
-                                Quản lý lịch chiếu
-                            </h1>
+                        @await Html.PartialAsync("~/Views/Shared/_DashboardBreadcrumb.cshtml")
                         <p class="showtime-page-subtitle">
                             Quản lý và điều phối lịch chiếu phim tại rạp Cinema City
                         </p>
@@ -734,6 +933,8 @@
                                        id="showtimeSearch"
                                        placeholder="Tìm kiếm theo tên phim, phòng chiếu..."
                                        onkeyup="searchShowtimes()">
+                                <!-- Kết quả phim -->
+                                <div id="movieSearchResult" class="movie-search-result"></div>
                         </div>
                             <div class="d-flex gap-2 align-items-center">
                                 <div class="view-toggle">
@@ -802,6 +1003,7 @@
                             <div class="d-flex align-items-center gap-3">
                                 <h5 class="mb-0">Danh sách lịch chiếu</h5>
                                 <span class="badge bg-primary">@Model.Showtimes.Count() lịch chiếu</span>
+                                <!-- old pageSizeSelect removed, handled in movie-pagination -->
                                             </div>
                             <div class="bulk-actions">
                                 <button class="bulk-action-btn danger" id="bulkDeleteBtn" onclick="bulkDeleteShowtimes()" disabled>
@@ -815,6 +1017,24 @@
                     </div>
                 </div>
 
+                        <div class="movie-pagination d-flex justify-content-between align-items-center py-2">
+                            <div class="pagination-info">
+                                <span id="paginationInfo">Trang 1/1 (Hiển thị 0-0 của 0)</span>
+                            </div>
+                            <div class="pagination-controls d-flex align-items-center gap-1">
+                                <button id="prevPageBtn" class="btn-pagination btn btn-sm btn-outline-secondary" disabled onclick="loadShowtimesTable(currentTablePage-1)">❮ Trước</button>
+                                <div id="pageNumbers" class="page-numbers d-flex gap-1"></div>
+                                <button id="nextPageBtn" class="btn-pagination btn btn-sm btn-outline-secondary" disabled onclick="loadShowtimesTable(currentTablePage+1)">Sau ❯</button>
+                            </div>
+                            <div class="pagination-size">
+                                <select id="pageSizeSelect" class="form-select form-select-sm" style="width:auto;" onchange="changePageSize()">
+                                    <option value="5">5/trang</option>
+                                    <option value="10" selected>10/trang</option>
+                                    <option value="25">25/trang</option>
+                                    <option value="50">50/trang</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="table-responsive">
                             <table class="showtime-table" id="showtimeTable">
                         <thead>
@@ -926,6 +1146,7 @@
                         </tbody>
                     </table>
                         </div>
+                        <!-- pagination moved to top -->
                         </div>
                     </div>
                 </div>
@@ -985,6 +1206,8 @@
                     row.style.display = 'none';
                 }
             });
+
+            showMovieSuggestions(searchTerm);
         }
 
 
@@ -1273,6 +1496,7 @@
                 calendarView.classList.remove('active');
                 tableView.classList.add('active');
                 document.querySelector('[onclick="switchView(\'table\')"]').classList.add('active');
+                loadShowtimesTable(1);
             }
         }
 
@@ -1390,6 +1614,8 @@
                     break;
                 }
             }
+            // Khởi tạo tooltip cho các item vừa render
+            initializeShowtimeTooltips();
         }
 
         function generateShowtimesForDay(date) {
@@ -1405,17 +1631,13 @@
                     : '/images/default-movie-poster.jpg';
                 
                 return `
-                    <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')">
-                        <img src="${posterUrl}" 
-                             alt="${showtime.movieTitle}" 
-                             class="calendar-showtime-poster"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                             onload="this.style.opacity='1';">
-                        <div class="calendar-showtime-fallback" style="display:none; height:45px; background:#f8f9fa; border-radius:4px; align-items:center; justify-content:center; margin-bottom:4px;">
-                            <i class="fas fa-film text-muted"></i>
-                        </div>
-                        <div class="calendar-showtime-title">${showtime.movieTitle}</div>
-                        <div class="calendar-showtime-time">${formatTime(showtime.startTime)}</div>
+                    <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')"
+                         data-movie-id="${showtime.movieId || ''}"
+                         data-movie-title="${(showtime.movieTitle || '').toLowerCase()}"
+                         data-bs-toggle="tooltip" data-bs-html="true"
+                         data-poster="${posterUrl}" title="<img src='${posterUrl}' width='140' height='200' style='object-fit:cover;border-radius:6px;'>">
+                        <span class="calendar-showtime-title">${showtime.movieTitle}</span>
+                        <span class="calendar-showtime-time">${formatTime(showtime.startTime)}</span>
                     </div>
                 `;
             }).join('');
@@ -1580,6 +1802,197 @@
             return false;
         }
 
+        function clearCalendarHighlight() {
+            document.querySelectorAll('.calendar-showtime-item.selected-movie').forEach(el => el.classList.remove('selected-movie'));
+        }
+
+        function highlightMovieInCalendar(movieId) {
+            if (!movieId) return;
+            document.querySelectorAll(`.calendar-showtime-item[data-movie-id='${movieId}']`).forEach(el => el.classList.add('selected-movie'));
+        }
+
+        async function showMovieSuggestions(term) {
+            const container = document.getElementById('movieSearchResult');
+            if (!container) return;
+
+            if (!term) { hideMoviePreview(); clearCalendarHighlight(); return; }
+
+            container.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i></div>';
+            container.style.display = 'block';
+
+            try {
+                const resp = await fetch(`${apiBaseUrl}/api/v1/movie/Search?keyword=${encodeURIComponent(term)}`);
+                const result = await resp.json();
+                const movies = result.data || result || [];
+
+                if (!Array.isArray(movies) || !movies.length) {
+                    container.innerHTML = '<span class="text-muted" style="font-size:12px;">Không tìm thấy phim</span>';
+                    clearCalendarHighlight();
+                    return;
+                }
+
+                // Chọn phim phù hợp nhất: ưu tiên khớp tên chính xác, kế tiếp là bắt đầu bằng từ khoá, sau đó lấy đầu tiên
+                const termLower = term.toLowerCase();
+                let chosen = movies.find(m => (m.title || '').toLowerCase() === termLower);
+                if (!chosen) {
+                    chosen = movies.find(m => (m.title || '').toLowerCase().startsWith(termLower));
+                }
+                if (!chosen) {
+                    chosen = movies[0];
+                }
+                selectMovieFromSearch(chosen.id, true);
+            } catch(err) {
+                console.error('Error searching movie', err);
+                container.innerHTML = '<span class="text-danger">Lỗi tìm kiếm phim</span>';
+            }
+        }
+
+        async function selectMovieFromSearch(movieId, auto = false) {
+            hideMoviePreview();
+            clearCalendarHighlight();
+            highlightMovieInCalendar(movieId);
+
+            const container = document.getElementById('movieSearchResult');
+            if (!container) return;
+
+            container.dataset.currentMovieId = movieId;
+
+            container.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i></div>';
+
+            try {
+                const resp = await fetch(`${apiBaseUrl}/api/v1/movie/GetById?movieId=${movieId}`);
+                const result = await resp.json();
+                const movie = result.data || result;
+
+                const poster = movie.primaryImageUrl || (Array.isArray(movie.images)? movie.images.find(i => i.isPrimary)?.imageUrl : null) || '/images/no-poster.jpg';
+                const title = movie.title || 'Không rõ tên';
+
+                // Lấy showtimes theo showtimeData của tháng hiện tại
+                const times = showtimeData
+                    .filter(st => st.movieId === movieId)
+                    .sort((a,b)=> new Date(a.showDate) - new Date(b.showDate) || a.startTime.localeCompare(b.startTime));
+
+                const timesHtml = times.length ?
+                    '<ul style="list-style:none;padding-left:0;margin:6px 0 0 0;max-height:140px;overflow-y:auto;">' +
+                    times.slice(0,20).map(t => `<li style="font-size:12px;">${new Date(t.showDate).toLocaleDateString('vi-VN')} ${formatTime(t.startTime)} - ${t.cinemaRoomName}</li>`).join('') +
+                    '</ul>' : '<p class="text-muted mb-0" style="font-size:12px;">Không có lịch chiếu</p>';
+
+                container.innerHTML = `
+                    <div class="d-flex gap-2 align-items-start movie-preview" style="display:flex;">
+                        <img src="${poster}" alt="${title}" class="preview-poster" onerror="this.src='/images/no-poster.jpg'">
+                        <div style="flex:1;">
+                            <strong>${title}</strong>
+                            ${timesHtml}
+                        </div>
+                    </div>`;
+                container.style.display = 'block';
+            } catch (err) {
+                console.error('Error preview movie', err);
+                container.innerHTML = '<span class="text-danger">Không thể tải thông tin phim</span>';
+            }
+        }
+
+        function hideMoviePreview() {
+            const container = document.getElementById('movieSearchResult');
+            if (container) container.style.display = 'none';
+        }
+
+        /*================ TABLE VIEW - PAGINATION ================*/
+        let tablePageSize = 10;
+        let currentTablePage = 1;
+        let totalTablePages = 1;
+        let totalItemsCount = 0;
+
+        async function loadShowtimesTable(page = 1) {
+            const tbody = document.getElementById('showtimeTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="10" class="text-center py-4"><i class="fas fa-spinner fa-spin"></i></td></tr>`;
+
+            try {
+                tablePageSize = parseInt(document.getElementById('pageSizeSelect')?.value || 10);
+                const resp = await fetch(`${apiBaseUrl}/api/v1/showtime?page=${page}&pageSize=${tablePageSize}`);
+                const result = await resp.json();
+                const data = result.data || result.Data || result;
+                const items = data.items || data.Items || data;
+                totalTablePages = data.totalPages || data.TotalPages || 1;
+                totalItemsCount = data.totalItems || data.TotalItems || 0;
+                currentTablePage = data.currentPage || data.CurrentPage || page;
+
+                if (!Array.isArray(items) || !items.length) {
+                    tbody.innerHTML = `<tr><td colspan="10" class="text-center py-4 text-muted">Không có dữ liệu</td></tr>`;
+                } else {
+                    tbody.innerHTML = items.map(renderTableRow).join('');
+                }
+
+                updatePaginationUI();
+            } catch(err) {
+                console.error('Error load table', err);
+                tbody.innerHTML = `<tr><td colspan="10" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>`;
+            }
+        }
+
+        function renderTableRow(item) {
+            const poster = item.moviePoster || '/images/no-poster.jpg';
+            const occupancyRate = item.totalSeats ? (item.bookedSeats / item.totalSeats) * 100 : 0;
+            const occupancyText = occupancyRate >= 90 ? 'Hết vé' : occupancyRate >= 70 ? 'Sắp hết vé' : 'Còn vé';
+            const statusText = new Date(item.showDate).toDateString() === new Date().toDateString() ? 'Hôm nay' : (new Date(item.showDate) < new Date() ? 'Đã qua' : 'Sắp tới');
+
+            return `
+                <tr>
+                    <td><input type="checkbox" value="${item.id}" onchange="updateBulkActionButtons()"></td>
+                    <td>
+                        <div class="d-flex gap-2 align-items-center movie-details">
+                            <img src="${poster}" alt="${item.movieTitle}" class="movie-poster" style="width:40px;height:60px;object-fit:cover;border-radius:4px;">
+                            <div>
+                                <h6 class="mb-0">${item.movieTitle}</h6>
+                                <small>${item.movieDuration} phút</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${item.cinemaRoomName}</td>
+                    <td>${new Date(item.showDate).toLocaleDateString('vi-VN')}</td>
+                    <td>${formatTime(item.startTime)}</td>
+                    <td>${formatTime(item.endTime)}</td>
+                    <td><span class="text-success fw-bold">${(item.price || 0).toLocaleString('vi-VN')} VNĐ</span></td>
+                    <td>${statusText}</td>
+                    <td>${item.bookedSeats}/${item.totalSeats} vé (${Math.round(occupancyRate)}%)</td>
+                    <td><!-- actions placeholder --></td>
+                </tr>`;
+        }
+
+        function updatePaginationUI() {
+            // Info text
+            const infoEl = document.getElementById('paginationInfo');
+            if (infoEl) {
+                const startItem = totalItemsCount === 0 ? 0 : (currentTablePage - 1) * tablePageSize + 1;
+                const endItem = Math.min(currentTablePage * tablePageSize, totalItemsCount);
+                infoEl.textContent = `Trang ${currentTablePage}/${totalTablePages} (Hiển thị ${startItem}-${endItem} của ${totalItemsCount})`;
+            }
+
+            // Prev/next buttons
+            document.getElementById('prevPageBtn')?.toggleAttribute('disabled', currentTablePage <= 1);
+            document.getElementById('nextPageBtn')?.toggleAttribute('disabled', currentTablePage >= totalTablePages);
+
+            // Page numbers
+            const pagesWrapper = document.getElementById('pageNumbers');
+            if (!pagesWrapper) return;
+            pagesWrapper.innerHTML = '';
+            for (let i = 1; i <= totalTablePages; i++) {
+                const el = document.createElement('div');
+                el.className = 'page-number' + (i === currentTablePage ? ' active' : '');
+                el.textContent = i;
+                el.onclick = () => loadShowtimesTable(i);
+                pagesWrapper.appendChild(el);
+            }
+        }
+
+        function changePageSize() {
+            currentTablePage = 1;
+            loadShowtimesTable(1);
+        }
+
+ /*============== END TABLE PAGINATION =============*/
+
 
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Showtime Management Dashboard loaded');
@@ -1596,6 +2009,11 @@
                 });
             }
         });
+
+        function initializeShowtimeTooltips() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+        }
     </script>
     
     @await Html.PartialAsync("_CreateNewModal")
