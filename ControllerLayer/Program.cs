@@ -110,7 +110,7 @@ namespace ControllerLayer
 
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "JWT System API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Movie Cinema", Version = "v1" });
 
                 // Add a bearer token to Swagger
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -166,8 +166,6 @@ namespace ControllerLayer
             var smtpUsername = builder.Configuration.GetValue<string>("SMTPEmail") ?? "smtp_email";
             var smtpPassword = builder.Configuration.GetValue<string>("SMTPPassword") ?? "smtp_password";
             builder.Services.AddSingleton<IMailService>(new MailService("smtp.gmail.com", 587, smtpUsername, smtpPassword));
-
-
 
 
             // Đăng ký Repository và Services
