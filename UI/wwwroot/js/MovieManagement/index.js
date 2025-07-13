@@ -1,6 +1,4 @@
-﻿
-
-        const API_BASE = '/api/v1';
+﻿        const API_BASE = '/api/v1';
         let movies = [];
         
 
@@ -1235,16 +1233,22 @@
         async function loadAddMovieData() {
             try {
                 // Tải song song cả hai loại dữ liệu để tối ưu thời gian
-                const [genresResponse, roomsResponse] = await Promise.all([
+                const [genresResponse, roomsResponse, actorsResponse, directorsResponse] = await Promise.all([
                     fetch('/MovieManagement/Movies/GetGenres'),
-                    fetch('/MovieManagement/Movies/GetCinemaRooms')
+                    fetch('/MovieManagement/Movies/GetCinemaRooms'),
+                    fetch('/MovieManagement/Movies/GetActors'),
+                    fetch('/MovieManagement/Movies/GetDirectors')
                 ]);
                 
                 const genresResult = await genresResponse.json();
                 const roomsResult = await roomsResponse.json();
+                const actorsResult = await actorsResponse.json();
+                const directorsResult = await directorsResponse.json();
                 
                 console.log('Kết quả API thể loại:', genresResult);
                 console.log('Kết quả API phòng chiếu:', roomsResult);
+                console.log('Kết quả API diễn viên:', actorsResult);
+                console.log('Kết quả API đạo diễn:', directorsResult);
                 
                 // Xử lý dữ liệu thể loại
                 if (genresResult.success && genresResult.data) {
@@ -1288,9 +1292,29 @@
                     window.availableRooms = [];
                 }
                 
+                // Xử lý dữ liệu diễn viên
+                if (actorsResult.success && actorsResult.data) {
+                    let actorData = actorsResult.data;
+                    if (actorData.data) actorData = actorData.data;
+                    window.availableActors = Array.isArray(actorData) ? actorData : [];
+                } else {
+                    window.availableActors = [];
+                }
+                
+                // Xử lý dữ liệu đạo diễn
+                if (directorsResult.success && directorsResult.data) {
+                    let directorData = directorsResult.data;
+                    if (directorData.data) directorData = directorData.data;
+                    window.availableDirectors = Array.isArray(directorData) ? directorData : [];
+                } else {
+                    window.availableDirectors = [];
+                }
+                
                 return {
                     genres: window.availableGenres || [],
-                    rooms: window.availableRooms || []
+                    rooms: window.availableRooms || [],
+                    actors: window.availableActors || [],
+                    directors: window.availableDirectors || []
                 };
             } catch (error) {
                 console.error('Lỗi khi tải dữ liệu:', error);
@@ -1324,12 +1348,16 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="addDirector">Đạo diễn</label>
-                            <input type="text" id="addDirector" name="director">
+                            <label for="addDirectorSelect">Đạo diễn <span class="required-field">*</span>
+                                <button type="button" class="btn-add-small" onclick="openAddEntityPrompt('director')">＋</button>
+                            </label>
+                            <select id="addDirectorSelect" multiple class="multi-select"></select>
                         </div>
                         <div class="form-group">
-                            <label for="addActors">Diễn viên</label>
-                            <input type="text" id="addActors" name="actors">
+                            <label for="addActorsSelect">Diễn viên <span class="required-field">*</span>
+                                <button type="button" class="btn-add-small" onclick="openAddEntityPrompt('actor')">＋</button>
+                            </label>
+                            <select id="addActorsSelect" multiple class="multi-select"></select>
                         </div>
                     </div>
                     <div class="form-row">
@@ -1514,6 +1542,32 @@
             
 
             addNewShowTimeEntry();
+
+            if (window.availableActors) {
+                const actorSelect = document.getElementById('addActorsSelect');
+                window.availableActors.forEach(a => {
+                    const opt = document.createElement('option');
+                    opt.value = a.id || a.Id;
+                    opt.textContent = a.name || a.Name;
+                    actorSelect.appendChild(opt);
+                });
+            }
+
+            if (window.availableDirectors) {
+                const directorSelect = document.getElementById('addDirectorSelect');
+                window.availableDirectors.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.id || d.Id;
+                    opt.textContent = d.name || d.Name;
+                    directorSelect.appendChild(opt);
+                });
+            }
+
+            // After populating actor & director options in renderAddMovieForm
+            if (window.$ && $.fn.select2) {
+                $('#addActorsSelect').select2({ placeholder: 'Chọn diễn viên', width: '100%' });
+                $('#addDirectorSelect').select2({ placeholder: 'Chọn đạo diễn', width: '100%' });
+            }
         }
 
 
@@ -1725,13 +1779,17 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="editDirector">Đạo diễn</label>
-                            <input type="text" id="editDirector" name="director" value="${director}">
-                </div>
+                            <label for="editDirectorSelect">Đạo diễn <span class="required-field">*</span>
+                                <button type="button" class="btn-add-small" onclick="openAddEntityPrompt('director')">＋</button>
+                            </label>
+                            <select id="editDirectorSelect" multiple class="multi-select"></select>
+                        </div>
                         <div class="form-group">
-                            <label for="editActors">Diễn viên</label>
-                            <input type="text" id="editActors" name="actors" value="${actors}">
-            </div>
+                            <label for="editActorsSelect">Diễn viên <span class="required-field">*</span>
+                                <button type="button" class="btn-add-small" onclick="openAddEntityPrompt('actor')">＋</button>
+                            </label>
+                            <select id="editActorsSelect" multiple class="multi-select"></select>
+                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -1921,6 +1979,18 @@
             loadGenresAndRooms(movieData);
             
             modal.style.display = 'block';
+
+            // Inside showEditMovieModal, after loadGenresAndRooms(movieData);
+            (async function(){
+                try{
+                    if(!window.availableActors||!window.availableDirectors){await loadAddMovieData();}
+                    const actorSelect=document.getElementById('editActorsSelect');
+                    const directorSelect=document.getElementById('editDirectorSelect');
+                    if(actorSelect&&window.availableActors){actorSelect.innerHTML='';window.availableActors.forEach(a=>{const opt=document.createElement('option');opt.value=a.id||a.Id;opt.textContent=a.name||a.Name;actorSelect.appendChild(opt);});}
+                    if(directorSelect&&window.availableDirectors){directorSelect.innerHTML='';window.availableDirectors.forEach(d=>{const opt=document.createElement('option');opt.value=d.id||d.Id;opt.textContent=d.name||d.Name;directorSelect.appendChild(opt);});}
+                    if(window.$&&$.fn.select2){$(actorSelect).select2({placeholder:'Chọn diễn viên',width:'100%'});$(directorSelect).select2({placeholder:'Chọn đạo diễn',width:'100%'});if(movieData.actorIds){$(actorSelect).val(movieData.actorIds).trigger('change');}if(movieData.directorIds){$(directorSelect).val(movieData.directorIds).trigger('change');}}
+                }catch(e){console.error('Init Select2 error',e);}
+            })();
         }
 
         function loadPosterDescription(movieData) {
@@ -2504,8 +2574,8 @@
                 // Đảm bảo ngày tháng được chuyển đổi sang UTC
                 releaseDate: formData.get('releaseDate') ? new Date(formData.get('releaseDate') + 'T00:00:00Z').toISOString() : '',
                 endDate: formData.get('endDate') ? new Date(formData.get('endDate') + 'T00:00:00Z').toISOString() : '',
-                director: formData.get('director') || '',
-                actors: formData.get('actors') || '',
+                directorIds: getSelectValues('editDirectorSelect'),
+                actorIds: getSelectValues('editActorsSelect'),
                 productionCompany: formData.get('productionCompany') || '',
                 runningTime: parseInt(formData.get('runningTime')) || 0,
                 version: versionValue || 'TwoD',
@@ -2543,6 +2613,14 @@
                 validationErrors.push("Thời lượng phim phải lớn hơn 0");
             }
             
+            if (!movieData.directorIds || movieData.directorIds.length === 0) {
+                validationErrors.push("Vui lòng chọn ít nhất một đạo diễn");
+            }
+
+            if (!movieData.actorIds || movieData.actorIds.length === 0) {
+                validationErrors.push("Vui lòng chọn ít nhất một diễn viên");
+            }
+
             if (genreIds.length === 0) {
                 validationErrors.push("Vui lòng chọn ít nhất một thể loại phim");
             }
@@ -3280,8 +3358,8 @@
                     title: formData.get('title') || '',
                     releaseDate: releaseDate ? new Date(releaseDate).toISOString().split('.')[0] + 'Z' : '',
                     endDate: endDate ? new Date(endDate).toISOString().split('.')[0] + 'Z' : '',
-                    director: formData.get('director') || '',
-                    actors: formData.get('actors') || '',
+                    directorIds: getSelectValues('addDirectorSelect'),
+                    actorIds: getSelectValues('addActorsSelect'),
                     productionCompany: formData.get('productionCompany') || '',
                     runningTime: parseInt(formData.get('runningTime')) || 0,
                     version: versionValue,
@@ -3319,6 +3397,14 @@
                     validationErrors.push("Thời lượng phim phải lớn hơn 0");
                 }
                 
+                if (!movieData.directorIds || movieData.directorIds.length === 0) {
+                    validationErrors.push("Vui lòng chọn ít nhất một đạo diễn");
+                }
+
+                if (!movieData.actorIds || movieData.actorIds.length === 0) {
+                    validationErrors.push("Vui lòng chọn ít nhất một diễn viên");
+                }
+
                 if (genreIds.length === 0) {
                     validationErrors.push("Vui lòng chọn ít nhất một thể loại phim");
                 }
@@ -3454,5 +3540,145 @@
                 btnLoading.style.display = 'none';
                 createBtn.disabled = false;
             }
+        }
+
+        // ================== Quick Add Actor / Director ===================
+        async function createNewActor() {
+            const name = prompt('Nhập tên diễn viên mới:');
+            if (!name || name.trim() === '') return;
+            try {
+                const response = await fetch('/MovieManagement/Movies/CreateActor', {
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({name})
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Đã thêm diễn viên!');
+                    // reload list
+                    window.availableActors.push({id: result.data?.id || result.id || '', name});
+                    const sel = document.getElementById('addActorsSelect');
+                    if (sel) {
+                        const opt=document.createElement('option');
+                        opt.value=result.data?.id||result.id||'';
+                        opt.textContent=name;
+                        sel.appendChild(opt);
+                        opt.selected=true;
+                    }
+                } else alert(result.message || 'Tạo thất bại');
+            }catch(err){alert('Lỗi khi gọi API');}
+        }
+
+        async function createNewDirector() {
+            const name = prompt('Nhập tên đạo diễn mới:');
+            if (!name || name.trim() === '') return;
+            try {
+                const response = await fetch('/MovieManagement/Movies/CreateDirector', {
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({name})
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Đã thêm đạo diễn!');
+                    window.availableDirectors.push({id: result.data?.id || result.id || '', name});
+                    const sel = document.getElementById('addDirectorSelect');
+                    if (sel) {
+                        const opt=document.createElement('option');
+                        opt.value=result.data?.id||result.id||'';
+                        opt.textContent=name;
+                        sel.appendChild(opt);
+                        opt.selected=true;
+                    }
+                } else alert(result.message || 'Tạo thất bại');
+            }catch(err){alert('Lỗi khi gọi API');}
+        }
+
+        // inject style for tiny add button
+        if(!document.getElementById('btn-add-small-style')){
+          const style=document.createElement('style');
+          style.id='btn-add-small-style';
+          style.innerHTML=`.btn-add-small{margin-left:6px;padding:2px 6px;background:#28a745;color:#fff;border:none;border-radius:4px;font-size:0.8rem;cursor:pointer;} .btn-add-small:hover{background:#23913d;}`;
+          document.head.appendChild(style);
+        }
+
+        function openAddEntityPrompt(type){
+            const label = type==='actor' ? 'diễn viên' : 'đạo diễn';
+            if (window.Swal){
+                Swal.fire({
+                    title: `Nhập tên ${label}`,
+                    input: 'text',
+                    inputPlaceholder: `Tên ${label}`,
+                    showCancelButton: true,
+                    confirmButtonText: 'Lưu',
+                    cancelButtonText: 'Hủy',
+                    inputValidator: (value)=>{
+                        if(!value || !value.trim()) return 'Không được để trống';
+                    }
+                }).then(result=>{
+                    if(result.isConfirmed){
+                        createEntity(type, result.value.trim());
+                    }
+                });
+            } else {
+                const name = prompt(`Nhập tên ${label}:`);
+                if(!name || !name.trim()) return;
+                createEntity(type, name.trim());
+            }
+        }
+
+        async function createEntity(type, name){
+            const label = type==='actor' ? 'diễn viên' : 'đạo diễn';
+            try{
+                const response = await fetch(`/MovieManagement/Movies/Create${type==='actor'?'Actor':'Director'}`,{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({ name })
+                });
+                const res = await response.json();
+                if(res.success){
+                    const id = res.data?.data?.id || res.data?.id || res.data?.Id;
+                    if(!id){
+                        Swal ? Swal.fire('Lỗi','Không lấy được ID trả về','error') : alert('Tạo thành công nhưng không lấy được ID');
+                        return;
+                    }
+                    const selectIds = type==='actor'? ['addActorsSelect','editActorsSelect'] : ['addDirectorSelect','editDirectorSelect'];
+                    selectIds.forEach(sid=>{
+                        const sel = document.getElementById(sid);
+                        if(!sel) return;
+                        let opt = sel.querySelector(`option[value="${id}"]`);
+                        if(!opt){
+                            opt=document.createElement('option');
+                            opt.value=id;
+                            opt.textContent=name;
+                            sel.appendChild(opt);
+                        }
+                        opt.selected=true;
+                        if(window.$ && $.fn.select2){ $(sel).trigger('change'); }
+                    });
+                    // Lưu vào cache
+                    if(type==='actor') window.availableActors.push({id,name}); else window.availableDirectors.push({id,name});
+                    Swal ? Swal.fire('Thành công', `Đã thêm ${label}!`, 'success') : alert(`Đã tạo ${label} mới`);
+                } else {
+                    Swal ? Swal.fire('Lỗi', res.message || 'Tạo thất bại', 'error') : alert(res.message || 'Tạo thất bại');
+                }
+            }catch(err){
+                console.error(err);
+                Swal ? Swal.fire('Lỗi','Không kết nối được máy chủ','error') : alert('Lỗi kết nối máy chủ');
+            }
+        }
+
+        // Remove dangling global select2 trigger if exists
+        // ... existing code ...
+
+        // === Helper to get multi-select values (supports Select2) ===
+        function getSelectValues(selectId){
+            if(window.$ && $('#'+selectId).length){
+                const val = $('#'+selectId).val();
+                if(val) return Array.isArray(val) ? val : [val];
+            }
+            const sel=document.getElementById(selectId);
+            if(!sel) return [];
+            return Array.from(sel.selectedOptions).map(o=>o.value);
         }
 

@@ -198,6 +198,10 @@ namespace ControllerLayer
 
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
+            // Actor & Director services
+            builder.Services.AddScoped<IActorService, ActorService>();
+            builder.Services.AddScoped<IDirectorService, DirectorService>();
+
             // Tạm comment AuthService vì cần mail service
             // builder.Services.AddScoped<IAuthService, AuthService>();
 
@@ -234,15 +238,10 @@ namespace ControllerLayer
                 Console.WriteLine("Đang kiểm tra database...");
                 var context = scope.ServiceProvider.GetRequiredService<MovieContext>();
 
-                // Temporary: Use EnsureCreated to bootstrap database
-                if (context.Database.EnsureCreated())
-                {
-                    Console.WriteLine("Database created successfully with new schema!");
-                }
-                else
-                {
-                    Console.WriteLine("Database already exists!");
-                }
+                // Áp dụng migration tự động
+                Console.WriteLine("Applying pending migrations (if any)...");
+                context.Database.Migrate();
+                Console.WriteLine("Database is up-to-date!");
 
                 // Seed dữ liệu admin mặc định
                 await DataSeeder.SeedAdminUser(context);

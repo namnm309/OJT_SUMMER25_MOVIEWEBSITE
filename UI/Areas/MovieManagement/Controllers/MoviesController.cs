@@ -1111,5 +1111,81 @@ namespace UI.Areas.MovieManagement.Controllers
                 return Json(new { success = false, message = "Lỗi khi upload video: " + ex.Message });
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetActors()
+        {
+            try
+            {
+                var result = await _apiService.GetAsync<JsonElement>("/api/v1/actor/View");
+                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    if (result.Data.TryGetProperty("data", out var dataProp))
+                    {
+                        var actors = JsonSerializer.Deserialize<object>(dataProp.GetRawText());
+                        return Json(new { success = true, data = actors });
+                    }
+                }
+                return Json(new { success = false, message = result.Message ?? "Không thể tải danh sách diễn viên" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy danh sách diễn viên");
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi tải danh sách diễn viên" });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDirectors()
+        {
+            try
+            {
+                var result = await _apiService.GetAsync<JsonElement>("/api/v1/director/View");
+                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    if (result.Data.TryGetProperty("data", out var dataProp))
+                    {
+                        var directors = JsonSerializer.Deserialize<object>(dataProp.GetRawText());
+                        return Json(new { success = true, data = directors });
+                    }
+                }
+                return Json(new { success = false, message = result.Message ?? "Không thể tải danh sách đạo diễn" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy danh sách đạo diễn");
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi tải danh sách đạo diễn" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateActor([FromBody] JsonElement payload)
+        {
+            try
+            {
+                var result = await _apiService.PostAsync<JsonElement>("/api/v1/actor/Create", payload);
+                return Json(new { success = result.Success, message = result.Message, data = result.Data });
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi tạo diễn viên");
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi tạo diễn viên" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateDirector([FromBody] JsonElement payload)
+        {
+            try
+            {
+                var result = await _apiService.PostAsync<JsonElement>("/api/v1/director/Create", payload);
+                return Json(new { success = result.Success, message = result.Message, data = result.Data });
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi tạo đạo diễn");
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi tạo đạo diễn" });
+            }
+        }
     }
 } 

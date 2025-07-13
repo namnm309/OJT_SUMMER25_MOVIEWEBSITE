@@ -15,8 +15,8 @@ namespace ApplicationLayer.DTO.MovieManagement
         public string? ProductionCompany { get; set; }
         public int RunningTime { get; set; }
         public string Version { get; set; } = string.Empty;
-        public string? Director { get; set; }
-        public string? Actors { get; set; }
+        public List<ActorDto> ActorList { get; set; } = new();
+        public List<DirectorDto> DirectorList { get; set; } = new();
         public string? Content { get; set; }
         public string? TrailerUrl { get; set; }
         public int Status { get; set; }
@@ -30,5 +30,9 @@ namespace ApplicationLayer.DTO.MovieManagement
         public bool IsFeatured { get; set; } = false;
         public bool IsRecommended { get; set; } = false;
         public double Rating { get; set; } = 0.0;
+
+        // Backward‐compatibility: comma-separated actor/ director names (old UI)
+        public string? Director { get; set; }
+        public string? Actors { get; set; }
     }
 }

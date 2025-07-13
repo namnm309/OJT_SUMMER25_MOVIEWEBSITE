@@ -24,7 +24,12 @@ namespace ApplicationLayer.Services.MovieManagement
         private readonly IGenericRepository<ShowTime> _showtimeRepo;
         private readonly IGenericRepository<CinemaRoom> _roomRepo;
 
-        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreMovieRepo, IGenericRepository<Genre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IMapper mapper)
+        private readonly IGenericRepository<Actor> _actorRepo;
+        private readonly IGenericRepository<Director> _directorRepo;
+        private readonly IGenericRepository<MovieActor> _movieActorRepo;
+        private readonly IGenericRepository<MovieDirector> _movieDirectorRepo;
+
+        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreMovieRepo, IGenericRepository<Genre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IGenericRepository<Actor> actorRepo, IGenericRepository<Director> directorRepo, IGenericRepository<MovieActor> movieActorRepo, IGenericRepository<MovieDirector> movieDirectorRepo, IMapper mapper)
         {
             _movieRepo = movieRepo;
             _mapper = mapper;
@@ -32,7 +37,12 @@ namespace ApplicationLayer.Services.MovieManagement
             _genreRepo = genreRepo;
             _imageRepo = imageRepo;
             _showtimeRepo = showtimeRepo;
-            _roomRepo = roomRepo;   
+            _roomRepo = roomRepo;
+
+            _actorRepo = actorRepo;
+            _directorRepo = directorRepo;
+            _movieActorRepo = movieActorRepo;
+            _movieDirectorRepo = movieDirectorRepo;   
         }
 
         public async Task<List<MovieListDto>> GetAllAsync()
@@ -48,6 +58,8 @@ namespace ApplicationLayer.Services.MovieManagement
                 nameof(Movie.MovieImages),
                 nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre),
                 nameof(Movie.ShowTimes) + "." + nameof(ShowTime.Room)
+                , nameof(Movie.MovieActors) + "." + nameof(MovieActor.Actor)
+                , nameof(Movie.MovieDirectors) + "." + nameof(MovieDirector.Director)
             );
             
             if (movie == null) 
@@ -80,6 +92,26 @@ namespace ApplicationLayer.Services.MovieManagement
             if (Dto.Images.Count(i => i.IsPrimary) != 1)
                 return ErrorResp.BadRequest("Exactly one image must be marked as primary");
 
+            // Validate actors & directors
+            if (Dto.ActorIds == null || !Dto.ActorIds.Any())
+                return ErrorResp.BadRequest("At least one actor is required");
+
+            if (Dto.DirectorIds == null || !Dto.DirectorIds.Any())
+                return ErrorResp.BadRequest("At least one director is required");
+
+            foreach (var actorId in Dto.ActorIds)
+            {
+                var actor = await _actorRepo.FindByIdAsync(actorId);
+                if (actor == null)
+                    return ErrorResp.NotFound($"Actor with ID {actorId} not found");
+            }
+
+            foreach (var directorId in Dto.DirectorIds)
+            {
+                var director = await _directorRepo.FindByIdAsync(directorId);
+                if (director == null)
+                    return ErrorResp.NotFound($"Director with ID {directorId} not found");
+            }
 
             foreach (var genreId in Dto.GenreIds)
             {
@@ -123,9 +155,24 @@ namespace ApplicationLayer.Services.MovieManagement
                 ShowDate = show.ShowDate
             }).ToList();
 
+            // Map diễn viên và đạo diễn
+            var movieActors = Dto.ActorIds.Select(id => new MovieActor
+            {
+                MovieId = movie.Id,
+                ActorId = id
+            }).ToList();
+
+            var movieDirectors = Dto.DirectorIds.Select(id => new MovieDirector
+            {
+                MovieId = movie.Id,
+                DirectorId = id
+            }).ToList();
+ 
             await _genreMovieRepo.CreateRangeAsync(movieGenres);
             await _imageRepo.CreateRangeAsync(movieImages);
             await _showtimeRepo.CreateRangeAsync(showtimes);
+            await _movieActorRepo.CreateRangeAsync(movieActors);
+            await _movieDirectorRepo.CreateRangeAsync(movieDirectors);
 
             return SuccessResp.Ok("Create movie successfully");
         }
@@ -135,6 +182,8 @@ namespace ApplicationLayer.Services.MovieManagement
             var movies = await _movieRepo.ListAsync(
                 nameof(Movie.MovieImages),
                 nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
+                , nameof(Movie.MovieActors) + "." + nameof(MovieActor.Actor)
+                , nameof(Movie.MovieDirectors) + "." + nameof(MovieDirector.Director)
             );
 
             var result = _mapper.Map<List<MovieResponseDto>>(movies);
@@ -156,6 +205,8 @@ namespace ApplicationLayer.Services.MovieManagement
                 {
                     nameof(Movie.MovieImages),
                     nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
+                    , nameof(Movie.MovieActors) + "." + nameof(MovieActor.Actor)
+                    , nameof(Movie.MovieDirectors) + "." + nameof(MovieDirector.Director)
                 });
 
             var totalCount = await _movieRepo.CountAsync(); // tổng số phim
@@ -197,6 +248,26 @@ namespace ApplicationLayer.Services.MovieManagement
             if (Dto.Images.Count(i => i.IsPrimary) != 1)
                 return ErrorResp.BadRequest("Exactly one image must be marked as primary");
 
+            if (Dto.ActorIds == null || !Dto.ActorIds.Any())
+                return ErrorResp.BadRequest("At least one actor is required");
+
+            if (Dto.DirectorIds == null || !Dto.DirectorIds.Any())
+                return ErrorResp.BadRequest("At least one director is required");
+
+            foreach (var actorId in Dto.ActorIds)
+            {
+                var actor = await _actorRepo.FindByIdAsync(actorId);
+                if (actor == null)
+                    return ErrorResp.NotFound($"Actor with ID {actorId} not found");
+            }
+
+            foreach (var directorId in Dto.DirectorIds)
+            {
+                var director = await _directorRepo.FindByIdAsync(directorId);
+                if (director == null)
+                    return ErrorResp.NotFound($"Director with ID {directorId} not found");
+            }
+
             _mapper.Map(Dto, movie);
 
             foreach (var genreId in Dto.GenreIds)
@@ -232,6 +303,22 @@ namespace ApplicationLayer.Services.MovieManagement
                 MovieId = movie.Id
             }).ToList();
 
+            // Cập nhật MovieActors
+            movie.MovieActors.Clear();
+            movie.MovieActors = Dto.ActorIds.Select(aid => new MovieActor
+            {
+                ActorId = aid,
+                MovieId = movie.Id
+            }).ToList();
+
+            // Cập nhật MovieDirectors
+            movie.MovieDirectors.Clear();
+            movie.MovieDirectors = Dto.DirectorIds.Select(did => new MovieDirector
+            {
+                DirectorId = did,
+                MovieId = movie.Id
+            }).ToList();
+ 
             // Cập nhật MovieImages
             movie.MovieImages.Clear();
             movie.MovieImages = Dto.Images.Select(img => new MovieImage

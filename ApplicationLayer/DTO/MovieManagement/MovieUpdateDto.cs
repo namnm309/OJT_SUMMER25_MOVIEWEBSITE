@@ -22,14 +22,14 @@ namespace ApplicationLayer.DTO.MovieManagement
         [Required]
         public DateTime EndDate { get; set; }
 
-        [MaxLength(500)]
-        public string? Actors { get; set; }
+        [Required]
+        public List<Guid> ActorIds { get; set; } = new();
 
         [MaxLength(100)]
         public string? ProductionCompany { get; set; }
 
-        [MaxLength(100)]
-        public string? Director { get; set; }
+        [Required]
+        public List<Guid> DirectorIds { get; set; } = new();
 
         [Required]
         public int RunningTime { get; set; }
