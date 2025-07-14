@@ -33,7 +33,7 @@ namespace InfrastructureLayer.Repository
                 throw new NotFoundException("ShowTime or its Room not found", showTimeId.ToString());
 
             var seats = await _context.Seats
-                .Where(s => s.RoomId == showTime.RoomId && s.IsActive)
+                .Where(s => s.RoomId == showTime.RoomId && s.Status != SeatStatus.Available)
                 .OrderBy(s => s.RowIndex)
                 .ThenBy(s => s.ColumnIndex)
                 .ToListAsync();
@@ -57,7 +57,7 @@ namespace InfrastructureLayer.Repository
 
             var validSeatsCount = await _context.Seats
                 .CountAsync(s => s.RoomId == showTime.RoomId &&
-                                 s.IsActive && // Đảm bảo ghế còn active
+                                 s.Status == SeatStatus.Available && // Đảm bảo ghế còn active
                                  seatIds.Contains(s.Id));
 
             return validSeatsCount == seatIds.Count;

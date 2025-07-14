@@ -207,7 +207,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     });
 
                     // Cập nhật trạng thái ghế (set IsActive = false)
-                    seat.IsActive = false;
+                    seat.Status = SeatStatus.Selected;
                     await _seatRepository.UpdateSeatAsync(seat);
                 }
                 await _bookingDetailRepo.CreateRangeAsync(bookingDetails);
@@ -298,7 +298,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     }
 
                     // Kiểm tra ghế có thuộc phòng chiếu và còn hoạt động
-                    if (seat.RoomId != showTime.RoomId || !seat.IsActive)
+                    if (seat.RoomId != showTime.RoomId || seat.Status != SeatStatus.Available)
                     {
                         return ErrorResp.BadRequest($"Ghế {seat.SeatCode} không khả dụng hoặc không thuộc phòng chiếu này.");
                     }
@@ -354,7 +354,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                         });
 
                         // Đánh dấu ghế không khả dụng
-                        seat.IsActive = false;
+                        seat.Status = SeatStatus.Selected;
                     }
 
                     // Cập nhật tất cả ghế cùng lúc
@@ -958,7 +958,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     });
 
                     // Mark seat as unavailable
-                    seat.IsActive = false;
+                    seat.Status = SeatStatus.Selected;
                     await _seatRepository.UpdateSeatAsync(seat);
                 }
                 await _bookingDetailRepo.CreateRangeAsync(bookingDetails);
@@ -1209,7 +1209,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     var seat = await _seatRepository.GetByIdAsync(detail.SeatId);
                     if (seat != null)
                     {
-                        seat.IsActive = true; // Make seat available again
+                        seat.Status = SeatStatus.Available; // Make seat available again
                         await _seatRepository.UpdateSeatAsync(seat);
                     }
                 }

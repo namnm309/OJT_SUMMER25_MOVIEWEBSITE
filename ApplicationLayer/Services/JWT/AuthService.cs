@@ -25,7 +25,8 @@ namespace ApplicationLayer.Services.JWT
 {
     public interface IAuthService
     {
-        Task<IActionResult> HandleRegister(RegisterReq req);
+        Task<IActionResult> HandleRegisterUser(RegisterReq req); //User
+        Task<IActionResult> HandleRegisterAdmin(RegisterReq req); //Admin
         Task<IActionResult> HandleLogin(LoginReq req);
         Task<IActionResult> ViewUser();
         Task<IActionResult> HandleEditProfile(EditUserReq req);
@@ -59,7 +60,7 @@ namespace ApplicationLayer.Services.JWT
             return _jwtService.GenerateToken(userId, role, sessionId, email, isActive, JwtConst.ACCESS_TOKEN_EXP);
         }
 
-        public async Task<IActionResult> HandleRegister(RegisterReq req)
+        public async Task<IActionResult> HandleRegisterUser(RegisterReq req)
         {
             var existUser = await _userRepo.FirstOrDefaultAsync(e => e.Email == req.Email || e.Username == req.UserName);
             if (existUser != null)
@@ -83,6 +84,36 @@ namespace ApplicationLayer.Services.JWT
                 Address = req.Address,
                 BirthDate = req.Dob,
                 Gender = req.Gender,
+                Role = UserRole.Member,
+                Password = hashedPassword,
+                Phone = req.Phone ?? "",
+                IsActive = true,
+                Avatar = req.Avatar
+            };
+
+            await _userRepo.CreateAsync(newUser);
+
+            return SuccessResp.Ok(_mapper.Map<UserDto>(newUser));
+        }
+
+        public async Task<IActionResult> HandleRegisterAdmin(RegisterReq req)
+        {
+            var existUser = await _userRepo.FirstOrDefaultAsync(e => e.Email == req.Email || e.Username == req.UserName);
+            if (existUser != null)
+                return ErrorResp.BadRequest("Account is already registerd");
+
+            var hashedPassword = _cryptoService.HashPassword(req.Password);
+
+            var newUser = new Users
+            {
+                Email = req.Email,
+                Username = req.Email,
+                FullName = req.FullName,
+                IdentityCard = req.IdentityCard,
+                Address = req.Address,
+                BirthDate = req.Dob,
+                Gender = req.Gender,
+                Role = UserRole.Admin,
                 Password = hashedPassword,
                 Phone = req.Phone ?? "",
                 IsActive = true,
@@ -112,7 +143,8 @@ namespace ApplicationLayer.Services.JWT
             {
                 Token = accessToken,
                 Email = user.Email,
-                FullName = user.FullName
+                FullName = user.FullName,
+                Role = user.Role
             };
 
             return SuccessResp.Ok(result);
