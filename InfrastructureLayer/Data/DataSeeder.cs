@@ -132,7 +132,7 @@ namespace InfrastructureLayer.Data
                                 RowIndex = row,
                                 ColumnIndex = col,
                                 PriceSeat = col >= 8 ? 80000 : 50000,
-                                IsActive = true,
+                                Status = SeatStatus.Available,
                                 CreatedAt = DateTime.UtcNow
                             });
                         }
@@ -153,7 +153,7 @@ namespace InfrastructureLayer.Data
                                 RowIndex = row,
                                 ColumnIndex = col,
                                 PriceSeat = col >= 8 ? 90000 : 60000,
-                                IsActive = true,
+                                Status = SeatStatus.Available,
                                 CreatedAt = DateTime.UtcNow
                             });
                         }

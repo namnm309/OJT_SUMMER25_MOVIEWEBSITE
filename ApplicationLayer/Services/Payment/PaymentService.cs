@@ -24,14 +24,18 @@ namespace ApplicationLayer.Services.Payment
     {
         private readonly IGenericRepository<Booking> _bookingRepo;
         private readonly IGenericRepository<Transaction> _transactionRepo;
+        private readonly IGenericRepository<BookingDetail> _bookingDetailRepo;
+        private readonly IGenericRepository<Seat> _seatRepo;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpCtx;
 
-        public PaymentService(IGenericRepository<Booking> bookingRepo, IGenericRepository<Transaction> transactionRepo, IConfiguration config, IMapper mapper, IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
+        public PaymentService(IGenericRepository<Booking> bookingRepo, IGenericRepository<Transaction> transactionRepo, IGenericRepository<BookingDetail> bookingDetailRepo, IGenericRepository<Seat> seatRepo, IConfiguration config, IMapper mapper, IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
         {
             _bookingRepo = bookingRepo;
             _transactionRepo = transactionRepo;
+            _bookingDetailRepo = bookingDetailRepo;
+            _seatRepo = seatRepo;
             _config = config;
             _mapper = mapper;
             _httpCtx = httpCtx;
@@ -145,6 +149,18 @@ namespace ApplicationLayer.Services.Payment
                 {
                     booking.Status = BookingStatus.Confirmed;
                     await _bookingRepo.UpdateAsync(booking);
+
+                    // Cập nhật trạng thái ghế từ Pending → Selected
+                    var bookingDetails = await _bookingDetailRepo.FindAllAsync(d => d.BookingId == booking.Id);
+                    foreach (var detail in bookingDetails)
+                    {
+                        var seat = await _seatRepo.FindByIdAsync(detail.SeatId);
+                        if (seat != null)
+                        {
+                            seat.Status = SeatStatus.Selected;
+                            await _seatRepo.UpdateAsync(seat);
+                        }
+                    }
                 }
             }
             else

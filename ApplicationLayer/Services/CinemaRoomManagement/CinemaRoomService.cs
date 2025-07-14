@@ -137,7 +137,7 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
                         ColumnIndex = col,
                         SeatType = DomainLayer.Enum.SeatType.Normal, // Mặc định là ghế thường
                         PriceSeat = defaultPrice,
-                        IsActive = true,
+                        Status = DomainLayer.Enum.SeatStatus.Available,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     };
@@ -171,7 +171,7 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
             if (room == null)
                 return ErrorResp.NotFound("Cinema room not found");
 
-            var seat = await _seatRepo.WhereAsync(s => s.RoomId == roomId && s.IsActive == true);
+            var seat = await _seatRepo.WhereAsync(s => s.RoomId == roomId && s.Status == DomainLayer.Enum.SeatStatus.Available);
 
             var result = _mapper.Map<List<SeatViewDto>>(seat);
 
@@ -189,7 +189,7 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
             if (room == null)
                 return ErrorResp.NotFound("Cinema room not found");
 
-            var seat = await _seatRepo.WhereAsync(s => s.RoomId == roomId && s.IsActive == false);
+            var seat = await _seatRepo.WhereAsync(s => s.RoomId == roomId && s.Status == DomainLayer.Enum.SeatStatus.Selected);
 
             var result = _mapper.Map<List<SeatViewDto>>(seat);
 

@@ -21,7 +21,7 @@ namespace DomainLayer.Entities
         public int ColumnIndex { get; set; }
 
         [Required]
-        public bool IsActive { get; set; } = true;
+        public SeatStatus Status { get; set; }
 
         [Required]
         public decimal PriceSeat { get; set; }
