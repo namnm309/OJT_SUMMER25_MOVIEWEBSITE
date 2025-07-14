@@ -240,7 +240,7 @@ namespace ControllerLayer
 
                 // Áp dụng migration tự động
                 Console.WriteLine("Applying pending migrations (if any)...");
-                context.Database.Migrate();
+                //context.Database.Migrate();
                 Console.WriteLine("Database is up-to-date!");
 
                 // Seed dữ liệu admin mặc định

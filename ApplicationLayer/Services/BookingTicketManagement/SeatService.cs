@@ -87,7 +87,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     SeatType = s.SeatType.ToString(),
                     RowIndex = s.RowIndex,
                     ColumnIndex = s.ColumnIndex,
-                    IsAvailable = s.IsActive && !bookedSeatIds.Contains(s.Id),
+                    IsAvailable = s.Status == SeatStatus.Available && !bookedSeatIds.Contains(s.Id),
                     Price = s.PriceSeat,
 
                 }).ToList();
@@ -142,9 +142,9 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     {
                         return ErrorResp.BadRequest($"Seat {seat.SeatCode} is not in the correct room for this showtime.");
                     }
-                    if (!seat.IsActive)
+                    if (seat.Status != SeatStatus.Available)
                     {
-                        return ErrorResp.BadRequest($"Seat {seat.SeatCode} is currently inactive."); // Hoặc có thể đã bị vô hiệu hóa
+                        return ErrorResp.BadRequest($"Seat {seat.SeatCode} is not available.");
                     }
                 }
 
@@ -203,18 +203,17 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
         public async Task<IActionResult> ConfirmBookingAsync(ConfirmBookingRequest request)
         {
+            if (request.SeatIds == null || request.SeatIds.Count == 0)
+                return ErrorResp.BadRequest("Please select at least one seat");
 
-                if (request.SeatIds == null || request.SeatIds.Count == 0)
-                    return ErrorResp.BadRequest("Please select at least one seat");
+            if (request.SeatIds.Count > 8)
+                return ErrorResp.BadRequest("Maximum 8 seats per booking");
 
-                if (request.SeatIds.Count > 8)
-                    return ErrorResp.BadRequest("Maximum 8 seats per booking");
+            var showtime = await _showTimeRepository.FindByIdAsync(request.ShowTimeId);
+            if (showtime == null)
+                return ErrorResp.NotFound("Showtime Not Found");
 
-                var showtime = await _showTimeRepository.FindByIdAsync(request.ShowTimeId);
-                if (showtime == null)
-                    return ErrorResp.NotFound("Showtime Not Found");
-
-                var seats = await _seatRepository.GetSeatsByIdsAsync(request.SeatIds);
+            var seats = await _seatRepository.GetSeatsByIdsAsync(request.SeatIds);
             if (seats.Count != request.SeatIds.Count)
                 return ErrorResp.BadRequest("Some seats are invalid");
 
@@ -265,6 +264,12 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             }).ToList();
 
             await _bookingDetailRepo.CreateRangeAsync(details);
+
+            foreach (var seat in seats)
+            {
+                seat.Status = SeatStatus.Pending;
+                await _seatRepository.UpdateSeatAsync(seat);
+            }
 
             return SuccessResp.Ok(new
             {

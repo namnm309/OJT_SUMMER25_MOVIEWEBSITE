@@ -18,12 +18,20 @@ namespace ControllerLayer.Controllers
             _logger = logger;
         }
 
-        [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterReq req)
+        [HttpPost("Register-User")]
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterReq req)
         {
-            _logger.LogInformation("Register");
+            _logger.LogInformation("Register-User");
 
-            return await _authService.HandleRegister(req);
+            return await _authService.HandleRegisterUser(req);
+        }
+
+        [HttpPost("Register-Admin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterReq req)
+        {
+            _logger.LogInformation("Register-Admin");
+
+            return await _authService.HandleRegisterAdmin(req);
         }
 
         [HttpPost("Login")]
