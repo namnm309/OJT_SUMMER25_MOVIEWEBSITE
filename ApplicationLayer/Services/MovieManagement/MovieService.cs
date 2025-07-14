@@ -10,11 +10,12 @@ using AutoMapper;
 using DomainLayer.Entities;
 using DomainLayer.Enum;
 using InfrastructureLayer.Repository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApplicationLayer.Services.MovieManagement
 {
-    public class MovieService : IMovieService
+    public class MovieService : BaseService, IMovieService
     {
         private readonly IGenericRepository<Movie> _movieRepo;
         private readonly IMapper _mapper;
@@ -29,10 +30,13 @@ namespace ApplicationLayer.Services.MovieManagement
         private readonly IGenericRepository<MovieActor> _movieActorRepo;
         private readonly IGenericRepository<MovieDirector> _movieDirectorRepo;
 
-        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreMovieRepo, IGenericRepository<Genre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IGenericRepository<Actor> actorRepo, IGenericRepository<Director> directorRepo, IGenericRepository<MovieActor> movieActorRepo, IGenericRepository<MovieDirector> movieDirectorRepo, IMapper mapper)
+        private readonly IHttpContextAccessor _httpCtx;
+
+        public MovieService(IGenericRepository<Movie> movieRepo, IGenericRepository<MovieGenre> genreMovieRepo, IGenericRepository<Genre> genreRepo, IGenericRepository<MovieImage> imageRepo, IGenericRepository<ShowTime> showtimeRepo, IGenericRepository<CinemaRoom> roomRepo, IGenericRepository<Actor> actorRepo, IGenericRepository<Director> directorRepo, IGenericRepository<MovieActor> movieActorRepo, IGenericRepository<MovieDirector> movieDirectorRepo, IMapper mapper, IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
         {
             _movieRepo = movieRepo;
             _mapper = mapper;
+            _httpCtx = httpCtx;
             _genreMovieRepo = genreMovieRepo;
             _genreRepo = genreRepo;
             _imageRepo = imageRepo;
@@ -53,6 +57,12 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> GetByIdAsync(Guid movieId)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
             var movie = await _movieRepo.FirstOrDefaultAsync(
                 m => m.Id == movieId,
                 nameof(Movie.MovieImages),
@@ -73,6 +83,19 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> CreateMovie(MovieCreateDto Dto)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
+            var userId = payload.UserId;
+
+            if (payload.Role != UserRole.Admin)
+            {
+                return ErrorResp.Forbidden("Access denied. Admin role required.");
+            }
+
             var exist = await _movieRepo.FirstOrDefaultAsync(e => e.Title.ToLower() == Dto.Title.ToLower());
             if (exist != null)
                 return ErrorResp.BadRequest("A movie with the same title already exists");
@@ -226,6 +249,19 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> UpdateMovie(MovieUpdateDto Dto)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
+            var userId = payload.UserId;
+
+            if (payload.Role != UserRole.Admin)
+            {
+                return ErrorResp.Forbidden("Access denied. Admin role required.");
+            }
+
             var movie = await _movieRepo.FindByIdAsync(Dto.Id);
             if(movie == null)
                 return ErrorResp.NotFound("Movie Not Found");
@@ -336,6 +372,19 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> DeleteMovie(Guid Id)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
+            var userId = payload.UserId;
+
+            if (payload.Role != UserRole.Admin)
+            {
+                return ErrorResp.Forbidden("Access denied. Admin role required.");
+            }
+
             var movie = await _movieRepo.FindByIdAsync(Id);
             if (movie == null)
                 return ErrorResp.NotFound("Movie Not Found");
@@ -348,6 +397,19 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> ChangeStatus(Guid Id, MovieStatus status)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
+            var userId = payload.UserId;
+
+            if (payload.Role != UserRole.Admin)
+            {
+                return ErrorResp.Forbidden("Access denied. Admin role required.");
+            }
+
             var movie = await _movieRepo.FindByIdAsync(Id);
             if (movie == null)
                 return ErrorResp.NotFound("Movie Not Found");
@@ -389,6 +451,19 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> CreateGenre(GenreCreateDto Dto)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
+            var userId = payload.UserId;
+
+            if (payload.Role != UserRole.Admin)
+            {
+                return ErrorResp.Forbidden("Access denied. Admin role required.");
+            }
+
             var genre = await _genreRepo.FirstOrDefaultAsync(g => g.GenreName == Dto.GenreName);
 
             if (genre != null)
@@ -404,6 +479,19 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> ChangeStatusGenre(Guid Id)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
+            var userId = payload.UserId;
+
+            if (payload.Role != UserRole.Admin)
+            {
+                return ErrorResp.Forbidden("Access denied. Admin role required.");
+            }
+
             var genre = await _genreRepo.FindByIdAsync(Id);
 
             if (genre == null)
@@ -420,6 +508,17 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> SetFeatured(Guid movieId, bool isFeatured)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
+            if (payload.Role != UserRole.Admin)
+            {
+                return ErrorResp.Forbidden("Access denied. Admin role required.");
+            }
+
             var movie = await _movieRepo.FindByIdAsync(movieId);
             if (movie == null)
                 return ErrorResp.NotFound("Movie not found");
@@ -435,6 +534,17 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> SetRecommended(Guid movieId, bool isRecommended)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
+            if (payload.Role != UserRole.Admin)
+            {
+                return ErrorResp.Forbidden("Access denied. Admin role required.");
+            }
+
             var movie = await _movieRepo.FindByIdAsync(movieId);
             if (movie == null)
                 return ErrorResp.NotFound("Movie not found");
@@ -450,6 +560,12 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> UpdateRating(Guid movieId, double rating)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
             var movie = await _movieRepo.FindByIdAsync(movieId);
             if (movie == null)
                 return ErrorResp.NotFound("Movie not found");
@@ -464,6 +580,12 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> GetRecommended()
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
             var movies = await _movieRepo.WhereAsync(
                 filter: m => m.IsRecommended == true,
                 orderBy: q => q.OrderByDescending(m => m.CreatedAt),
@@ -479,6 +601,12 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> GetComingSoon()
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
             var movies = await _movieRepo.WhereAsync(
                 filter: m => m.Status == MovieStatus.ComingSoon,
                 orderBy: q => q.OrderByDescending(m => m.ReleaseDate),
@@ -494,6 +622,12 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> GetNowShowing()
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+            {
+                return ErrorResp.Unauthorized("Invalid token");
+            }
+
             var movies = await _movieRepo.WhereAsync(
                 filter: m => m.Status == MovieStatus.NowShowing,
                 orderBy: q => q.OrderByDescending(m => m.ReleaseDate),
