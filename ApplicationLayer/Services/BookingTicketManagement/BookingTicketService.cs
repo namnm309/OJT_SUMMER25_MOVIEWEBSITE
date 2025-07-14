@@ -134,14 +134,15 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 s.MovieId == movieId &&
                 s.ShowDate.HasValue);
 
+            // Sử dụng trường StartTime để hiển thị giờ chiếu thay vì lấy từ ShowDate
             var timeList = showtime
+                .Where(s => s.ShowDate!.Value.Date == selectedDate.Date)
                 .Select(s => new
                 {
                     s.Id,
-                    Time = s.ShowDate.Value.ToLocalTime().ToString("HH:mm"),
-                    FullDate = s.ShowDate.Value.ToLocalTime()
+                    Time = s.StartTime.ToString(@"hh\:mm"),
+                    FullDate = s.ShowDate!.Value
                 })
-                .Where(s => s.FullDate.Date == selectedDate.Date)
                 .ToList();
 
             return SuccessResp.Ok(timeList);

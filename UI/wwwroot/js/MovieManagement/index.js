@@ -1349,13 +1349,13 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="addDirectorSelect">Đạo diễn <span class="required-field">*</span>
-                                <button type="button" class="btn-add-small" onclick="openAddEntityPrompt('director')">＋</button>
+                                <button type="button" class="btn-add-small" onclick="openAddEntityPrompt('director')"><i class="bi bi-plus-lg"></i></button>
                             </label>
                             <select id="addDirectorSelect" multiple class="multi-select"></select>
                         </div>
                         <div class="form-group">
                             <label for="addActorsSelect">Diễn viên <span class="required-field">*</span>
-                                <button type="button" class="btn-add-small" onclick="openAddEntityPrompt('actor')">＋</button>
+                                <button type="button" class="btn-add-small" onclick="openAddEntityPrompt('actor')"><i class="bi bi-plus-lg"></i></button>
                             </label>
                             <select id="addActorsSelect" multiple class="multi-select"></select>
                         </div>
@@ -1779,16 +1779,14 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="editDirectorSelect">Đạo diễn <span class="required-field">*</span>
-                                <button type="button" class="btn-add-small" onclick="openAddEntityPrompt('director')">＋</button>
-                            </label>
-                            <select id="editDirectorSelect" multiple class="multi-select"></select>
+                            <label for="editDirectorInput" style="width:100%">Đạo diễn <span class="required-field">*</span></label>
+                            <input id="editDirectorInput" placeholder="Chọn đạo diễn" />
+                            <button type="button" class="btn-add-small" style="position:absolute; right:6px; top:30px" onclick="openAddEntityPrompt('director')"><i class="bi bi-plus-lg"></i></button>
                         </div>
                         <div class="form-group">
-                            <label for="editActorsSelect">Diễn viên <span class="required-field">*</span>
-                                <button type="button" class="btn-add-small" onclick="openAddEntityPrompt('actor')">＋</button>
-                            </label>
-                            <select id="editActorsSelect" multiple class="multi-select"></select>
+                            <label for="editActorsInput" style="width:100%">Diễn viên <span class="required-field">*</span></label>
+                            <input id="editActorsInput" placeholder="Chọn diễn viên" />
+                            <button type="button" class="btn-add-small" style="position:absolute; right:6px; top:30px" onclick="openAddEntityPrompt('actor')"><i class="bi bi-plus-lg"></i></button>
                         </div>
                     </div>
                     <div class="form-row">
@@ -1984,13 +1982,102 @@
             (async function(){
                 try{
                     if(!window.availableActors||!window.availableDirectors){await loadAddMovieData();}
-                    const actorSelect=document.getElementById('editActorsSelect');
-                    const directorSelect=document.getElementById('editDirectorSelect');
+                    const actorSelect=document.getElementById('editActorsInput');
+                    const directorSelect=document.getElementById('editDirectorInput');
                     if(actorSelect&&window.availableActors){actorSelect.innerHTML='';window.availableActors.forEach(a=>{const opt=document.createElement('option');opt.value=a.id||a.Id;opt.textContent=a.name||a.Name;actorSelect.appendChild(opt);});}
                     if(directorSelect&&window.availableDirectors){directorSelect.innerHTML='';window.availableDirectors.forEach(d=>{const opt=document.createElement('option');opt.value=d.id||d.Id;opt.textContent=d.name||d.Name;directorSelect.appendChild(opt);});}
-                    if(window.$&&$.fn.select2){$(actorSelect).select2({placeholder:'Chọn diễn viên',width:'100%'});$(directorSelect).select2({placeholder:'Chọn đạo diễn',width:'100%'});if(movieData.actorIds){$(actorSelect).val(movieData.actorIds).trigger('change');}if(movieData.directorIds){$(directorSelect).val(movieData.directorIds).trigger('change');}}
-                }catch(e){console.error('Init Select2 error',e);}
-            })();
+                    if(window.$&&$.fn.select2){
+                        $(actorSelect).select2({placeholder:'Chọn diễn viên',width:'100%'});
+                        $(directorSelect).select2({placeholder:'Chọn đạo diễn',width:'100%'});
+
+                        // Xác định danh sách ID diễn viên/đạo diễn hiện có của phim
+                        let actorIds = movieData.actorIds || (movieData.actorList ? movieData.actorList.map(a=>a.id||a.Id) : []);
+                        let directorIds = movieData.directorIds || (movieData.directorList ? movieData.directorList.map(d=>d.id||d.Id) : []);
+
+                        // Đảm bảo option tồn tại trước khi set value
+                        actorIds.forEach(aid=>{
+                            if(!actorSelect.querySelector(`option[value="${aid}"]`)){
+                                // Thêm option tạm nếu thiếu
+                                const dataObj = (movieData.actorList||[]).find(x=>(x.id||x.Id)===aid) || {};
+                                const opt=document.createElement('option');
+                                opt.value=aid;
+                                opt.textContent=dataObj.name||dataObj.Name||aid;
+                                actorSelect.appendChild(opt);
+                            }
+                        });
+                        directorIds.forEach(did=>{
+                            if(!directorSelect.querySelector(`option[value="${did}"]`)){
+                                const dataObj = (movieData.directorList||[]).find(x=>(x.id||x.Id)===did) || {};
+                                const opt=document.createElement('option');
+                                opt.value=did;
+                                opt.textContent=dataObj.name||dataObj.Name||did;
+                                directorSelect.appendChild(opt);
+                            }
+                        });
+
+                        if(actorIds && actorIds.length){$(actorSelect).val(actorIds.map(String)).trigger('change');}
+                        if(directorIds && directorIds.length){$(directorSelect).val(directorIds.map(String)).trigger('change');}
+                    }
+
+                    /* === Load showtimes via API and render === */
+                    try{
+                        const stRes = await fetch(`/api/v1/showtime/movie/${id}`);
+                        const stJson = await stRes.json();
+                        if(stJson && stJson.data && Array.isArray(stJson.data) && stJson.data.length){
+                            // Chờ availableRooms được load trước khi render
+                            const waitForRooms = ()=>new Promise(r=>{
+                                const check=()=>{ if(window.availableRooms) r(); else setTimeout(check,100);} ; check(); });
+                            await waitForRooms();
+                            // Xóa showTimesContainer trước khi nạp mới (tránh nhân đôi)
+                            const cont = document.getElementById('showTimesContainer');
+                            if(cont) cont.innerHTML='';
+                            const showArr = Array.isArray(stJson.data) ? stJson.data : (stJson.data.data||[]);
+                            showArr.forEach(st=>{
+                                let showDate = st.showDate || st.ShowDate;
+                                const roomId = st.cinemaRoomId || st.roomId || st.RoomId;
+                                if(showDate){
+                                    const dt=new Date(showDate);
+                                    if(!isNaN(dt.getTime())){
+                                        const year=dt.getFullYear();
+                                        const month=String(dt.getMonth()+1).padStart(2,'0');
+                                        const day=String(dt.getDate()).padStart(2,'0');
+                                        const hours=String(dt.getHours()).padStart(2,'0');
+                                        const minutes=String(dt.getMinutes()).padStart(2,'0');
+                                        showDate=`${year}-${month}-${day}T${hours}:${minutes}`;
+                                    }
+                                }
+                                addShowTimeEntry(showDate, roomId);
+                            });
+                            // Nếu không có suất chiếu, thêm 1 dòng trống
+                            if(cont && cont.children.length===0) addShowTimeEntry();
+                        }
+                    }catch(err){
+                        console.error('Load showtimes error',err);
+                        // Nếu API thất bại, thử dùng dữ liệu showTimes có sẵn trong movieData (nếu có)
+                        if(movieData.showTimes || movieData.ShowTimes){
+                            const cont=document.getElementById('showTimesContainer');
+                            if(cont) cont.innerHTML='';
+                            const arr = movieData.showTimes || movieData.ShowTimes;
+                            arr.forEach(st=>{
+                                let showDate=st.showDate||st.ShowDate;
+                                const roomId=st.roomId||st.RoomId;
+                                if(showDate){
+                                    const dt=new Date(showDate);
+                                    if(!isNaN(dt.getTime())){
+                                        const y=dt.getFullYear();
+                                        const m=String(dt.getMonth()+1).padStart(2,'0');
+                                        const d=String(dt.getDate()).padStart(2,'0');
+                                        const h=String(dt.getHours()).padStart(2,'0');
+                                        const min=String(dt.getMinutes()).padStart(2,'0');
+                                        showDate=`${y}-${m}-${d}T${h}:${min}`;
+                                    }
+                                }
+                                addShowTimeEntry(showDate, roomId);
+                            });
+                        }
+                    }                    
+                 }catch(e){console.error('Init Select2 error',e);}                 
+             })();
         }
 
         function loadPosterDescription(movieData) {
@@ -2529,10 +2616,9 @@
 
             const genreIds = [];
             const checkedGenres = document.querySelectorAll('#genreCheckboxes input[type="checkbox"]:checked');
-            checkedGenres.forEach(checkbox => {
-                // Đảm bảo genreId là string để tránh lỗi khi API yêu cầu GUID
-                genreIds.push(checkbox.value);
-            });
+            const genreSet = new Set();
+            checkedGenres.forEach(checkbox => genreSet.add(checkbox.value));
+            genreIds.push(...genreSet);
 
 
             const showTimes = [];
@@ -2556,10 +2642,13 @@
                             )
                         );
                         const showDateTime = utcDate.toISOString();
-                    showTimes.push({
-                        showDate: showDateTime,
-                        roomId: roomSelect.value
-                    });
+                        const key = showDateTime + '_' + roomSelect.value;
+                        if(!showTimes.some(st=>st.showDate===showDateTime && st.roomId===roomSelect.value)){
+                            showTimes.push({
+                                showDate: showDateTime,
+                                roomId: roomSelect.value
+                            });
+                        }
                     } catch (error) {
                         console.error('Error parsing date:', dateInput.value, error);
                         validationErrors.push(`Ngày giờ chiếu không hợp lệ: ${dateInput.value}`);
@@ -2574,8 +2663,8 @@
                 // Đảm bảo ngày tháng được chuyển đổi sang UTC
                 releaseDate: formData.get('releaseDate') ? new Date(formData.get('releaseDate') + 'T00:00:00Z').toISOString() : '',
                 endDate: formData.get('endDate') ? new Date(formData.get('endDate') + 'T00:00:00Z').toISOString() : '',
-                directorIds: getSelectValues('editDirectorSelect'),
-                actorIds: getSelectValues('editActorsSelect'),
+                directorIds: getTagifyIds('editDirectorInput'),
+                actorIds: getTagifyIds('editActorsInput'),
                 productionCompany: formData.get('productionCompany') || '',
                 runningTime: parseInt(formData.get('runningTime')) || 0,
                 version: versionValue || 'TwoD',
@@ -2785,7 +2874,7 @@
                     if (this.value) {
                         posterPreview.src = this.value;
                         posterPreview.onerror = function() {
-                            this.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'450\' viewBox=\'0 0 300 450\' fill=\'none\'%3E%3Crect width=\'300\' height=\'450\' fill=\'%232a2a2a\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-family=\'Arial\' font-size=\'16\' fill=\'%23666\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3EPoster image%3C/text%3E%3C/svg%3E';
+                            this.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'450\' fill=\'%232a2a2a\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-family=\'Arial\' font-size=\'16\' fill=\'%23666\' text-anchor=\'middle\' dominant-baseline=\'middle\'%3EPoster image%3C/text%3E%3C/svg%3E';
                         };
                     }
                 });
@@ -3358,8 +3447,8 @@
                     title: formData.get('title') || '',
                     releaseDate: releaseDate ? new Date(releaseDate).toISOString().split('.')[0] + 'Z' : '',
                     endDate: endDate ? new Date(endDate).toISOString().split('.')[0] + 'Z' : '',
-                    directorIds: getSelectValues('addDirectorSelect'),
-                    actorIds: getSelectValues('addActorsSelect'),
+                    directorIds: getTagifyIds('addDirectorInput'),
+                    actorIds: getTagifyIds('addActorsInput'),
                     productionCompany: formData.get('productionCompany') || '',
                     runningTime: parseInt(formData.get('runningTime')) || 0,
                     version: versionValue,
@@ -3598,7 +3687,7 @@
         if(!document.getElementById('btn-add-small-style')){
           const style=document.createElement('style');
           style.id='btn-add-small-style';
-          style.innerHTML=`.btn-add-small{margin-left:6px;padding:2px 6px;background:#28a745;color:#fff;border:none;border-radius:4px;font-size:0.8rem;cursor:pointer;} .btn-add-small:hover{background:#23913d;}`;
+          style.innerHTML=`.btn-add-small{margin-left:6px;padding:2px 6px;background:#6f42c1;color:#fff;border:none;border-radius:4px;font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;} .btn-add-small:hover{background:#5a34a3;}`;
           document.head.appendChild(style);
         }
 
@@ -3680,5 +3769,12 @@
             const sel=document.getElementById(selectId);
             if(!sel) return [];
             return Array.from(sel.selectedOptions).map(o=>o.value);
+        }
+
+        // === Tagify helper to get selected IDs ===
+        function getTagifyIds(inputId){
+          const el=document.getElementById(inputId);
+          if(!el||!el.__tagify) return [];
+          return el.__tagify.value.map(v=>v.value);
         }
 
