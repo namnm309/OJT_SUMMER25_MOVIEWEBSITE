@@ -32,8 +32,9 @@ namespace InfrastructureLayer.Repository
             if (showTime?.Room == null)
                 throw new NotFoundException("ShowTime or its Room not found", showTimeId.ToString());
 
+            // Lấy TẤT CẢ ghế trong phòng để client hiển thị đầy đủ sơ đồ.
             var seats = await _context.Seats
-                .Where(s => s.RoomId == showTime.RoomId && s.Status != SeatStatus.Available)
+                .Where(s => s.RoomId == showTime.RoomId)
                 .OrderBy(s => s.RowIndex)
                 .ThenBy(s => s.ColumnIndex)
                 .ToListAsync();
