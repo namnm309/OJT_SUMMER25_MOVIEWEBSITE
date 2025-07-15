@@ -4,7 +4,7 @@ namespace DomainLayer.Enum
     {
         Pending = 0,
         Confirmed = 1,
-        Cancelled = 2,
+        Canceled = 2,
         Completed = 3
     }
 } 

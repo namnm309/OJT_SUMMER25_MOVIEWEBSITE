@@ -6,6 +6,7 @@ using System.Security.Claims;
 using InfrastructureLayer.Data;
 using ApplicationLayer.Services.UserManagement;
 using ApplicationLayer.DTO.UserManagement;
+using ApplicationLayer.Middlewares;
 
 namespace ControllerLayer.Controllers
 {
@@ -49,12 +50,14 @@ namespace ControllerLayer.Controllers
             return await _bookingTicketService.GetShowTimesByMovieAndDate(movieId, date);
         }
 
+        [Protected]
         [HttpGet("available")]
         public async Task<IActionResult> GetAvailableSeats([FromQuery] Guid showTimeId)
         {
             return await _seatService.GetAvailableSeats(showTimeId);
         }
 
+        [Protected]
         [HttpPost("validate")]
         public async Task<IActionResult> ValidateSelectedSeats(
             [FromQuery] Guid showTimeId,
@@ -260,10 +263,18 @@ namespace ControllerLayer.Controllers
             return await _bookingTicketService.CancelBookingAsync(bookingId, request.Reason);
         }
 
+        [Protected]
         [HttpPost("confirm")]
         public async Task<IActionResult> ConfirmBooking([FromBody] ConfirmBookingRequest req)
         {
             return await _seatService.ConfirmBookingAsync(req);
+        }
+
+        [Protected]
+        [HttpPost("booking/cancel-booking")]
+        public async Task<IActionResult> Cancel(Guid bookingId)
+        {
+            return await _seatService.CancelBooking(bookingId);
         }
     }
 }

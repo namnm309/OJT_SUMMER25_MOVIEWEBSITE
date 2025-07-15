@@ -10,6 +10,5 @@ namespace ApplicationLayer.DTO.BookingTicketManagement
     {
         public Guid ShowTimeId { get; set; }
         public List<Guid> SeatIds { get; set; } = new();
-        public Guid UserId { get; set; } //từ token
     }
 }

@@ -11,6 +11,7 @@ using DomainLayer.Entities;
 using DomainLayer.Enum;
 using DomainLayer.Exceptions;
 using InfrastructureLayer.Repository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,8 +27,10 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
         Task<IActionResult> GetShowTimeDetails(Guid showTimeId);
         Task<IActionResult> ConfirmBookingAsync(ConfirmBookingRequest request);
+
+        Task<IActionResult> CancelBooking(Guid bookingId);
     }
-    public class SeatService : ISeatService
+    public class SeatService : BaseService, ISeatService
     {
 
         private readonly ISeatRepository _seatRepository;
@@ -36,6 +39,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         private readonly IGenericRepository<BookingDetail> _bookingDetailRepo;
         private readonly IGenericRepository<Users> _userRepo;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpCtx;
 
         public SeatService(
             ISeatRepository seatRepository,
@@ -43,7 +47,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             IGenericRepository<Booking> bookingRepo,
             IGenericRepository<BookingDetail> bookingDetailRepo,
             IGenericRepository<Users> userRepo,
-            IMapper mapper)
+            IMapper mapper,
+            IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
         {
             _seatRepository = seatRepository;
             _showTimeRepository = showTimeRepository;
@@ -51,6 +56,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             _bookingDetailRepo = bookingDetailRepo;
             _userRepo = userRepo;
             _mapper = mapper;
+            _httpCtx = httpCtx;
         }
 
         private string GenerateBookingCode()
@@ -62,9 +68,12 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
         public async Task<IActionResult> GetAvailableSeats(Guid showTimeId)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+                return ErrorResp.Unauthorized("Invaild token");
+
             try
             {
-
                 var (roomName, _, _) = await _seatRepository.GetSeatInfoAsync(showTimeId);
                 // Lấy thông tin phòng từ showTimeId
                 var showTime = await _showTimeRepository.FindByIdAsync(showTimeId);
@@ -111,6 +120,10 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         // PHẦN ĐƯỢC SỬA ĐỔI: ValidateSelectedSeats
         public async Task<IActionResult> ValidateSelectedSeats(Guid showTimeId, List<Guid> seatIds)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+                return ErrorResp.Unauthorized("Invaild token");
+
             try
             {
                 // Validate input
@@ -203,6 +216,12 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
         public async Task<IActionResult> ConfirmBookingAsync(ConfirmBookingRequest request)
         {
+            var payload = ExtractPayload();
+            if (payload == null)
+                return ErrorResp.Unauthorized("Invaild token");
+
+            var userId = payload.UserId;
+
             if (request.SeatIds == null || request.SeatIds.Count == 0)
                 return ErrorResp.BadRequest("Please select at least one seat");
 
@@ -226,7 +245,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 return ErrorResp.BadRequest($"The following seats are already booked: {seatCodes}");
             }
 
-            var user = await _userRepo.FindByIdAsync(request.UserId);
+            var user = await _userRepo.FindByIdAsync(userId);
             if (user == null)
                 return ErrorResp.NotFound("User not found");
 
@@ -235,7 +254,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             var booking = new Booking
             {
                 Id = Guid.NewGuid(),
-                UserId = request.UserId,
+                UserId = userId,
                 ShowTimeId = request.ShowTimeId,
                 BookingCode = GenerateBookingCode(),
                 BookingDate = DateTime.UtcNow,
@@ -276,6 +295,51 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 BookingId = booking.Id,
                 Total = totalPrice,
                 Seats = seats.Select(s => s.SeatCode)
+            });
+        }
+
+        public async Task<IActionResult> CancelBooking(Guid bookingId)
+        {
+            var payload = ExtractPayload();
+            if (payload == null)
+                return ErrorResp.Unauthorized("Invaild token");
+
+            var userId = payload.UserId;
+
+            var booking = await _bookingRepo.FindAsync(b => b.Id == bookingId && b.UserId == userId);
+            if (booking == null)
+                return ErrorResp.NotFound("Booking not found or access denied.");
+
+            if (booking.Status != BookingStatus.Pending)
+                return ErrorResp.BadRequest("Only pending bookings can be canceled.");
+
+            // 2. Đổi trạng thái booking
+            booking.Status = BookingStatus.Canceled;
+            booking.UpdatedAt = DateTime.UtcNow;
+            await _bookingRepo.UpdateAsync(booking);
+
+            // 3. Lấy danh sách BookingDetails và danh sách ghế
+            var bookingDetails = await _bookingDetailRepo.FindAllAsync(d => d.BookingId == booking.Id);
+            var seatIds = bookingDetails.Select(d => d.SeatId).ToList();
+            var seats = await _seatRepository.GetSeatsByIdsAsync(seatIds);
+
+            // Cập nhật trạng thái ghế từ Pending -> Available
+            foreach (var seat in seats)
+            {
+                if (seat.Status == SeatStatus.Pending)
+                {
+                    seat.Status = SeatStatus.Available;
+                }
+            }
+
+            // Cập nhật danh sách ghế
+            await _seatRepository.UpdateSeatsAsync(seats);
+
+            return SuccessResp.Ok(new
+            {
+                Message = "Booking has been canceled successfully.",
+                BookingId = booking.Id,
+                CanceledAt = booking.UpdatedAt
             });
         }
     }

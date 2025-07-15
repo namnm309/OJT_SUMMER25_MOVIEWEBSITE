@@ -1190,7 +1190,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 }
 
                 // Check if booking can be cancelled (e.g., not already cancelled, showtime hasn't started yet)
-                if (booking.Status == BookingStatus.Cancelled)
+                if (booking.Status == BookingStatus.Canceled)
                 {
                     return ErrorResp.BadRequest("Booking is already cancelled");
                 }
@@ -1201,7 +1201,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 }
 
                 // Update booking status
-                booking.Status = BookingStatus.Cancelled;
+                booking.Status = BookingStatus.Canceled;
                 await _bookingRepo.UpdateAsync(booking);
 
                 // Free up the seats
