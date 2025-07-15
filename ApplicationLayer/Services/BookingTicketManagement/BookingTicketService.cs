@@ -134,14 +134,15 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 s.MovieId == movieId &&
                 s.ShowDate.HasValue);
 
+            // Sử dụng trường StartTime để hiển thị giờ chiếu thay vì lấy từ ShowDate
             var timeList = showtime
+                .Where(s => s.ShowDate!.Value.Date == selectedDate.Date)
                 .Select(s => new
                 {
                     s.Id,
-                    Time = s.ShowDate.Value.ToLocalTime().ToString("HH:mm"),
-                    FullDate = s.ShowDate.Value.ToLocalTime()
+                    Time = s.StartTime.ToString(@"hh\:mm"),
+                    FullDate = s.ShowDate!.Value
                 })
-                .Where(s => s.FullDate.Date == selectedDate.Date)
                 .ToList();
 
             return SuccessResp.Ok(timeList);
@@ -207,7 +208,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     });
 
                     // Cập nhật trạng thái ghế (set IsActive = false)
-                    seat.IsActive = false;
+                    seat.Status = SeatStatus.Selected;
                     await _seatRepository.UpdateSeatAsync(seat);
                 }
                 await _bookingDetailRepo.CreateRangeAsync(bookingDetails);
@@ -298,7 +299,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     }
 
                     // Kiểm tra ghế có thuộc phòng chiếu và còn hoạt động
-                    if (seat.RoomId != showTime.RoomId || !seat.IsActive)
+                    if (seat.RoomId != showTime.RoomId || seat.Status != SeatStatus.Available)
                     {
                         return ErrorResp.BadRequest($"Ghế {seat.SeatCode} không khả dụng hoặc không thuộc phòng chiếu này.");
                     }
@@ -330,7 +331,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                         BookingCode = GenerateBookingCode(),
                         BookingDate = DateTime.UtcNow,
                         TotalPrice = calculatedTotalPrice,
-                        Status = BookingStatus.Confirmed,
+                        Status = BookingStatus.Pending,
                         TotalSeats = request.SeatIds.Count,
                         UserId = request.UserId,
                         ShowTimeId = request.ShowtimeId,
@@ -354,7 +355,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                         });
 
                         // Đánh dấu ghế không khả dụng
-                        seat.IsActive = false;
+                        seat.Status = SeatStatus.Selected;
                     }
 
                     // Cập nhật tất cả ghế cùng lúc
@@ -926,7 +927,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     BookingCode = GenerateBookingCode(),
                     BookingDate = DateTime.UtcNow,
                     TotalPrice = finalTotal,
-                    Status = BookingStatus.Confirmed,
+                    Status = BookingStatus.Pending,
                     TotalSeats = request.SeatIds.Count,
                     UserId = Guid.Parse(request.MemberId),
                     ShowTimeId = request.ShowTimeId,
@@ -958,7 +959,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     });
 
                     // Mark seat as unavailable
-                    seat.IsActive = false;
+                    seat.Status = SeatStatus.Selected;
                     await _seatRepository.UpdateSeatAsync(seat);
                 }
                 await _bookingDetailRepo.CreateRangeAsync(bookingDetails);
@@ -1189,7 +1190,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 }
 
                 // Check if booking can be cancelled (e.g., not already cancelled, showtime hasn't started yet)
-                if (booking.Status == BookingStatus.Cancelled)
+                if (booking.Status == BookingStatus.Canceled)
                 {
                     return ErrorResp.BadRequest("Booking is already cancelled");
                 }
@@ -1200,7 +1201,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 }
 
                 // Update booking status
-                booking.Status = BookingStatus.Cancelled;
+                booking.Status = BookingStatus.Canceled;
                 await _bookingRepo.UpdateAsync(booking);
 
                 // Free up the seats
@@ -1209,7 +1210,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     var seat = await _seatRepository.GetByIdAsync(detail.SeatId);
                     if (seat != null)
                     {
-                        seat.IsActive = true; // Make seat available again
+                        seat.Status = SeatStatus.Available; // Make seat available again
                         await _seatRepository.UpdateSeatAsync(seat);
                     }
                 }

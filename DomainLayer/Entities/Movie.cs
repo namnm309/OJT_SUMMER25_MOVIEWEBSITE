@@ -51,5 +51,7 @@ namespace DomainLayer.Entities
         public virtual ICollection<MovieImage> MovieImages { get; set; } = new List<MovieImage>();
         public virtual ICollection<MovieGenre> MovieGenres { get; set; } = new List<MovieGenre>();
         public virtual ICollection<ShowTime> ShowTimes { get; set; } = new List<ShowTime>();
+        public virtual ICollection<MovieDirector> MovieDirectors { get; set; } = new List<MovieDirector>();
+        public virtual ICollection<MovieActor> MovieActors { get; set; } = new List<MovieActor>();
     }
 }

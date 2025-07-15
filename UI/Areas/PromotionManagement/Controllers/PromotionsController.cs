@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+using UI.Areas.PromotionManagement.Services;
 using UI.Models;
 using UI.Services;
+using UI.Areas.PromotionManagement.Models;
 
 namespace UI.Areas.PromotionManagement.Controllers
 {
@@ -15,24 +17,95 @@ namespace UI.Areas.PromotionManagement.Controllers
         //Khai báo service rồi mới sài được
         private readonly IImageService _imageService;
 
+        private readonly IPromotionManagementUIService _promotionService;
 
         // Thêm vào constructor
         public PromotionsController(
             IApiService apiService,
             ILogger<PromotionsController> logger,
-            // thêm vào constructor
-            IImageService imageService)
+            IImageService imageService,
+            IPromotionManagementUIService promotionService) // Inject the service
         {
             _apiService = apiService;
             _logger = logger;
             _imageService = imageService;
+            _promotionService = promotionService; // Assign to the field
         }
 
-        public IActionResult Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //    ViewData["Title"] = "Khuyến mãi";
+
+        //    try
+        //    {
+        //        var result = await _apiService.GetAsync<JsonElement>("/api/v1/promotions");
+
+        //        if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
+        //        {
+        //            if (result.Data.TryGetProperty("data", out var dataProp))
+        //            {
+        //                var options = new JsonSerializerOptions
+        //                {
+        //                    PropertyNameCaseInsensitive = true
+        //                };
+
+        //                var promotions = JsonSerializer.Deserialize<List<PromotionViewModel>>(
+        //                    dataProp.GetRawText(), options);
+
+        //                _logger.LogInformation("Received {Count} promotions", promotions?.Count);
+        //                return View(promotions);
+        //            }
+        //        }
+
+        //        _logger.LogError("Failed to get promotions: {Message}", result.Message);
+        //        TempData["ErrorMessage"] = result.Message;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error getting promotions");
+        //        TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tải danh sách khuyến mãi";
+        //    }
+
+        //    return View(new List<PromotionViewModel>());
+        //}
+
+        public async Task<IActionResult> Index()
         {
-            ViewData["Title"] = "Quản lý khuyến mãi";
-            return View();
+            ViewData["Title"] = "Khuyến mãi";
+
+            try
+            {
+                var result = await _apiService.GetAsync<JsonElement>("api/v1/promotions");
+
+                if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
+                {
+                    if (result.Data.TryGetProperty("data", out var dataProp))
+                    {
+                        var options = new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
+
+                        // Deserialize the promotions into a List<PromotionViewModel>
+                        var promotions = JsonSerializer.Deserialize<List<PromotionDto>>(dataProp.GetRawText(), options);
+
+                        _logger.LogInformation("Received {Count} promotions", promotions?.Count);
+                        return View(promotions);
+                    }
+                }
+
+                _logger.LogError("Failed to get promotions: {Message}", result.Message);
+                TempData["ErrorMessage"] = result.Message;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting promotions");
+                TempData["ErrorMessage"] = "Đã xảy ra lỗi khi tải danh sách khuyến mãi";
+            }
+
+            return View(new List<PromotionDto>());
         }
+
 
         [HttpGet]
         public IActionResult Create()
@@ -43,7 +116,7 @@ namespace UI.Areas.PromotionManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PromotionViewModel model, IFormFile imageFile)
+        public async Task<IActionResult> Create(PromotionDto model, IFormFile imageFile)
         {
             try
             {
@@ -68,7 +141,7 @@ namespace UI.Areas.PromotionManagement.Controllers
                     imageUrl = model.ImageUrl,
                 };
 
-                var result = await _apiService.PostAsync<PromotionViewModel>("/api/v1/promotions", promotionsData);
+                var result = await _apiService.PostAsync<PromotionDto>("/api/v1/promotions", promotionsData);
 
                 if (result.Success)
                 {
@@ -89,7 +162,7 @@ namespace UI.Areas.PromotionManagement.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             try
             {
@@ -104,7 +177,7 @@ namespace UI.Areas.PromotionManagement.Controllers
                             PropertyNameCaseInsensitive = true
                         };
 
-                        var promotion = JsonSerializer.Deserialize<PromotionViewModel>(
+                        var promotion = JsonSerializer.Deserialize<PromotionDto>(
                             dataProp.GetRawText(), options);
 
                         return View(promotion);
@@ -124,10 +197,8 @@ namespace UI.Areas.PromotionManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(PromotionViewModel model, IFormFile imageFile)
+        public async Task<IActionResult> Edit(PromotionDto model, IFormFile imageFile)
         {
-            
-
             try
             {
                 // Xử lý upload ảnh nếu có
@@ -174,7 +245,7 @@ namespace UI.Areas.PromotionManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {

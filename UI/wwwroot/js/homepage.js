@@ -987,7 +987,7 @@ function updateBackgroundLayers(movie, bgLayer1, bgLayer2, showBackground) {
         console.log('🎨 CSS applied:', backgroundCSS.substring(0, 100) + '...');
 
 
-        console.log('🔀 FORCE immediate background change...');
+        console.log('� FORCE immediate background change...');
         bgLayer1.style.opacity = '0';
         bgLayer2.style.opacity = '0';
         inactiveLayer.style.opacity = '1';

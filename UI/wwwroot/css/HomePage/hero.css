@@ -755,3 +755,27 @@ iframe.hero-video[src*="player.cloudinary.com"].loaded {
     width: 0%;
     transition: width 0.1s linear;
 }
+
+
+/* Loại bỏ overlay màng phủ nhưng giữ video */
+.hero-background::before {
+    display: none !important;
+}
+
+.hero-video-overlay {
+    display: none !important;
+}
+
+/* Loại bỏ gradient overlay khi có video nhưng vẫn giữ video */
+.hero-section.video-playing .hero-video-overlay {
+    display: none !important;
+}
+
+/* Giữ nguyên video và chỉ loại bỏ overlay */
+.hero-video {
+    opacity: 1 !important;
+}
+
+.hero-video.loaded {
+    opacity: 1 !important;
+}

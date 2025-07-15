@@ -168,6 +168,9 @@ a[href*="BookingManagement"][style*="rgba(255, 255, 255"] {
 
 .showtime-selection {
     color: #1e293b !important;
+    max-height: 400px;      /* giới hạn chiều cao khung lịch chiếu */
+    overflow-y: auto;       /* bật cuộn dọc nếu vượt quá */
+    padding-right: 4px;     /* tránh che đậy bởi thanh cuộn */
 }
 
 

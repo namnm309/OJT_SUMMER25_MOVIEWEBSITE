@@ -1,6 +1,7 @@
 ﻿using ApplicationLayer.DTO.JWT;
 using ApplicationLayer.Middlewares;
 using ApplicationLayer.Services.JWT;
+using Application.ResponseCode;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControllerLayer.Controllers
@@ -18,12 +19,20 @@ namespace ControllerLayer.Controllers
             _logger = logger;
         }
 
-        [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterReq req)
+        [HttpPost("Register-User")]
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterReq req)
         {
-            _logger.LogInformation("Register");
+            _logger.LogInformation("Register-User");
 
-            return await _authService.HandleRegister(req);
+            return await _authService.HandleRegisterUser(req);
+        }
+
+        [HttpPost("Register-Admin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterReq req)
+        {
+            _logger.LogInformation("Register-Admin");
+
+            return await _authService.HandleRegisterAdmin(req);
         }
 
         [HttpPost("Login")]
@@ -49,6 +58,14 @@ namespace ControllerLayer.Controllers
             _logger.LogInformation("Edit Profile");
 
             return await _authService.HandleEditProfile(req);
+        }
+
+        [Protected]
+        [HttpPost("Logout")]
+        public IActionResult Logout()
+        {
+            _logger.LogInformation("Logout");
+            return SuccessResp.Ok("Logged out");
         }
 
         [HttpPost("Register-Email")]

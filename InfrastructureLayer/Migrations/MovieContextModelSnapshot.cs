@@ -480,9 +480,6 @@ namespace InfrastructureLayer.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
                     b.Property<decimal>("PriceSeat")
                         .HasColumnType("numeric");
 
@@ -498,6 +495,9 @@ namespace InfrastructureLayer.Migrations
                         .HasColumnType("character varying(10)");
 
                     b.Property<int>("SeatType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")

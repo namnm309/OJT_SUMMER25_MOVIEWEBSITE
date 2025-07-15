@@ -6,6 +6,7 @@ using System.Security.Claims;
 using InfrastructureLayer.Data;
 using ApplicationLayer.Services.UserManagement;
 using ApplicationLayer.DTO.UserManagement;
+using ApplicationLayer.Middlewares;
 
 namespace ControllerLayer.Controllers
 {
@@ -49,12 +50,14 @@ namespace ControllerLayer.Controllers
             return await _bookingTicketService.GetShowTimesByMovieAndDate(movieId, date);
         }
 
+        [Protected]
         [HttpGet("available")]
         public async Task<IActionResult> GetAvailableSeats([FromQuery] Guid showTimeId)
         {
             return await _seatService.GetAvailableSeats(showTimeId);
         }
 
+        [Protected]
         [HttpPost("validate")]
         public async Task<IActionResult> ValidateSelectedSeats(
             [FromQuery] Guid showTimeId,
@@ -258,6 +261,38 @@ namespace ControllerLayer.Controllers
         public async Task<IActionResult> CancelBooking(Guid bookingId, [FromBody] CancelBookingDto request)
         {
             return await _bookingTicketService.CancelBookingAsync(bookingId, request.Reason);
+        }
+
+        [Protected]
+        [HttpPost("confirm")]
+        public async Task<IActionResult> ConfirmBooking([FromBody] ConfirmBookingRequest req)
+        {
+            return await _seatService.ConfirmBookingAsync(req);
+        }
+
+        [Protected]
+        [HttpPost("booking/cancel-booking")]
+        public async Task<IActionResult> Cancel(Guid bookingId)
+        {
+            return await _seatService.CancelBooking(bookingId);
+        }
+
+        [HttpGet("booking-id/{bookingCode}")]
+        public IActionResult GetBookingIdByCode(string bookingCode)
+        {
+            if (string.IsNullOrEmpty(bookingCode)) return BadRequest(new { message = "bookingCode is required" });
+ 
+            var id = _context.Bookings
+                .Where(b => b.BookingCode == bookingCode)
+                .Select(b => b.Id)
+                .FirstOrDefault();
+ 
+            if (id == Guid.Empty)
+            {
+                return NotFound(new { message = "Không tìm thấy booking" });
+            }
+ 
+            return Ok(new { bookingId = id });
         }
     }
 }

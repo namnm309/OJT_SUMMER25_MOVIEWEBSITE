@@ -42,19 +42,14 @@ namespace ControllerLayer.Controllers
 
                     if (response.Success)
                     {
-                        //return Ok(response);
-                        return Redirect("https://localhost:7069/BookingManagement/Booking/BookingResult");
+                        // Redirect to UI success page
+                        var uiBase = "https://localhost:7069"; // TODO: move to config
+                        return Redirect($"{uiBase}/BookingManagement/BookingTicket/PaymentSuccess?bookingCode={response.BookingCode}");
                     }
 
-                    return Redirect("https://localhost:7069/BookingManagement/Booking/BookingResult/Failed");
-
-                    //return BadRequest(new
-                    //{
-                    //    //success = false,
-                    //    //message = "Thanh toán thất bại",
-                    //    //vnPayResponseCode = response.VnPayResponseCode
-
-                    //});
+                    // Redirect to UI fail page
+                    var uiBaseFail = "https://localhost:7069";
+                    return Redirect($"{uiBaseFail}/BookingManagement/BookingTicket/PaymentFail?bookingCode={response.BookingCode}");
                 }
                 catch (Exception ex)
                 {

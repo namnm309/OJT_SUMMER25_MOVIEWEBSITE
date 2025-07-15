@@ -111,7 +111,7 @@ namespace ControllerLayer
 
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "JWT System API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Movie Cinema", Version = "v1" });
 
                 // Add a bearer token to Swagger
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -170,8 +170,6 @@ namespace ControllerLayer
             builder.Services.AddSingleton<IMailService>(new MailService("smtp.gmail.com", 587, smtpUsername, smtpPassword));
 
 
-
-
             // Đăng ký Repository và Services
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
@@ -204,6 +202,10 @@ namespace ControllerLayer
             builder.Services.AddAutoMapper(typeof(BookingProfile));
 
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
+            // Actor & Director services
+            builder.Services.AddScoped<IActorService, ActorService>();
+            builder.Services.AddScoped<IDirectorService, DirectorService>();
 
             // Tạm comment AuthService vì cần mail service
             // builder.Services.AddScoped<IAuthService, AuthService>();
@@ -241,15 +243,10 @@ namespace ControllerLayer
                 Console.WriteLine("Đang kiểm tra database...");
                 var context = scope.ServiceProvider.GetRequiredService<MovieContext>();
 
-                // Temporary: Use EnsureCreated to bootstrap database
-                if (context.Database.EnsureCreated())
-                {
-                    Console.WriteLine("Database created successfully with new schema!");
-                }
-                else
-                {
-                    Console.WriteLine("Database already exists!");
-                }
+                // Áp dụng migration tự động
+                Console.WriteLine("Applying pending migrations (if any)...");
+                //context.Database.Migrate();
+                Console.WriteLine("Database is up-to-date!");
 
                 // Seed dữ liệu admin mặc định
                 await DataSeeder.SeedAdminUser(context);

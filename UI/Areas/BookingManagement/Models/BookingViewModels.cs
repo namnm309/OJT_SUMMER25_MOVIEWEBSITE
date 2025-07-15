@@ -162,6 +162,7 @@ namespace UI.Areas.BookingManagement.Models
         public string ShowtimeId { get; set; }
         public List<string> SeatIds { get; set; } = new List<string>();
         public decimal TotalPrice { get; set; }
+        public string UserId { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
         public string IdentityCard { get; set; }

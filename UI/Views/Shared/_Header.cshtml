@@ -6,7 +6,7 @@
 <header class="shared-header-wrapper">
     <nav class="shared-header-nav">
         <div class="nav-content">
-            
+            <!-- Brand Section -->
             <div class="nav-left">
                 <div class="brand">
                     <div class="brand-content">
@@ -19,7 +19,7 @@
                 </div>
             </div>
 
-            
+            <!-- Search Section -->
             <div class="nav-center">
                 <div class="search-box">
                     <input type="text" class="search-input" id="movieSearchInput" placeholder="Tìm kiếm phim...">
@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            
+            <!-- Navigation Links -->
             <div class="nav-right">
                 <div class="nav-links">
                     <a href="@Url.Action("Index", "Home")" class="nav-link">Trang chủ</a>
@@ -36,7 +36,7 @@
                     <a href="@Url.Action("Index", "Products")" class="nav-link">Sản Phẩm</a>
                 </div>
 
-                
+                <!-- User Profile -->
                 <div class="user-profile">
                     @if (User.Identity?.IsAuthenticated == true)
                     {
@@ -76,7 +76,8 @@
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <form asp-action="Logout" asp-controller="Account" method="post" class="m-0">
+                                    <form asp-action="Logout" asp-controller="Account" method="post" class="m-0" id="logoutForm">
+                                        @Html.AntiForgeryToken()
                                         <button type="submit" class="dropdown-item text-danger">
                                             <i class="fas fa-sign-out-alt"></i>
                                             Đăng xuất
@@ -100,17 +101,17 @@
 </header>
 
 <script>
-
+    // Search functionality
     document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('movieSearchInput');
         const searchButton = document.getElementById('searchButton');
 
-
+        // Search on button click
         searchButton?.addEventListener('click', function () {
             performSearch();
         });
 
-
+        // Search on Enter key press
         searchInput?.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 performSearch();
@@ -120,7 +121,7 @@
         async function performSearch() {
             const keyword = searchInput.value.trim();
             if (keyword) {
-
+                // Redirect to search results page
                 const searchUrl = '@Url.Action("Search", "Movies")' + `?keyword=${encodeURIComponent(keyword)}`;
                 window.location.href = searchUrl;
             }
@@ -129,20 +130,20 @@
 </script>
 
 <script>
-
+    // User dropdown functionality
     document.addEventListener('DOMContentLoaded', function () {
         const userDropdown = document.getElementById('userDropdown');
         const dropdownMenu = document.querySelector('.dropdown-menu');
-        
-        if (userDropdown && dropdownMenu) {
 
-            userDropdown.addEventListener('click', function(e) {
+        if (userDropdown && dropdownMenu) {
+            // Handle click on entire button area
+            userDropdown.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                
 
+                // Toggle dropdown immediately without delay
                 const isShowing = dropdownMenu.classList.contains('show');
-                
+
                 if (isShowing) {
                     dropdownMenu.classList.remove('show');
                     userDropdown.setAttribute('aria-expanded', 'false');
@@ -151,17 +152,17 @@
                     userDropdown.setAttribute('aria-expanded', 'true');
                 }
             });
-            
 
-            document.addEventListener('click', function(e) {
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (e) {
                 if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
                     dropdownMenu.classList.remove('show');
                     userDropdown.setAttribute('aria-expanded', 'false');
                 }
             });
-            
 
-            document.addEventListener('keydown', function(e) {
+            // Close dropdown when pressing Escape key
+            document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
                     dropdownMenu.classList.remove('show');
                     userDropdown.setAttribute('aria-expanded', 'false');
@@ -171,5 +172,62 @@
         }
     });
 </script>
+
+<script>
+    // Logout functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const logoutForm = document.getElementById('logoutForm');
+
+        if (logoutForm) {
+            console.log('Đã tìm thấy form logout');
+            logoutForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                console.log('Form logout được submit');
+
+                // Xóa token ngay lập tức
+                if (window.TokenManager) {
+                    window.TokenManager.removeToken();
+                    console.log('Token đã được xóa khỏi localStorage');
+                }
+
+                // Lấy anti-forgery token
+                const token = logoutForm.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+                // Tạo FormData để gửi POST request với anti-forgery token
+                const formData = new FormData();
+                if (token) {
+                    formData.append('__RequestVerificationToken', token);
+                }
+
+                // Gửi request để logout
+                fetch('/Account/Logout', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Logout response:', data);
+                        if (data.success) {
+                            console.log('Logout thành công, chuyển hướng về:', data.redirectUrl);
+                            window.location.href = data.redirectUrl || '/';
+                        } else {
+                            console.error('Logout failed:', data.message);
+                            window.location.href = '/';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Logout error:', error);
+                        window.location.href = '/';
+                    });
+            });
+        } else {
+            console.log('Không tìm thấy form logout');
+        }
+    });
+</script>
+
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">

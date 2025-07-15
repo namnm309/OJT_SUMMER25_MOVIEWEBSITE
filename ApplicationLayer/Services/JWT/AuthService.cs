@@ -1,4 +1,4 @@
-﻿using Application.ResponseCode;
+using Application.ResponseCode;
 using ApplicationLayer.DTO.CinemaRoomManagement;
 using ApplicationLayer.DTO.JWT;
 using ApplicationLayer.Helper;
@@ -25,7 +25,8 @@ namespace ApplicationLayer.Services.JWT
 {
     public interface IAuthService
     {
-        Task<IActionResult> HandleRegister(RegisterReq req);
+        Task<IActionResult> HandleRegisterUser(RegisterReq req); //User
+        Task<IActionResult> HandleRegisterAdmin(RegisterReq req); //Admin
         Task<IActionResult> HandleLogin(LoginReq req);
         Task<IActionResult> ViewUser();
         Task<IActionResult> HandleEditProfile(EditUserReq req);
@@ -54,12 +55,12 @@ namespace ApplicationLayer.Services.JWT
             _httpCtx = httpCtx;
         }
 
-        private string GenerateAccessTk(Guid userId, UserRole role, Guid sessionId, string email, bool isActive)
+        private string GenerateAccessTk(Guid userId, UserRole role, Guid sessionId, string email, string username, bool isActive)
         {
-            return _jwtService.GenerateToken(userId, role, sessionId, email, isActive, JwtConst.ACCESS_TOKEN_EXP);
+            return _jwtService.GenerateToken(userId, role, sessionId, email, username, isActive, JwtConst.ACCESS_TOKEN_EXP);
         }
 
-        public async Task<IActionResult> HandleRegister(RegisterReq req)
+        public async Task<IActionResult> HandleRegisterUser(RegisterReq req)
         {
             var existUser = await _userRepo.FirstOrDefaultAsync(e => e.Email == req.Email || e.Username == req.UserName);
             if (existUser != null)
@@ -83,6 +84,36 @@ namespace ApplicationLayer.Services.JWT
                 Address = req.Address,
                 BirthDate = req.Dob,
                 Gender = req.Gender,
+                Role = UserRole.Member,
+                Password = hashedPassword,
+                Phone = req.Phone ?? "",
+                IsActive = true,
+                Avatar = req.Avatar
+            };
+
+            await _userRepo.CreateAsync(newUser);
+
+            return SuccessResp.Ok(_mapper.Map<UserDto>(newUser));
+        }
+
+        public async Task<IActionResult> HandleRegisterAdmin(RegisterReq req)
+        {
+            var existUser = await _userRepo.FirstOrDefaultAsync(e => e.Email == req.Email || e.Username == req.UserName);
+            if (existUser != null)
+                return ErrorResp.BadRequest("Account is already registerd");
+
+            var hashedPassword = _cryptoService.HashPassword(req.Password);
+
+            var newUser = new Users
+            {
+                Email = req.Email,
+                Username = req.Email,
+                FullName = req.FullName,
+                IdentityCard = req.IdentityCard,
+                Address = req.Address,
+                BirthDate = req.Dob,
+                Gender = req.Gender,
+                Role = UserRole.Admin,
                 Password = hashedPassword,
                 Phone = req.Phone ?? "",
                 IsActive = true,
@@ -106,13 +137,15 @@ namespace ApplicationLayer.Services.JWT
             }
 
             var sessionId = Guid.NewGuid();
-            var accessToken = GenerateAccessTk(user.Id, user.Role, sessionId, user.Email, user.IsActive);
+            var accessToken = GenerateAccessTk(user.Id, user.Role, sessionId, user.Email, user.Username, user.IsActive);
 
             var result = new LoginResp
             {
+                UserId = user.Id, // ✅ Thêm UserId từ database
                 Token = accessToken,
                 Email = user.Email,
-                FullName = user.FullName
+                FullName = user.FullName,
+                Role = user.Role
             };
 
             return SuccessResp.Ok(result);
@@ -193,7 +226,7 @@ namespace ApplicationLayer.Services.JWT
                     <p>Bạn đã được đăng ký tài khoản trên hệ thống <b>Cinema City</b>.</p>
                     <p><b>Email:</b> {req.Email}<br/>
                     <b>Mật khẩu:</b> {password}</p>
-                    <p>Hãy đăng nhập và thay đổi mật khẩu sau khi đăng nhập lần đầu.</p>
+                    <p>Hãy đăng nhập và thay đổi mật khẩu sau khi đăng nhập lầu.</p>
                     <p>Trân trọng.</p>";
 
             await _mailService.SendEmailAsync(req.Email, "Thông tin tài khoản của bạn", emailBody);

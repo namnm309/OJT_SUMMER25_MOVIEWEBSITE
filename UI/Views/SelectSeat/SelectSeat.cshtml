@@ -937,8 +937,7 @@
 
             $('#continueBtn').click(function() {
                 var showtimeId = $('#showtimeId').val();
-
-
+                
                 var bookingData = {
                     ShowtimeId: showtimeId,
                     SelectedSeatIds: selectedSeats.map(seat => seat.id),
@@ -950,66 +949,62 @@
                 $btn.prop('disabled', true);
                 $btn.html('<i class="fas fa-spinner fa-spin mr-2"></i>ĐANG XỬ LÝ...');
 
-                // Gọi API validate (như một lần xác nhận cuối cùng)
+                // Bước 1: Gọi API để tạo booking và cập nhật trạng thái ghế
                 $.ajax({
-                    url: '@Url.Action("ValidateSeats", "SelectSeat")', // Re-validate one last time
+                    url: '/BookingManagement/BookingTicket/CreateBooking', // API tạo booking
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify(bookingData),
+                    data: JSON.stringify({
+                        ShowTimeId: showtimeId,
+                        SeatIds: selectedSeats.map(seat => seat.id),
+                        TotalPrice: selectedSeats.reduce((sum, seat) => sum + parseFloat(seat.price), 0),
+                        // Thêm thông tin khách hàng nếu cần
+                    }),
                     success: function(response) {
-                        if (response.success && response.isValid) {
-
-
-                            $('#validationMessage').removeClass('text-danger')
-                                                   .addClass('text-success')
-                                                   .text('Đặt ghế thành công! Chuyển hướng đến trang thanh toán...');
-
-                            $btn.prop('disabled', false)
-                                .addClass('btn-success-state') // Add a success visual state
-                                .html('<i class="fas fa-check mr-2"></i>THÀNH CÔNG');
-
-
-                            selectedSeats.forEach(function(seat) {
-                                $(`.seat[data-seat-id="${seat.id}"]`)
-                                    .removeClass('seat-selected seat-available')
-                                    .addClass('seat-unavailable')
-                                    .data('disabled', true);
-                            });
-
-
-                            selectedSeats = [];
-                            updateSelectionDisplay(); // Update display to show 0 selected seats
-
-
-
-
-
-
-                        } else {
-                            $('#validationMessage').removeClass('text-success')
-                                                   .addClass('text-danger')
-                                                   .text(response.message || 'Có lỗi xảy ra khi đặt ghế');
-                            $btn.prop('disabled', false)
-                                .removeClass('btn-success-state')
-                                .html('<i class="fas fa-arrow-right mr-2"></i>TIẾP TỤC');
-
-                            if (response.invalidSeatIds) {
-                                response.invalidSeatIds.forEach(function(invalidId) {
-                                    $(`.seat[data-seat-id="${invalidId}"]`)
-                                        .removeClass('seat-unavailable') // Remove unavailable if it became so due to server check
-                                        .addClass('seat-available')      // Make it available again
-                                        .data('disabled', false);
+                        if (response.success) {
+                            // Bước 2: Nếu chọn thanh toán VNPay, gọi API payment
+                            const paymentMethod = 'vnpay'; // hoặc lấy từ form
+                            
+                            if (paymentMethod === 'vnpay') {
+                                // Gọi API VNPay
+                                $.ajax({
+                                    url: 'https://localhost:7049/api/v1/payment/vnpay',
+                                    type: 'POST',
+                                    contentType: 'application/json',
+                                    headers: {
+                                        'Authorization': 'Bearer ' + getAuthToken()
+                                    },
+                                    data: JSON.stringify({
+                                        BookingId: response.bookingId,
+                                        Amount: selectedSeats.reduce((sum, seat) => sum + parseFloat(seat.price), 0),
+                                        Description: 'Thanh toán vé phim'
+                                    }),
+                                    success: function(paymentUrl) {
+                                        // paymentUrl là một string URL, không phải object
+                                        console.log('VNPay URL:', paymentUrl);
+                                        // Chuyển hướng đến VNPay
+                                        window.location.href = paymentUrl;
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error('VNPay Error:', error);
+                                        alert('Có lỗi xảy ra khi tạo thanh toán VNPay');
+                                        $btn.prop('disabled', false)
+                                            .html('<i class="fas fa-arrow-right mr-2"></i>TIẾP TỤC');
+                                    }
                                 });
+                            } else {
+                                // Thanh toán tiền mặt - chuyển đến trang xác nhận
+                                window.location.href = `/BookingManagement/Booking/ConfirmBooking?bookingId=${response.bookingId}`;
                             }
-                            updateSelectionDisplay(); // Re-render to reflect changes
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra khi đặt vé');
+                            $btn.prop('disabled', false)
+                                .html('<i class="fas fa-arrow-right mr-2"></i>TIẾP TỤC');
                         }
                     },
                     error: function() {
-                        $('#validationMessage').removeClass('text-success')
-                                               .addClass('text-danger')
-                                               .text('Đã xảy ra lỗi khi đặt ghế. Vui lòng thử lại.');
+                        alert('Đã xảy ra lỗi khi đặt vé. Vui lòng thử lại.');
                         $btn.prop('disabled', false)
-                            .removeClass('btn-success-state')
                             .html('<i class="fas fa-arrow-right mr-2"></i>TIẾP TỤC');
                     }
                 });

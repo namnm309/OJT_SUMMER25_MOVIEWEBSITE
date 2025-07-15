@@ -1,0 +1,22 @@
+@{
+    var pageTitle = ViewBag.PageTitle as string ?? "";
+    var parentTitle = ViewBag.ParentTitle as string;
+    var parentUrl = ViewBag.ParentUrl as string ?? "#";
+}
+<nav aria-label="breadcrumb" class="dashboard-breadcrumb mb-3">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+            <a href="/" class="text-decoration-none text-white-50">
+                <i class="fas fa-home"></i> Trang chủ
+            </a>
+        </li>
+        @if(!string.IsNullOrEmpty(parentTitle)){
+            <li class="breadcrumb-item">
+                <a href="@parentUrl" class="text-decoration-none text-white-50">
+                    @parentTitle
+                </a>
+            </li>
+        }
+        <li class="breadcrumb-item active" aria-current="page">@pageTitle</li>
+    </ol>
+</nav> 

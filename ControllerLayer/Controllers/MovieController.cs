@@ -1,9 +1,11 @@
 ﻿using ApplicationLayer.DTO;
 using ApplicationLayer.DTO.MovieManagement;
+using ApplicationLayer.Middlewares;
 using ApplicationLayer.Services.MovieManagement;
 using DomainLayer.Enum;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ControllerLayer.Controllers
 {
@@ -20,6 +22,7 @@ namespace ControllerLayer.Controllers
             _logger = logger;
         }
 
+        [Protected]
         [HttpPost("Create")]
         public async Task<IActionResult> CreateMovie([FromBody] MovieCreateDto Dto)
         {
@@ -34,6 +37,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.ViewMovie();
         }
 
+        [AllowAnonymous]
         [HttpGet("GetById")]
         public async Task<IActionResult> GetMovieById([FromQuery] Guid movieId)
         {
@@ -48,6 +52,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.ViewMoviePagination(query);
         }
 
+        [Protected]
         [HttpPatch("Update")]
         public async Task<IActionResult> UpdateMovie([FromBody] MovieUpdateDto Dto)
         {
@@ -55,6 +60,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.UpdateMovie(Dto);
         }
 
+        [Protected]
         [HttpDelete("Delete")]
         public async Task<IActionResult> DeleteMovie(Guid Id)
         {
@@ -62,6 +68,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.DeleteMovie(Id);
         }
 
+        [Protected]
         [HttpPatch("ChangeStatus")]
         public async Task<IActionResult> ChangeStatus(Guid Id, MovieStatus Status)
         {
@@ -76,6 +83,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.SearchMovie(keyword);
         }
 
+        [Protected]
         [HttpGet("ViewGenre")]
         public async Task<IActionResult> ViewGenre()
         {
@@ -83,6 +91,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.GetAllGenre();
         }
 
+        [Protected]
         [HttpPost("CreateGenre")]
         public async Task<IActionResult> CreateGenre([FromBody] GenreCreateDto Dto)
         {
@@ -90,6 +99,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.CreateGenre(Dto);
         }
 
+        [Protected]
         [HttpPatch("ChangeStatusGenre")]
         public async Task<IActionResult> ChangeStatusGenre(Guid Id)
         {
@@ -97,6 +107,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.ChangeStatusGenre(Id);
         }
 
+        [Protected]
         [HttpPatch("SetFeatured")]
         public async Task<IActionResult> SetFeatured([FromQuery] Guid movieId, [FromQuery] bool isFeatured)
         {
@@ -104,6 +115,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.SetFeatured(movieId, isFeatured);
         }
 
+        [Protected]
         [HttpPatch("SetRecommended")]
         public async Task<IActionResult> SetRecommended([FromQuery] Guid movieId, [FromQuery] bool isRecommended)
         {
@@ -111,6 +123,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.SetRecommended(movieId, isRecommended);
         }
 
+        [Protected]
         [HttpPatch("UpdateRating")]
         public async Task<IActionResult> UpdateRating([FromQuery] Guid movieId, [FromQuery] double rating)
         {
@@ -118,6 +131,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.UpdateRating(movieId, rating);
         }
 
+        [AllowAnonymous]
         [HttpGet("GetRecommended")]
         public async Task<IActionResult> GetRecommended()
         {
@@ -125,6 +139,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.GetRecommended();
         }
 
+        [AllowAnonymous]
         [HttpGet("GetComingSoon")]
         public async Task<IActionResult> GetComingSoon()
         {
@@ -132,6 +147,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.GetComingSoon();
         }
 
+        [AllowAnonymous]
         [HttpGet("GetNowShowing")]
         public async Task<IActionResult> GetNowShowing()
         {

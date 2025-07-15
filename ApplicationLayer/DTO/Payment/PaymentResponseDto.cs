@@ -16,5 +16,7 @@ namespace ApplicationLayer.DTO.Payment
         public string Token { get; set; }
         public string VnPayResponseCode { get; set; }
 
+        public string BookingCode { get; set; }
+
     }
 }

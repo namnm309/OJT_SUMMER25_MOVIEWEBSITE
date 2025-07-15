@@ -235,49 +235,49 @@ namespace UI.Controllers
 
         private void SetPromotionsData(HomeViewModel viewModel)
         {
-            viewModel.Promotions = new List<PromotionViewModel>
-            {
-                new PromotionViewModel
-                {
-                    Id = "1",
-                    Title = "Giảm 50% vé phim cuối tuần",
-                    StartDate = DateTime.Now.AddDays(-7),
-                    EndDate = DateTime.Now.AddDays(14),
-                    DiscountPercent = 50,
-                    Description = "Áp dụng cho tất cả suất chiếu từ thứ 6 đến chủ nhật. Không áp dụng cho phim đặc biệt.",
-                    ImageUrl = "https://iguov8nhvyobj.vcdn.cloud/media/wysiwyg/2025/062025/N_O_240x201_1_.png"
-                },
-                new PromotionViewModel
-                {
-                    Id = "2",
-                    Title = "Combo bắp nước chỉ 99K",
-                    StartDate = DateTime.Now.AddDays(-3),
-                    EndDate = DateTime.Now.AddDays(21),
-                    DiscountPercent = 30,
-                    Description = "Combo bắp rang bơ lớn + 2 nước ngọt + kẹo. Tiết kiệm đến 30% so với giá gốc.",
-                    ImageUrl = "https://iguov8nhvyobj.vcdn.cloud/media/wysiwyg/2025/062025/240x201-cj-k-festa.jpg"
-                },
-                new PromotionViewModel
-                {
-                    Id = "3",
-                    Title = "Thành viên VIP - Ưu đãi đặc biệt",
-                    StartDate = DateTime.Now.AddDays(-10),
-                    EndDate = DateTime.Now.AddDays(30),
-                    DiscountPercent = 25,
-                    Description = "Đăng ký thành viên VIP nhận ngay 25% giảm giá cho 3 vé đầu tiên và nhiều ưu đãi hấp dẫn khác.",
-                    ImageUrl = "https://iguov8nhvyobj.vcdn.cloud/media/wysiwyg/2025/062025/240x201.png"
-                },
-                new PromotionViewModel
-                {
-                    Id = "4",
-                    Title = "Sinh viên giảm 40%",
-                    StartDate = DateTime.Now.AddDays(-5),
-                    EndDate = DateTime.Now.AddDays(60),
-                    DiscountPercent = 40,
-                    Description = "Dành cho sinh viên có thẻ. Áp dụng từ thứ 2 đến thứ 5, suất chiếu trước 18h.",
-                    ImageUrl = "https://iguov8nhvyobj.vcdn.cloud/media/wysiwyg/2025/052025/MMP_Promote_240x201.jpg"
-                }
-            };
+            //viewModel.Promotions = new List<PromotionViewModel>
+            //{
+            //    new PromotionViewModel
+            //    {
+            //        Id = "1",
+            //        Title = "Giảm 50% vé phim cuối tuần",
+            //        StartDate = DateTime.Now.AddDays(-7),
+            //        EndDate = DateTime.Now.AddDays(14),
+            //        DiscountPercent = 50,
+            //        Description = "Áp dụng cho tất cả suất chiếu từ thứ 6 đến chủ nhật. Không áp dụng cho phim đặc biệt.",
+            //        ImageUrl = "https://iguov8nhvyobj.vcdn.cloud/media/wysiwyg/2025/062025/N_O_240x201_1_.png"
+            //    },
+            //    new PromotionViewModel
+            //    {
+            //        Id = "2",
+            //        Title = "Combo bắp nước chỉ 99K",
+            //        StartDate = DateTime.Now.AddDays(-3),
+            //        EndDate = DateTime.Now.AddDays(21),
+            //        DiscountPercent = 30,
+            //        Description = "Combo bắp rang bơ lớn + 2 nước ngọt + kẹo. Tiết kiệm đến 30% so với giá gốc.",
+            //        ImageUrl = "https://iguov8nhvyobj.vcdn.cloud/media/wysiwyg/2025/062025/240x201-cj-k-festa.jpg"
+            //    },
+            //    new PromotionViewModel
+            //    {
+            //        Id = "3",
+            //        Title = "Thành viên VIP - Ưu đãi đặc biệt",
+            //        StartDate = DateTime.Now.AddDays(-10),
+            //        EndDate = DateTime.Now.AddDays(30),
+            //        DiscountPercent = 25,
+            //        Description = "Đăng ký thành viên VIP nhận ngay 25% giảm giá cho 3 vé đầu tiên và nhiều ưu đãi hấp dẫn khác.",
+            //        ImageUrl = "https://iguov8nhvyobj.vcdn.cloud/media/wysiwyg/2025/062025/240x201.png"
+            //    },
+            //    new PromotionViewModel
+            //    {
+            //        Id = "4",
+            //        Title = "Sinh viên giảm 40%",
+            //        StartDate = DateTime.Now.AddDays(-5),
+            //        EndDate = DateTime.Now.AddDays(60),
+            //        DiscountPercent = 40,
+            //        Description = "Dành cho sinh viên có thẻ. Áp dụng từ thứ 2 đến thứ 5, suất chiếu trước 18h.",
+            //        ImageUrl = "https://iguov8nhvyobj.vcdn.cloud/media/wysiwyg/2025/052025/MMP_Promote_240x201.jpg"
+            //    }
+            //};
         }
 
         public IActionResult Privacy()

@@ -183,6 +183,11 @@ class BookingListManager {
                             <button class="action-btn btn-cancel" onclick="bookingManager.showCancelModal('${booking.id}')" title="Hủy đặt vé">
                                 <i class="fas fa-times"></i>
                             </button>
+                            ${booking.paymentMethod && booking.paymentMethod.toLowerCase() === 'vnpay' && booking.bookingStatus === 'Pending' ? `
+                                <button class="action-btn btn-pay" onclick="bookingManager.payBooking('${booking.id}', ${booking.totalAmount})" title="Thanh toán VNPay">
+                                    <i class="fas fa-credit-card"></i>
+                                </button>
+                            ` : ''}
                         ` : ''}
                     </div>
                 </td>
@@ -192,19 +197,41 @@ class BookingListManager {
 
     getStatusClass(status) {
         switch (status) {
-            case 'Confirmed': return 'status-confirmed';
-            case 'Pending': return 'status-pending';
-            case 'Cancelled': return 'status-cancelled';
-            default: return 'status-pending';
+            case 'Confirmed':
+            case 1:
+                return 'status-confirmed';
+            case 'Pending':
+            case 0:
+                return 'status-pending';
+            case 'Cancelled':
+            case 'Canceled':
+            case 2:
+                return 'status-cancelled';
+            case 'Completed':
+            case 3:
+                return 'status-completed';
+            default:
+                return 'status-pending';
         }
     }
 
     getStatusText(status) {
         switch (status) {
-            case 'Confirmed': return 'Đã xác nhận';
-            case 'Pending': return 'Chờ xác nhận';
-            case 'Cancelled': return 'Đã hủy';
-            default: return status;
+            case 'Confirmed':
+            case 1:
+                return 'Đã xác nhận';
+            case 'Pending':
+            case 0:
+                return 'Chờ xác nhận';
+            case 'Cancelled':
+            case 'Canceled':
+            case 2:
+                return 'Đã hủy';
+            case 'Completed':
+            case 3:
+                return 'Đã thanh toán';
+            default:
+                return status;
         }
     }
 
@@ -428,6 +455,38 @@ class BookingListManager {
         } catch (error) {
             console.error('Error cancelling booking:', error);
             this.showError('Có lỗi xảy ra khi hủy đặt vé');
+        } finally {
+            this.hideLoading();
+        }
+    }
+
+    async payBooking(bookingId, amount) {
+        try {
+            this.showLoading();
+
+            const resp = await fetch('/BookingManagement/BookingTicket/CreateVnpayPayment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    bookingId: bookingId,
+                    amount: amount,
+                    decription: 'Thanh toan VNPay'
+                })
+            });
+
+            const data = await resp.json();
+
+            if (data.success && data.paymentUrl) {
+                window.open(data.paymentUrl, '_blank');
+            } else {
+                this.showError(data.message || 'Không thể khởi tạo thanh toán VNPay');
+            }
+        } catch (err) {
+            console.error(err);
+            this.showError('Có lỗi xảy ra khi tạo thanh toán VNPay');
         } finally {
             this.hideLoading();
         }

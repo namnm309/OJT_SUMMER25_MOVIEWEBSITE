@@ -64,23 +64,15 @@ namespace UI.Controllers
 
                 if (result.Success && result.Data != null)
                 {
-                    if (result.Data.IsValid)
-                    {
-                        return Json(new
-                        {
-                            success = true,
-                            isValid = true,
-                            message = result.Data.Message,
-                            selectedCount = result.Data.SelectedSeatCount
-                        });
-                    }
-
+                    // result.Data bây giờ là bool - true nếu các ghế hợp lệ
+                    var isValid = result.Data;
+                    
                     return Json(new
                     {
                         success = true,
-                        isValid = false,
-                        message = result.Data.Message,
-                        selectedCount = result.Data.SelectedSeatCount
+                        isValid = isValid,
+                        message = isValid ? "Ghế hợp lệ" : "Ghế không hợp lệ",
+                        selectedCount = model.SelectedSeatIds.Count
                     });
                 }
 

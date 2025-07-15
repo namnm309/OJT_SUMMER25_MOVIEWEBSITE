@@ -13,7 +13,7 @@ namespace InfrastructureLayer.Data
         // Constructor cho DI (Dependency Injection)
         public MovieContext(DbContextOptions<MovieContext> options) : base(options)
         {
-            Database.EnsureCreated();
+            // Database migration sẽ được gọi ở Program.cs để tránh lỗi lúc design-time
         }
 
         // Constructor mặc định cho testing/migration
@@ -36,6 +36,10 @@ namespace InfrastructureLayer.Data
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Transaction> Transaction { get; set; }
+        public DbSet<Actor> Actors { get; set; }
+        public DbSet<Director> Directors { get; set; }
+        public DbSet<MovieActor> MovieActors { get; set; }
+        public DbSet<MovieDirector> MovieDirectors { get; set; }
 
         public DbSet<ConcessionItem> ConcessionItems { get; set; }
 

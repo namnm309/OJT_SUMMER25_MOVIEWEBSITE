@@ -312,13 +312,12 @@ namespace UI.Areas.BookingManagement.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ProcessBooking([FromBody] ProcessBookingRequest request)
         {
             try
             {
-                // Lấy userId từ localStorage hoặc claims
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                // Lấy userId từ request (gửi từ client) hoặc từ claims
+                var userId = !string.IsNullOrEmpty(request.UserId) ? request.UserId : User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (string.IsNullOrEmpty(userId))
                 {
                     return Json(new { success = false, message = "Không tìm thấy thông tin người dùng" });

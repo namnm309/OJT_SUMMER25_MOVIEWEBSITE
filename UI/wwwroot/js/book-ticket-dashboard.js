@@ -9,6 +9,9 @@ class BookTicketDashboard {
         this.totalPrice = 0;
         this.movies = [];
         
+        // Base URL backend API
+        const API_BASE_BE = 'https://localhost:7049';
+        
         this.init();
     }
 
@@ -826,6 +829,10 @@ class BookTicketDashboard {
                                     <input class="form-check-input" type="radio" name="modalPaymentMethod" id="modalCard" value="card">
                                     <label class="form-check-label" for="modalCard">Thẻ</label>
                                 </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="modalPaymentMethod" id="modalVnpay" value="vnpay">
+                                    <label class="form-check-label" for="modalVnpay">VNPay</label>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -938,8 +945,53 @@ class BookTicketDashboard {
                 confirmModal.hide();
                 
 
+                if (result.data.paymentMethod && result.data.paymentMethod.toLowerCase() === 'vnpay') {
+                    let bookingIdToPay = result.data.bookingId || result.data.id || null;
+                    if (!bookingIdToPay && result.data.bookingCode) {
+                        const bookingCode = result.data.bookingCode;
+                        try {
+                            const idResp = await fetch(`/BookingManagement/BookingTicket/GetBookingIdByCode?bookingCode=${bookingCode}`);
+                            if (idResp.ok) {
+                                const idJson = await idResp.json();
+                                bookingIdToPay = idJson.bookingId;
+                            }
+                        } catch {}
+                    }
+
+                    if (!bookingIdToPay) {
+                        this.showError('Không lấy được BookingId');
+                        return;
+                    }
+                    // Gọi API tạo thanh toán VNPay
+                    try {
+                        const createResp = await fetch('/BookingManagement/BookingTicket/CreateVnpayPayment', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                bookingId: bookingIdToPay,
+                                amount: result.data.total,
+                                decription: 'Thanh toan VNPay'
+                            })
+                        });
+
+                        const createData = await createResp.json();
+
+                        if (createData.success && createData.paymentUrl) {
+                            window.location.href = createData.paymentUrl;
+                            return;
+                        } else {
+                            this.showError(createData.message || 'Không thể khởi tạo thanh toán VNPay');
+                        }
+                    } catch (payErr) {
+                        this.showError('Có lỗi khi tạo thanh toán VNPay');
+                    }
+                }
+
+                // Nếu không phải VNPay, hiển thị modal thành công như cũ
                 this.displayBookingSuccess(result.data);
-                
 
                 this.resetBookingForm();
                 this.currentStep = 1;
