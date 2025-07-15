@@ -19,29 +19,38 @@ namespace UI.Areas.UserManagement.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder = "asc", string search = "")
         {
             ViewData["Title"] = "Quản lý thành viên";
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.Search = search;
 
             try
             {
-                // Gọi API thông qua ApiService
-                var result = await _apiService.GetAsync<JsonElement>("/api/User/members");
+                // Gọi API thông qua ApiService với tham số search
+                var apiUrl = string.IsNullOrEmpty(search) ? "/api/User/members" : $"/api/User/members?search={Uri.EscapeDataString(search)}";
+                var result = await _apiService.GetAsync<JsonElement>(apiUrl);
                 
                 if (result.Success && result.Data.TryGetProperty("data", out var dataProp) && dataProp.ValueKind == JsonValueKind.Array)
                 {
-                    var membersArray = dataProp.EnumerateArray().ToArray();
-                    ViewBag.Members = membersArray;
+                    var membersList = dataProp.EnumerateArray().ToList();
+                    
+                    // Sắp xếp theo tên
+                    membersList = sortOrder == "desc" 
+                        ? membersList.OrderByDescending(m => m.TryGetProperty("fullName", out var name) ? name.ToString() : string.Empty).ToList()
+                        : membersList.OrderBy(m => m.TryGetProperty("fullName", out var name) ? name.ToString() : string.Empty).ToList();
+                    
+                    ViewBag.Members = membersList.ToArray();
                     
                     // Tính toán số liệu thống kê
-                    ViewBag.TotalMembers = membersArray.Length;
-                    ViewBag.ActiveMembers = membersArray.Length;
-                    ViewBag.StaffMembers = membersArray.Count(m => 
+                    ViewBag.TotalMembers = membersList.Count;
+                    ViewBag.ActiveMembers = membersList.Count;
+                    ViewBag.StaffMembers = membersList.Count(m => 
                         m.TryGetProperty("role", out var role) && 
                         (role.ToString() == "Staff" || role.ToString() == "Admin"));
                     
                     var oneWeekAgo = DateTime.UtcNow.AddDays(-7);
-                    ViewBag.NewMembers = membersArray.Count(m => 
+                    ViewBag.NewMembers = membersList.Count(m => 
                         m.TryGetProperty("createdAt", out var createdAt) && 
                         DateTime.TryParse(createdAt.ToString(), out var date) && 
                         date >= oneWeekAgo);
@@ -68,4 +77,4 @@ namespace UI.Areas.UserManagement.Controllers
             return View();
         }
     }
-} 
+}

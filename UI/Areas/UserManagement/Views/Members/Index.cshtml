@@ -786,8 +786,13 @@
                         <div class="user-controls-header">
                             <div class="user-search-box">
                                 <i class="fas fa-search user-search-icon"></i>
-                                <input type="text" class="user-search-input" placeholder="Tìm kiếm người dùng theo tên..." id="userSearch">
+                                <input type="text" class="user-search-input" placeholder="Tìm kiếm theo tên..." value="@ViewBag.Search" id="userSearchInput">
+                                <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
                             </div>
+                            <select id="sortOrder" class="form-select" style="width: auto; margin: 0 10px;">
+                                <option value="asc" selected="@(ViewBag.CurrentSort == "asc")">Tên: A → Z</option>
+                                <option value="desc" selected="@(ViewBag.CurrentSort == "desc")">Tên: Z → A</option>
+                            </select>
                             <button class="btn-add-user" onclick="openAddUserModal()">
                                 <i class="fas fa-plus"></i>
                                 Thêm người dùng mới
@@ -1233,5 +1238,96 @@
             main.classList.toggle('expanded');
         }
     </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('userSearchInput');
+        const suggestionsContainer = document.getElementById('searchSuggestions');
+
+        searchInput.addEventListener('input', async function(e) {
+            const query = e.target.value.trim();
+            console.log('Search query:', query);
+            if (query.length === 0) {
+                suggestionsContainer.style.display = 'none';
+                return;
+            }
+
+            try {
+                const url = `${apiBaseUrl}/api/User/members?search=${encodeURIComponent(query)}`;
+                console.log('Fetching from:', url);
+                const response = await fetch(url);
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Received data:', data);
+                if (data.success && data.data && data.data.length > 0) {
+                    suggestionsContainer.innerHTML = '';
+                    data.data.forEach(member => {
+                        const div = document.createElement('div');
+                        div.classList.add('suggestion-item');
+                        div.textContent = member.fullName;
+                        div.addEventListener('click', () => {
+                            searchInput.value = member.fullName;
+                            suggestionsContainer.style.display = 'none';
+                            window.location.href = `/UserManagement/Members?search=${encodeURIComponent(member.fullName)}&sortOrder=${'@ViewBag.CurrentSort'}`;
+                        });
+                        suggestionsContainer.appendChild(div);
+                    });
+                    suggestionsContainer.style.display = 'block';
+                    console.log('Suggestions shown:', data.data.length);
+                } else {
+                    suggestionsContainer.style.display = 'none';
+                    console.log('No suggestions found');
+                }
+            } catch (error) {
+                console.error('Error fetching suggestions:', error);
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = searchInput.value.trim();
+                if (query.length > 0) {
+                    suggestionsContainer.style.display = 'none';
+                    window.location.href = `/UserManagement/Members?search=${encodeURIComponent(query)}&sortOrder=${'@ViewBag.CurrentSort'}`;
+                }
+            }
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+    });
+</script>
+<style>
+    .search-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid var(--content-border);
+        border-radius: 8px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        box-shadow: var(--shadow-sm);
+    }
+    .suggestion-item {
+        padding: 10px 15px;
+        cursor: pointer;
+    }
+    .suggestion-item:hover {
+        background: var(--content-secondary);
+    }
+</style>
+<script>
+    document.getElementById('sortOrder').addEventListener('change', function() {
+        window.location.href = '?sortOrder=' + this.value;
+    });
+</script>
 </body>
 </html>
