@@ -57,11 +57,11 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> GetByIdAsync(Guid movieId)
         {
-            var payload = ExtractPayload();
-            if (payload == null)
-            {
-                return ErrorResp.Unauthorized("Invalid token");
-            }
+            //var payload = ExtractPayload();
+            //if (payload == null)
+            //{
+            //    return ErrorResp.Unauthorized("Invalid token");
+            //}
 
             var movie = await _movieRepo.FirstOrDefaultAsync(
                 m => m.Id == movieId,

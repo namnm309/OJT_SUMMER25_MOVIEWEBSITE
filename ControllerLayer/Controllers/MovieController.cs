@@ -37,7 +37,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.ViewMovie();
         }
 
-        [Protected]
+        [AllowAnonymous]
         [HttpGet("GetById")]
         public async Task<IActionResult> GetMovieById([FromQuery] Guid movieId)
         {
