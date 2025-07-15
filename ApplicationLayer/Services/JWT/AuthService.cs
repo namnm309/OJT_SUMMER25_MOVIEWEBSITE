@@ -1,4 +1,4 @@
-﻿using Application.ResponseCode;
+using Application.ResponseCode;
 using ApplicationLayer.DTO.CinemaRoomManagement;
 using ApplicationLayer.DTO.JWT;
 using ApplicationLayer.Helper;
@@ -141,6 +141,7 @@ namespace ApplicationLayer.Services.JWT
 
             var result = new LoginResp
             {
+                UserId = user.Id, // ✅ Thêm UserId từ database
                 Token = accessToken,
                 Email = user.Email,
                 FullName = user.FullName,
@@ -225,7 +226,7 @@ namespace ApplicationLayer.Services.JWT
                     <p>Bạn đã được đăng ký tài khoản trên hệ thống <b>Cinema City</b>.</p>
                     <p><b>Email:</b> {req.Email}<br/>
                     <b>Mật khẩu:</b> {password}</p>
-                    <p>Hãy đăng nhập và thay đổi mật khẩu sau khi đăng nhập lần đầu.</p>
+                    <p>Hãy đăng nhập và thay đổi mật khẩu sau khi đăng nhập lầu.</p>
                     <p>Trân trọng.</p>";
 
             await _mailService.SendEmailAsync(req.Email, "Thông tin tài khoản của bạn", emailBody);

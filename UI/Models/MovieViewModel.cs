@@ -1,4 +1,4 @@
-﻿namespace UI.Models
+namespace UI.Models
 {
     public class MovieViewModel
     {
@@ -24,6 +24,10 @@
         public double Rating { get; set; } = 0.0;
         public bool IsFeatured { get; set; } = false;
         public bool IsRecommended { get; set; } = false;
+
+        // Thêm danh sách diễn viên và đạo diễn
+        public List<ActorViewModel> ActorList { get; set; } = new List<ActorViewModel>();
+        public List<DirectorViewModel> DirectorList { get; set; } = new List<DirectorViewModel>();
 
         public List<GenreViewModel> Genres { get; set; } = new List<GenreViewModel>();
         public List<MovieShowTimeViewModel> ShowTimes { get; set; } = new List<MovieShowTimeViewModel>();
@@ -54,5 +58,18 @@
         public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
+    }
+
+    // Thêm các ViewModel cho Actor và Director
+    public class ActorViewModel
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+    }
+
+    public class DirectorViewModel
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
     }
 }

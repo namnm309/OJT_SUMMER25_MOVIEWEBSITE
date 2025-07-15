@@ -6,18 +6,18 @@ namespace UI.Areas.BookingManagement.Services
 {
     public interface IBookingManagementUIService
     {
-
+        // T7: Search Movies
         Task<ApiResponse<dynamic>> GetMoviesAsync();
         Task<ApiResponse<dynamic>> SearchMoviesAsync(string searchTerm);
 
         // Thêm method bị thiếu cho dropdown
         Task<ApiResponse<dynamic>> GetMoviesDropdownAsync();
 
-
+        // T8: Select Movie and Showtime  
         Task<ApiResponse<dynamic>> GetShowDatesAsync(Guid movieId);
         Task<ApiResponse<dynamic>> GetShowTimesAsync(Guid movieId, DateTime showDate);
 
-
+        // T9: Select Seats
         Task<ApiResponse<dynamic>> GetSeatsAsync(Guid showTimeId);
         Task<ApiResponse<dynamic>> SelectSeatsAsync(Guid showTimeId, List<Guid> seatIds);
 
@@ -25,29 +25,29 @@ namespace UI.Areas.BookingManagement.Services
         Task<ApiResponse<dynamic>> GetAvailableSeatsAsync(Guid showtimeId);
         Task<ApiResponse<bool>> ValidateSeatsAsync(Guid showtimeId, List<Guid> seatIds);
 
-
+        // T10: Confirm Booking
         Task<ApiResponse<dynamic>> ConfirmBookingAsync(BookingConfirmViewModel model);
 
-
+        // T11: Ticket Information
         Task<ApiResponse<dynamic>> GetBookingDetailAsync(Guid bookingId);
         Task<ApiResponse<dynamic>> GetBookingByCodeAsync(string bookingCode);
 
         Task<ApiResponse<string>> CreateVnpayPaymentAsync(Guid bookingId, decimal amount, string description);
 
-
+        // Search Customer
         Task<ApiResponse<CustomerSearchViewModel>> SearchCustomerAsync(string searchTerm);
-        
 
+        // Create Customer
         Task<ApiResponse<dynamic>> CreateCustomerAsync(CreateCustomerViewModel model);
 
-
+        // Confirm Admin Booking
         Task<ApiResponse<dynamic>> ConfirmAdminBookingAsync(ConfirmAdminBookingViewModel model);
 
-
+        // New methods for score conversion booking
         Task<ApiResponse<BookingConfirmationDetailViewModel>> GetBookingConfirmationDetailAsync(Guid showTimeId, List<Guid> seatIds, string memberId);
         Task<ApiResponse<BookingConfirmSuccessViewModel>> ConfirmBookingWithScoreAsync(BookingConfirmWithScoreViewModel model);
 
-
+        // Booking list management methods
         Task<ApiResponse<dynamic>> GetBookingListAsync(dynamic filter);
         Task<ApiResponse<dynamic>> UpdateBookingStatusAsync(Guid bookingId, string newStatus);
         Task<ApiResponse<dynamic>> CancelBookingAsync(Guid bookingId, string reason);
@@ -141,7 +141,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Getting show times for movie: {MovieId} on {ShowDate} from /api/v1/booking-ticket/times", movieId, showDate);
-
+                // Format date as yyyy-MM-dd for the API
                 var dateParam = showDate.ToString("yyyy-MM-dd");
                 return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/dropdown/movies/{movieId}/times?date={Uri.EscapeDataString(dateParam)}");
             }
@@ -312,7 +312,7 @@ namespace UI.Areas.BookingManagement.Services
             }
         }
 
-
+        // Search Customer
         public async Task<ApiResponse<CustomerSearchViewModel>> SearchCustomerAsync(string searchTerm)
         {
             try
@@ -331,7 +331,7 @@ namespace UI.Areas.BookingManagement.Services
             }
         }
 
-
+        // Create Customer
         public async Task<ApiResponse<dynamic>> CreateCustomerAsync(CreateCustomerViewModel model)
         {
             try
@@ -350,7 +350,7 @@ namespace UI.Areas.BookingManagement.Services
             }
         }
 
-
+        // Confirm Admin Booking
         public async Task<ApiResponse<dynamic>> ConfirmAdminBookingAsync(ConfirmAdminBookingViewModel model)
         {
             try
@@ -369,16 +369,16 @@ namespace UI.Areas.BookingManagement.Services
             }
         }
 
-
+        // New methods for score conversion booking
         public async Task<ApiResponse<BookingConfirmationDetailViewModel>> GetBookingConfirmationDetailAsync(Guid showTimeId, List<Guid> seatIds, string memberId)
         {
             try
             {
                 _logger.LogInformation("Getting booking confirmation detail for showtime: {ShowTimeId}, seatIds: {SeatIds}, memberId: {MemberId}", showTimeId, string.Join(",", seatIds), memberId);
-                
+
                 var seatIdsParam = string.Join("&seatIds=", seatIds);
                 var url = $"api/v1/booking-ticket/booking-confirmation-detail?showTimeId={showTimeId}&seatIds={seatIdsParam}&memberId={Uri.EscapeDataString(memberId)}";
-                
+
                 return await _apiService.GetAsync<BookingConfirmationDetailViewModel>(url);
             }
             catch (Exception ex)
@@ -410,41 +410,41 @@ namespace UI.Areas.BookingManagement.Services
             }
         }
 
-
+        // Booking list management methods
         public async Task<ApiResponse<dynamic>> GetBookingListAsync(dynamic filter)
         {
             try
             {
                 _logger.LogInformation("Getting booking list with filters");
-                
+
                 var queryParams = new List<string>();
-                
+
                 if (filter.FromDate != null)
                     queryParams.Add($"fromDate={((DateTime)filter.FromDate).ToString("yyyy-MM-dd")}");
-                
+
                 if (filter.ToDate != null)
                     queryParams.Add($"toDate={((DateTime)filter.ToDate).ToString("yyyy-MM-dd")}");
-                
+
                 if (!string.IsNullOrEmpty(filter.MovieTitle))
                     queryParams.Add($"movieTitle={Uri.EscapeDataString(filter.MovieTitle)}");
-                
+
                 if (!string.IsNullOrEmpty(filter.BookingStatus))
                     queryParams.Add($"bookingStatus={Uri.EscapeDataString(filter.BookingStatus)}");
-                
+
                 if (!string.IsNullOrEmpty(filter.CustomerSearch))
                     queryParams.Add($"customerSearch={Uri.EscapeDataString(filter.CustomerSearch)}");
-                
+
                 if (!string.IsNullOrEmpty(filter.BookingCode))
                     queryParams.Add($"bookingCode={Uri.EscapeDataString(filter.BookingCode)}");
-                
+
                 queryParams.Add($"page={filter.Page}");
                 queryParams.Add($"pageSize={filter.PageSize}");
                 queryParams.Add($"sortBy={Uri.EscapeDataString(filter.SortBy)}");
                 queryParams.Add($"sortDirection={Uri.EscapeDataString(filter.SortDirection)}");
-                
+
                 var queryString = string.Join("&", queryParams);
                 var url = $"api/v1/booking-ticket/bookings?{queryString}";
-                
+
                 return await _apiService.GetAsync<dynamic>(url);
             }
             catch (Exception ex)
@@ -463,7 +463,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Updating booking status for {BookingId} to {NewStatus}", bookingId, newStatus);
-                
+
                 var updateData = new { NewStatus = newStatus };
                 return await _apiService.PutAsync<dynamic>($"api/v1/booking-ticket/booking/{bookingId}/status", updateData);
             }
@@ -483,7 +483,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Cancelling booking {BookingId} with reason: {Reason}", bookingId, reason);
-                
+
                 var cancelData = new { Reason = reason };
                 return await _apiService.PostAsync<dynamic>($"api/v1/booking-ticket/booking/{bookingId}/cancel", cancelData);
             }
