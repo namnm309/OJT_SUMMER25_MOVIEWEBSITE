@@ -27,7 +27,14 @@
                     </table>
                 </div>
             }
-            <a href="@Url.Action("BookingList", "BookingTicket", new { area = "BookingManagement" })" class="btn btn-primary mt-3">Quay lại danh sách</a>
+            @if (User?.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Staff")))
+            {
+                <a href="@Url.Action("BookingList", "BookingTicket", new { area = "BookingManagement" })" class="btn btn-primary mt-3">Quay lại danh sách</a>
+            }
+            else
+            {
+                <a href="/" class="btn btn-primary mt-3">Về trang chủ</a>
+            }
         </div>
     </div>
 </body>

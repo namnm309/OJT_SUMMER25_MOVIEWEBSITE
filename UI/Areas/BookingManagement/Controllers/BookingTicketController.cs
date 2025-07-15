@@ -220,29 +220,33 @@ namespace UI.Areas.BookingManagement.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> PaymentSuccess(string bookingCode)
         {
-            ViewData["Title"] = "Thanh toán thành công";
-
             var bookingResp = await _bookingService.GetBookingByCodeAsync(bookingCode);
-            ViewBag.Booking = bookingResp.Data;
 
-            return View();
+            // truyền JSON sang view fancy nếu cần
+            var model = new BookingResultViewModel
+            {
+                Data = bookingResp.Data
+            };
+
+            return View("~/Areas/BookingManagement/Views/Booking/PaymentSuccess.cshtml", model);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> PaymentFail(string bookingCode)
         {
-            ViewData["Title"] = "Thanh toán thất bại";
-
             var bookingResp = await _bookingService.GetBookingByCodeAsync(bookingCode);
             ViewBag.Booking = bookingResp.Data;
 
-            return View();
+            return View("~/Areas/BookingManagement/Views/Booking/PaymentFailed.cshtml");
         }
 
         // Xử lý callback từ VNPay
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> VnpayReturn(
             string vnp_ResponseCode,

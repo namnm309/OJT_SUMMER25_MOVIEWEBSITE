@@ -971,7 +971,11 @@
                         </div>
                     `;
 
-                const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/available?showTimeId=${showTimeId}`);
+                const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/available?showTimeId=${showTimeId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    }
+                });
 
                 console.log('API Response status:', response.status);
                 console.log('API Response headers:', response.headers);
@@ -1442,7 +1446,8 @@
 
         // Hàm helper để lấy auth token nếu cần
         function getAuthToken() {
-            return localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+            return sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken') ||
+                   localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
         }
 
         // Validate ghế trước khi chuyển trang
@@ -1463,7 +1468,8 @@
                 const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/validate?showTimeId=${showTimeId}`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getAuthToken()}`
                     },
                     body: JSON.stringify(seatIds)
                 });
@@ -1492,7 +1498,11 @@
             try {
                 console.log('Loading showtime details for showTimeId:', showTimeId);
 
-                const showtimeResponse = await fetch(`https://localhost:7049/api/v1/booking-ticket/showtime/${showTimeId}/details`);
+                const showtimeResponse = await fetch(`https://localhost:7049/api/v1/booking-ticket/showtime/${showTimeId}/details`, {
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`
+                    }
+                });
                 if (!showtimeResponse.ok) {
                     throw new Error('Không thể lấy thông tin suất chiếu');
                 }
@@ -1505,7 +1515,11 @@
 
                     const movieIdParam = typeof movieId === 'string' ? movieId : movieId.toString();
 
-                    const movieResponse = await fetch(`https://localhost:7049/api/v1/movie/GetById?movieId=${movieIdParam}`);
+                    const movieResponse = await fetch(`https://localhost:7049/api/v1/movie/GetById?movieId=${movieIdParam}`, {
+                        headers: {
+                            'Authorization': `Bearer ${getAuthToken()}`
+                        }
+                    });
 
                     if (!movieResponse.ok) {
                         console.error('Movie API error:', movieResponse.status);
