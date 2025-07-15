@@ -6,10 +6,10 @@
     <title>@ViewData["Title"] - UI</title>
     <link rel="icon" type="image/svg+xml" href="~/cinema-favicon-projector.svg" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <!-- Thêm media và keyframes từ CDN -->
-    
+    <!--  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/UI.styles.css" asp-append-version="true" />
@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="~/css/movie-card-fix.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/movie-card-emergency-fix.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pagination-fix.css" asp-append-version="true" />
-    
+    <!--<link rel="stylesheet" href="~/css/HomePage/base.css" asp-append-version="true" />  -->
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -43,6 +43,109 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Token Management Script -->
+    <script>
+        // Token management cho toàn bộ ứng dụng
+        window.TokenManager = {
+            // Lấy token từ localStorage
+            getToken: function () {
+                return localStorage.getItem('authToken');
+            },
+
+            // Lưu token vào localStorage
+            setToken: function (token) {
+                if (token) {
+                    localStorage.setItem('authToken', token);
+                }
+            },
+
+            // Xóa token khỏi localStorage
+            removeToken: function () {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('username');
+                localStorage.removeItem('fullName');
+                localStorage.removeItem('userRole');
+            },
+
+            // Kiểm tra xem user đã đăng nhập chưa
+            // Thêm vào TokenManager
+            validateToken: function () {
+                const token = this.getToken();
+                if (!token) return false;
+
+                // Kiểm tra token có hết hạn không (nếu có thông tin exp)
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const currentTime = Math.floor(Date.now() / 1000);
+
+                    if (payload.exp && payload.exp < currentTime) {
+                        // Token hết hạn, xóa dữ liệu
+                        this.removeToken();
+                        return false;
+                    }
+                    return true;
+                } catch (e) {
+                    // Token không hợp lệ
+                    this.removeToken();
+                    return false;
+                }
+            },
+
+            // Cập nhật isAuthenticated
+            isAuthenticated: function () {
+                return this.validateToken();
+            },
+
+            // Lấy thông tin user từ localStorage
+            getUserInfo: function () {
+                return {
+                    userId: localStorage.getItem('userId'),
+                    username: localStorage.getItem('username'),
+                    fullName: localStorage.getItem('fullName'),
+                    role: localStorage.getItem('userRole'),
+                    token: this.getToken()
+                };
+            }
+        };
+
+        // Tự động thêm token vào tất cả AJAX requests
+        $(document).ajaxSend(function (event, xhr, settings) {
+            const token = window.TokenManager.getToken();
+            if (token && settings.url.includes('/api/')) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            }
+        });
+
+        // Nếu user đã đăng nhập từ server-side, lưu token vào localStorage
+        @if (User.Identity.IsAuthenticated)
+        {
+            <text>
+                    var serverToken = '@Html.Raw(User.FindFirst("Token")?.Value ?? "")';
+                    var serverUserId = '@Html.Raw(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "")';
+                    var serverUsername = '@Html.Raw(User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value ?? "")';
+                    var serverFullName = '@Html.Raw(User.FindFirst("FullName")?.Value ?? "")';
+                    var serverUserRole = '@Html.Raw(User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "")';
+
+                    if (serverToken) {
+                        window.TokenManager.setToken(serverToken);
+                    localStorage.setItem('userId', serverUserId);
+                    localStorage.setItem('username', serverUsername);
+                    localStorage.setItem('fullName', serverFullName);
+                    localStorage.setItem('userRole', serverUserRole);
+                        }
+            </text>
+        }
+    </script>
+
+    // Kiểm tra token định kỳ
+    setInterval(function() {
+    if (!window.TokenManager.validateToken() && window.location.pathname !== '/Account/Login') {
+    // Chuyển về trang login nếu token hết hạn
+    window.location.href = '/Account/Login';
+    }
+    }, 60000); // Kiểm tra mỗi phút
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

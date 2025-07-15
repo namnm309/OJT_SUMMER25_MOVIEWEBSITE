@@ -25,7 +25,7 @@ namespace UI.Areas.BookingManagement.Controllers
             _apiService = apiService;
         }
 
-
+        // T7: Search Movies
         [HttpGet]
         public async Task<IActionResult> SearchMovies(string searchTerm = "")
         {
@@ -39,7 +39,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-
+                // Dummy data for search results
                 model.Results = GetDummyMovies().Where(m =>
                     m.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                     m.Genre.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
@@ -50,7 +50,7 @@ namespace UI.Areas.BookingManagement.Controllers
             return View(model);
         }
 
-
+        // T8: Select Movie and Showtime
         [HttpGet]
         public async Task<IActionResult> SelectMovie()
         {
@@ -103,7 +103,7 @@ namespace UI.Areas.BookingManagement.Controllers
         {
             try
             {
-                 var result = await _apiService.GetAsync<dynamic>($"/api/v1/booking-ticket/dropdown/movies/{movieId}/dates");
+                var result = await _apiService.GetAsync<dynamic>($"/api/v1/booking-ticket/dropdown/movies/{movieId}/dates");
 
                 if (result.Success)
                 {
@@ -128,7 +128,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
                 if (response?.Success == true && response.Data != null)
                 {
-
+                    // Convert dynamic data to DateTime list
                     var dates = new List<DateTime>();
 
                     if (response.Data is IEnumerable<object> dateObjects)
@@ -164,7 +164,7 @@ namespace UI.Areas.BookingManagement.Controllers
 
                 if (response?.Success == true && response.Data != null)
                 {
-
+                    // Convert dynamic data to ShowTimeOption list
                     var showTimes = ConvertToShowTimeOptions(response.Data);
                     return Json(new { success = true, data = showTimes });
                 }
@@ -178,7 +178,7 @@ namespace UI.Areas.BookingManagement.Controllers
             }
         }
 
-
+        // Helper methods to convert API response to view models
         private List<MovieOption> ConvertToMovieOptions(dynamic moviesData)
         {
             var movies = new List<MovieOption>();
@@ -243,7 +243,7 @@ namespace UI.Areas.BookingManagement.Controllers
             return showTimes;
         }
 
-
+        // T9: Select Seats
         [HttpGet]
         public async Task<IActionResult> SelectSeat(Guid showTimeId)
         {
@@ -276,7 +276,7 @@ namespace UI.Areas.BookingManagement.Controllers
             });
         }
 
-
+        // T10: Confirm Booking
         [HttpGet]
         public async Task<IActionResult> ConfirmBooking(Guid showTimeId, string seatIds)
         {
@@ -311,62 +311,6 @@ namespace UI.Areas.BookingManagement.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ProcessBooking([FromBody] ProcessBookingRequest request)
-        {
-            try
-            {
-                // Lấy userId từ localStorage hoặc claims
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(userId))
-                {
-                    return Json(new { success = false, message = "Không tìm thấy thông tin người dùng" });
-                }
-
-                // Tạo request body theo format API
-                var apiRequest = new
-                {
-                    showtimeId = request.ShowtimeId,
-                    seatIds = request.SeatIds,
-                    totalPrice = request.TotalPrice,
-                    userId = userId,
-                    fullName = request.FullName,
-                    email = request.Email,
-                    identityCard = request.IdentityCard,
-                    phoneNumber = request.PhoneNumber
-                };
-
-                // Gọi API confirm-user-booking-v2
-                var result = await _apiService.PostAsync<dynamic>(
-                    "/api/v1/booking-ticket/confirm-user-booking-v2",
-                    apiRequest
-                );
-
-                if (result.Success)
-                {
-                    // Lưu thông tin booking vào TempData để hiển thị ở trang kết quả
-                    TempData["BookingResult"] = System.Text.Json.JsonSerializer.Serialize(new
-                    {
-                        Success = true,
-                        Data = result.Data,
-                        BookingInfo = apiRequest
-                    });
-
-                    return Json(new { success = true, redirectUrl = Url.Action("BookingResult") });
-                }
-                else
-                {
-                    return Json(new { success = false, message = result.Message ?? "Có lỗi xảy ra khi đặt vé" });
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error processing booking");
-                return Json(new { success = false, message = "Có lỗi xảy ra khi xử lý đặt vé" });
-            }
-        }
-
         [HttpGet]
         public IActionResult BookingResult()
         {
@@ -382,7 +326,7 @@ namespace UI.Areas.BookingManagement.Controllers
             return View(bookingResult);
         }
 
-
+        // Helper Methods for Dummy Data
         private List<MovieOption> GetDummyMovies()
         {
             return new List<MovieOption>
@@ -572,6 +516,50 @@ namespace UI.Areas.BookingManagement.Controllers
                 CustomerEmail = "nguyenvana@email.com",
                 PointsEarned = 24 // 10% của tổng tiền
             };
+        }
+
+        // Thêm các action methods cho PaymentSuccess và PaymentFailed
+        [HttpGet]
+        public IActionResult PaymentSuccess()
+        {
+            // Lấy dữ liệu booking từ TempData nếu có
+            var bookingDataJson = TempData["BookingData"] as string;
+
+            if (!string.IsNullOrEmpty(bookingDataJson))
+            {
+                try
+                {
+                    var bookingResult = System.Text.Json.JsonSerializer.Deserialize<BookingResultViewModel>(bookingDataJson);
+                    return View(bookingResult);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error deserializing booking data for PaymentSuccess");
+                }
+            }
+
+            // Nếu không có dữ liệu, tạo model mặc định
+            var defaultModel = new BookingResultViewModel
+            {
+                Success = true,
+                Data = null,
+                BookingInfo = null
+            };
+
+            return View(defaultModel);
+        }
+
+        [HttpGet]
+        public IActionResult PaymentFailed()
+        {
+            var model = new BookingResultViewModel
+            {
+                Success = false,
+                Data = null,
+                BookingInfo = null
+            };
+
+            return View(model);
         }
     }
 }

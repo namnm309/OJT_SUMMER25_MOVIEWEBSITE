@@ -1,4 +1,4 @@
-﻿using Application.ResponseCode;
+using Application.ResponseCode;
 using ApplicationLayer.DTO.Payment;
 using ApplicationLayer.Middlewares;
 using ApplicationLayer.Services.Payment;
@@ -37,41 +37,24 @@ namespace ControllerLayer.Controllers
             {
                 try
                 {
-                    // Lấy các tham số từ query string
                     var response = await _paymentService.CallBack(Request.Query);
 
                     if (response.Success)
                     {
-                        return Ok(response);
-                        //return Redirect("https://localhost:7069/BookingManagement/Booking/BookingResult");
+                        // Chuyển hướng đến trang thành công
+                        return Redirect("https://localhost:7069/BookingManagement/Booking/PaymentSuccess");
                     }
 
-                    //return Redirect("https://localhost:7069/BookingManagement/Booking/BookingResult/Failed");
-
-                    return BadRequest(new
-                    {
-                        //success = false,
-                        //message = "Thanh toán thất bại",
-                        //vnPayResponseCode = response.VnPayResponseCode
-
-                    });
+                    // Chuyển hướng đến trang thất bại
+                    return Redirect("https://localhost:7069/BookingManagement/Booking/PaymentFailed");
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(new
-                    {
-                        success = false,
-                        message = "Đã xảy ra lỗi",
-                        error = ex.Message
-                    });
+                    return Redirect("https://localhost:7069/BookingManagement/Booking/PaymentFailed");
                 }
             }
 
-            return NotFound(new
-            {
-                success = false,
-                message = "Không tìm thấy thông tin thanh toán"
-            });
+            return Redirect("https://localhost:7069/BookingManagement/Booking/PaymentFailed");
         }
     }
 }

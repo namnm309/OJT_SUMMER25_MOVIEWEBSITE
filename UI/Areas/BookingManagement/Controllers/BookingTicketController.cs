@@ -139,15 +139,16 @@ namespace UI.Areas.BookingManagement.Controllers
                     return Json(new { success = false, message = "Không thể xác định người dùng" });
                 }
 
-                // Gọi service để tạo booking
+                // Gọi service để tạo booking và cập nhật trạng thái ghế thành "Pending"
                 var response = await _bookingService.ConfirmBookingAsync(model);
-                
+
                 if (response.Success)
                 {
-                    return Json(new { 
-                        success = true, 
-                        message = "Đặt vé thành công",
-                        bookingId = response.Data
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Tạo booking thành công",
+                        bookingId = response.Data // Trả về BookingId để dùng cho payment
                     });
                 }
                 else
@@ -169,8 +170,9 @@ namespace UI.Areas.BookingManagement.Controllers
             {
                 // Xử lý thanh toán VNPay
                 // Tạm thời trả về success
-                return Json(new { 
-                    success = true, 
+                return Json(new
+                {
+                    success = true,
                     message = "Thanh toán VNPay thành công",
                     paymentUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
                 });
@@ -243,7 +245,7 @@ namespace UI.Areas.BookingManagement.Controllers
             {
                 string newStatus = statusData.newStatus;
                 var response = await _bookingService.UpdateBookingStatusAsync(bookingId, newStatus);
-                
+
                 if (response.Success)
                 {
                     return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
@@ -267,7 +269,7 @@ namespace UI.Areas.BookingManagement.Controllers
             {
                 string reason = cancelData.reason;
                 var response = await _bookingService.CancelBookingAsync(bookingId, reason);
-                
+
                 if (response.Success)
                 {
                     return Json(new { success = true, message = "Hủy đặt vé thành công" });

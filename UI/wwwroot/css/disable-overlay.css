@@ -1,0 +1,26 @@
+/* Ẩn tất cả overlay trên movie cards */
+.recommended-overlay {
+    display: none !important;
+}
+
+.movie-poster-overlay {
+    display: none !important;
+}
+
+/* Loại bỏ hiệu ứng hover làm mờ ảnh */
+.movie-card:hover .movie-poster img {
+    opacity: 1 !important;
+}
+
+.recommended-item:hover .recommended-poster img {
+    opacity: 1 !important;
+}
+
+/* Giữ lại hiệu ứng scale khi hover */
+.movie-card:hover {
+    transform: scale(1.05);
+}
+
+.recommended-item:hover {
+    transform: scale(1.02);
+}

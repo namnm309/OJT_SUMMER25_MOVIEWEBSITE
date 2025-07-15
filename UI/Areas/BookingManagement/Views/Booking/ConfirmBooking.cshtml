@@ -25,7 +25,7 @@
         padding: 2rem;
     }
 
-    
+    /* Header Navigation */
     .header-nav {
         display: flex;
         justify-content: space-between;
@@ -78,7 +78,7 @@
         font-size: 0.9rem;
     }
 
-    
+    /* Movie Info Section - Full Width */
     .movie-info-section {
         width: 100%;
         background: rgba(255, 255, 255, 0.05);
@@ -149,7 +149,7 @@
             width: 20px;
         }
 
-    
+    /* Date/Time Selection */
     .datetime-selection {
         width: 100%;
         background: rgba(255, 255, 255, 0.05);
@@ -193,14 +193,14 @@
         text-align: center;
     }
 
-    
+    /* Main Content Layout */
     .main-content {
         display: flex;
         gap: 2rem;
         align-items: flex-start;
     }
 
-    
+    /* Customer Info - Left Side */
     .customer-section {
         flex: 2;
         background: rgba(255, 255, 255, 0.05);
@@ -295,7 +295,7 @@
             min-height: 100px;
         }
 
-    
+    /* Booking Summary - Right Side */
     .booking-summary {
         flex: 1;
         background: rgba(255, 255, 255, 0.05);
@@ -441,7 +441,65 @@
                 text-decoration: underline;
             }
 
-    
+    /* Payment Method Section */
+    .payment-method-section {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+        .payment-method-section h4 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+    .payment-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+        .payment-options .form-check {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .payment-options .form-check:hover {
+                border-color: #007bff;
+                background-color: #f0f8ff;
+            }
+
+        .payment-options .form-check-input:checked + .form-check-label {
+            color: #007bff;
+            font-weight: 600;
+        }
+
+        .payment-options .form-check-input:checked {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .payment-options .form-check-label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+            .payment-options .form-check-label i {
+                color: #666;
+                margin-right: 8px;
+            }
+
+    /* Responsive Design */
     @@media (max-width: 1024px) {
         .main-content {
             flex-direction: column;
@@ -488,7 +546,7 @@
 </style>
 
 <div class="container">
-    
+    <!-- Header Navigation -->
     <div class="header-nav">
         <div class="nav-left">
             <div class="logo">WATCHER</div>
@@ -507,7 +565,7 @@
         </div>
     </div>
 
-    
+    <!-- Movie Info Section - Full Width -->
     <div class="movie-info-section">
         <div class="movie-content">
             <div class="movie-poster">
@@ -541,7 +599,7 @@
         </div>
     </div>
 
-    
+    <!-- Date/Time Selection -->
     <div class="datetime-selection">
         <div class="datetime-row">
             <div class="date-section">
@@ -563,9 +621,9 @@
         </div>
     </div>
 
-    
+    <!-- Main Content -->
     <div class="main-content">
-        
+        <!-- Customer Info Section -->
         <div class="customer-section">
             <h2 class="section-header">
                 <i class="fas fa-user"></i>
@@ -609,7 +667,7 @@
                     </div>
                 </div>
 
-                
+                <!-- Hidden Fields -->
                 <input asp-for="ShowTimeId" type="hidden">
                 <input asp-for="MovieTitle" type="hidden">
                 <input asp-for="MoviePoster" type="hidden">
@@ -635,70 +693,13 @@
                         <input asp-for="SelectedSeatIds[i]" type="hidden">
                     }
                 }
+
+                <!-- Hidden field for payment method -->
+                <input type="hidden" name="PaymentMethod" id="paymentMethodInput" value="cash">
             </form>
         </div>
 
-        
-        <div class="booking-summary">
-            <h3 class="summary-header">
-                <i class="fas fa-money-bill-wave"></i>
-                Thanh Toán
-            </h3>
 
-            <div class="price-breakdown">
-                <div class="summary-row">
-                    <span>Giá vé (@Model.TotalSeats vé):</span>
-                    <span>@String.Format("{0:N0}", Model.TotalPrice) VNĐ</span>
-                </div>
-
-                @if (Model.AvailablePoints > 0)
-                {
-                    <div class="points-section">
-                        <div class="points-header">
-                            <i class="fas fa-coins"></i>
-                            Điểm thưởng: @Model.AvailablePoints điểm
-                        </div>
-                        <div class="form-check">
-                            <input asp-for="UsePoints" class="form-check-input" type="checkbox" id="usePointsCheck">
-                            <label class="form-check-label" for="usePointsCheck">
-                                Sử dụng điểm thưởng
-                            </label>
-                        </div>
-                        <div id="pointsDetails" class="points-input-section" style="display: none;">
-                            <div class="form-group">
-                                <label class="form-label">Số điểm sử dụng:</label>
-                                <input asp-for="PointsToUse" type="number" class="form-control"
-                                       min="0" max="@Model.AvailablePoints" placeholder="Nhập số điểm">
-                                <div class="points-note">1 điểm = 1,000 VNĐ</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="discountRow" style="display: none;" class="summary-row" style="color: #ffc107;">
-                        <span>Giảm giá (điểm):</span>
-                        <span id="discountAmount">0 VNĐ</span>
-                    </div>
-                }
-
-                <div class="summary-row total-price">
-                    <span>TỔNG THANH TOÁN:</span>
-                    <span id="finalAmount">@String.Format("{0:N0}", Model.FinalPrice) VNĐ</span>
-                </div>
-            </div>
-
-            <button type="button" class="btn btn-secondary" onclick="history.back()">
-                <i class="fas fa-arrow-left"></i> Quay lại
-            </button>
-            <button type="submit" class="btn btn-primary" form="confirmForm">
-                <i class="fas fa-check"></i> Xác Nhận Đặt Vé
-            </button>
-
-            <div class="terms-note">
-                <i class="fas fa-info-circle"></i>
-                Bằng việc xác nhận, bạn đồng ý với
-                <a href="#">điều khoản sử dụng</a> của chúng tôi.
-            </div>
-        </div>
     </div>
 </div>
 
@@ -735,7 +736,7 @@
             }
         }
 
-
+        // Add form id for submit button
         if (form) {
             form.id = 'confirmForm';
         }
@@ -895,37 +896,37 @@
                 if (movieInfo.genres && movieInfo.genres.length > 0) {
                     const genreNames = movieInfo.genres.map(g => g.name || g).join(', ');
                     metaHtml += `
-                        <div class="meta-item">
-                            <i class="fas fa-film"></i>
-                            <span><strong>Thể loại:</strong> ${genreNames}</span>
-                        </div>`;
+                            <div class="meta-item">
+                                <i class="fas fa-film"></i>
+                                <span><strong>Thể loại:</strong> ${genreNames}</span>
+                            </div>`;
                 }
 
                 // Thời lượng phim
                 if (movieInfo.runningTime) {
                     metaHtml += `
-                        <div class="meta-item">
-                            <i class="fas fa-clock"></i>
-                            <span><strong>Thời lượng:</strong> ${movieInfo.runningTime} phút</span>
-                        </div>`;
+                            <div class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span><strong>Thời lượng:</strong> ${movieInfo.runningTime} phút</span>
+                            </div>`;
                 }
 
                 // Đánh giá
                 if (movieInfo.rating) {
                     metaHtml += `
-                        <div class="meta-item">
-                            <i class="fas fa-star"></i>
-                            <span><strong>Đánh giá:</strong> ${movieInfo.rating}/10</span>
-                        </div>`;
+                            <div class="meta-item">
+                                <i class="fas fa-star"></i>
+                                <span><strong>Đánh giá:</strong> ${movieInfo.rating}/10</span>
+                            </div>`;
                 }
 
                 // Đạo diễn
                 if (movieInfo.director) {
                     metaHtml += `
-                        <div class="meta-item">
-                            <i class="fas fa-user-tie"></i>
-                            <span><strong>Đạo diễn:</strong> ${movieInfo.director}</span>
-                        </div>`;
+                            <div class="meta-item">
+                                <i class="fas fa-user-tie"></i>
+                                <span><strong>Đạo diễn:</strong> ${movieInfo.director}</span>
+                            </div>`;
                 }
 
                 movieMeta.innerHTML = metaHtml;
@@ -1015,10 +1016,10 @@
                 if (existingRoomMeta) existingRoomMeta.remove();
 
                 const roomMetaHtml = `
-                    <div class="meta-item room-meta">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span><strong>Phòng:</strong> ${roomName}</span>
-                    </div>`;
+                        <div class="meta-item room-meta">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span><strong>Phòng:</strong> ${roomName}</span>
+                        </div>`;
                 movieMeta.insertAdjacentHTML('afterbegin', roomMetaHtml);
             }
         }
@@ -1077,14 +1078,14 @@
                     if (existingTicketMeta) existingTicketMeta.remove();
 
                     const seatsMetaHtml = `
-                        <div class="meta-item seat-meta">
-                            <i class="fas fa-couch"></i>
-                            <span><strong>Ghế:</strong> ${seatNumbers}</span>
-                        </div>
-                        <div class="meta-item ticket-meta">
-                            <i class="fas fa-ticket-alt"></i>
-                            <span><strong>Số vé:</strong> ${selectedSeats.length}</span>
-                        </div>`;
+                            <div class="meta-item seat-meta">
+                                <i class="fas fa-couch"></i>
+                                <span><strong>Ghế:</strong> ${seatNumbers}</span>
+                            </div>
+                            <div class="meta-item ticket-meta">
+                                <i class="fas fa-ticket-alt"></i>
+                                <span><strong>Số vé:</strong> ${selectedSeats.length}</span>
+                            </div>`;
                     movieMeta.insertAdjacentHTML('beforeend', seatsMetaHtml);
                 }
             }
@@ -1153,81 +1154,6 @@
             }
         }
 
-        if (form) {
-            form.addEventListener('submit', async function (event) {
-                event.preventDefault(); // Ngăn submit form mặc định
-                
-                if (!form.checkValidity()) {
-                    event.stopPropagation();
-                    form.classList.add('was-validated');
-                    return;
-                }
-
-                // Hiển thị loading state
-                if (submitButton) {
-                    submitButton.disabled = true;
-                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
-                }
-
-                try {
-                    // Lấy dữ liệu từ URL
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const showTimeId = urlParams.get('showTimeId');
-                    const seatIds = urlParams.get('seatIds') ? urlParams.get('seatIds').split(',') : [];
-                    
-                    // Lấy dữ liệu từ form
-                    const formData = new FormData(form);
-                    const totalPrice = parseFloat(document.getElementById('finalAmount').textContent.replace(/[^0-9]/g, ''));
-                    
-                    // Lấy userId từ localStorage
-                    const userId = localStorage.getItem('userId') || '';
-                    
-                    // Tạo request data
-                    const requestData = {
-                        showtimeId: showTimeId,
-                        seatIds: seatIds,
-                        totalPrice: totalPrice,
-                        fullName: formData.get('CustomerName'),
-                        email: formData.get('CustomerEmail'),
-                        identityCard: formData.get('CustomerIdCard'),
-                        phoneNumber: formData.get('CustomerPhone')
-                    };
-
-                    // Gọi API ProcessBooking
-                    const response = await fetch('/BookingManagement/Booking/ProcessBooking', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                        },
-                        body: JSON.stringify(requestData)
-                    });
-
-                    const result = await response.json();
-
-                    if (result.success) {
-                        // Chuyển hướng đến trang kết quả
-                        window.location.href = result.redirectUrl;
-                    } else {
-                        alert('Lỗi: ' + result.message);
-
-                        if (submitButton) {
-                            submitButton.disabled = false;
-                            submitButton.innerHTML = '<i class="fas fa-check"></i> Xác Nhận Đặt Vé';
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Có lỗi xảy ra khi xử lý đặt vé');
-
-                    if (submitButton) {
-                        submitButton.disabled = false;
-                        submitButton.innerHTML = '<i class="fas fa-check"></i> Xác Nhận Đặt Vé';
-                    }
-                }
-            });
-        }
-
         // Debug: Kiểm tra các element có tồn tại không
         console.log('=== DEBUG ELEMENTS ===');
         console.log('datetime-selection:', document.querySelector('.datetime-selection'));
@@ -1240,5 +1166,43 @@
 
         // Khởi tạo - Load thông tin booking
         loadBookingDetails();
+
+        // Handle payment method selection
+        const paymentMethodRadios = document.querySelectorAll('input[name="paymentMethod"]');
+        const paymentMethodInput = document.getElementById('paymentMethodInput');
+        const confirmBookingBtn = document.getElementById('confirmBookingBtn');
+        const form = document.getElementById('confirmForm');
+
+        paymentMethodRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                if (paymentMethodInput) {
+                    paymentMethodInput.value = this.value;
+                }
+            });
+        });
+
+        // Handle form submission based on payment method
+        if (confirmBookingBtn && form) {
+            confirmBookingBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value;
+
+                if (selectedPaymentMethod === 'vnpay') {
+                    // Change form action for VNPay
+                    form.action = '@Url.Action("ProcessVNPayPayment", "Booking")';
+                } else {
+                    // Default action for cash payment
+                    form.action = '@Url.Action("ConfirmBooking", "Booking")';
+                }
+
+                // Validate form before submission
+                if (form.checkValidity()) {
+                    form.submit();
+                } else {
+                    form.classList.add('was-validated');
+                }
+            });
+        }
     });
 </script>
