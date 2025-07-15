@@ -8,7 +8,7 @@
         
         // Variables for pagination
         let currentPage = 1;
-        let pageSize = 2;
+        let pageSize = 10; // Khớp với tuỳ chọn 10/trang mặc định
         let totalPromotions = 0;
         let totalPages = 0;
         
@@ -44,11 +44,14 @@
                 return;
             }
             
+            // Đồng bộ pageSize với dropdown hiện tại
+            const pageSizeSelect = document.getElementById('pageSizeSelect');
+            pageSize = parseInt(pageSizeSelect.value);
+
             // Load initial page
             loadPromotionsPage(currentPage, pageSize);
             
             // Event listener for page size change
-            const pageSizeSelect = document.getElementById('pageSizeSelect');
             let pageSizeChangeTimeout;
             
             pageSizeSelect.addEventListener('change', function() {

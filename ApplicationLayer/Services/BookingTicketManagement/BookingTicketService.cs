@@ -927,7 +927,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     BookingCode = GenerateBookingCode(),
                     BookingDate = DateTime.UtcNow,
                     TotalPrice = finalTotal,
-                    Status = BookingStatus.Confirmed,
+                    Status = BookingStatus.Pending,
                     TotalSeats = request.SeatIds.Count,
                     UserId = Guid.Parse(request.MemberId),
                     ShowTimeId = request.ShowTimeId,

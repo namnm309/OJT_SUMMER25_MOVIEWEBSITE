@@ -49,7 +49,9 @@ namespace UI.Services
                 _logger.LogInformation("POST Request: {Endpoint}", endpoint);
                 
                 var content = CreateJsonContent(data);
-                var response = await _httpClient.PostAsync(endpoint, content);
+                var request = new HttpRequestMessage(HttpMethod.Post, endpoint) { Content = content };
+                AddAuthenticationHeaders(request);
+                var response = await _httpClient.SendAsync(request);
                 return await ProcessResponse<T>(response);
             }
             catch (Exception ex)
@@ -66,7 +68,9 @@ namespace UI.Services
                 _logger.LogInformation("POST Request: {Endpoint}", endpoint);
                 
                 var content = CreateJsonContent(data);
-                var response = await _httpClient.PostAsync(endpoint, content);
+                var request = new HttpRequestMessage(HttpMethod.Post, endpoint) { Content = content };
+                AddAuthenticationHeaders(request);
+                var response = await _httpClient.SendAsync(request);
                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -91,6 +95,48 @@ namespace UI.Services
             }
         }
 
+        public async Task<ApiResponse<string>> PostStringAsync(string endpoint, object? data = null)
+        {
+            try
+            {
+                _logger.LogInformation("POST String Request: {Endpoint}", endpoint);
+                
+                var content = CreateJsonContent(data);
+                var request = new HttpRequestMessage(HttpMethod.Post, endpoint) { Content = content };
+                AddAuthenticationHeaders(request);
+                var response = await _httpClient.SendAsync(request);
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    // Đọc response dưới dạng string thuần túy
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    return ApiResponse<string>.SuccessResult(responseContent, "Request successful");
+                }
+                
+                var errorContent = await response.Content.ReadAsStringAsync();
+                string? backendMsg = null;
+                try 
+                {
+                    var errJson = JsonSerializer.Deserialize<JsonElement>(errorContent);
+                    if (errJson.TryGetProperty("message", out var msgProp)) backendMsg = msgProp.GetString();
+                    else if (errJson.TryGetProperty("Message", out var msgProp2)) backendMsg = msgProp2.GetString();
+                } 
+                catch 
+                { 
+                    // Nếu không phải JSON, sử dụng nội dung gốc
+                    backendMsg = errorContent;
+                }
+
+                var finalMsg = backendMsg ?? $"Request failed: {response.StatusCode}";
+                return ApiResponse<string>.ErrorResult(finalMsg, response.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "POST String Request failed: {Endpoint}", endpoint);
+                return ApiResponse<string>.ErrorResult($"Request failed: {ex.Message}", HttpStatusCode.InternalServerError);
+            }
+        }
+
         public async Task<ApiResponse<T>> PutAsync<T>(string endpoint, object? data = null)
         {
             try
@@ -98,7 +144,9 @@ namespace UI.Services
                 _logger.LogInformation("PUT Request: {Endpoint}", endpoint);
                 
                 var content = CreateJsonContent(data);
-                var response = await _httpClient.PutAsync(endpoint, content);
+                var request = new HttpRequestMessage(HttpMethod.Put, endpoint) { Content = content };
+                AddAuthenticationHeaders(request);
+                var response = await _httpClient.SendAsync(request);
                 return await ProcessResponse<T>(response);
             }
             catch (Exception ex)
@@ -115,10 +163,8 @@ namespace UI.Services
                 _logger.LogInformation("PATCH Request: {Endpoint}", endpoint);
                 
                 var content = CreateJsonContent(data);
-                var request = new HttpRequestMessage(HttpMethod.Patch, endpoint)
-                {
-                    Content = content
-                };
+                var request = new HttpRequestMessage(HttpMethod.Patch, endpoint) { Content = content };
+                AddAuthenticationHeaders(request);
                 
                 var response = await _httpClient.SendAsync(request);
                 return await ProcessResponse<T>(response);
@@ -136,7 +182,9 @@ namespace UI.Services
             {
                 _logger.LogInformation("DELETE Request: {Endpoint}", endpoint);
                 
-                var response = await _httpClient.DeleteAsync(endpoint);
+                var request = new HttpRequestMessage(HttpMethod.Delete, endpoint);
+                AddAuthenticationHeaders(request);
+                var response = await _httpClient.SendAsync(request);
                 
                 if (response.IsSuccessStatusCode)
                 {

@@ -56,7 +56,7 @@ namespace UI.Controllers
                     password = model.Password
                 };
 
-                var result = await _apiService.PostAsync<JsonElement>("https://localhost:7049/api/v1/Auth/Login", loginData);
+                var result = await _apiService.PostAsync<JsonElement>("api/v1/Auth/Login", loginData);
 
                 if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {

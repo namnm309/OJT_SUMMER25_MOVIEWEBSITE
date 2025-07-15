@@ -23,13 +23,16 @@ namespace UI.Areas.BookingManagement.Services
 
         // Thêm các method bị thiếu cho seat management
         Task<ApiResponse<dynamic>> GetAvailableSeatsAsync(Guid showtimeId);
-        Task<ApiResponse<dynamic>> ValidateSeatsAsync(Guid showtimeId, List<Guid> seatIds);
+        Task<ApiResponse<bool>> ValidateSeatsAsync(Guid showtimeId, List<Guid> seatIds);
 
 
         Task<ApiResponse<dynamic>> ConfirmBookingAsync(BookingConfirmViewModel model);
 
 
         Task<ApiResponse<dynamic>> GetBookingDetailAsync(Guid bookingId);
+        Task<ApiResponse<dynamic>> GetBookingByCodeAsync(string bookingCode);
+
+        Task<ApiResponse<string>> CreateVnpayPaymentAsync(Guid bookingId, decimal amount, string description);
 
 
         Task<ApiResponse<CustomerSearchViewModel>> SearchCustomerAsync(string searchTerm);
@@ -189,6 +192,44 @@ namespace UI.Areas.BookingManagement.Services
             }
         }
 
+        // Trả về danh sách ghế còn trống của suất chiếu
+        public async Task<ApiResponse<dynamic>> GetAvailableSeatsAsync(Guid showtimeId)
+        {
+            try
+            {
+                _logger.LogInformation("Getting available seats for showtime: {ShowtimeId}", showtimeId);
+                return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/available?showTimeId={showtimeId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting available seats");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể tải thông tin ghế. Vui lòng thử lại."
+                };
+            }
+        }
+
+        // Xác thực ghế trước khi đặt
+        public async Task<ApiResponse<bool>> ValidateSeatsAsync(Guid showtimeId, List<Guid> seatIds)
+        {
+            try
+            {
+                _logger.LogInformation("Validating {SeatCount} seats for showtime: {ShowtimeId}", seatIds.Count, showtimeId);
+                return await _apiService.PostAsync<bool>($"api/v1/booking-ticket/validate?showTimeId={showtimeId}", seatIds);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error validating seats");
+                return new ApiResponse<bool>
+                {
+                    Success = false,
+                    Message = "Không thể xác thực ghế. Vui lòng thử lại."
+                };
+            }
+        }
+
         public async Task<ApiResponse<dynamic>> ConfirmBookingAsync(BookingConfirmViewModel model)
         {
             try
@@ -225,40 +266,48 @@ namespace UI.Areas.BookingManagement.Services
             }
         }
 
-        // Thêm implementation cho GetAvailableSeatsAsync
-        public async Task<ApiResponse<dynamic>> GetAvailableSeatsAsync(Guid showtimeId)
+        // Lấy booking theo mã
+        public async Task<ApiResponse<dynamic>> GetBookingByCodeAsync(string bookingCode)
         {
             try
             {
-                _logger.LogInformation("Getting available seats for showtime: {ShowtimeId}", showtimeId);
-                return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/available?showTimeId={showtimeId}");
+                _logger.LogInformation("Getting booking detail by code: {BookingCode}", bookingCode);
+                return await _apiService.GetAsync<dynamic>($"api/v1/booking-ticket/booking/{Uri.EscapeDataString(bookingCode)}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting available seats");
+                _logger.LogError(ex, "Error getting booking by code");
                 return new ApiResponse<dynamic>
                 {
                     Success = false,
-                    Message = "Không thể tải thông tin ghế. Vui lòng thử lại."
+                    Message = "Không thể tải thông tin đặt vé. Vui lòng thử lại."
                 };
             }
         }
 
-        // Thêm implementation cho ValidateSeatsAsync
-        public async Task<ApiResponse<dynamic>> ValidateSeatsAsync(Guid showtimeId, List<Guid> seatIds)
+        // Tạo thanh toán VNPay
+        public async Task<ApiResponse<string>> CreateVnpayPaymentAsync(Guid bookingId, decimal amount, string description)
         {
             try
             {
-                _logger.LogInformation("Validating {SeatCount} seats for showtime: {ShowtimeId}", seatIds.Count, showtimeId);
-                return await _apiService.PostAsync<dynamic>($"api/v1/booking-ticket/validate?showTimeId={showtimeId}", seatIds);
+                _logger.LogInformation("Creating VNPay payment for booking: {BookingId}, amount: {Amount}", bookingId, amount);
+
+                var payload = new
+                {
+                    bookingId,
+                    amount,
+                    decription = description
+                };
+
+                return await _apiService.PostStringAsync("api/v1/payment/vnpay", payload);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error validating seats");
-                return new ApiResponse<dynamic>
+                _logger.LogError(ex, "Error creating VNPay payment");
+                return new ApiResponse<string>
                 {
                     Success = false,
-                    Message = "Không thể xác thực ghế. Vui lòng thử lại."
+                    Message = "Không thể khởi tạo thanh toán VNPay. Vui lòng thử lại."
                 };
             }
         }

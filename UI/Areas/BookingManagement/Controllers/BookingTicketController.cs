@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using UI.Areas.BookingManagement.Models;
 using UI.Areas.BookingManagement.Services;
+using UI.Services;
 
 namespace UI.Areas.BookingManagement.Controllers
 {
@@ -12,11 +13,13 @@ namespace UI.Areas.BookingManagement.Controllers
     {
         private readonly IBookingManagementUIService _bookingService;
         private readonly ILogger<BookingTicketController> _logger;
+        private readonly IApiService _apiService;
 
-        public BookingTicketController(IBookingManagementUIService bookingService, ILogger<BookingTicketController> logger)
+        public BookingTicketController(IBookingManagementUIService bookingService, ILogger<BookingTicketController> logger, IApiService apiService)
         {
             _bookingService = bookingService;
             _logger = logger;
+            _apiService = apiService;
         }
 
         // Trang chính của tính năng đặt vé trong dashboard
@@ -182,6 +185,108 @@ namespace UI.Areas.BookingManagement.Controllers
             }
         }
 
+        // === New VNPay Integration ===
+
+        [HttpPost]
+        public async Task<IActionResult> CreateVnpayPayment([FromBody] CreateVnpayRequest request)
+        {
+            if (request == null || request.BookingId == Guid.Empty)
+            {
+                return Json(new { success = false, message = "Dữ liệu không hợp lệ" });
+            }
+
+            try
+            {
+                // Tạo returnUrl để VNPay callback về
+                var resp = await _bookingService.CreateVnpayPaymentAsync(
+                    request.BookingId,
+                    request.Amount,
+                    request.Decription ?? "Thanh toan VNPay");
+                
+                if (resp.Success && !string.IsNullOrEmpty(resp.Data))
+                {
+                    // Backend trả về URL dạng string thuần túy
+                    return Json(new { success = true, paymentUrl = resp.Data });
+                }
+                
+                return Json(new { success = false, message = resp.Message ?? "Không thể tạo link thanh toán" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating VNPay payment for booking {BookingId}", request.BookingId);
+                return Json(new { success = false, message = "Có lỗi xảy ra khi khởi tạo thanh toán VNPay" });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PaymentSuccess(string bookingCode)
+        {
+            ViewData["Title"] = "Thanh toán thành công";
+
+            var bookingResp = await _bookingService.GetBookingByCodeAsync(bookingCode);
+            ViewBag.Booking = bookingResp.Data;
+
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PaymentFail(string bookingCode)
+        {
+            ViewData["Title"] = "Thanh toán thất bại";
+
+            var bookingResp = await _bookingService.GetBookingByCodeAsync(bookingCode);
+            ViewBag.Booking = bookingResp.Data;
+
+            return View();
+        }
+
+        // Xử lý callback từ VNPay
+        [HttpGet]
+        public async Task<IActionResult> VnpayReturn(
+            string vnp_ResponseCode,
+            string vnp_TransactionStatus, 
+            string vnp_TxnRef,
+            string vnp_Amount,
+            string vnp_OrderInfo)
+        {
+            try
+            {
+                _logger.LogInformation("VNPay return - ResponseCode: {ResponseCode}, Status: {Status}, TxnRef: {TxnRef}", 
+                    vnp_ResponseCode, vnp_TransactionStatus, vnp_TxnRef);
+
+                // vnp_TxnRef thường chứa bookingCode hoặc bookingId
+                string bookingCode = vnp_TxnRef;
+
+                // Kiểm tra kết quả thanh toán
+                // ResponseCode = 00: Thành công
+                // ResponseCode = 24: Hủy giao dịch
+                // TransactionStatus = 00: Thành công, 02: Thất bại
+                
+                if (vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
+                {
+                    // Thanh toán thành công
+                    return RedirectToAction("PaymentSuccess", new { bookingCode = bookingCode });
+                }
+                else
+                {
+                    // Thanh toán thất bại hoặc hủy
+                    return RedirectToAction("PaymentFail", new { bookingCode = bookingCode });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing VNPay return");
+                return RedirectToAction("PaymentFail", new { bookingCode = vnp_TxnRef });
+            }
+        }
+
+        public class CreateVnpayRequest
+        {
+            public Guid BookingId { get; set; }
+            public decimal Amount { get; set; }
+            public string? Decription { get; set; }
+        }
+
         // API endpoints cho danh sách đặt vé
         [HttpGet]
         public async Task<IActionResult> GetBookingList(
@@ -282,6 +387,24 @@ namespace UI.Areas.BookingManagement.Controllers
                 _logger.LogError(ex, "Error cancelling booking {BookingId}", bookingId);
                 return Json(new { success = false, message = "Có lỗi xảy ra khi hủy đặt vé" });
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBookingIdByCode(string bookingCode)
+        {
+            if (string.IsNullOrEmpty(bookingCode)) return Json(new { success = false, message = "bookingCode required" });
+
+            var beResp = await _apiService.GetAsync<System.Text.Json.JsonElement>("api/v1/booking-ticket/booking-id/" + bookingCode);
+
+            if (beResp.Success && beResp.Data.ValueKind == System.Text.Json.JsonValueKind.Object)
+            {
+                if (beResp.Data.TryGetProperty("bookingId", out var idProp))
+                {
+                    return Json(new { bookingId = idProp.GetString() });
+                }
+            }
+
+            return StatusCode(500, new { message = beResp.Message ?? "Không tìm thấy bookingId" });
         }
     }
 }
