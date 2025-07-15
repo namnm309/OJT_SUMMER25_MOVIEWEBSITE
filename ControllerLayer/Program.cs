@@ -21,7 +21,8 @@ using InfrastructureLayer.Core.Cache;
 using StackExchange.Redis;
 using ApplicationLayer.Mappings;
 using ApplicationLayer.Services.Payment;   
-
+using ApplicationLayer.Services.ConcessionManagement;
+using ApplicationLayer.DTO.ConcessionManagement;
 namespace ControllerLayer
 {
     public class Program
@@ -148,6 +149,7 @@ namespace ControllerLayer
             builder.Services.AddAutoMapper(typeof(ApplicationLayer.Mappings.MovieMappingProfile));
             builder.Services.AddAutoMapper(typeof(SeatMappingProfile));
             builder.Services.AddAutoMapper(typeof(ApplicationLayer.Mapper.MappingProfile));
+            builder.Services.AddAutoMapper(typeof(ConcessionItemMappingProfile));
 
             // Đăng ký Generic Repository Pattern
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -194,6 +196,9 @@ namespace ControllerLayer
             builder.Services.AddScoped<IAuthService, AuthService>();
 
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+            // Đăng ký Repository và Service cho ConcessionItem
+            builder.Services.AddScoped<IConcessionItemRepository, ConcessionItemRepository>();
+            builder.Services.AddScoped<IConcessionItemService, ConcessionItemService>();
 
             // Thêm vào Program.cs
             builder.Services.AddAutoMapper(typeof(BookingProfile));
