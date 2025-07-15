@@ -1,10 +1,11 @@
 ﻿using ApplicationLayer.DTO;
 using ApplicationLayer.DTO.MovieManagement;
+using ApplicationLayer.Middlewares;
 using ApplicationLayer.Services.MovieManagement;
 using DomainLayer.Enum;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
-using ApplicationLayer.Middlewares;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ControllerLayer.Controllers
 {
@@ -130,7 +131,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.UpdateRating(movieId, rating);
         }
 
-        [Protected]
+        [AllowAnonymous]
         [HttpGet("GetRecommended")]
         public async Task<IActionResult> GetRecommended()
         {
@@ -138,7 +139,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.GetRecommended();
         }
 
-        [Protected]
+        [AllowAnonymous]
         [HttpGet("GetComingSoon")]
         public async Task<IActionResult> GetComingSoon()
         {
@@ -146,7 +147,7 @@ namespace ControllerLayer.Controllers
             return await _movieService.GetComingSoon();
         }
 
-        [Protected]
+        [AllowAnonymous]
         [HttpGet("GetNowShowing")]
         public async Task<IActionResult> GetNowShowing()
         {

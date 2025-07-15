@@ -1,6 +1,8 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
 
 namespace UI.Services
 {
@@ -381,6 +383,16 @@ namespace UI.Services
         private void AddAuthenticationHeaders(HttpRequestMessage request)
         {
             var httpContext = _httpContextAccessor.HttpContext;
+
+            // Lấy JWT đã lưu trong Session (key "JWToken")
+            var token = httpContext?.Session.GetString("JWToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+
+            // Giữ nguyên cookie header nếu cần debug flow cũ
+            /*
             if (httpContext?.Request.Cookies != null)
             {
                 var cookieHeader = string.Join("; ", httpContext.Request.Cookies.Select(c => $"{c.Key}={c.Value}"));
@@ -389,6 +401,7 @@ namespace UI.Services
                     request.Headers.Add("Cookie", cookieHeader);
                 }
             }
+            */
         }
     }
 }

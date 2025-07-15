@@ -7,6 +7,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using UI.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace UI.Controllers
 {
@@ -48,114 +49,86 @@ namespace UI.Controllers
 
             try
             {
+                // Gửi tới API mới dùng JWT
                 var loginData = new
                 {
-                    username = model.Username,
-                    password = model.Password,
-                    rememberMe = model.RememberMe
+                    account = model.Username,
+                    password = model.Password
                 };
 
-                var result = await _apiService.PostAsync<JsonElement>("/api/user/login", loginData);
+                var result = await _apiService.PostAsync<JsonElement>("https://localhost:7049/api/v1/Auth/Login", loginData);
 
                 if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
-                    var userElement = result.Data;
+                    var data = result.Data;
 
-                    // Kiểm tra xem có thuộc tính user không (dựa trên phản hồi API thực tế)
-                    if (!userElement.TryGetProperty("user", out var userData))
+                    // Lấy token
+                    JsonElement tokenProp;
+                    if (!data.TryGetProperty("token", out tokenProp) &&
+                        !data.TryGetProperty("Token", out tokenProp))
                     {
-                        if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                        // Thử tìm trong field Data / data lồng bên trong
+                        JsonElement dataInner;
+                        if (data.TryGetProperty("data", out dataInner) || data.TryGetProperty("Data", out dataInner))
                         {
-                            return Json(new { success = false, message = "Invalid response format: missing user data" });
+                            if (!dataInner.TryGetProperty("token", out tokenProp) &&
+                                !dataInner.TryGetProperty("Token", out tokenProp))
+                            {
+                                return Json(new { success = false, message = "Token is missing in response" });
+                            }
                         }
-                        ModelState.AddModelError("", "Invalid response format: missing user data");
-                        return Json(new { success = false, message = "Invalid response format: missing user data" });
+                        else
+                        {
+                            return Json(new { success = false, message = "Token is missing in response" });
+                        }
                     }
 
-                    // Kiểm tra các thuộc tính cần thiết trong user object
-                    if (!userData.TryGetProperty("userId", out var userIdProp))
+                    var token = tokenProp.GetString();
+                    if (string.IsNullOrEmpty(token))
                     {
-                        if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
-                        {
-                            return Json(new { success = false, message = "Invalid response format: missing userId" });
-                        }
-                        ModelState.AddModelError("", "Invalid response format: missing userId");
-                        return Json(new { success = false, message = "Invalid response format: missing userId" });
+                        return Json(new { success = false, message = "Token is empty" });
                     }
 
-                    if (!userData.TryGetProperty("username", out var usernameProp))
+                    // Lưu vào Session để ApiService sử dụng
+                    HttpContext.Session.SetString("JWToken", token);
+
+                    string role;
+                    JsonElement rolePropEl;
+                    if (data.TryGetProperty("role", out rolePropEl) || data.TryGetProperty("Role", out rolePropEl))
                     {
-                        if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
-                        {
-                            return Json(new { success = false, message = "Invalid response format: missing username" });
-                        }
-                        ModelState.AddModelError("", "Invalid response format: missing username");
-                        return Json(new { success = false, message = "Invalid response format: missing username" });
+                        role = rolePropEl.GetString() ?? "member";
+                    }
+                    else if ((data.TryGetProperty("data", out var dataInnerRole) || data.TryGetProperty("Data", out dataInnerRole)) &&
+                             (dataInnerRole.TryGetProperty("role", out rolePropEl) || dataInnerRole.TryGetProperty("Role", out rolePropEl)))
+                    {
+                        role = rolePropEl.GetString() ?? "member";
+                    }
+                    else
+                    {
+                        role = "member";
                     }
 
-                    if (!userData.TryGetProperty("role", out var roleProp))
-                    {
-                        if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
-                        {
-                            return Json(new { success = false, message = "Invalid response format: missing role" });
-                        }
-                        ModelState.AddModelError("", "Invalid response format: missing role");
-                        return Json(new { success = false, message = "Invalid response format: missing role" });
-                    }
+                    // RedirectUrl tuỳ API, có thể không có
+                    string? redirectUrl = null;
+                    // Tự động redirect theo role
+                    if (role.ToLower() == "admin" || role == "2")
+                        redirectUrl = "/Dashboard/AdminDashboard";
+                    else if (role.ToLower() == "staff" || role == "3")
+                        redirectUrl = "/Dashboard/StaffDashboard";
+                    else
+                        redirectUrl = "/";
 
-                    // Kiểm tra fullName, sử dụng giá trị mặc định nếu không có
-                    string fullName = userData.TryGetProperty("fullName", out var fullNameProp)
-                        ? fullNameProp.GetString() ?? model.Username
-                        : model.Username;
-
-                    var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.NameIdentifier, userIdProp.ToString()),
-                        new Claim(ClaimTypes.Name, usernameProp.GetString()!),
-                        new Claim(ClaimTypes.Role, roleProp.ToString()),
-                        new Claim("FullName", fullName)
-                    };
-
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var authProperties = new AuthenticationProperties
-                    {
-                        IsPersistent = model.RememberMe,
-                        ExpiresUtc = model.RememberMe
-                            ? DateTimeOffset.UtcNow.AddDays(7)  // 7 days for "Remember me"
-                            : DateTimeOffset.UtcNow.AddMinutes(30)  // 30 minutes for regular session
-                    };
-
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-
-                    // Lấy redirectUrl từ API response
-                    userElement.TryGetProperty("redirectUrl", out var redirectUrlProp);
-                    var redirectUrl = redirectUrlProp.ValueKind == JsonValueKind.String
-                        ? redirectUrlProp.GetString()
-                        : null;
-
-                    // Lấy role để có thể dùng làm fallback nếu cần
-                    string role = roleProp.ToString().ToLower();
-
-                    // Trong phần xử lý login thành công (khoảng dòng 130-140)
-                    // Luôn trả về JSON cho AJAX request từ trang Login
-                    // Frontend sẽ quyết định chuyển hướng đi đâu
                     return new JsonResult(new
                     {
                         success = true,
+                        token = token,
                         role = role,
-                        redirectUrl = redirectUrl,
-                        userId = userIdProp.GetString(), // Thêm userId vào response
-                        username = usernameProp.GetString(), // Thêm username nếu cần
-                        fullName = fullName // Thêm fullName nếu cần
+                        redirectUrl = redirectUrl
                     });
                 }
                 else
                 {
-                    var message = "Đăng nhập không thành công.";
-                    if (result.Data.TryGetProperty("message", out var messageProp))
-                    {
-                        message = messageProp.GetString() ?? message;
-                    }
+                    var message = string.IsNullOrEmpty(result.Message) ? "Đăng nhập không thành công." : result.Message;
                     return new JsonResult(new { success = false, message = message });
                 }
             }
@@ -264,20 +237,21 @@ namespace UI.Controllers
         {
             try
             {
-                await _apiService.PostAsync("/api/user/logout");
+                await _apiService.PostAsync("https://localhost:7049/api/v1/Auth/Logout"); // (nếu có endpoint)
             }
             catch
             {
                 // Log error nhưng vẫn tiếp tục logout
             }
 
-            // Sign out từ UI authentication
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            // Xoá token trong Session
+            HttpContext.Session.Remove("JWToken");
+            // Cookie authentication đã vô hiệu hoá
 
             // Nếu là AJAX request, trả về JSON để frontend xử lý
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return Json(new { success = true, redirectUrl = "/" });
+                return Json(new { success = true, redirectUrl = "/", clearToken = true });
             }
 
             return RedirectToAction("Index", "Home");

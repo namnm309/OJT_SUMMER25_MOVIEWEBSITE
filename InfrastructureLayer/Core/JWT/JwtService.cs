@@ -14,7 +14,7 @@ namespace InfrastructureLayer.Core.JWT
 {
     public interface IJwtService
     {
-        string GenerateToken(Guid userId, UserRole role, Guid sessionId, string email, bool isActive, int exp);
+        string GenerateToken(Guid userId, UserRole role, Guid sessionId, string email, string username, bool isActive, int exp);
         Payload? ValidateToken(string token);
     }
     public class JwtService : IJwtService
@@ -30,17 +30,24 @@ namespace InfrastructureLayer.Core.JWT
             _handler = new JwtSecurityTokenHandler();
         }
 
-        public string GenerateToken(Guid userId, UserRole role, Guid sessionId, string email, bool isActive, int exp)
+        public string GenerateToken(Guid userId, UserRole role, Guid sessionId, string email, string username, bool isActive, int exp)
         {
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET") ?? DEFAULT_SECRET);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
+                    // Custom claim để JS dễ dàng đọc userId
+                    new Claim("userId", userId.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                     new("sessionId", sessionId.ToString()),
                     new("isActive", isActive.ToString()),
                     new("email", email),
-                    new("role", role.ToString())
+                    new("username", username),
+                    new(ClaimTypes.Email, email),
+                    new(ClaimTypes.Name, username),
+                    new("role", role.ToString()),
+                    new(ClaimTypes.Role, role.ToString())
                 }),
                 Issuer = userId.ToString(),
                 Expires = DateTime.UtcNow.AddSeconds(exp),

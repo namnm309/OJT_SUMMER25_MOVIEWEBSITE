@@ -55,9 +55,9 @@ namespace ApplicationLayer.Services.JWT
             _httpCtx = httpCtx;
         }
 
-        private string GenerateAccessTk(Guid userId, UserRole role, Guid sessionId, string email, bool isActive)
+        private string GenerateAccessTk(Guid userId, UserRole role, Guid sessionId, string email, string username, bool isActive)
         {
-            return _jwtService.GenerateToken(userId, role, sessionId, email, isActive, JwtConst.ACCESS_TOKEN_EXP);
+            return _jwtService.GenerateToken(userId, role, sessionId, email, username, isActive, JwtConst.ACCESS_TOKEN_EXP);
         }
 
         public async Task<IActionResult> HandleRegisterUser(RegisterReq req)
@@ -137,7 +137,7 @@ namespace ApplicationLayer.Services.JWT
             }
 
             var sessionId = Guid.NewGuid();
-            var accessToken = GenerateAccessTk(user.Id, user.Role, sessionId, user.Email, user.IsActive);
+            var accessToken = GenerateAccessTk(user.Id, user.Role, sessionId, user.Email, user.Username, user.IsActive);
 
             var result = new LoginResp
             {
