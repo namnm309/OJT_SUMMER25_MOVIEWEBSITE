@@ -819,12 +819,14 @@ class BookTicketDashboard {
                             <div class="form-group">
                                 <label>Phương thức thanh toán:</label>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="modalPaymentMethod" id="modalCash" value="cash" checked>
+                                    <input class="form-check-input" type="radio" name="modalPaymentMethod" id="modalCash" value="cash"
+                                        ${currentPaymentMethod === 'cash' ? 'checked' : ''}>
                                     <label class="form-check-label" for="modalCash">Tiền mặt</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="modalPaymentMethod" id="modalCard" value="card">
-                                    <label class="form-check-label" for="modalCard">Thẻ</label>
+                                    <input class="form-check-input" type="radio" name="modalPaymentMethod" id="modalCard" value="vnpay"
+                                        ${currentPaymentMethod === 'vnpay' ? 'checked' : ''}>
+                                    <label class="form-check-label" for="modalCard">VNPay</label>
                                 </div>
                             </div>
                         </div>
@@ -908,7 +910,6 @@ class BookTicketDashboard {
             const ticketsToConvert = useScoreConversion ? parseInt($('#ticketsToConvert').val()) || 0 : 0;
             const paymentMethod = $('input[name="modalPaymentMethod"]:checked').val();
 
-
             const bookingData = {
                 ShowTimeId: this.selectedShowtime.id,
                 SeatIds: this.selectedSeats.map(seat => seat.id),
@@ -916,11 +917,12 @@ class BookTicketDashboard {
                 UseScoreConversion: useScoreConversion,
                 TicketsToConvert: ticketsToConvert,
                 PaymentMethod: paymentMethod,
-                StaffId: 'admin', // Could be from session
+                StaffId: 'admin',
                 Notes: ''
             };
 
-            const response = await fetch('/BookTicket/ConfirmBookingWithScore', {
+            // Bước 1: Tạo booking
+            const bookingResponse = await fetch('/BookTicket/ConfirmBookingWithScore', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -929,29 +931,84 @@ class BookTicketDashboard {
                 body: JSON.stringify(bookingData)
             });
 
-            const result = await response.json();
-            this.hideLoading();
+            const bookingResult = await bookingResponse.json();
 
-            if (result.success && result.data) {
+            if (!bookingResult.success) {
+                this.hideLoading();
+                this.showError(bookingResult.message || 'Đặt vé không thành công');
+                return;
+            }
 
+            // Nếu là thanh toán tiền mặt, hiển thị thông báo thành công ngay
+            if (paymentMethod !== 'vnpay') {
+                this.hideLoading();
                 const confirmModal = bootstrap.Modal.getInstance(document.getElementById('bookingConfirmModal'));
                 confirmModal.hide();
-                
-
-                this.displayBookingSuccess(result.data);
-                
-
+                this.displayBookingSuccess(bookingResult.data);
                 this.resetBookingForm();
                 this.currentStep = 1;
                 this.updateStepDisplay();
-            } else {
-
-                this.showError(result.message || 'Đặt vé không thành công');
+                return;
             }
+
+            // Nếu là VNPay, thực hiện các bước tiếp theo
+            const bookingCode = bookingResult.data.bookingCode;
+
+            // Bước 2: Lấy bookingId từ bookingCode
+            const bookingInfoResponse = await fetch(`/api/v1/booking-ticket/booking/${encodeURIComponent(bookingCode)}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const bookingInfoResult = await bookingInfoResponse.json();
+
+            if (!bookingInfoResult.data || !bookingInfoResult.data.bookingid) {
+                this.hideLoading();
+                this.showError('Không thể lấy thông tin thanh toán');
+                return;
+            }
+
+            const bookingId = bookingInfoResult.data.bookingid;
+            const amount = this.totalPrice; // Tổng số tiền cần thanh toán
+
+            // Bước 3: Tạo thanh toán VNPay
+            const paymentResponse = await fetch('/api/v1/payment/vnpay', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.getAuthToken() // Thêm token nếu cần
+                },
+                body: JSON.stringify({
+                    bookingId: bookingId,
+                    amount: amount,
+                    decription: 'Thanh toán vé xem phim'
+                })
+            });
+
+            const paymentResult = await paymentResponse.json();
+
+            if (paymentResponse.ok && paymentResult) {
+                // Chuyển hướng đến trang thanh toán VNPay
+                window.location.href = paymentResult;
+            } else {
+                this.hideLoading();
+                this.showError('Không thể khởi tạo thanh toán VNPay');
+            }
+
         } catch (error) {
             this.hideLoading();
             this.showError('Có lỗi xảy ra khi đặt vé. Vui lòng thử lại.');
+            console.error(error);
         }
+    }
+
+    getAuthToken() {
+        // đây là hàm chứa token, nếu token được lưu trữ trong localStorage, Nam có thể làm như dưới
+        // Ví dụ: return localStorage.getItem('authToken');
+        return 'dat token o day nha'; 
     }
 
     displayBookingSuccess(bookingData) {
