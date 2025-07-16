@@ -1771,7 +1771,7 @@
                             <label for="editEndDate">Ngày kết thúc <span class="required-field">*</span></label>
                             <input type="date" id="editEndDate" name="endDate" 
                                    value="${endDate ? endDate.split('T')[0] : ''}" required>
-                    </div>
+                        </div>
                         <div class="form-group">
                             <label for="editProductionCompany">Hãng sản xuất</label>
                             <input type="text" id="editProductionCompany" name="productionCompany" value="${productionCompany}">
@@ -1780,12 +1780,12 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="editDirectorInput" style="width:100%">Đạo diễn <span class="required-field">*</span></label>
-                            <input id="editDirectorInput" placeholder="Chọn đạo diễn" />
+                            <select id="editDirectorInput" multiple class="multi-select"></select>
                             <button type="button" class="btn-add-small" style="position:absolute; right:6px; top:30px" onclick="openAddEntityPrompt('director')"><i class="bi bi-plus-lg"></i></button>
                         </div>
                         <div class="form-group">
                             <label for="editActorsInput" style="width:100%">Diễn viên <span class="required-field">*</span></label>
-                            <input id="editActorsInput" placeholder="Chọn diễn viên" />
+                            <select id="editActorsInput" multiple class="multi-select"></select>
                             <button type="button" class="btn-add-small" style="position:absolute; right:6px; top:30px" onclick="openAddEntityPrompt('actor')"><i class="bi bi-plus-lg"></i></button>
                         </div>
                     </div>
@@ -2581,7 +2581,21 @@
             const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
             
 
-            const versionValue = formData.get('version'); // Already "TwoD", "ThreeD", "FourDX"
+            // Chuyển đổi phiên bản từ giá trị chuỗi sang số tương ứng với enum MovieVersion (backend)
+            let versionValue;
+            switch (formData.get('version')) {
+                case 'TwoD':
+                    versionValue = 1; // 2D
+                    break;
+                case 'ThreeD':
+                    versionValue = 2; // 3D
+                    break;
+                case 'FourDX':
+                    versionValue = 3; // 4DX
+                    break;
+                default:
+                    versionValue = 1; // Mặc định 2D
+            }
             
 
             const images = [];
@@ -2663,11 +2677,11 @@
                 // Đảm bảo ngày tháng được chuyển đổi sang UTC
                 releaseDate: formData.get('releaseDate') ? new Date(formData.get('releaseDate') + 'T00:00:00Z').toISOString() : '',
                 endDate: formData.get('endDate') ? new Date(formData.get('endDate') + 'T00:00:00Z').toISOString() : '',
-                directorIds: getSelectValues('addDirectorSelect'),
-                actorIds: getSelectValues('addActorsSelect'),
+                directorIds: getSelectValues('editDirectorInput'),
+                actorIds: getSelectValues('editActorsInput'),
                 productionCompany: formData.get('productionCompany') || '',
                 runningTime: parseInt(formData.get('runningTime')) || 0,
-                version: versionValue || 'TwoD',
+                version: versionValue,
                 rating: parseFloat(formData.get('rating')) || 0,
                 trailerUrl: formData.get('trailerUrl') || '',
                 content: formData.get('content') || '',
@@ -3446,8 +3460,8 @@
                     title: formData.get('title') || '',
                     releaseDate: releaseDate ? new Date(releaseDate).toISOString().split('.')[0] + 'Z' : '',
                     endDate: endDate ? new Date(endDate).toISOString().split('.')[0] + 'Z' : '',
-                    directorIds: getSelectValues('addDirectorSelect'),
-                    actorIds: getSelectValues('addActorsSelect'),
+                    directorIds: getSelectValues('editDirectorInput'),
+                    actorIds: getSelectValues('editActorsInput'),
                     productionCompany: formData.get('productionCompany') || '',
                     runningTime: parseInt(formData.get('runningTime')) || 0,
                     version: versionValue,
@@ -3765,7 +3779,12 @@
                 const val = $('#'+selectId).val();
                 if(val) return Array.isArray(val) ? val : [val];
             }
-            const sel=document.getElementById(selectId);
+            let sel=document.getElementById(selectId);
+            // Fallback: nếu không tìm thấy, thử ánh xạ sang id tương ứng của form thêm phim
+            if(!sel){
+                if(selectId==='editDirectorInput') sel=document.getElementById('addDirectorSelect');
+                else if(selectId==='editActorsInput') sel=document.getElementById('addActorsSelect');
+            }
             if(!sel) return [];
             return Array.from(sel.selectedOptions).map(o=>o.value);
         }
