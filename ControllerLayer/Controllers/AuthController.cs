@@ -1,6 +1,7 @@
 ﻿using ApplicationLayer.DTO.JWT;
 using ApplicationLayer.Middlewares;
 using ApplicationLayer.Services.JWT;
+using Application.ResponseCode;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControllerLayer.Controllers
@@ -57,6 +58,14 @@ namespace ControllerLayer.Controllers
             _logger.LogInformation("Edit Profile");
 
             return await _authService.HandleEditProfile(req);
+        }
+
+        [Protected]
+        [HttpPost("Logout")]
+        public IActionResult Logout()
+        {
+            _logger.LogInformation("Logout");
+            return SuccessResp.Ok("Logged out");
         }
 
         [HttpPost("Register-Email")]

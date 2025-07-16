@@ -162,8 +162,8 @@ namespace UI.Areas.CinemaManagement.Controllers
 
 
         [HttpPost]
-        // [ValidateAntiForgeryToken] // Tạm thời disable để test
-        public async Task<IActionResult> Create(CinemaRoomCreateViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([FromBody] CinemaRoomCreateViewModel model)
         {
             _logger.LogInformation("Create cinema room called. ModelState.IsValid: {IsValid}", ModelState.IsValid);
             _logger.LogInformation("Model data: RoomName={RoomName}, TotalSeats={TotalSeats}, NumberOfRows={NumberOfRows}, NumberOfColumns={NumberOfColumns}", 

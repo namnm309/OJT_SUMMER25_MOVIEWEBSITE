@@ -140,6 +140,8 @@ namespace ApplicationLayer.Services.Payment
                 return new PaymentResponseDto { Success = false };
             }
 
+            Booking? booking = null;
+
             // Xử lý phản hồi theo mã kết quả từ VNPAY
             if (vnp_ResponseCode == "00") // Thanh toán thành công
             {
@@ -147,10 +149,10 @@ namespace ApplicationLayer.Services.Payment
                 transaction.CreatedAt = DateTime.UtcNow;
 
                 // Cập nhật trạng thái booking
-                var booking = await _bookingRepo.FindAsync(b => b.Id == transaction.BookingId);
+                booking = await _bookingRepo.FindAsync(b => b.Id == transaction.BookingId);
                 if (booking != null)
                 {
-                    booking.Status = BookingStatus.Confirmed;
+                    booking.Status = BookingStatus.Completed;
                     await _bookingRepo.UpdateAsync(booking);
 
                     // Cập nhật trạng thái ghế từ Pending → Selected
@@ -173,6 +175,14 @@ namespace ApplicationLayer.Services.Payment
             else
             {
                 transaction.PaymentStatus = PaymentStatusEnum.Failed;
+
+                // Nếu thất bại hoặc bị hủy, cập nhật booking sang Canceled
+                booking = await _bookingRepo.FindAsync(b => b.Id == transaction.BookingId);
+                if (booking != null)
+                {
+                    booking.Status = BookingStatus.Canceled;
+                    await _bookingRepo.UpdateAsync(booking);
+                }
             }
 
             // Lưu trạng thái transaction
@@ -187,7 +197,8 @@ namespace ApplicationLayer.Services.Payment
                 OrderId = vnp_merchantTransactionId,
                 TransactionId = vnp_TransactionId.ToString(),
                 Token = vnp_SecureHash,
-                VnPayResponseCode = vnp_ResponseCode
+                VnPayResponseCode = vnp_ResponseCode,
+                BookingCode = booking != null ? booking.BookingCode : string.Empty
             };
         }
     }

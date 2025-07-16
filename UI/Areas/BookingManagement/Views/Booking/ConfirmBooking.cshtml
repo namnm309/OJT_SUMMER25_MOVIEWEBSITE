@@ -1179,14 +1179,15 @@
                     const formData = new FormData(form);
                     const totalPrice = parseFloat(document.getElementById('finalAmount').textContent.replace(/[^0-9]/g, ''));
                     
-                    // Lấy userId từ localStorage
-                    const userId = localStorage.getItem('userId') || '';
+                    // Lấy userId từ sessionStorage
+                    const userId = sessionStorage.getItem('userId') || '';
                     
                     // Tạo request data
                     const requestData = {
                         showtimeId: showTimeId,
                         seatIds: seatIds,
                         totalPrice: totalPrice,
+                        userId: userId,
                         fullName: formData.get('CustomerName'),
                         email: formData.get('CustomerEmail'),
                         identityCard: formData.get('CustomerIdCard'),
@@ -1197,8 +1198,7 @@
                     const response = await fetch('/BookingManagement/Booking/ProcessBooking', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                            'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(requestData)
                     });

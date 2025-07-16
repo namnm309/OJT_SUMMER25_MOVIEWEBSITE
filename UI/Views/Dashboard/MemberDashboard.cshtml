@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Bảng điều khiển Thành viên";
+    ViewData["Title"] = "Hồ sơ cá nhân";
     Layout = null;
 }
 
@@ -11,402 +11,964 @@
     <title>@ViewData["Title"] - Cinema City</title>
     <link rel="icon" type="image/svg+xml" href="~/cinema-favicon-projector.svg" />
     
-    
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="~/css/new-dashboard.css" />
+    <!-- Homepage CSS -->
+    <link rel="stylesheet" href="~/css/HomePage/base.css" />
+    <link rel="stylesheet" href="~/css/HomePage/header.css" />
+    <link rel="stylesheet" href="~/css/Shared/_header.css" />
+    <link rel="stylesheet" href="~/css/shared-footer.css" />
+        
+    <style>
+        :root {
+            --primary-purple: #6c5ce7;
+            --secondary-purple: #a29bfe;
+            --accent-blue: #74b9ff;
+            --accent-pink: #fd79a8;
+            --success-green: #00b894;
+            --warning-orange: #fdcb6e;
+            --danger-red: #e84393;
+            --dark-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --card-hover: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-muted: #666666;
+            --border-color: #333333;
+            --gradient-primary: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            --gradient-secondary: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            --gradient-accent: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Override homepage styles for profile page */
+        .profile-page {
+            background: var(--dark-bg);
+            min-height: 100vh;
+            padding-top: 100px; /* Space for fixed header */
+        }
+
+        /* Profile Header Section */
+        .profile-hero {
+            background: var(--gradient-primary);
+            padding: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="0,0 1000,0 1000,100 0,80"/></svg>');
+            background-size: cover;
+        }
+
+        .profile-hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-details h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-details p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Main Content */
+        .profile-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-purple);
+            border-bottom-color: var(--primary-purple);
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .profile-card:hover {
+            background: var(--card-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            color: var(--primary-purple);
+        }
+
+        /* Personal Info */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-purple);
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Membership Card */
+        .membership-card {
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            padding: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .membership-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="rgba(255,255,255,0.1)"><circle cx="50" cy="50" r="40"/></svg>');
+            animation: rotate 20s linear infinite;
+        }
+
+        @@keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .membership-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .membership-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .membership-level {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .membership-id {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .membership-benefits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .benefit-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .benefit-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Points System */
+        .points-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .points-card {
+            background: var(--gradient-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .points-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .points-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+
+        /* Vouchers */
+        .voucher-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .voucher-item {
+            background: var(--gradient-accent);
+            border-radius: 16px;
+            padding: 1.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .voucher-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            width: 20px;
+            height: 20px;
+            background: var(--dark-bg);
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .voucher-item::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            background: var(--dark-bg);
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .voucher-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .voucher-discount {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .voucher-code {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .voucher-description {
+            margin-bottom: 1rem;
+        }
+
+        .voucher-expiry {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Transaction History */
+        .transaction-list {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s ease;
+        }
+
+        .transaction-item:hover {
+            background: var(--card-hover);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .transaction-icon.booking {
+            background: var(--gradient-primary);
+        }
+
+        .transaction-icon.payment {
+            background: var(--gradient-secondary);
+        }
+
+        .transaction-icon.refund {
+            background: var(--gradient-accent);
+        }
+
+        .transaction-details {
+            flex: 1;
+        }
+
+        .transaction-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .transaction-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .transaction-amount.positive {
+            color: var(--success-green);
+        }
+
+        .transaction-amount.negative {
+            color: var(--danger-red);
+        }
+
+        .transaction-time {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* Action Button */
+        .action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: inline-block;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .profile-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+
+            .section-tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .profile-content {
+                padding: 1rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .voucher-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    
-    <div class="new-dashboard-layout">
-        
-        <aside class="new-dashboard-sidebar">
+    <div class="profile-page">
+        <!-- Header từ homepage -->
+        @Html.Partial("_Header")
             
-            <div class="new-sidebar-header">
-                <a href="@Url.Action("Index", "Home")" class="new-sidebar-brand">
-                    <div class="new-brand-logo"></div>
-                    <div class="new-brand-text">
-                        <h2>Cinema City</h2>
-                        <p>Member Panel</p>
-                    </div>
-                </a>
-            </div>
-            
-            
-            <nav class="new-sidebar-nav">
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Tổng quan</div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("MemberDashboard", "Dashboard")" class="new-nav-link active">
-                            <i class="fas fa-home"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Home")" class="new-nav-link">
-                            <i class="fas fa-globe"></i>
-                            <span>Trang chủ</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Đặt vé & Xem phim</div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Movies")" class="new-nav-link">
-                            <i class="fas fa-film"></i>
-                            <span>Phim đang chiếu</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("SelectMovieAndShowtime", "BookTicket")" class="new-nav-link">
-                            <i class="fas fa-ticket-alt"></i>
-                            <span>Đặt vé ngay</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Index", "Promotions")" class="new-nav-link">
-                            <i class="fas fa-gift"></i>
-                            <span>Khuyến mãi</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Tài khoản của tôi</div>
-                    <div class="new-nav-item">
-                        <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="new-nav-link">
-                            <i class="fas fa-user-edit"></i>
-                            <span>Hồ sơ cá nhân</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-history"></i>
-                            <span>Lịch sử đặt vé</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-star"></i>
-                            <span>Điểm thưởng</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="new-nav-section">
-                    <div class="new-nav-section-title">Hỗ trợ</div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-question-circle"></i>
-                            <span>Trợ giúp</span>
-                        </a>
-                    </div>
-                    <div class="new-nav-item">
-                        <a href="#" class="new-nav-link">
-                            <i class="fas fa-envelope"></i>
-                            <span>Liên hệ</span>
-                        </a>
-                    </div>
-                </div>
-            </nav>
-            
-            
-            <div class="new-sidebar-user">
-                <div class="new-user-profile">
-                    <div class="new-user-avatar">
+        <!-- Profile Hero Section -->
+        <section class="profile-hero">
+            <div class="profile-hero-content">
+                <div class="profile-info">
+                    <div class="profile-avatar">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            @User.Identity.Name?.Substring(0, 1).ToUpper()
+                            @(ViewBag.FullName?.ToString()?.Substring(0, 1).ToUpper() ?? "U")
                         }
                         else
                         {
-                            <span>M</span>
+                            <span>U</span>
                         }
                     </div>
-                    <div class="new-user-info">
-                        <h4>
-                            @if (User.Identity?.IsAuthenticated == true)
-                            {
-                                @(User.Identity.Name?.Length > 12 ? User.Identity.Name.Substring(0, 12) + "..." : User.Identity.Name)
-                            }
-                            else
-                            {
-                                <span>Member</span>
-                            }
-                        </h4>
-                        <p>Thành viên</p>
+                    <div class="profile-details">
+                        <h1>@(ViewBag.FullName ?? "Người dùng")</h1>
+                        <p>@ViewBag.Email</p>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">1,250</div>
+                                <div class="stat-label">Điểm thưởng</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">8</div>
+                                <div class="stat-label">Vé đã đặt</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">Bạc</div>
+                                <div class="stat-label">Hạng thành viên</div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="new-user-actions">
-                    <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="new-user-action-btn">
-                        <i class="fas fa-user"></i>
-                    </a>
-                    <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="new-user-action-btn" style="border: none;">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </button>
-                    </form>
                 </div>
             </div>
-        </aside>
+        </section>
 
-        
-        <main class="new-dashboard-main">
-            <div class="new-dashboard-content">
-                
-                <div class="new-page-header animate-fade-in">
-                    <h1 class="new-page-title">
+        <!-- Main Content -->
+        <main class="profile-content">
+            <!-- Navigation Tabs -->
+            <div class="section-tabs">
+                <button class="tab-btn active" onclick="showTab('personal-info')">
+                    <i class="fas fa-user"></i> Thông tin cá nhân
+                </button>
+                <button class="tab-btn" onclick="showTab('membership')">
+                    <i class="fas fa-id-card"></i> Thẻ thành viên
+                </button>
+                <button class="tab-btn" onclick="showTab('points')">
+                    <i class="fas fa-star"></i> Điểm thưởng
+                </button>
+                <button class="tab-btn" onclick="showTab('vouchers')">
+                    <i class="fas fa-gift"></i> Voucher
+                </button>
+                <button class="tab-btn" onclick="showTab('history')">
+                    <i class="fas fa-history"></i> Lịch sử giao dịch
+                        </button>
+            </div>
+
+            <!-- Personal Info Tab -->
+            <div id="personal-info" class="tab-content active">
+                <div class="profile-card">
+                    <div class="card-header">
                         <i class="fas fa-user-circle"></i>
-                        Chào mừng trở lại!
-                    </h1>
-                    <p class="new-page-subtitle">Khám phá những bộ phim mới và đặt vé dễ dàng</p>
+                        <h3>Thông tin cá nhân</h3>
                 </div>
-                
-                
-                <div class="new-stats-grid animate-fade-in">
-                    <div class="new-stat-card">
-                        <div class="new-stat-header">
-                            <div class="new-stat-icon tickets">
-                                <i class="fas fa-ticket-alt"></i>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Họ và tên:</span>
+                            <span class="info-value">@(ViewBag.FullName ?? "Chưa cập nhật")</span>
                             </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">@(ViewBag.Email ?? "Chưa cập nhật")</span>
                         </div>
-                        <div class="new-stat-value">8</div>
-                        <div class="new-stat-label">Vé đã đặt</div>
-                        <div class="new-stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>+2 vé tháng này</span>
+                        <div class="info-item">
+                            <span class="info-label">Tên đăng nhập:</span>
+                            <span class="info-value">@(ViewBag.UserName ?? "Chưa cập nhật")</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Vai trò:</span>
+                            <span class="info-value">
+                                <span class="badge" style="background: var(--primary-purple); color: white; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                                    @(ViewBag.Role ?? "Member")
+                                </span>
+                            </span>
+                    </div>
+                        <div class="info-item">
+                            <span class="info-label">Trạng thái:</span>
+                            <span class="info-value">
+                                @if(ViewBag.IsActive == true)
+                                {
+                                    <span class="badge" style="background: var(--success-green); color: white; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                                        <i class="fas fa-check-circle"></i> Hoạt động
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge" style="background: var(--danger-red); color: white; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                                        <i class="fas fa-times-circle"></i> Không hoạt động
+                                    </span>
+                                }
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Ngày tham gia:</span>
+                            <span class="info-value">@(ViewBag.CreatedAt ?? "Chưa cập nhật")</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 2rem; text-align: center;">
+                        <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="action-btn">
+                            <i class="fas fa-edit"></i> Chỉnh sửa thông tin
+                        </a>
+                    </div>
                         </div>
                     </div>
 
-                    <div class="new-stat-card">
-                        <div class="new-stat-header">
-                            <div class="new-stat-icon movies">
-                                <i class="fas fa-film"></i>
-                            </div>
-                        </div>
-                        <div class="new-stat-value">15</div>
-                        <div class="new-stat-label">Phim đã xem</div>
-                        <div class="new-stat-change positive">
-                            <i class="fas fa-heart"></i>
-                            <span>Bạn yêu phim!</span>
-                        </div>
+            <!-- Membership Tab -->
+            <div id="membership" class="tab-content">
+                <div class="profile-card">
+                    <div class="card-header">
+                        <i class="fas fa-id-card"></i>
+                        <h3>Thẻ thành viên</h3>
                     </div>
-
-                    <div class="new-stat-card">
-                        <div class="new-stat-header">
-                            <div class="new-stat-icon users">
+                    <div class="membership-card">
+                        <div class="membership-content">
+                            <div class="membership-header">
+                                <div>
+                                    <div class="membership-level">Thành viên Bạc</div>
+                                    <div class="membership-id">ID: @(ViewBag.UserId ?? "N/A")</div>
+                                </div>
+                                <div style="font-size: 3rem;">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                            </div>
+                            <div class="membership-benefits">
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="fas fa-percentage"></i>
+                                    </div>
+                                    <div>Giảm 10% tất cả vé</div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="fas fa-calendar-plus"></i>
+                                    </div>
+                                    <div>Đặt vé ưu tiên</div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="fas fa-birthday-cake"></i>
+                                    </div>
+                                    <div>Ưu đãi sinh nhật</div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
                                 <i class="fas fa-star"></i>
+                                    </div>
+                                    <div>Tích điểm x2</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="new-stat-value">1,250</div>
-                        <div class="new-stat-label">Điểm thưởng</div>
-                        <div class="new-stat-change positive">
-                            <i class="fas fa-plus"></i>
-                            <span>+120 điểm mới</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Points Tab -->
+            <div id="points" class="tab-content">
+                <div class="points-overview">
+                    <div class="points-card">
+                        <div class="points-value">1,250</div>
+                        <div class="points-label">Điểm hiện tại</div>
+                    </div>
+                    <div class="points-card">
+                        <div class="points-value">750</div>
+                        <div class="points-label">Điểm cần để lên hạng</div>
+                    </div>
+                    <div class="points-card">
+                        <div class="points-value">120</div>
+                        <div class="points-label">Điểm tháng này</div>
                         </div>
                     </div>
 
-                    <div class="new-stat-card">
-                        <div class="new-stat-header">
-                            <div class="new-stat-icon revenue">
-                                <i class="fas fa-calendar-check"></i>
+                <div class="profile-card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Tiến trình lên hạng</h3>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="margin-bottom: 1rem;">
+                            <span style="font-size: 1.2rem; color: var(--text-secondary);">Tiến trình đến hạng Vàng</span>
                             </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 62.5%;"></div>
                         </div>
-                        <div class="new-stat-value">3</div>
-                        <div class="new-stat-label">Tháng thành viên</div>
-                        <div class="new-stat-change positive">
-                            <i class="fas fa-trophy"></i>
-                            <span>Thành viên tích cực</span>
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                            <span>1,250 điểm</span>
+                            <span>2,000 điểm</span>
                         </div>
                     </div>
                 </div>
 
-                
-                <div class="new-content-grid animate-slide-in">
-                    
-                    <div class="new-content-card">
-                        <div class="new-card-header">
-                            <h3 class="new-card-title">
-                                <i class="fas fa-rocket"></i>
-                                Thao tác nhanh
-                            </h3>
+                <div class="profile-card">
+                    <div class="card-header">
+                        <i class="fas fa-trophy"></i>
+                        <h3>Cách thức tích điểm</h3>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Đặt vé phim:</span>
+                            <span class="info-value">+10 điểm/vé</span>
                         </div>
-                        <div class="new-quick-actions">
-                            <a href="@Url.Action("SelectMovieAndShowtime", "BookTicket")" class="new-action-btn">
+                        <div class="info-item">
+                            <span class="info-label">Đánh giá phim:</span>
+                            <span class="info-value">+5 điểm/đánh giá</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Giới thiệu bạn bè:</span>
+                            <span class="info-value">+50 điểm/người</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Sinh nhật:</span>
+                            <span class="info-value">+100 điểm/năm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vouchers Tab -->
+            <div id="vouchers" class="tab-content">
+                <div class="profile-card">
+                    <div class="card-header">
+                        <i class="fas fa-gift"></i>
+                        <h3>Voucher của bạn</h3>
+                        </div>
+                    <div class="voucher-grid">
+                        <div class="voucher-item">
+                            <div class="voucher-header">
+                                <div class="voucher-discount">20%</div>
+                                <div class="voucher-code">SAVE20</div>
+                                </div>
+                            <div class="voucher-description">
+                                Giảm 20% cho tất cả vé phim
+                                </div>
+                            <div class="voucher-expiry">
+                                <i class="fas fa-clock"></i> Hết hạn: 31/12/2024
+                            </div>
+                                </div>
+                        <div class="voucher-item">
+                            <div class="voucher-header">
+                                <div class="voucher-discount">50K</div>
+                                <div class="voucher-code">COMBO50</div>
+                                </div>
+                            <div class="voucher-description">
+                                Giảm 50K cho combo bắp nước
+                            </div>
+                            <div class="voucher-expiry">
+                                <i class="fas fa-clock"></i> Hết hạn: 15/01/2025
+                                </div>
+                                </div>
+                        <div class="voucher-item">
+                            <div class="voucher-header">
+                                <div class="voucher-discount">1+1</div>
+                                <div class="voucher-code">FRIEND</div>
+                            </div>
+                            <div class="voucher-description">
+                                Mua 1 tặng 1 vé phim cuối tuần
+                                </div>
+                            <div class="voucher-expiry">
+                                <i class="fas fa-clock"></i> Hết hạn: 28/02/2025
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction History Tab -->
+            <div id="history" class="tab-content">
+                <div class="profile-card">
+                    <div class="card-header">
+                        <i class="fas fa-history"></i>
+                        <h3>Lịch sử giao dịch</h3>
+                    </div>
+                    <div class="transaction-list">
+                        <div class="transaction-item">
+                            <div class="transaction-icon booking">
                                 <i class="fas fa-ticket-alt"></i>
-                                <span>Đặt vé ngay</span>
-                            </a>
-                            <a href="@Url.Action("Index", "Movies")" class="new-action-btn">
-                                <i class="fas fa-film"></i>
-                                <span>Phim đang chiếu</span>
-                            </a>
-                            <a href="@Url.Action("Index", "Promotions")" class="new-action-btn">
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">Đặt vé phim "Avengers: Endgame"</div>
+                                <div class="transaction-subtitle">Rạp Cinema City - Phòng 1</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="transaction-amount negative">-180,000đ</div>
+                                <div class="transaction-time">Hôm nay, 14:30</div>
+                            </div>
+                        </div>
+                        <div class="transaction-item">
+                            <div class="transaction-icon payment">
+                                <i class="fas fa-star"></i>
+                                </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">Nhận điểm thưởng</div>
+                                <div class="transaction-subtitle">Từ việc đặt vé phim</div>
+                                </div>
+                            <div style="text-align: right;">
+                                <div class="transaction-amount positive">+120 điểm</div>
+                                <div class="transaction-time">Hôm nay, 14:30</div>
+                            </div>
+                                </div>
+                        <div class="transaction-item">
+                            <div class="transaction-icon booking">
+                                <i class="fas fa-popcorn"></i>
+                                </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">Mua combo bắp nước</div>
+                                <div class="transaction-subtitle">Combo couple size L</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="transaction-amount negative">-85,000đ</div>
+                                <div class="transaction-time">Hôm qua, 19:15</div>
+                            </div>
+                        </div>
+                        <div class="transaction-item">
+                            <div class="transaction-icon refund">
+                                <i class="fas fa-undo"></i>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">Hoàn tiền vé</div>
+                                <div class="transaction-subtitle">Hủy vé phim "Spider-Man"</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="transaction-amount positive">+150,000đ</div>
+                                <div class="transaction-time">2 ngày trước, 10:20</div>
+                    </div>
+                        </div>
+                        <div class="transaction-item">
+                            <div class="transaction-icon payment">
                                 <i class="fas fa-gift"></i>
-                                <span>Ưu đãi hot</span>
-                            </a>
-                            <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="new-action-btn">
-                                <i class="fas fa-user-edit"></i>
-                                <span>Cập nhật hồ sơ</span>
-                            </a>
-                            <a href="#" class="new-action-btn">
-                                <i class="fas fa-history"></i>
-                                <span>Lịch sử đặt vé</span>
-                            </a>
-                            <a href="#" class="new-action-btn">
-                                <i class="fas fa-star"></i>
-                                <span>Điểm thưởng</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    
-                    <div class="new-content-card">
-                        <div class="new-card-header">
-                            <h3 class="new-card-title">
-                                <i class="fas fa-clock"></i>
-                                Hoạt động gần đây
-                            </h3>
-                        </div>
-                        <div class="new-activity-feed">
-                            <div class="new-activity-item">
-                                <div class="new-activity-icon success">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                                <div class="new-activity-content">
-                                    <div class="new-activity-title">Đặt vé thành công</div>
-                                    <div class="new-activity-time">Hôm nay 14:30</div>
-                                </div>
                             </div>
-                            <div class="new-activity-item">
-                                <div class="new-activity-icon info">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div class="new-activity-content">
-                                    <div class="new-activity-title">Nhận 120 điểm thưởng</div>
-                                    <div class="new-activity-time">Hôm nay 14:30</div>
-                                </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">Sử dụng voucher</div>
+                                <div class="transaction-subtitle">Voucher giảm 20% - SAVE20</div>
                             </div>
-                            <div class="new-activity-item">
-                                <div class="new-activity-icon warning">
-                                    <i class="fas fa-film"></i>
-                                </div>
-                                <div class="new-activity-content">
-                                    <div class="new-activity-title">Xem phim "Avengers"</div>
-                                    <div class="new-activity-time">Hôm qua 19:00</div>
-                                </div>
-                            </div>
-                            <div class="new-activity-item">
-                                <div class="new-activity-icon success">
-                                    <i class="fas fa-gift"></i>
-                                </div>
-                                <div class="new-activity-content">
-                                    <div class="new-activity-title">Sử dụng ưu đãi 20%</div>
-                                    <div class="new-activity-time">3 ngày trước</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                
-                <div class="new-content-grid animate-slide-in" style="margin-top: 2rem;">
-                    
-                    <div class="new-content-card">
-                        <div class="new-card-header">
-                            <h3 class="new-card-title">
-                                <i class="fas fa-crown"></i>
-                                Quyền lợi thành viên
-                            </h3>
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
-                            <div style="display: flex; gap: 1rem; padding: 1rem; background: var(--content-secondary); border-radius: 8px;">
-                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
-                                    <i class="fas fa-percentage"></i>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Giảm giá 10%</div>
-                                    <div style="font-size: 0.85rem; color: var(--text-muted);">Áp dụng cho tất cả vé phim</div>
-                                </div>
-                            </div>
-                            <div style="display: flex; gap: 1rem; padding: 1rem; background: var(--content-secondary); border-radius: 8px;">
-                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #f093fb, #f5576c); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
-                                    <i class="fas fa-birthday-cake"></i>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Ưu đãi sinh nhật</div>
-                                    <div style="font-size: 0.85rem; color: var(--text-muted);">Vé miễn phí trong tháng sinh nhật</div>
-                                </div>
-                            </div>
-                            <div style="display: flex; gap: 1rem; padding: 1rem; background: var(--content-secondary); border-radius: 8px;">
-                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #4facfe, #00f2fe); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
-                                    <i class="fas fa-calendar-plus"></i>
-                                </div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Đặt trước ưu tiên</div>
-                                    <div style="font-size: 0.85rem; color: var(--text-muted);">Đặt vé sớm hơn 7 ngày</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    
-                    <div class="new-content-card">
-                        <div class="new-card-header">
-                            <h3 class="new-card-title">
-                                <i class="fas fa-chart-line"></i>
-                                Tiến trình điểm thưởng
-                            </h3>
-                        </div>
-                        <div style="text-align: center; padding: 1rem;">
-                            <div style="width: 120px; height: 120px; margin: 0 auto 1rem; position: relative; border-radius: 50%; background: conic-gradient(var(--primary-purple) 0deg 250deg, var(--content-border) 250deg 360deg); display: flex; align-items: center; justify-content: center;">
-                                <div style="width: 80px; height: 80px; background: var(--content-bg); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple);">1,250</div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">điểm</div>
-                                </div>
-                            </div>
-                            <div style="margin-bottom: 1rem;">
-                                <div style="font-weight: 600; margin-bottom: 0.5rem;">Còn 750 điểm để lên hạng VIP</div>
-                                <div style="width: 100%; height: 8px; background: var(--content-border); border-radius: 4px; overflow: hidden;">
-                                    <div style="width: 62%; height: 100%; background: linear-gradient(90deg, var(--primary-purple), var(--accent-blue));"></div>
-                                </div>
-                            </div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted);">
-                                Hạng hiện tại: <strong style="color: var(--primary-purple);">Thành viên Bạc</strong>
+                            <div style="text-align: right;">
+                                <div class="transaction-amount positive">-36,000đ</div>
+                                <div class="transaction-time">3 ngày trước, 16:45</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
+
+        <!-- Footer từ homepage -->
+        @await Html.PartialAsync("_SharedFooter")
     </div>
 
-    
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentPath = window.location.pathname.toLowerCase();
-            const navLinks = document.querySelectorAll('.new-nav-link');
-            
-            navLinks.forEach(link => {
-                const href = link.getAttribute('href')?.toLowerCase();
-                if (href && currentPath.includes(href)) {
-
-                    navLinks.forEach(l => l.classList.remove('active'));
-
-                    link.classList.add('active');
-                }
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
             });
             
-            console.log('✅ New Member Dashboard Loaded Successfully');
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ User Profile Loaded Successfully');
+            
+            // Add smooth scrolling for better UX
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                }
+            });
+            });
         });
     </script>
 </body>

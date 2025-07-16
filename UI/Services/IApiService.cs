@@ -21,6 +21,9 @@ namespace UI.Services
 
         // POST request không cần response data (như logout)
         Task<ApiResponse<bool>> PostAsync(string endpoint, object? data = null);
+
+        // POST request với response dạng string thuần túy (không phải JSON)
+        Task<ApiResponse<string>> PostStringAsync(string endpoint, object? data = null);
     }
 
     // Wrapper class cho API response với metadata

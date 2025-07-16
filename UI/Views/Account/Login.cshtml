@@ -110,6 +110,21 @@
                     contentType: 'application/x-www-form-urlencoded',
                     success: function (response) {
                         if (response.success) {
+                            if (response.token) {
+                                sessionStorage.setItem('jwtToken', response.token);
+                                try {
+                                    const payload = JSON.parse(atob(response.token.split('.')[1]));
+                                    if (payload.userId) {
+                                        sessionStorage.setItem('userId', payload.userId);
+                                    }
+                                } catch (e) {
+                                    console.warn('Failed to parse userId from token', e);
+                                }
+                            }
+                            if (response.role) {
+                                sessionStorage.setItem('userRole', response.role);
+                            }
+
                             window.location.href = response.redirectUrl || '/';
                         } else {
                             // Hiển thị thông báo lỗi

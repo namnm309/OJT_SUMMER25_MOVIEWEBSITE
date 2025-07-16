@@ -15,9 +15,73 @@
 
         function confirmDelete(roomId, roomName) {
             document.getElementById('roomNameToDelete').textContent = roomName;
-            const deleteUrl = '@Url.Action("Delete")';
-            document.getElementById('deleteForm').action = deleteUrl + '/' + roomId;
             document.getElementById('deleteModal').style.display = 'block';
+            
+            // Lưu roomId để dùng khi submit
+            document.getElementById('deleteModal').setAttribute('data-room-id', roomId);
+        }
+
+        async function submitDeleteForm() {
+            const roomId = document.getElementById('deleteModal').getAttribute('data-room-id');
+            const submitBtn = document.getElementById('deleteBtn');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xóa...';
+            
+            try {
+                const response = await fetch(`https://localhost:7049/api/v1/cinemaroom/Delete/${roomId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const responseText = await response.text();
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (e) {
+                    throw new Error(`Invalid JSON response: ${responseText}`);
+                }
+                
+                if (response.ok && (result.Code === 200 || result.code === 200)) {
+                    closeDeleteModal();
+                    
+                    const successAlert = document.createElement('div');
+                    successAlert.className = 'alert alert-success';
+                    successAlert.innerHTML = `
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span>${result.Message || result.message || 'Xóa phòng chiếu thành công!'}</span>
+                        <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    document.querySelector('.page-header').after(successAlert);
+                    
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    throw new Error(result.error || result.message || result.Message || 'Có lỗi xảy ra khi xóa phòng chiếu');
+                }
+            } catch (error) {
+                console.error('Error deleting room:', error);
+                
+                const errorAlert = document.createElement('div');
+                errorAlert.className = 'alert alert-danger';
+                errorAlert.innerHTML = `
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <div>${error.message}</div>
+                    <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                document.querySelector('.page-header').after(errorAlert);
+                
+                setTimeout(() => errorAlert.remove(), 5000);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
         }
 
         function closeDeleteModal() {
@@ -52,6 +116,20 @@
         function openCreateModal() {
             document.getElementById('createModal').style.display = 'block';
             setTimeout(() => document.getElementById('roomName').focus(), 100);
+            
+            // Thêm event listeners cho các input số hàng và số cột
+            const rowsInput = document.getElementById('numberOfRows');
+            const colsInput = document.getElementById('numberOfColumns');
+            
+            if (rowsInput) {
+                rowsInput.addEventListener('input', calculateTotalSeats);
+                rowsInput.addEventListener('change', calculateTotalSeats);
+            }
+            
+            if (colsInput) {
+                colsInput.addEventListener('input', calculateTotalSeats);
+                colsInput.addEventListener('change', calculateTotalSeats);
+            }
         }
 
         function closeCreateModal() {
@@ -103,23 +181,99 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tạo...';
             
             try {
-                const formData = new FormData();
-                formData.append('RoomName', event.target.RoomName.value);
-                formData.append('TotalSeats', event.target.TotalSeats.value);
-                formData.append('NumberOfRows', event.target.NumberOfRows.value);
-                formData.append('NumberOfColumns', event.target.NumberOfColumns.value);
+                // Lấy dữ liệu từ form
+                const roomName = event.target.RoomName.value;
+                const totalSeats = parseInt(event.target.TotalSeats.value) || 0;
+                const numberOfRows = parseInt(event.target.NumberOfRows.value) || 0;
+                const numberOfColumns = parseInt(event.target.NumberOfColumns.value) || 0;
 
-                const response = await fetch('@Url.Action("Create")', {
+                // Validation
+                if (!roomName || roomName.trim() === '') {
+                    throw new Error('Tên phòng chiếu không được để trống');
+                }
+
+                if (numberOfRows <= 0 || numberOfRows > 50) {
+                    throw new Error('Số hàng phải từ 1 đến 50');
+                }
+
+                if (numberOfColumns <= 0 || numberOfColumns > 50) {
+                    throw new Error('Số cột phải từ 1 đến 50');
+                }
+
+                if (totalSeats <= 0) {
+                    throw new Error('Tổng số ghế phải lớn hơn 0');
+                }
+
+                // Kiểm tra xem số ghế có khớp với layout không
+                const calculatedSeats = numberOfRows * numberOfColumns;
+                if (calculatedSeats !== totalSeats) {
+                    throw new Error(`Số ghế không khớp: ${numberOfRows} hàng x ${numberOfColumns} cột = ${calculatedSeats}, nhưng tổng số ghế = ${totalSeats}`);
+                }
+
+                // Debug log
+                console.log('Form data being sent:');
+                console.log('RoomName:', roomName);
+                console.log('TotalSeats:', totalSeats);
+                console.log('NumberOfRows:', numberOfRows);
+                console.log('NumberOfColumns:', numberOfColumns);
+
+                // Tạo object dữ liệu
+                const requestData = {
+                    RoomName: roomName,
+                    TotalSeats: totalSeats,
+                    NumberOfRows: numberOfRows,
+                    NumberOfColumns: numberOfColumns,
+                    DefaultSeatPrice: 100000 // Giá ghế mặc định
+                };
+
+                console.log('Request data object:', requestData);
+                console.log('JSON string:', JSON.stringify(requestData));
+
+                // Thêm CSRF token vào headers
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                };
+                
+                // API call không cần CSRF token
+                // if (token) {
+                //     headers['RequestVerificationToken'] = token;
+                //     console.log('CSRF token found and added to headers');
+                // } else {
+                //     console.warn('CSRF token not found');
+                // }
+
+                const response = await fetch('https://localhost:7049/api/v1/cinemaroom/Add', {
                     method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: formData
+                    headers: headers,
+                    body: JSON.stringify(requestData)
                 });
                 
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const responseText = await response.text();
+                console.log('Response text:', responseText);
+                
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (e) {
+                    console.error('Failed to parse JSON response:', e);
+                    throw new Error(`Invalid JSON response: ${responseText}`);
+                }
+                
+                console.log('Response data:', result);
+                console.log('Response Code:', result.Code);
+                console.log('Response code:', result.code);
+                console.log('Response success:', result.success);
+                console.log('Response Message:', result.Message);
+                console.log('Response message:', result.message);
+                
                 if (response.ok) {
-                    const result = await response.json();
-                    if (result.success) {
+                    if (result.Code === 200 || result.code === 200 || result.success) {
                         closeCreateModal();
                         
 
@@ -127,7 +281,7 @@
                         successAlert.className = 'alert alert-success';
                         successAlert.innerHTML = `
                             <i class="fas fa-check-circle me-2"></i>
-                            <span>Thêm phòng chiếu thành công!</span>
+                            <span>${result.Message || result.message || 'Thêm phòng chiếu thành công!'}</span>
                             <button type="button" class="alert-close" onclick="this.parentElement.remove()">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -138,7 +292,7 @@
                         setTimeout(() => window.location.reload(), 1500);
                     } else {
 
-                        let errorMessage = result.message || 'Có lỗi xảy ra';
+                        let errorMessage = result.message || result.Message || result.error || 'Có lỗi xảy ra';
                         if (result.errors) {
                             const errorDetails = Object.entries(result.errors)
                                 .map(([key, messages]) => `${key}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
@@ -148,9 +302,12 @@
                         throw new Error(errorMessage);
                     }
                 } else {
-                    const errorText = await response.text();
-                    console.error('Server response:', errorText);
-                    throw new Error(`Server error: ${response.status} - ${response.statusText}`);
+                    // Xử lý error response từ API
+                    if (result.error) {
+                        throw new Error(result.error);
+                    } else {
+                        throw new Error(`Server error: ${response.status} - ${response.statusText}`);
+                    }
                 }
             } catch (error) {
                 console.error('Error creating room:', error);
@@ -197,11 +354,10 @@
             
             try {
 
-                const detailsUrl = '@Url.Action("Details", "CinemaRoom", new { area = "CinemaManagement" })';
-                const fullUrl = `${detailsUrl}?id=${roomId}`;
-                console.log('Fetching from URL:', fullUrl); // Debug log
+                const detailsUrl = `https://localhost:7049/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
+                console.log('Fetching from URL:', detailsUrl); // Debug log
                 
-                const response = await fetch(fullUrl, {
+                const response = await fetch(detailsUrl, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
                         'Accept': 'application/json'
@@ -485,11 +641,10 @@
             
             try {
 
-                const detailsUrl = '@Url.Action("Details", "CinemaRoom", new { area = "CinemaManagement" })';
-                const fullDetailsUrl = `${detailsUrl}?id=${roomId}`;
-                console.log('Fetching details from URL:', fullDetailsUrl); // Debug log
+                const detailsUrl = `https://localhost:7049/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
+                console.log('Fetching details from URL:', detailsUrl); // Debug log
                 
-                const detailsResponse = await fetch(fullDetailsUrl, {
+                const detailsResponse = await fetch(detailsUrl, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
                         'Accept': 'application/json'
@@ -640,6 +795,10 @@
                     </div>
                 </form>
             `;
+            // Lưu số hàng/cột ban đầu vào form để so sánh khi submit
+            const editForm = document.getElementById('editRoomForm');
+            editForm.setAttribute('data-original-rows', numberOfRows);
+            editForm.setAttribute('data-original-cols', numberOfColumns);
         }
 
         function calculateEditTotalSeats() {
@@ -687,39 +846,57 @@
                 return;
             }
             
+            // Lấy số hàng/cột ban đầu từ roomData (gắn vào form khi renderEditForm)
+            const originalRows = parseInt(form.getAttribute('data-original-rows'));
+            const originalCols = parseInt(form.getAttribute('data-original-cols'));
+            
             // Tạo dữ liệu để gửi đi
             data.RoomName = roomName;
             data.NumberOfRows = numberOfRows;
             data.NumberOfColumns = numberOfColumns;
             data.TotalSeats = totalSeats;
+            // Chỉ gửi RegenerateSeats: true nếu layout thay đổi
+            data.RegenerateSeats = (numberOfRows !== originalRows || numberOfColumns !== originalCols);
             
             try {
-                const updateUrl = '@Url.Action("Edit", "CinemaRoom", new { area = "CinemaManagement" })';
-                const fullUpdateUrl = `${updateUrl}?id=${roomId}`;
-                console.log('Updating room at URL:', fullUpdateUrl, 'with data:', data); // Debug log
+                const updateUrl = `https://localhost:7049/api/v1/cinemaroom/Update/${roomId}`;
+                console.log('Updating room at URL:', updateUrl, 'with data:', data); // Debug log
                 
-                const response = await fetch(fullUpdateUrl, {
-                    method: 'POST',
+                const response = await fetch(updateUrl, {
+                    method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify(data)
                 });
                 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('Server response:', errorText);
-                    throw new Error(`Server error: ${response.status} - ${response.statusText}`);
+                const responseText = await response.text();
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (e) {
+                    throw new Error(`Invalid JSON response: ${responseText}`);
                 }
                 
-                const result = await response.json();
-                if (result.success) {
-
-                    window.location.reload();
+                if (response.ok && (result.Code === 200 || result.code === 200)) {
+                    closeEditModal();
+                    
+                    const successAlert = document.createElement('div');
+                    successAlert.className = 'alert alert-success';
+                    successAlert.innerHTML = `
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span>${result.Message || result.message || 'Cập nhật phòng chiếu thành công!'}</span>
+                        <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    document.querySelector('.page-header').after(successAlert);
+                    
+                    setTimeout(() => window.location.reload(), 1500);
                 } else {
-                    throw new Error(result.message || 'Có lỗi xảy ra khi cập nhật phòng chiếu');
+                    throw new Error(result.error || result.message || result.Message || 'Có lỗi xảy ra khi cập nhật phòng chiếu');
                 }
             } catch (error) {
                 console.error('Error updating room:', error);

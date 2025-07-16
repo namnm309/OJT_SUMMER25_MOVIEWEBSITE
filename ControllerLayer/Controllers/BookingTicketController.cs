@@ -269,5 +269,23 @@ namespace ControllerLayer.Controllers
         {
             return await _seatService.HoldSeat(request);
         }
+
+        [HttpGet("booking-id/{bookingCode}")]
+        public IActionResult GetBookingIdByCode(string bookingCode)
+        {
+            if (string.IsNullOrEmpty(bookingCode)) return BadRequest(new { message = "bookingCode is required" });
+ 
+            var id = _context.Bookings
+                .Where(b => b.BookingCode == bookingCode)
+                .Select(b => b.Id)
+                .FirstOrDefault();
+ 
+            if (id == Guid.Empty)
+            {
+                return NotFound(new { message = "Không tìm thấy booking" });
+            }
+ 
+            return Ok(new { bookingId = id });
+        }
     }
 }

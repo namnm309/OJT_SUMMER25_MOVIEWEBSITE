@@ -57,11 +57,11 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> GetByIdAsync(Guid movieId)
         {
-            var payload = ExtractPayload();
-            if (payload == null)
-            {
-                return ErrorResp.Unauthorized("Invalid token");
-            }
+            //var payload = ExtractPayload();
+            //if (payload == null)
+            //{
+            //    return ErrorResp.Unauthorized("Invalid token");
+            //}
 
             var movie = await _movieRepo.FirstOrDefaultAsync(
                 m => m.Id == movieId,
@@ -580,11 +580,11 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> GetRecommended()
         {
-            var payload = ExtractPayload();
-            if (payload == null)
-            {
-                return ErrorResp.Unauthorized("Invalid token");
-            }
+            //var payload = ExtractPayload();
+            //if (payload == null)
+            //{
+            //    return ErrorResp.Unauthorized("Invalid token");
+            //}
 
             var movies = await _movieRepo.WhereAsync(
                 filter: m => m.IsRecommended == true,
@@ -601,11 +601,11 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> GetComingSoon()
         {
-            var payload = ExtractPayload();
-            if (payload == null)
-            {
-                return ErrorResp.Unauthorized("Invalid token");
-            }
+            //var payload = ExtractPayload();
+            //if (payload == null)
+            //{
+            //    return ErrorResp.Unauthorized("Invalid token");
+            //}
 
             var movies = await _movieRepo.WhereAsync(
                 filter: m => m.Status == MovieStatus.ComingSoon,
@@ -622,11 +622,11 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> GetNowShowing()
         {
-            var payload = ExtractPayload();
-            if (payload == null)
-            {
-                return ErrorResp.Unauthorized("Invalid token");
-            }
+            //var payload = ExtractPayload();
+            //if (payload == null)
+            //{
+            //    return ErrorResp.Unauthorized("Invalid token");
+            //}
 
             var movies = await _movieRepo.WhereAsync(
                 filter: m => m.Status == MovieStatus.NowShowing,
