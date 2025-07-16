@@ -1,6 +1,34 @@
 @{
     ViewData["Title"] = "Quản lý sản phẩm";
 }
+@Html.Partial("_Header") <!-- <- chèn header vào đây -->
+
+<style>
+    .table {
+        background-color: #fff;
+    }
+
+        .table th,
+        .table td {
+            color: #111 !important;
+            background-color: #fff !important;
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            vertical-align: middle;
+        }
+
+        .table thead th {
+            font-weight: 600;
+            background-color: #f8f9fa !important;
+        }
+
+        .table td img {
+            max-width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+</style>
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -172,7 +200,7 @@
                             <img src="${product.imageUrl || 'https://via.placeholder.com/50x50'}" alt="${product.name}" 
                                  style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
                         </td>
-                        <td>${product.name}</td>
+                        <td style="color:#000;">${product.name}</td>
                         <td>${product.description || 'Không có mô tả'}</td>
                         <td>${product.price.toLocaleString('vi-VN')}đ</td>
                         <td>
