@@ -150,12 +150,22 @@ class BookTicketDashboard {
 
             const datesResponse = await fetch(`/BookingManagement/BookingTicket/GetShowDates?movieId=${movieId}`);
             const datesData = await datesResponse.json();
-            
+             
             if (datesData.success && datesData.data && datesData.data.length > 0) {
+
+                // 1. Lấy ngày hôm nay và loại bỏ phần giờ để so sánh chính xác
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                // 2. ✅ Tạo biến selectDate bằng cách lọc mảng datesData.data
+                const selectDate = datesData.data.filter(dateItem => {
+                    const itemDate = new Date(dateItem.code);
+                    return itemDate >= today;
+                });
 
                 const showDatesWithTimes = [];
                 
-                for (const dateItem of datesData.data) {
+                for (const dateItem of selectDate) {
                     try {
                         const timesResponse = await fetch(`/BookingManagement/BookingTicket/GetShowTimes?movieId=${movieId}&showDate=${encodeURIComponent(dateItem.code)}`);
                         const timesData = await timesResponse.json();
@@ -938,6 +948,7 @@ class BookTicketDashboard {
 
             const result = await response.json();
             this.hideLoading();
+            console.log("result", result)
 
             if (result.success && result.data) {
 
@@ -978,6 +989,7 @@ class BookTicketDashboard {
                         });
 
                         const createData = await createResp.json();
+                        console.log('createData:', createData);
 
                         if (createData.success && createData.paymentUrl) {
                             window.location.href = createData.paymentUrl;
