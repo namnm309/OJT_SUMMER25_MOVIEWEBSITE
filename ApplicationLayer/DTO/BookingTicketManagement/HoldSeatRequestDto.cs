@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationLayer.DTO.BookingTicketManagement
 {
-    public class ConfirmBookingRequest
+    public class HoldSeatRequestDto
     {
         public Guid ShowTimeId { get; set; }
         public List<Guid> SeatIds { get; set; } = new();

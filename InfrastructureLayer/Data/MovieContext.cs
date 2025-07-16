@@ -40,6 +40,8 @@ namespace InfrastructureLayer.Data
         public DbSet<Director> Directors { get; set; }
         public DbSet<MovieActor> MovieActors { get; set; }
         public DbSet<MovieDirector> MovieDirectors { get; set; }
+        public DbSet<Ticket> Ticket { get; set; }
+        public DbSet<SeatLog> SeatLog { get; set; }
 
 
         // Cấu hình chi tiết Entity - sử dụng khi cần cấu hình phức tạp ngoài Data Annotations 

@@ -1,6 +1,7 @@
 ﻿using Application.ResponseCode;
 using ApplicationLayer.DTO.Payment;
 using ApplicationLayer.Service;
+using ApplicationLayer.Services.TicketSellingManagement;
 using AutoMapper;
 using DomainLayer.Entities;
 using DomainLayer.Enum;
@@ -26,16 +27,18 @@ namespace ApplicationLayer.Services.Payment
         private readonly IGenericRepository<Transaction> _transactionRepo;
         private readonly IGenericRepository<BookingDetail> _bookingDetailRepo;
         private readonly IGenericRepository<Seat> _seatRepo;
+        private readonly ITicketService _ticketService;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpCtx;
 
-        public PaymentService(IGenericRepository<Booking> bookingRepo, IGenericRepository<Transaction> transactionRepo, IGenericRepository<BookingDetail> bookingDetailRepo, IGenericRepository<Seat> seatRepo, IConfiguration config, IMapper mapper, IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
+        public PaymentService(IGenericRepository<Booking> bookingRepo, IGenericRepository<Transaction> transactionRepo, IGenericRepository<BookingDetail> bookingDetailRepo, IGenericRepository<Seat> seatRepo, ITicketService ticketService, IConfiguration config, IMapper mapper, IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
         {
             _bookingRepo = bookingRepo;
             _transactionRepo = transactionRepo;
             _bookingDetailRepo = bookingDetailRepo;
             _seatRepo = seatRepo;
+            _ticketService = ticketService;
             _config = config;
             _mapper = mapper;
             _httpCtx = httpCtx;
@@ -161,6 +164,10 @@ namespace ApplicationLayer.Services.Payment
                             await _seatRepo.UpdateAsync(seat);
                         }
                     }
+
+                    // Tạo TICKET
+                    await _ticketService.CreateTicketFromBookingAsync(booking.Id);
+
                 }
             }
             else

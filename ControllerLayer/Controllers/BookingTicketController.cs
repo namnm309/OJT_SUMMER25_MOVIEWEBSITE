@@ -264,17 +264,10 @@ namespace ControllerLayer.Controllers
         }
 
         [Protected]
-        [HttpPost("confirm")]
-        public async Task<IActionResult> ConfirmBooking([FromBody] ConfirmBookingRequest req)
+        [HttpPost("holdSeat")]
+        public async Task<IActionResult> HoldSeat([FromBody] HoldSeatRequestDto request)
         {
-            return await _seatService.ConfirmBookingAsync(req);
-        }
-
-        [Protected]
-        [HttpPost("booking/cancel-booking")]
-        public async Task<IActionResult> Cancel(Guid bookingId)
-        {
-            return await _seatService.CancelBooking(bookingId);
+            return await _seatService.HoldSeat(request);
         }
     }
 }

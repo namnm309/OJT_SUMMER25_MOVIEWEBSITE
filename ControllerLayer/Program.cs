@@ -20,7 +20,9 @@ using InfrastructureLayer.Core.Mail;
 using InfrastructureLayer.Core.Cache;
 using StackExchange.Redis;
 using ApplicationLayer.Mappings;
-using ApplicationLayer.Services.Payment;   
+using ApplicationLayer.Services.Payment;
+using ApplicationLayer.Services.TicketSellingManagement;
+using ApplicationLayer.Services.Helper;
 
 namespace ControllerLayer
 {
@@ -167,6 +169,9 @@ namespace ControllerLayer
             var smtpPassword = builder.Configuration.GetValue<string>("SMTPPassword") ?? "smtp_password";
             builder.Services.AddSingleton<IMailService>(new MailService("smtp.gmail.com", 587, smtpUsername, smtpPassword));
 
+            // Đăng ký Background Job
+            builder.Services.AddHostedService<ExpirePendingSeatsJob>();
+
 
             // Đăng ký Repository và Services
             builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -192,6 +197,8 @@ namespace ControllerLayer
             builder.Services.AddScoped<IAuthService, AuthService>();
 
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+            builder.Services.AddScoped<ITicketService, TicketService>();
 
             // Thêm vào Program.cs
             builder.Services.AddAutoMapper(typeof(BookingProfile));

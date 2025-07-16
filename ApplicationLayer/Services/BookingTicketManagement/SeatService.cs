@@ -14,6 +14,8 @@ using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace ApplicationLayer.Services.BookingTicketManagement
 {
@@ -26,9 +28,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<IActionResult> ValidateSelectedSeats(Guid showTimeId, List<Guid> seatIds);
 
         Task<IActionResult> GetShowTimeDetails(Guid showTimeId);
-        Task<IActionResult> ConfirmBookingAsync(ConfirmBookingRequest request);
 
-        Task<IActionResult> CancelBooking(Guid bookingId);
+        Task<IActionResult> HoldSeat(HoldSeatRequestDto request);
     }
     public class SeatService : BaseService, ISeatService
     {
@@ -38,6 +39,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         private readonly IGenericRepository<Booking> _bookingRepo;
         private readonly IGenericRepository<BookingDetail> _bookingDetailRepo;
         private readonly IGenericRepository<Users> _userRepo;
+        private readonly IGenericRepository<SeatLog> _seatLogRepo;
+        private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpCtx;
 
@@ -47,6 +50,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             IGenericRepository<Booking> bookingRepo,
             IGenericRepository<BookingDetail> bookingDetailRepo,
             IGenericRepository<Users> userRepo,
+            IGenericRepository<SeatLog> seatLogRepo,
             IMapper mapper,
             IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
         {
@@ -55,6 +59,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             _bookingRepo = bookingRepo;
             _bookingDetailRepo = bookingDetailRepo;
             _userRepo = userRepo;
+            _seatLogRepo = seatLogRepo;
             _mapper = mapper;
             _httpCtx = httpCtx;
         }
@@ -214,133 +219,87 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             }
         }
 
-        public async Task<IActionResult> ConfirmBookingAsync(ConfirmBookingRequest request)
+        public async Task<IActionResult> HoldSeat(HoldSeatRequestDto request)
         {
             var payload = ExtractPayload();
             if (payload == null)
-                return ErrorResp.Unauthorized("Invaild token");
+                return ErrorResp.Unauthorized("Invalid token");
 
             var userId = payload.UserId;
 
-            if (request.SeatIds == null || request.SeatIds.Count == 0)
-                return ErrorResp.BadRequest("Please select at least one seat");
-
-            if (request.SeatIds.Count > 8)
-                return ErrorResp.BadRequest("Maximum 8 seats per booking");
-
-            var showtime = await _showTimeRepository.FindByIdAsync(request.ShowTimeId);
-            if (showtime == null)
-                return ErrorResp.NotFound("Showtime Not Found");
-
-            var seats = await _seatRepository.GetSeatsByIdsAsync(request.SeatIds);
-            if (seats.Count != request.SeatIds.Count)
-                return ErrorResp.BadRequest("Some seats are invalid");
-
-            var bookedSeatsIds = await _seatRepository.GetBookedSeatIdsForShowTimeAsync(request.ShowTimeId);
-
-            var alreadyBooked = seats.Where(s => bookedSeatsIds.Contains(s.Id)).ToList();
-            if (alreadyBooked.Any())
+            try
             {
-                var seatCodes = string.Join(", ", alreadyBooked.Select(s => s.SeatCode));
-                return ErrorResp.BadRequest($"The following seats are already booked: {seatCodes}");
-            }
+                var seatIds = request.SeatIds;
+                var showTimeId = request.ShowTimeId;
 
-            var user = await _userRepo.FindByIdAsync(userId);
-            if (user == null)
-                return ErrorResp.NotFound("User not found");
+                if (seatIds == null || seatIds.Count == 0 || seatIds.Count > 8)
+                    return ErrorResp.BadRequest("You must select between 1 and 8 seats");
 
-            // Tạo booking
-            decimal totalPrice = seats.Sum(s => s.PriceSeat);
-            var booking = new Booking
-            {
-                Id = Guid.NewGuid(),
-                UserId = userId,
-                ShowTimeId = request.ShowTimeId,
-                BookingCode = GenerateBookingCode(),
-                BookingDate = DateTime.UtcNow,
-                TotalPrice = totalPrice,
-                TotalSeats = seats.Count,
-                Status = BookingStatus.Pending,
-                FullName = user.FullName,
-                Email = user.Email,
-                PhoneNumber = user.Phone,
-                IdentityCardNumber = user.IdentityCard,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
+                var showTime = await _showTimeRepository.FindByIdAsync(showTimeId, "Room");
+                if (showTime == null)
+                    return ErrorResp.NotFound("ShowTime Not Found");
 
-            await _bookingRepo.CreateAsync(booking);
+                var selectedSeats = await _seatRepository.GetSeatsByIdsAsync(seatIds);
+                if (selectedSeats.Count != seatIds.Count)
+                    return ErrorResp.BadRequest("One or more selected seats are invalid");
 
-            //Ghi log từng ghế
-            var details = seats.Select(s => new BookingDetail
-            {
-                Id = Guid.NewGuid(),
-                BookingId = booking.Id,
-                SeatId = s.Id,
-                Price = s.PriceSeat,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            }).ToList();
+                var bookedSeatId = await _seatRepository.GetBookedSeatIdsForShowTimeAsync(showTimeId);
+                if (seatIds.Any(Id => bookedSeatId.Contains(Id)))
+                    return ErrorResp.BadRequest("Some seats are already booked");
 
-            await _bookingDetailRepo.CreateRangeAsync(details);
+                var user = await _userRepo.FindByIdAsync(userId);
+                if (user == null)
+                    return ErrorResp.NotFound("User Not Found");
 
-            foreach (var seat in seats)
-            {
-                seat.Status = SeatStatus.Pending;
-                await _seatRepository.UpdateSeatAsync(seat);
-            }
+                // Tính tổng tiền
+                decimal total = selectedSeats.Sum(s => s.PriceSeat);
 
-            return SuccessResp.Ok(new
-            {
-                BookingId = booking.Id,
-                Total = totalPrice,
-                Seats = seats.Select(s => s.SeatCode)
-            });
-        }
-
-        public async Task<IActionResult> CancelBooking(Guid bookingId)
-        {
-            var payload = ExtractPayload();
-            if (payload == null)
-                return ErrorResp.Unauthorized("Invaild token");
-
-            var userId = payload.UserId;
-
-            var booking = await _bookingRepo.FindAsync(b => b.Id == bookingId && b.UserId == userId);
-            if (booking == null)
-                return ErrorResp.NotFound("Booking not found or access denied.");
-
-            if (booking.Status != BookingStatus.Pending)
-                return ErrorResp.BadRequest("Only pending bookings can be canceled.");
-
-            // 2. Đổi trạng thái booking
-            booking.Status = BookingStatus.Canceled;
-            booking.UpdatedAt = DateTime.UtcNow;
-            await _bookingRepo.UpdateAsync(booking);
-
-            // 3. Lấy danh sách BookingDetails và danh sách ghế
-            var bookingDetails = await _bookingDetailRepo.FindAllAsync(d => d.BookingId == booking.Id);
-            var seatIds = bookingDetails.Select(d => d.SeatId).ToList();
-            var seats = await _seatRepository.GetSeatsByIdsAsync(seatIds);
-
-            // Cập nhật trạng thái ghế từ Pending -> Available
-            foreach (var seat in seats)
-            {
-                if (seat.Status == SeatStatus.Pending)
+                // Tạo booking
+                var booking = new Booking
                 {
-                    seat.Status = SeatStatus.Available;
-                }
+                    Id = Guid.NewGuid(),
+                    BookingCode = GenerateBookingCode(),
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    PhoneNumber = user.Phone,
+                    IdentityCardNumber = user.IdentityCard,
+                    TotalPrice = total,
+                    TotalSeats = seatIds.Count,
+                    BookingDate = DateTime.UtcNow,
+                    Status = BookingStatus.Pending,
+                    UserId = userId,
+                    ShowTimeId = showTimeId
+                };
+
+                await _bookingRepo.CreateAsync(booking);
+
+                // Tạo SeatLog cho từng ghế
+                var log = seatIds.Select(seatId => new SeatLog
+                {
+                    Id = Guid.NewGuid(),
+                    SeatId = seatId,
+                    ShowTimeId = showTimeId,
+                    UserId = userId,
+                    BookingId = booking.Id,
+                    ExpiredAt = DateTime.UtcNow.AddMinutes(5),
+                    Status = SeatStatus.Pending
+                }).ToList();
+
+                await _seatLogRepo.CreateRangeAsync(log);
+
+                return SuccessResp.Ok(new
+                {
+                    BookingId = booking.Id,
+                    BookingCode = booking.BookingCode,
+                    ExpiredAt = log.First().ExpiredAt,
+                    TotalPrice = total
+                });
             }
-
-            // Cập nhật danh sách ghế
-            await _seatRepository.UpdateSeatsAsync(seats);
-
-            return SuccessResp.Ok(new
+            catch (TaskCanceledException ex)
             {
-                Message = "Booking has been canceled successfully.",
-                BookingId = booking.Id,
-                CanceledAt = booking.UpdatedAt
-            });
+                _logger.LogWarning("HoldSeat task was canceled. Message: " + ex.Message);
+                return ErrorResp.BadRequest("The seat holding request was cancelled.");
+            }
         }
     }
 }

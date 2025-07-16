@@ -5,6 +5,7 @@ using ApplicationLayer.DTO.JWT;
 using ApplicationLayer.DTO.MovieManagement;
 using ApplicationLayer.DTO.PromotionManagement;
 using ApplicationLayer.DTO.ShowtimeManagement;
+using ApplicationLayer.DTO.TicketSellingManagement;
 using ApplicationLayer.DTO.UserManagement;
 using AutoMapper;
 using DomainLayer.Entities;
@@ -170,6 +171,10 @@ namespace ApplicationLayer.Mapper
             CreateMap<UserCreateDto, Users>();
             CreateMap<UserUpdateDto, Users>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+
+            // Ticket
+            CreateMap<Ticket, TicketDto>();
         }
     }
 }

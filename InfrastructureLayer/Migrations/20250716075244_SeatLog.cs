@@ -5,7 +5,7 @@
 namespace InfrastructureLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class ChangeStatusSeats : Migration
+    public partial class SeatLog : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
