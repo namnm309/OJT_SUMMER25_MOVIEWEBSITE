@@ -51,6 +51,8 @@ namespace UI.Areas.BookingManagement.Services
         Task<ApiResponse<dynamic>> GetBookingListAsync(dynamic filter);
         Task<ApiResponse<dynamic>> UpdateBookingStatusAsync(Guid bookingId, string newStatus);
         Task<ApiResponse<dynamic>> CancelBookingAsync(Guid bookingId, string reason);
+
+        Task<ApiResponse<dynamic>> GetPromotionsAsync();
     }
 
     public class BookingManagementUIService : IBookingManagementUIService
@@ -494,6 +496,25 @@ namespace UI.Areas.BookingManagement.Services
                 {
                     Success = false,
                     Message = "Không thể hủy đặt vé. Vui lòng thử lại."
+                };
+            }
+        }
+
+        public async Task<ApiResponse<dynamic>> GetPromotionsAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Getting all active promotions");
+                // Gọi đến API backend để lấy danh sách khuyến mãi
+                return await _apiService.GetAsync<dynamic>("api/v1/promotions");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting promotions list");
+                return new ApiResponse<dynamic>
+                {
+                    Success = false,
+                    Message = "Không thể tải danh sách khuyến mãi. Vui lòng thử lại."
                 };
             }
         }

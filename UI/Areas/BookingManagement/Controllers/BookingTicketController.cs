@@ -412,5 +412,21 @@ namespace UI.Areas.BookingManagement.Controllers
 
             return StatusCode(500, new { message = beResp.Message ?? "Không tìm thấy bookingId" });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPromotions()
+        {
+            try
+            {
+                var response = await _bookingService.GetPromotionsAsync();
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting promotions for booking");
+                return Json(new { success = false, message = "Có lỗi xảy ra khi tải danh sách khuyến mãi" });
+            }
+        }
+
     }
 }
