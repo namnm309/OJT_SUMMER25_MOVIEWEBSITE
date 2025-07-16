@@ -27,6 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\ConcessionManagement\Controllers\" />
+    <Folder Include="Areas\ConcessionManagement\Data\" />
+    <Folder Include="Areas\ConcessionManagement\Models\" />
+    <Folder Include="Areas\ConcessionManagement\Views\" />
     <Folder Include="Areas\UserManagement\Controllers\" />
     <Folder Include="Areas\UserManagement\Models\" />
     <Folder Include="Areas\UserManagement\Views\" />
