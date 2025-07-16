@@ -1565,8 +1565,8 @@
 
             // After populating actor & director options in renderAddMovieForm
             if (window.$ && $.fn.select2) {
-                $('#addActorsSelect').select2({ placeholder: 'Chọn diễn viên', width: '100%' });
-                $('#addDirectorSelect').select2({ placeholder: 'Chọn đạo diễn', width: '100%' });
+                $('#addActorsSelect').select2({ placeholder: 'Chọn diễn viên', width: '100%', dropdownParent: $('#addMovieModal') });
+                $('#addDirectorSelect').select2({ placeholder: 'Chọn đạo diễn', width: '100%', dropdownParent: $('#addMovieModal') });
             }
         }
 
@@ -1987,8 +1987,8 @@
                     if(actorSelect&&window.availableActors){actorSelect.innerHTML='';window.availableActors.forEach(a=>{const opt=document.createElement('option');opt.value=a.id||a.Id;opt.textContent=a.name||a.Name;actorSelect.appendChild(opt);});}
                     if(directorSelect&&window.availableDirectors){directorSelect.innerHTML='';window.availableDirectors.forEach(d=>{const opt=document.createElement('option');opt.value=d.id||d.Id;opt.textContent=d.name||d.Name;directorSelect.appendChild(opt);});}
                     if(window.$&&$.fn.select2){
-                        $(actorSelect).select2({placeholder:'Chọn diễn viên',width:'100%'});
-                        $(directorSelect).select2({placeholder:'Chọn đạo diễn',width:'100%'});
+                        $(actorSelect).select2({placeholder:'Chọn diễn viên',width:'100%', dropdownParent: $('#editMovieModal')});
+                        $(directorSelect).select2({placeholder:'Chọn đạo diễn',width:'100%', dropdownParent: $('#editMovieModal')});
 
                         // Xác định danh sách ID diễn viên/đạo diễn hiện có của phim
                         let actorIds = movieData.actorIds || (movieData.actorList ? movieData.actorList.map(a=>a.id||a.Id) : []);
