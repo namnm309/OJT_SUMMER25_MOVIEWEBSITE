@@ -269,7 +269,7 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
 
         public async Task<IActionResult> DeleteCinemaRoom(Guid id)
         {
-            var room = await _cinemaRoomRepo.FindByIdAsync(id, "ShowTimes,Seats");
+            var room = await _cinemaRoomRepo.FindByIdAsync(id, "ShowTimes", "Seats");
             if (room == null)
                 return ErrorResp.NotFound("Cinema room not found");
 
@@ -280,7 +280,7 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
             // Soft delete related seats first
             if (room.Seats != null && room.Seats.Any())
             {
-                foreach (var seat in room.Seats)
+                foreach (var seat in room.Seats.ToList())
                 {
                     await _seatRepo.DeleteAsync(seat);
                 }

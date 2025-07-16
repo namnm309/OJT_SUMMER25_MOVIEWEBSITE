@@ -2663,8 +2663,8 @@
                 // Đảm bảo ngày tháng được chuyển đổi sang UTC
                 releaseDate: formData.get('releaseDate') ? new Date(formData.get('releaseDate') + 'T00:00:00Z').toISOString() : '',
                 endDate: formData.get('endDate') ? new Date(formData.get('endDate') + 'T00:00:00Z').toISOString() : '',
-                directorIds: getTagifyIds('editDirectorInput'),
-                actorIds: getTagifyIds('editActorsInput'),
+                directorIds: getSelectValues('addDirectorSelect'),
+                actorIds: getSelectValues('addActorsSelect'),
                 productionCompany: formData.get('productionCompany') || '',
                 runningTime: parseInt(formData.get('runningTime')) || 0,
                 version: versionValue || 'TwoD',
@@ -2898,7 +2898,6 @@
                 additionalImagesInput.addEventListener('change', handleAdditionalImagesUpload);
             }
         }
-
 
         function switchAddTrailerTab(tab) {
             const urlTab = document.getElementById('addTrailerUrlTab');
@@ -3447,8 +3446,8 @@
                     title: formData.get('title') || '',
                     releaseDate: releaseDate ? new Date(releaseDate).toISOString().split('.')[0] + 'Z' : '',
                     endDate: endDate ? new Date(endDate).toISOString().split('.')[0] + 'Z' : '',
-                    directorIds: getTagifyIds('addDirectorInput'),
-                    actorIds: getTagifyIds('addActorsInput'),
+                    directorIds: getSelectValues('addDirectorSelect'),
+                    actorIds: getSelectValues('addActorsSelect'),
                     productionCompany: formData.get('productionCompany') || '',
                     runningTime: parseInt(formData.get('runningTime')) || 0,
                     version: versionValue,
