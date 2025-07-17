@@ -1403,7 +1403,7 @@
                     
                     
                     <div class="form-group full-width">
-                        <label>Lịch chiếu <span class="required-field">*</span></label>
+                        <label>Lịch chiếu</label>
                         <div class="showtimes-section">
                             <div class="showtimes-header">
                                 <button type="button" class="btn-add-showtime" onclick="addNewShowTimeEntry()">
@@ -1414,7 +1414,6 @@
                                 
                             </div>
                         </div>
-                        <small class="text-muted">Thêm ít nhất một lịch chiếu</small>
                     </div>
                     
                     <div class="form-group full-width">
@@ -1832,18 +1831,17 @@
                     
                     
                     <div class="form-group full-width">
-                        <label>Lịch chiếu <span class="required-field">*</span></label>
+                        <label>Lịch chiếu</label>
                         <div class="showtimes-section">
                             <div class="showtimes-header">
-                                <button type="button" class="btn-add-showtime" onclick="addShowTimeEntry()">
+                                <button type="button" class="btn-add-showtime" onclick="addNewShowTimeEntry()">
                                     ➕ Thêm lịch chiếu
-                    </button>
+                                </button>
                             </div>
                             <div id="showTimesContainer" class="showtimes-container">
                                 
                             </div>
                         </div>
-                        <small class="text-muted">Thêm ít nhất một lịch chiếu</small>
                     </div>
                     
                     <div class="form-group full-width">
@@ -2528,11 +2526,11 @@
                 <div class="showtime-fields">
                     <div class="showtime-field">
                         <label>Ngày chiếu</label>
-                        <input type="datetime-local" class="showtime-date" value="${showDate}" required>
+                        <input type="datetime-local" class="showtime-date" value="${showDate}">
                     </div>
                     <div class="showtime-field">
                         <label>Phòng chiếu</label>
-                        <select class="showtime-room" required>
+                        <select class="showtime-room">
                             ${roomOptions}
                         </select>
                     </div>
@@ -2728,9 +2726,10 @@
                 validationErrors.push("Vui lòng chọn ít nhất một thể loại phim");
             }
 
-            if (showTimes.length === 0) {
-                validationErrors.push("Vui lòng thêm ít nhất một lịch chiếu");
-            }
+            // Bỏ validation bắt buộc lịch chiếu khi cập nhật
+            // if (showTimes.length === 0) {
+            //     validationErrors.push("Vui lòng thêm ít nhất một lịch chiếu");
+            // }
             
             if (images.length === 0) {
                 validationErrors.push("Vui lòng thêm ít nhất một hình ảnh cho phim");
@@ -3177,11 +3176,11 @@
                 <div class="showtime-fields">
                     <div class="showtime-field">
                         <label>Ngày chiếu</label>
-                        <input type="datetime-local" class="showtime-date" required>
+                        <input type="datetime-local" class="showtime-date">
                     </div>
                     <div class="showtime-field">
                         <label>Phòng chiếu</label>
-                        <select class="showtime-room" required style="background-color: #2a2a2a; color: white; border: 1px solid rgba(255,255,255,0.2);">
+                        <select class="showtime-room" style="background-color: #2a2a2a; color: white; border: 1px solid rgba(255,255,255,0.2);">
                             ${roomOptions}
                         </select>
                     </div>
@@ -3412,7 +3411,20 @@
                 const showTimes = [];
                 const showTimeEntries = document.querySelectorAll('#addShowTimesContainer .showtime-entry');
                 
-                console.log('Số lịch chiếu:', showTimeEntries.length);
+                showTimeEntries.forEach(entry => {
+                    const dateInput = entry.querySelector('.showtime-date');
+                    const roomSelect = entry.querySelector('.showtime-room');
+                    
+                    // Chỉ thêm vào mảng nếu cả hai trường đều có giá trị
+                    if (dateInput && dateInput.value && roomSelect && roomSelect.value) {
+                        showTimes.push({
+                            showDate: new Date(dateInput.value).toISOString().split('.')[0] + 'Z',
+                            roomId: roomSelect.value
+                        });
+                    }
+                });
+
+                console.log('Lịch chiếu thu thập được:', showTimes);
                 
                 let hasShowTimeError = false;
                 
@@ -3460,8 +3472,8 @@
                     title: formData.get('title') || '',
                     releaseDate: releaseDate ? new Date(releaseDate).toISOString().split('.')[0] + 'Z' : '',
                     endDate: endDate ? new Date(endDate).toISOString().split('.')[0] + 'Z' : '',
-                    directorIds: getSelectValues('editDirectorInput'),
-                    actorIds: getSelectValues('editActorsInput'),
+                    directorIds: $('#addDirectorSelect').val() || [], // Sửa lại cách lấy directorIds
+                    actorIds: $('#addActorsSelect').val() || [], // Sửa lại cách lấy actorIds
                     productionCompany: formData.get('productionCompany') || '',
                     runningTime: parseInt(formData.get('runningTime')) || 0,
                     version: versionValue,
@@ -3470,12 +3482,19 @@
                     content: formData.get('content') || '',
                     isFeatured: formData.get('isFeatured') === 'on',
                     isRecommended: formData.get('isRecommended') === 'on',
-
                     genreIds: genreIds,
                     showTimes: showTimes,
                     images: images
                 };
 
+                console.log('Dữ liệu phim trước khi gửi:', {
+                    ...movieData,
+                    directorIds: movieData.directorIds,
+                    actorIds: movieData.actorIds,
+                    genreIds: movieData.genreIds,
+                    showTimes: movieData.showTimes,
+                    images: movieData.images
+                });
 
                 const validationErrors = [];
                 
@@ -3511,13 +3530,10 @@
                     validationErrors.push("Vui lòng chọn ít nhất một thể loại phim");
                 }
 
-                if (showTimes.length === 0) {
-                    validationErrors.push("Vui lòng thêm ít nhất một lịch chiếu");
-                }
-                
-                if (hasShowTimeError) {
-                    validationErrors.push("Có lỗi trong dữ liệu lịch chiếu, vui lòng kiểm tra lại");
-                }
+                // Bỏ validation bắt buộc lịch chiếu khi cập nhật
+                // if (showTimes.length === 0) {
+                //     validationErrors.push("Vui lòng thêm ít nhất một lịch chiếu");
+                // }
                 
                 if (images.length === 0) {
                     validationErrors.push("Vui lòng thêm ít nhất một hình ảnh cho phim");
@@ -3553,6 +3569,8 @@
                 // Gửi dữ liệu trực tiếp theo format API (lowercase)
                 console.log('Dữ liệu gửi đến controller:', JSON.stringify(movieData, null, 2));
                 
+                console.log('Gửi request với dữ liệu:', JSON.stringify(movieData, null, 2));
+                
                 const response = await fetch('/MovieManagement/Movies/CreateMovieAjax', {
                     method: 'POST',
                     headers: {
@@ -3561,6 +3579,9 @@
                     },
                     body: JSON.stringify(movieData)
                 });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
                 // Kiểm tra response status
                 if (!response.ok) {

@@ -106,8 +106,20 @@ namespace ApplicationLayer.Services.MovieManagement
             if (Dto.GenreIds == null || !Dto.GenreIds.Any())
                 return ErrorResp.BadRequest("At least one genre is required");
 
-            if (Dto.ShowTimes == null || !Dto.ShowTimes.Any())
-                return ErrorResp.BadRequest("At least one showtime is required");
+            // Bỏ validation bắt buộc lịch chiếu
+            // if (Dto.ShowTimes == null || !Dto.ShowTimes.Any())
+            //     return ErrorResp.BadRequest("At least one showtime is required");
+
+            // Chỉ validate phòng chiếu khi có lịch chiếu
+            if (Dto.ShowTimes != null && Dto.ShowTimes.Any())
+            {
+                foreach (var st in Dto.ShowTimes)
+                {
+                    var room = await _roomRepo.FindByIdAsync(st.RoomId);
+                    if (room == null)
+                        return ErrorResp.NotFound($"Cinema room with ID {st.RoomId} not found");
+                }
+            }
 
             if (Dto.Images == null || !Dto.Images.Any())
                 return ErrorResp.BadRequest("At least one image is required");
@@ -143,13 +155,6 @@ namespace ApplicationLayer.Services.MovieManagement
                     return ErrorResp.NotFound($"Genre with ID {genreId} not found");
             }
 
-            foreach (var st in Dto.ShowTimes)
-            {
-                var room = await _roomRepo.FindByIdAsync(st.RoomId);
-                if (room == null)
-                    return ErrorResp.NotFound($"Cinema room with ID {st.RoomId} not found");
-            }
-
             var movie = _mapper.Map<Movie>(Dto);
             movie.Status = MovieStatus.NotAvailable;
 
@@ -170,14 +175,6 @@ namespace ApplicationLayer.Services.MovieManagement
                     return image;
                 }).ToList();
 
-            // Map suất chiếu
-            var showtimes = Dto.ShowTimes.Select(show => new ShowTime
-            {
-                MovieId = movie.Id,
-                RoomId = show.RoomId,
-                ShowDate = show.ShowDate
-            }).ToList();
-
             // Map diễn viên và đạo diễn
             var movieActors = Dto.ActorIds.Select(id => new MovieActor
             {
@@ -193,7 +190,19 @@ namespace ApplicationLayer.Services.MovieManagement
  
             await _genreMovieRepo.CreateRangeAsync(movieGenres);
             await _imageRepo.CreateRangeAsync(movieImages);
-            await _showtimeRepo.CreateRangeAsync(showtimes);
+            
+            // Chỉ tạo lịch chiếu khi có dữ liệu
+            if (Dto.ShowTimes != null && Dto.ShowTimes.Any())
+            {
+                var movieShowtimes = Dto.ShowTimes.Select(show => new ShowTime
+                {
+                    MovieId = movie.Id,
+                    RoomId = show.RoomId,
+                    ShowDate = show.ShowDate
+                }).ToList();
+                await _showtimeRepo.CreateRangeAsync(movieShowtimes);
+            }
+
             await _movieActorRepo.CreateRangeAsync(movieActors);
             await _movieDirectorRepo.CreateRangeAsync(movieDirectors);
 
@@ -262,11 +271,20 @@ namespace ApplicationLayer.Services.MovieManagement
                 return ErrorResp.Forbidden("Access denied. Admin role required.");
             }
 
-            var movie = await _movieRepo.FindByIdAsync(Dto.Id);
+            // Load movie với đầy đủ các quan hệ
+            var movie = await _movieRepo.FirstOrDefaultAsync(
+                m => m.Id == Dto.Id,
+                nameof(Movie.MovieImages),
+                nameof(Movie.MovieGenres),
+                nameof(Movie.ShowTimes),
+                nameof(Movie.MovieActors),
+                nameof(Movie.MovieDirectors)
+            );
+
             if(movie == null)
                 return ErrorResp.NotFound("Movie Not Found");
 
-            //Valitdate Movie (Id - Title)
+            //Validate Movie (Id - Title)
             var duplicateTitle = await _movieRepo.FirstOrDefaultAsync(e =>e.Id != Dto.Id && e.Title.ToLower() == Dto.Title.ToLower());
             if (duplicateTitle != null)
                 return ErrorResp.BadRequest("A movie with the same title already exists");
@@ -278,9 +296,6 @@ namespace ApplicationLayer.Services.MovieManagement
             if (Dto.GenreIds == null || !Dto.GenreIds.Any())
                 return ErrorResp.BadRequest("At least one genre is required");
 
-            if (Dto.ShowTimes == null || !Dto.ShowTimes.Any())
-                return ErrorResp.BadRequest("At least one showtime is required");
-
             if (Dto.Images.Count(i => i.IsPrimary) != 1)
                 return ErrorResp.BadRequest("Exactly one image must be marked as primary");
 
@@ -290,6 +305,7 @@ namespace ApplicationLayer.Services.MovieManagement
             if (Dto.DirectorIds == null || !Dto.DirectorIds.Any())
                 return ErrorResp.BadRequest("At least one director is required");
 
+            // Validate references exist
             foreach (var actorId in Dto.ActorIds)
             {
                 var actor = await _actorRepo.FindByIdAsync(actorId);
@@ -304,8 +320,6 @@ namespace ApplicationLayer.Services.MovieManagement
                     return ErrorResp.NotFound($"Director with ID {directorId} not found");
             }
 
-            _mapper.Map(Dto, movie);
-
             foreach (var genreId in Dto.GenreIds)
             {
                 var genre = await _genreRepo.FindByIdAsync(genreId);
@@ -313,51 +327,55 @@ namespace ApplicationLayer.Services.MovieManagement
                     return ErrorResp.NotFound($"Genre with ID {genreId} not found");
             }
 
-            foreach (var st in Dto.ShowTimes)
+            if (Dto.ShowTimes != null)
             {
-                var room = await _roomRepo.FindByIdAsync(st.RoomId);
-                if (room == null)
-                    return ErrorResp.NotFound($"Cinema room with ID {st.RoomId} not found");
+                foreach (var st in Dto.ShowTimes)
+                {
+                    var room = await _roomRepo.FindByIdAsync(st.RoomId);
+                    if (room == null)
+                        return ErrorResp.NotFound($"Cinema room with ID {st.RoomId} not found");
+                }
             }
 
+            // Cập nhật thông tin cơ bản của phim
             _mapper.Map(Dto, movie);
 
-            // Cập nhật GenresMovie
-            movie.MovieGenres.Clear();
-            movie.MovieGenres = Dto.GenreIds.Select(gid => new MovieGenre
+            // Xóa các bản ghi cũ trong database
+            await _genreMovieRepo.DeleteRangeAsync(movie.MovieGenres);
+            await _movieActorRepo.DeleteRangeAsync(movie.MovieActors);
+            await _movieDirectorRepo.DeleteRangeAsync(movie.MovieDirectors);
+            await _imageRepo.DeleteRangeAsync(movie.MovieImages);
+            if (movie.ShowTimes != null)
+            {
+                await _showtimeRepo.DeleteRangeAsync(movie.ShowTimes);
+            }
+
+            // Tạo các bản ghi mới
+            var movieGenres = Dto.GenreIds.Select(gid => new MovieGenre
             {
                 GenreId = gid,
                 MovieId = movie.Id
             }).ToList();
+            await _genreMovieRepo.CreateRangeAsync(movieGenres);
+            movie.MovieGenres = movieGenres;
 
-            // Cập nhật ShowTimes
-            movie.ShowTimes.Clear();
-            movie.ShowTimes = Dto.ShowTimes.Select(st => new ShowTime
-            {
-                RoomId = st.RoomId,
-                ShowDate = st.ShowDate,
-                MovieId = movie.Id
-            }).ToList();
-
-            // Cập nhật MovieActors
-            movie.MovieActors.Clear();
-            movie.MovieActors = Dto.ActorIds.Select(aid => new MovieActor
+            var movieActors = Dto.ActorIds.Select(aid => new MovieActor
             {
                 ActorId = aid,
                 MovieId = movie.Id
             }).ToList();
+            await _movieActorRepo.CreateRangeAsync(movieActors);
+            movie.MovieActors = movieActors;
 
-            // Cập nhật MovieDirectors
-            movie.MovieDirectors.Clear();
-            movie.MovieDirectors = Dto.DirectorIds.Select(did => new MovieDirector
+            var movieDirectors = Dto.DirectorIds.Select(did => new MovieDirector
             {
                 DirectorId = did,
                 MovieId = movie.Id
             }).ToList();
- 
-            // Cập nhật MovieImages
-            movie.MovieImages.Clear();
-            movie.MovieImages = Dto.Images.Select(img => new MovieImage
+            await _movieDirectorRepo.CreateRangeAsync(movieDirectors);
+            movie.MovieDirectors = movieDirectors;
+
+            var movieImages = Dto.Images.Select(img => new MovieImage
             {
                 ImageUrl = img.ImageUrl,
                 Description = img.Description,
@@ -365,6 +383,24 @@ namespace ApplicationLayer.Services.MovieManagement
                 IsPrimary = img.IsPrimary,
                 MovieId = movie.Id
             }).ToList();
+            await _imageRepo.CreateRangeAsync(movieImages);
+            movie.MovieImages = movieImages;
+
+            if (Dto.ShowTimes != null && Dto.ShowTimes.Any())
+            {
+                var movieShowtimes = Dto.ShowTimes.Select(st => new ShowTime
+                {
+                    RoomId = st.RoomId,
+                    ShowDate = st.ShowDate,
+                    MovieId = movie.Id
+                }).ToList();
+                await _showtimeRepo.CreateRangeAsync(movieShowtimes);
+                movie.ShowTimes = movieShowtimes;
+            }
+            else
+            {
+                movie.ShowTimes = new List<ShowTime>();
+            }
 
             await _movieRepo.UpdateAsync(movie);
             return SuccessResp.Ok("Movie updated successfully");
