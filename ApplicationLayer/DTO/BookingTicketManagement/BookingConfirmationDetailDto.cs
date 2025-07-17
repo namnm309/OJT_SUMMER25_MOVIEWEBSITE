@@ -59,6 +59,8 @@ namespace ApplicationLayer.DTO.BookingTicketManagement
         public string PaymentMethod { get; set; } = "cash";
         public string StaffId { get; set; }
         public string Notes { get; set; }
+        // Thêm promotionId để áp dụng khuyến mãi
+        public Guid? PromotionId { get; set; }
     }
 
     /// <summary>
