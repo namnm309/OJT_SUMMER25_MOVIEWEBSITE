@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text;
+using System.Globalization;
 
 namespace ControllerLayer.Controllers
 {
@@ -139,12 +141,31 @@ namespace ControllerLayer.Controllers
         }
 
         [HttpGet("members")]
-        //[Authorize(Roles = "Admin,Staff")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAllMembers()
+        public async Task<IActionResult> GetAllMembers(string? search = null)
         {
             var members = await _userService.GetAllMembersAsync();
+            if (!string.IsNullOrEmpty(search))
+            {
+                var normalizedSearch = NormalizeString(search);
+                members = members.Where(m => NormalizeString(m.FullName).Contains(normalizedSearch, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
             return Ok(new { success = true, data = members });
+        }
+
+        private string NormalizeString(string input)
+        {
+            var normalized = input.Normalize(NormalizationForm.FormD);
+            var sb = new StringBuilder();
+            foreach (var c in normalized)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString().Normalize(NormalizationForm.FormC);
         }
 
         // ============ ADMIN OPERATIONS ============
@@ -255,4 +276,4 @@ namespace ControllerLayer.Controllers
             };
         }
     }
-} 
+}

@@ -19,32 +19,49 @@ namespace UI.Areas.UserManagement.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder = "asc", string search = "", string type = "")
         {
-            ViewData["Title"] = "Quản lý thành viên";
+            ViewData["Title"] = type == "staff" ? "Quản lý nhân viên" : type == "customer" ? "Quản lý khách hàng" : "Quản lý người dùng";
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.Search = search;
+            ViewBag.UserType = type;
 
             try
             {
-                // Gọi API thông qua ApiService
-                var result = await _apiService.GetAsync<JsonElement>("/api/User/members");
+                var apiUrl = "/api/User/members";
+                if (!string.IsNullOrEmpty(search))
+                {
+                    apiUrl += $"?search={Uri.EscapeDataString(search)}";
+                }
+                var result = await _apiService.GetAsync<JsonElement>(apiUrl);
                 
                 if (result.Success && result.Data.TryGetProperty("data", out var dataProp) && dataProp.ValueKind == JsonValueKind.Array)
                 {
-                    var membersArray = dataProp.EnumerateArray().ToArray();
-                    ViewBag.Members = membersArray;
+                    var membersList = dataProp.EnumerateArray().ToList();
                     
-                    // Tính toán số liệu thống kê
-                    ViewBag.TotalMembers = membersArray.Length;
-                    ViewBag.ActiveMembers = membersArray.Length;
-                    ViewBag.StaffMembers = membersArray.Count(m => 
-                        m.TryGetProperty("role", out var role) && 
-                        (role.ToString() == "Staff" || role.ToString() == "Admin"));
+                    // Filter based on type
+                    if (type == "staff")
+                    {
+                        membersList = membersList.Where(m => m.TryGetProperty("role", out var role) && (role.ToString() == "Staff" || role.ToString() == "Admin")).ToList();
+                    }
+                    else if (type == "customer")
+                    {
+                        membersList = membersList.Where(m => m.TryGetProperty("role", out var role) && role.ToString() == "Member").ToList();
+                    }
                     
+                    // Sort
+                    membersList = sortOrder == "desc" 
+                        ? membersList.OrderByDescending(m => m.TryGetProperty("fullName", out var name) ? name.ToString() : string.Empty).ToList()
+                        : membersList.OrderBy(m => m.TryGetProperty("fullName", out var name) ? name.ToString() : string.Empty).ToList();
+                    
+                    ViewBag.Members = membersList.ToArray();
+                    
+                    // Stats
+                    ViewBag.TotalMembers = membersList.Count;
+                    ViewBag.ActiveMembers = membersList.Count; // Assume all are active
+                    ViewBag.StaffMembers = membersList.Count(m => m.TryGetProperty("role", out var role) && (role.ToString() == "Staff" || role.ToString() == "Admin"));
                     var oneWeekAgo = DateTime.UtcNow.AddDays(-7);
-                    ViewBag.NewMembers = membersArray.Count(m => 
-                        m.TryGetProperty("createdAt", out var createdAt) && 
-                        DateTime.TryParse(createdAt.ToString(), out var date) && 
-                        date >= oneWeekAgo);
+                    ViewBag.NewMembers = membersList.Count(m => m.TryGetProperty("createdAt", out var createdAt) && DateTime.TryParse(createdAt.ToString(), out var date) && date >= oneWeekAgo);
                     
                     return View();
                 }
@@ -59,7 +76,6 @@ namespace UI.Areas.UserManagement.Controllers
                 TempData["ErrorMessage"] = $"Đã xảy ra lỗi: {ex.Message}";
             }
 
-            // Hiển thị view ngay cả khi có lỗi
             ViewBag.Members = Array.Empty<JsonElement>();
             ViewBag.TotalMembers = 0;
             ViewBag.ActiveMembers = 0;
@@ -68,4 +84,4 @@ namespace UI.Areas.UserManagement.Controllers
             return View();
         }
     }
-} 
+}
