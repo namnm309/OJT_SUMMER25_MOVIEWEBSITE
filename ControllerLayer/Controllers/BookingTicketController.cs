@@ -31,6 +31,9 @@ namespace ControllerLayer.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// [UI] Đặt vé: Lấy danh sách phim cho dropdown chọn phim.
+        /// </summary>
         [HttpGet("dropdown/movies")]
         [AllowAnonymous]
         public async Task<IActionResult> GetAvailableMovies()
@@ -38,18 +41,27 @@ namespace ControllerLayer.Controllers
             return await _bookingTicketService.GetAvailableMovies();
         }
 
+        /// <summary>
+        /// [UI] Đặt vé: Lấy danh sách ngày chiếu theo phim (dùng ở UI khi chọn phim để lấy ngày).
+        /// </summary>
         [HttpGet("dropdown/movies/{movieId}/dates")]
         public async Task<IActionResult> GetShowDates(Guid movieId) // Lấy danh sách ngày chiếu theo phim
         {
             return await _bookingTicketService.GetShowDatesByMovie(movieId);
         } 
 
+        /// <summary>
+        /// [UI] Đặt vé: Lấy danh sách giờ chiếu theo phim và ngày (dùng ở UI khi chọn ngày để lấy giờ).
+        /// </summary>
         [HttpGet("dropdown/movies/{movieId}/times")]
         public async Task<IActionResult> GetShowTimes(Guid movieId, [FromQuery] DateTime date) // Lấy giờ chiếu theo phim và ngày
         {
             return await _bookingTicketService.GetShowTimesByMovieAndDate(movieId, date);
         }
 
+        /// <summary>
+        /// [UI] Đặt vé: Lấy danh sách ghế trống theo suất chiếu (dùng ở UI khi chọn suất chiếu để lấy ghế).
+        /// </summary>
         [Protected]
         [HttpGet("available")]
         public async Task<IActionResult> GetAvailableSeats([FromQuery] Guid showTimeId)
@@ -57,6 +69,9 @@ namespace ControllerLayer.Controllers
             return await _seatService.GetAvailableSeats(showTimeId);
         }
 
+        /// <summary>
+        /// [UI] Đặt vé: Kiểm tra ghế đã chọn trước khi xác nhận đặt vé (dùng ở UI khi xác nhận ghế).
+        /// </summary>
         [Protected]
         [HttpPost("validate")]
         public async Task<IActionResult> ValidateSelectedSeats(
@@ -66,18 +81,26 @@ namespace ControllerLayer.Controllers
             return await _seatService.ValidateSelectedSeats(showTimeId, seatIds);
         }
 
+        /// <summary>
+        /// [UI] Đặt vé: Xác nhận đặt vé cho người dùng (dùng ở UI khi bấm xác nhận đặt vé).
+        /// </summary>
         [HttpGet("showtime/{showTimeId}/details")] // Endpoint lấy chi tiết suất chiếu
         public async Task<IActionResult> GetShowTimeDetails(Guid showTimeId)
         {
             return await _seatService.GetShowTimeDetails(showTimeId);
         }
 
+        /// <summary>
+        /// [UI] Đặt vé: Xác nhận đặt vé cho người dùng.
+        /// </summary>
         [HttpPost("confirm-user-booking")]
         public async Task<IActionResult> ConfirmBooking([FromBody] ConfirmBookingRequestDto request)
         {
             return await _bookingTicketService.ConfirmUserBooking(request);
         }
-
+        /// <summary>
+        /// Xác nhận thông tin đặt vé và lưu vào booking + bookigdetails (MNam)
+        /// </summary>
         [HttpPost("confirm-user-booking-v2")]
         public async Task<IActionResult> ConfirmBookingV2([FromBody] ConfirmBookingRequestDto request)
         {
@@ -111,6 +134,9 @@ namespace ControllerLayer.Controllers
             return await _bookingTicketService.ConfirmAdminBooking(request);
         }
 
+        /// <summary>
+        /// [UI] Đặt vé: Lấy chi tiết đặt vé theo mã booking (dùng ở UI để hiển thị thông tin vé đã đặt).
+        /// </summary>
         [HttpGet("booking/{bookingCode}")]
         public async Task<IActionResult> GetBookingDetails(string bookingCode)
         {
@@ -132,10 +158,8 @@ namespace ControllerLayer.Controllers
         }
 
         /// <summary>
-        /// Tìm kiếm khách hàng theo email hoặc số điện thoại
-        /// </summary>
-        /// <param name="searchTerm">Email hoặc số điện thoại để tìm kiếm</param>
-        /// <returns>Thông tin chi tiết của khách hàng</returns>
+        /// Tìm kiếm khách hàng theo email hoặc số điện thoại (MNam)
+        /// </summary>       
         [HttpGet("SearchCustomer")]
         public async Task<IActionResult> SearchCustomer([FromQuery] string searchTerm)
         {
@@ -163,10 +187,8 @@ namespace ControllerLayer.Controllers
         }
 
         /// <summary>
-        /// Tìm kiếm khách hàng theo số điện thoại
-        /// </summary>
-        /// <param name="phoneNumber">Số điện thoại để tìm kiếm</param>
-        /// <returns>Thông tin chi tiết của khách hàng</returns>
+        /// Tìm kiếm khách hàng theo số điện thoại (MNam)
+        /// </summary>        
         [HttpGet("SearchCustomerByPhone")]
         public async Task<IActionResult> SearchCustomerByPhone(string phoneNumber)
         {
@@ -188,10 +210,8 @@ namespace ControllerLayer.Controllers
         }
 
         /// <summary>
-        /// Tìm kiếm khách hàng theo email
+        /// Tìm kiếm khách hàng theo email (MNam)
         /// </summary>
-        /// <param name="email">Email để tìm kiếm</param>
-        /// <returns>Thông tin chi tiết của khách hàng</returns>
         [HttpGet("SearchCustomerByEmail")]
         public async Task<IActionResult> SearchCustomerByEmail(string email)
         {
@@ -213,7 +233,7 @@ namespace ControllerLayer.Controllers
         }
 
         /// <summary>
-        /// Get booking confirmation details for display (AC-01)
+        /// [UI] Đặt vé: Lấy thông tin xác nhận đặt vé (dùng ở UI bước xác nhận trước khi thanh toán).
         /// </summary>
         [HttpGet("booking-confirmation-detail")]
         public async Task<IActionResult> GetBookingConfirmationDetail(
@@ -225,7 +245,7 @@ namespace ControllerLayer.Controllers
         }
 
         /// <summary>
-        /// Confirm booking with score conversion options (AC-02, AC-03, AC-04, AC-05)
+        /// [UI] Đặt vé: Xác nhận đặt vé với điểm thưởng (dùng ở UI khi sử dụng điểm để thanh toán).
         /// </summary>
         [HttpPost("confirm-booking-with-score")]
         public async Task<IActionResult> ConfirmBookingWithScore([FromBody] BookingConfirmWithScoreRequestDto request)
@@ -234,7 +254,7 @@ namespace ControllerLayer.Controllers
         }
 
         /// <summary>
-        /// Get list of all bookings with filtering and pagination for admin/staff
+        /// [UI] Đặt vé: Lấy danh sách booking (dùng ở UI quản lý booking, lịch sử đặt vé).
         /// </summary>
         [HttpGet("bookings")]
         //[Authorize(Roles = "Admin,Staff")]
@@ -244,7 +264,7 @@ namespace ControllerLayer.Controllers
         }
 
         /// <summary>
-        /// Update booking status
+        /// [UI] Đặt vé: Cập nhật trạng thái booking (dùng ở UI quản lý booking).
         /// </summary>
         [HttpPut("booking/{bookingId}/status")]
         //[Authorize(Roles = "Admin,Staff")]
@@ -254,7 +274,7 @@ namespace ControllerLayer.Controllers
         }
 
         /// <summary>
-        /// Cancel a booking
+        /// [UI] Đặt vé: Hủy booking (dùng ở UI quản lý booking, lịch sử đặt vé).
         /// </summary>
         [HttpPost("booking/{bookingId}/cancel")]
         //[Authorize(Roles = "Admin,Staff")]
@@ -277,6 +297,9 @@ namespace ControllerLayer.Controllers
             return await _seatService.CancelBooking(bookingId);
         }
 
+        /// <summary>
+        ///  Đặt vé: Lấy bookingId từ bookingCode (dùng ở UI để tra cứu nhanh booking map trong bước giữa confirm và vnpay) (Mnam) 
+        /// </summary>
         [HttpGet("booking-id/{bookingCode}")]
         public IActionResult GetBookingIdByCode(string bookingCode)
         {

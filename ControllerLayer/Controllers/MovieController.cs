@@ -22,14 +22,9 @@ namespace ControllerLayer.Controllers
             _logger = logger;
         }
 
-        [Protected]
-        [HttpPost("Create")]
-        public async Task<IActionResult> CreateMovie([FromBody] MovieCreateDto Dto)
-        {
-            _logger.LogInformation("Create Movie");
-            return await _movieService.CreateMovie(Dto);
-        }
-
+        /// <summary>
+        /// [UI] Trang chủ, trang phim: Lấy danh sách phim hiển thị cho người dùng.
+        /// </summary>
         [HttpGet("View")]
         public async Task<IActionResult> ViewListMovie()
         {
@@ -37,6 +32,9 @@ namespace ControllerLayer.Controllers
             return await _movieService.ViewMovie();
         }
 
+        /// <summary>
+        /// [UI] Trang chi tiết phim: Lấy thông tin chi tiết một phim.
+        /// </summary>
         [AllowAnonymous]
         [HttpGet("GetById")]
         public async Task<IActionResult> GetMovieById([FromQuery] Guid movieId)
@@ -52,6 +50,9 @@ namespace ControllerLayer.Controllers
             return await _movieService.ViewMoviePagination(query);
         }
 
+        /// <summary>
+        /// [UI] Quản trị phim: Cập nhật thông tin phim.
+        /// </summary>
         [Protected]
         [HttpPatch("Update")]
         public async Task<IActionResult> UpdateMovie([FromBody] MovieUpdateDto Dto)
@@ -60,6 +61,9 @@ namespace ControllerLayer.Controllers
             return await _movieService.UpdateMovie(Dto);
         }
 
+        /// <summary>
+        /// [UI] Quản trị phim: Xóa phim.
+        /// </summary>
         [Protected]
         [HttpDelete("Delete")]
         public async Task<IActionResult> DeleteMovie(Guid Id)
@@ -131,6 +135,9 @@ namespace ControllerLayer.Controllers
             return await _movieService.UpdateRating(movieId, rating);
         }
 
+        /// <summary>
+        /// [UI] Trang chủ: Lấy danh sách phim đề xuất cho người dùng.
+        /// </summary>
         [AllowAnonymous]
         [HttpGet("GetRecommended")]
         public async Task<IActionResult> GetRecommended()
@@ -139,6 +146,9 @@ namespace ControllerLayer.Controllers
             return await _movieService.GetRecommended();
         }
 
+        /// <summary>
+        /// [UI] Trang chủ: Lấy danh sách phim sắp chiếu.
+        /// </summary>
         [AllowAnonymous]
         [HttpGet("GetComingSoon")]
         public async Task<IActionResult> GetComingSoon()
