@@ -18,9 +18,8 @@ namespace ApplicationLayer.DTO.UserManagement
         [Phone(ErrorMessage = "Invalid phone number format")]
         public string Phone { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Identity card is required")]
         [StringLength(20, ErrorMessage = "Identity card cannot exceed 20 characters")]
-        public string IdentityCard { get; set; } = string.Empty;
+        public string? IdentityCard { get; set; }
 
         [Required(ErrorMessage = "Address is required")]
         [StringLength(255, ErrorMessage = "Address cannot exceed 255 characters")]

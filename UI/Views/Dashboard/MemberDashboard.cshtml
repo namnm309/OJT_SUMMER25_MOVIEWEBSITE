@@ -73,19 +73,19 @@
         <main class="profile-content">
             <!-- Navigation Tabs -->
             <div class="section-tabs">
-                <button class="tab-btn active" onclick="showTab('personal-info')">
+                <button class="tab-btn active" onclick="showTab('personal-info', this)">
                     <i class="fas fa-user"></i> Thông tin cá nhân
                 </button>
-                <button class="tab-btn" onclick="showTab('membership')">
+                <button class="tab-btn" onclick="showTab('membership', this)">
                     <i class="fas fa-id-card"></i> Thẻ thành viên
                 </button>
-                <button class="tab-btn" onclick="showTab('points')">
+                <button class="tab-btn" onclick="showTab('points', this)">
                     <i class="fas fa-star"></i> Điểm thưởng
                 </button>
-                <button class="tab-btn" onclick="showTab('vouchers')">
+                <button class="tab-btn" onclick="showTab('vouchers', this)">
                     <i class="fas fa-gift"></i> Voucher
                 </button>
-                <button class="tab-btn" onclick="showTab('history')">
+                <button class="tab-btn" onclick="showTab('history', this)">
                     <i class="fas fa-history"></i> Lịch sử giao dịch
                         </button>
             </div>
@@ -141,10 +141,11 @@
                         </div>
                     </div>
                     <div style="margin-top: 2rem; text-align: center;">
-                        <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="action-btn">
+                        <button onclick="window.openEditModal()" class="action-btn">
                             <i class="fas fa-edit"></i> Chỉnh sửa thông tin
-                        </a>
+                        </button>
                     </div>
+
                         </div>
                     </div>
 
@@ -197,7 +198,9 @@
                 </div>
             </div>
 
-            <!-- Points Tab -->
+            
+
+<!-- Points Tab -->
             <div id="points" class="tab-content">
                 <div class="points-overview">
                     <div class="points-card">
@@ -351,7 +354,145 @@
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js//memberdashboard.js"></script>
+    <script src="~/js/memberdashboard.js"></script>
+    <script>
+        $(document).ready(function() {
+            window.openEditModal = function() {
+                $('#editModal').modal('show');
+            };
+
+            window.saveChanges = function() {
+                var gender = $('#gender').val() ? parseInt($('#gender').val()) : null;
+                var editData = {
+                    email: $('#email').val(),
+                    fullName: $('#fullname').val(),
+                    phone: $('#phone').val(),
+                    identityCard: $('#idcard').val(),
+                    address: $('#address').val(),
+                    birthDate: $('#dob').val(),
+                    gender: gender,
+                    avatar: null
+                };
+
+                // Validate required fields
+                if (!editData.fullName || !editData.phone) {
+                    alert('Vui lòng điền đầy đủ thông tin bắt buộc: Họ và tên, Số điện thoại');
+                    return;
+                }
+
+                // Validate phone format
+                var phoneRegex = /^[0-9]{10,11}$/;
+                if (!phoneRegex.test(editData.phone)) {
+                    alert('Số điện thoại không hợp lệ. Vui lòng nhập 10-11 chữ số.');
+                    return;
+                }
+
+                // Validate email format
+                var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+                if (!emailRegex.test(editData.email)) {
+                    alert('Email không hợp lệ.');
+                    return;
+                }
+
+                
+
+                $.ajax({
+                    url: '@Url.Action("EditProfile", "Dashboard")',
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(editData),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#editModal').modal('hide');
+                            $('#successMessage').text('Thông tin đã được cập nhật thành công!').show();
+                            setTimeout(function() { location.reload(); }, 2000);
+                        } else {
+                            alert('Lỗi: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        var errorMessage = 'Đã xảy ra lỗi khi cập nhật thông tin.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        alert(errorMessage);
+                    }
+                });
+            };
+        });
+    </script>
+    
+    <div id="successMessage" class="alert alert-success" style="display: none; position: fixed; top: 20px; right: 20px; z-index: 1050;">
+        Thông tin đã được cập nhật! (Chức năng này cần backend hỗ trợ)
+    </div>
+    
+    <!-- Edit Profile Modal -->
+    <div id="editModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa thông tin cá nhân</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#editModal').modal('hide');">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <div class="form-group">
+                            <label for="username">Tên đăng nhập</label>
+                            <input type="text" class="form-control" id="username" value="@(ViewBag.UserName ?? "")" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" value="@(ViewBag.Email ?? "")" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="fullname">Họ và tên</label>
+                            <input type="text" class="form-control" id="fullname" value="@(ViewBag.FullName ?? "")">
+                        </div>
+                        <div class="form-group">
+                            <label for="dob">Ngày sinh</label>
+                            <input type="date" class="form-control" id="dob" value="@(ViewBag.BirthDate ?? "")">
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Giới tính</label>
+                            <select class="form-control" id="gender">
+                                <option value="">Chọn giới tính</option>
+                                <option value="1" selected="@(ViewBag.Gender == "Nam")">Nam</option>
+                                <option value="2" selected="@(ViewBag.Gender == "Nữ")">Nữ</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Số điện thoại</label>
+                            <input type="tel" class="form-control" id="phone" value="@(ViewBag.Phone ?? "")">
+                        </div>
+                        <div class="form-group">
+                            <label for="idcard">Thẻ căn cước</label>
+                            <input type="text" class="form-control" id="idcard" value="@(ViewBag.IdentityCard ?? "")" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Địa chỉ</label>
+                            <input type="text" class="form-control" id="address" value="@(ViewBag.Address ?? "")">
+                        </div>
+                        
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#editModal').modal('hide');">Quay lại</button>
+                    <button type="button" class="btn btn-primary" onclick="window.saveChanges()">Lưu thông tin</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .modal-open {
+            padding-right: 0 !important;
+        }
+        body {
+            overflow-y: scroll;
+        }
+    </style>
     
 </body>
 </html>
