@@ -127,7 +127,12 @@ namespace ApplicationLayer.Mapper
                 .ForMember(dest => dest.CinemaRoomId, opt => opt.MapFrom(src => src.RoomId))
                 .ForMember(dest => dest.CinemaRoomName, opt => opt.MapFrom(src => src.Room.RoomName))
                 .ForMember(dest => dest.TotalSeats, opt => opt.MapFrom(src => src.Room.TotalSeats))
-                .ForMember(dest => dest.BookedSeats, opt => opt.MapFrom(src => src.Bookings.Count));
+                .ForMember(dest => dest.BookedSeats, opt => opt.MapFrom(src => src.Bookings.Count))
+                // Convert stored UTC date back to local date for displaying in UI
+                .ForMember(dest => dest.ShowDate, opt => opt.MapFrom(src =>
+                    src.ShowDate.HasValue
+                        ? DateTime.SpecifyKind(src.ShowDate.Value.ToLocalTime().Date, DateTimeKind.Unspecified)
+                        : DateTime.MinValue));
 
             //Booking
             CreateMap<Movie, MovieDropdownDto>()

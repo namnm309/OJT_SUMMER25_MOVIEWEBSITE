@@ -290,6 +290,9 @@
         let currentDate = new Date();
         let currentShowtimeId = null;
         let showtimeData = @Html.Raw(Json.Serialize(Model.Showtimes ?? new List<UI.Areas.ShowtimeManagement.Models.ShowtimeDto>()));
+        console.log('Initial showtimeData:', showtimeData);
+        console.log('Current date:', currentDate);
+        alert('JavaScript loaded! showtimeData length: ' + (showtimeData ? showtimeData.length : 'null'));
 
         function switchView(viewType) {
             const calendarView = document.getElementById('calendarView');
@@ -397,7 +400,8 @@
                         dayElement.innerHTML = `<div class="calendar-day-number">${prevMonthDay.getDate()}</div>`;
                     } else if (dayCount <= lastDay.getDate()) {
 
-                        const currentDay = new Date(year, month, dayCount);
+                        // Tạo ngày theo múi giờ LOCAL để tránh lệch
+                        const currentDay = new Date(year, month, dayCount, 0, 0, 0, 0);
                         const isToday = currentDay.toDateString() === new Date().toDateString();
                         
                         if (isToday) {
@@ -431,11 +435,15 @@
         }
 
         function generateShowtimesForDay(date) {
-            const dateStr = date.toISOString().split('T')[0];
+            // Lấy yyyy-MM-dd theo múi giờ LOCAL để tránh lệch ngày do toISOString() (UTC)
+            const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+            console.log('Calendar looking for date:', dateStr, 'for calendar day:', date.getDate());
             const dayShowtimes = showtimeData.filter(st => {
                 const showtimeDate = (st.showDate || '').substring(0,10); // yyyy-MM-dd
+                console.log('Showtime date from API:', showtimeDate, 'for movie:', st.movieTitle);
                 return showtimeDate === dateStr;
             });
+            console.log('Found showtimes for day', date.getDate(), ':', dayShowtimes.length);
 
             return dayShowtimes.map(showtime => {
                 const posterUrl = showtime.moviePoster && showtime.moviePoster.trim() !== '' 

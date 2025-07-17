@@ -38,6 +38,14 @@ namespace ApplicationLayer.Services.ShowtimeManagement
         private readonly IGenericRepository<Booking> _bookingRepo;
         private readonly IMapper _mapper;
 
+        // Convert a local date (date portion only) to UTC midnight for storage
+        private static DateTime ToUtcDate(DateTime localDate)
+        {
+            // Ensure only the date part is used and mark it as Local, then convert to UTC
+            var localMidnight = DateTime.SpecifyKind(localDate.Date, DateTimeKind.Local);
+            return localMidnight.ToUniversalTime();
+        }
+
         public ShowtimeService(
             IGenericRepository<ShowTime> showtimeRepo,
             IGenericRepository<Movie> movieRepo,
@@ -98,8 +106,8 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                 // Filter by month and year in memory
                 var filteredShowtimes = allShowtimes.Where(s => 
                     s.ShowDate.HasValue &&
-                    s.ShowDate.Value.Month == month && 
-                    s.ShowDate.Value.Year == year).ToList();
+                    s.ShowDate.Value.ToLocalTime().Month == month && 
+                    s.ShowDate.Value.ToLocalTime().Year == year).ToList();
 
                 var result = _mapper.Map<List<ShowtimeListDto>>(filteredShowtimes);
                 return SuccessResp.Ok(result);
@@ -136,8 +144,11 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             // Calculate end time based on movie duration
             var endTime = dto.StartTime.Add(TimeSpan.FromMinutes(movie.RunningTime));
 
+            // Normalize show date (store as UTC midnight)
+            var normalizedShowDate = ToUtcDate(dto.ShowDate);
+
             // Check for schedule conflicts
-            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, dto.ShowDate, dto.StartTime, endTime);
+            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime);
             if (hasConflict)
             {
                 return ErrorResp.BadRequest("Schedule conflict detected. There is already a showtime at this time in this room.");
@@ -146,6 +157,7 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             var showtime = _mapper.Map<ShowTime>(dto);
             showtime.EndTime = endTime;
             showtime.RoomId = dto.CinemaRoomId;
+            showtime.ShowDate = normalizedShowDate;
 
             await _showtimeRepo.CreateAsync(showtime);
             return SuccessResp.Ok("Showtime created successfully");
@@ -170,8 +182,11 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             // Calculate end time based on movie duration
             var endTime = dto.StartTime.Add(TimeSpan.FromMinutes(movie.RunningTime));
 
+            // Normalize show date (store as UTC midnight)
+            var normalizedShowDate = ToUtcDate(dto.ShowDate);
+
             // Check for schedule conflicts (exclude current showtime)
-            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, dto.ShowDate, dto.StartTime, endTime, id);
+            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime, id);
             if (hasConflict)
             {
                 return ErrorResp.BadRequest("Schedule conflict detected. There is already a showtime at this time in this room.");
@@ -180,7 +195,7 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             // Update showtime
             showtime.MovieId = dto.MovieId;
             showtime.RoomId = dto.CinemaRoomId;
-            showtime.ShowDate = dto.ShowDate;
+            showtime.ShowDate = normalizedShowDate;
             showtime.StartTime = dto.StartTime;
             showtime.EndTime = endTime;
             showtime.Price = dto.Price;
@@ -225,7 +240,7 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                 // Filter by date in memory
                 var sameDayShowtimes = existingShowtimes.Where(s => 
                     s.ShowDate.HasValue && 
-                    s.ShowDate.Value.Date == showDate.Date).ToList();
+                    s.ShowDate.Value.ToLocalTime().Date == showDate.Date).ToList();
 
                 if (excludeId.HasValue)
                 {
@@ -299,10 +314,8 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                 return ErrorResp.BadRequest("Đã có lịch chiếu khác trong khoảng thời gian này tại phòng chiếu này.");
             }
 
-            // Chuyển ShowDate sang UTC để tránh lỗi Npgsql "Cannot write DateTime with Kind=Unspecified" 
-            var showDateUtc = dto.ShowDate.Kind == DateTimeKind.Utc 
-                ? dto.ShowDate 
-                : DateTime.SpecifyKind(dto.ShowDate, DateTimeKind.Utc);
+            // Chuẩn hóa ngày chiếu: từ ngày địa phương về UTC 0h
+            var showDateUtc = ToUtcDate(dto.ShowDate);
 
             var showtime = new ShowTime
             {

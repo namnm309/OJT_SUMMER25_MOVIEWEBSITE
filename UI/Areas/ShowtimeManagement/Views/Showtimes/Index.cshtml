@@ -745,11 +745,16 @@
                }
 
                function generateShowtimesForDay(date) {
-                   const dateStr = date.toISOString().split('T')[0];
-                   const dayShowtimes = showtimeData.filter(st => {
-                       const showtimeDate = (st.showDate || '').substring(0,10); // yyyy-MM-dd
-                       return showtimeDate === dateStr;
-                   });
+                      // mới: lấy ngày theo giờ local, không qua UTC
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        const dateStr = `${y}-${m}-${d}`;   // "YYYY-MM-DD"
+
+        const dayShowtimes = showtimeData.filter(st => {
+            // st.showDate format: "YYYY-MM-DDTHH:mm:ss"
+            return (st.showDate || '').startsWith(dateStr);
+        });
 
                    return dayShowtimes.map(showtime => {
                        const posterUrl = showtime.moviePoster && showtime.moviePoster.trim() !== ''
