@@ -394,6 +394,42 @@ namespace InfrastructureLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tbl_seat_log",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ShowTimeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SeatId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ExpiredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_seat_log", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbl_seat_log_tbl_seats_SeatId",
+                        column: x => x.SeatId,
+                        principalTable: "tbl_seats",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tbl_seat_log_tbl_show_times_ShowTimeId",
+                        column: x => x.ShowTimeId,
+                        principalTable: "tbl_show_times",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tbl_seat_log_tbl_users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "tbl_users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tbl_booking_details",
                 columns: table => new
                 {
@@ -445,42 +481,6 @@ namespace InfrastructureLayer.Migrations
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_tbl_point_histories_tbl_users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "tbl_users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tbl_seat_log",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ShowTimeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ExpiredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    BookingId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_seat_log", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tbl_seat_log_tbl_bookings_BookingId",
-                        column: x => x.BookingId,
-                        principalTable: "tbl_bookings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tbl_seat_log_tbl_show_times_ShowTimeId",
-                        column: x => x.ShowTimeId,
-                        principalTable: "tbl_show_times",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tbl_seat_log_tbl_users_UserId",
                         column: x => x.UserId,
                         principalTable: "tbl_users",
                         principalColumn: "Id",
@@ -542,33 +542,6 @@ namespace InfrastructureLayer.Migrations
                         name: "FK_tbl_transaction_tbl_bookings_BookingId",
                         column: x => x.BookingId,
                         principalTable: "tbl_bookings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tbl_seat_log_detail",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    SeatLogId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SeatId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_seat_log_detail", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tbl_seat_log_detail_tbl_seat_log_SeatLogId",
-                        column: x => x.SeatLogId,
-                        principalTable: "tbl_seat_log",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tbl_seat_log_detail_tbl_seats_SeatId",
-                        column: x => x.SeatId,
-                        principalTable: "tbl_seats",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -639,9 +612,9 @@ namespace InfrastructureLayer.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_seat_log_BookingId",
+                name: "IX_tbl_seat_log_SeatId",
                 table: "tbl_seat_log",
-                column: "BookingId");
+                column: "SeatId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_seat_log_ShowTimeId",
@@ -652,16 +625,6 @@ namespace InfrastructureLayer.Migrations
                 name: "IX_tbl_seat_log_UserId",
                 table: "tbl_seat_log",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tbl_seat_log_detail_SeatId",
-                table: "tbl_seat_log_detail",
-                column: "SeatId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tbl_seat_log_detail_SeatLogId",
-                table: "tbl_seat_log_detail",
-                column: "SeatLogId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_seats_RoomId",
@@ -737,7 +700,7 @@ namespace InfrastructureLayer.Migrations
                 name: "tbl_promotions");
 
             migrationBuilder.DropTable(
-                name: "tbl_seat_log_detail");
+                name: "tbl_seat_log");
 
             migrationBuilder.DropTable(
                 name: "tbl_tickets");
@@ -753,9 +716,6 @@ namespace InfrastructureLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_genres");
-
-            migrationBuilder.DropTable(
-                name: "tbl_seat_log");
 
             migrationBuilder.DropTable(
                 name: "tbl_seats");

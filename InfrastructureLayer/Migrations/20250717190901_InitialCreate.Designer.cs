@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InfrastructureLayer.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20250717171755_UpdateData")]
-    partial class UpdateData
+    [Migration("20250717190901_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -667,6 +667,9 @@ namespace InfrastructureLayer.Migrations
                     b.Property<DateTime>("ExpiredAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("SeatId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("ShowTimeId")
                         .HasColumnType("uuid");
 
@@ -681,38 +684,13 @@ namespace InfrastructureLayer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SeatId");
+
                     b.HasIndex("ShowTimeId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("tbl_seat_log");
-                });
-
-            modelBuilder.Entity("DomainLayer.Entities.SeatLogDetail", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("SeatId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("SeatLogId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SeatId");
-
-                    b.HasIndex("SeatLogId");
-
-                    b.ToTable("tbl_seat_log_detail");
                 });
 
             modelBuilder.Entity("DomainLayer.Entities.ShowTime", b =>
@@ -1071,6 +1049,12 @@ namespace InfrastructureLayer.Migrations
 
             modelBuilder.Entity("DomainLayer.Entities.SeatLog", b =>
                 {
+                    b.HasOne("DomainLayer.Entities.Seat", "Seat")
+                        .WithMany()
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DomainLayer.Entities.ShowTime", "ShowTime")
                         .WithMany()
                         .HasForeignKey("ShowTimeId")
@@ -1083,28 +1067,11 @@ namespace InfrastructureLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Seat");
+
                     b.Navigation("ShowTime");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DomainLayer.Entities.SeatLogDetail", b =>
-                {
-                    b.HasOne("DomainLayer.Entities.Seat", "Seat")
-                        .WithMany()
-                        .HasForeignKey("SeatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DomainLayer.Entities.SeatLog", "SeatLog")
-                        .WithMany("SeatLogDetails")
-                        .HasForeignKey("SeatLogId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Seat");
-
-                    b.Navigation("SeatLog");
                 });
 
             modelBuilder.Entity("DomainLayer.Entities.ShowTime", b =>
@@ -1201,11 +1168,6 @@ namespace InfrastructureLayer.Migrations
             modelBuilder.Entity("DomainLayer.Entities.Seat", b =>
                 {
                     b.Navigation("BookingDetails");
-                });
-
-            modelBuilder.Entity("DomainLayer.Entities.SeatLog", b =>
-                {
-                    b.Navigation("SeatLogDetails");
                 });
 
             modelBuilder.Entity("DomainLayer.Entities.ShowTime", b =>

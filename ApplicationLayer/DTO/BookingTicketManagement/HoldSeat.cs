@@ -9,14 +9,14 @@ namespace ApplicationLayer.DTO.BookingTicketManagement
 {
     public class HoldSeatRequestDto
     {
-        public List<Guid> SeatIds { get; set; } = new();
         public Guid ShowTimeId { get; set; }
+        public Guid SeatId { get; set; }
     }
 
     public class SeatSummaryRequestDto
     {
         [Required]
-        public Guid SeatLogId { get; set; }
+        public List<Guid> SeatLogId { get; set; } = new();
 
         public Guid? PromotionId { get; set; }
     }

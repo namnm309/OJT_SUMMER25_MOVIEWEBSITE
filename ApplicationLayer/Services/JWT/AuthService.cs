@@ -78,7 +78,7 @@ namespace ApplicationLayer.Services.JWT
             var newUser = new Users
             {
                 Email = req.Email,
-                Username = req.Email,
+                Username = req.UserName,
                 FullName = req.FullName,
                 IdentityCard = req.IdentityCard,
                 Address = req.Address,

@@ -32,34 +32,41 @@ namespace ApplicationLayer.Helper
                 {
                     using var scope = _serviceProvider.CreateScope();
                     var seatLogRepo = scope.ServiceProvider.GetRequiredService<IGenericRepository<SeatLog>>();
-                    var seatLogDetailRepo = scope.ServiceProvider.GetRequiredService<IGenericRepository<SeatLogDetail>>();
                     var seatRepo = scope.ServiceProvider.GetRequiredService<IGenericRepository<Seat>>();
                     var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<SeatHub>>();
 
+                    // Truy vấn các SeatLog đã hết hạn và include Seat
                     var expiredLogs = await seatLogRepo.WhereAsync(
                         log => log.ExpiredAt < DateTime.UtcNow,
-                        "SeatLogDetails"
+                        "Seat"
                     );
 
-                    foreach (var log in expiredLogs)
-                    {
-                        var expiredSeatIds = log.SeatLogDetails.Select(d => d.SeatId).ToList();
+                    // Group theo ShowTimeId để gửi SignalR hợp lý
+                    var groupedLogs = expiredLogs
+                        .GroupBy(log => log.ShowTimeId)
+                        .ToList();
 
-                        // Cập nhật trạng thái ghế
-                        var seatsToUpdate = await seatRepo.WhereAsync(s => expiredSeatIds.Contains(s.Id));
-                        foreach (var seat in seatsToUpdate)
+                    foreach (var group in groupedLogs)
+                    {
+                        var seatIds = group.Select(log => log.SeatId).ToList();
+
+                        // Update trạng thái ghế
+                        var seats = await seatRepo.WhereAsync(s => seatIds.Contains(s.Id));
+                        foreach (var seat in seats)
                         {
                             seat.Status = SeatStatus.Available;
                         }
-                        await seatRepo.UpdateRangeAsync(seatsToUpdate);
+                        await seatRepo.UpdateRangeAsync(seats);
 
-                        // Xóa log detail + log
-                        await seatLogDetailRepo.DeleteRangeAsync(log.SeatLogDetails);
-                        await seatLogRepo.DeleteAsync(log);
+                        // Xoá log
+                        foreach (var log in group)
+                        {
+                            await seatLogRepo.DeleteAsync(log);
+                        }
 
-                        // Gửi thông báo SignalR
-                        await hubContext.Clients.Group(log.ShowTimeId.ToString())
-                            .SendAsync("SeatsReleased", expiredSeatIds);
+                        // Gửi thông báo SignalR theo từng Showtime
+                        await hubContext.Clients.Group(group.Key.ToString())
+                            .SendAsync("SeatsReleased", seatIds);
                     }
 
                     _logger.LogInformation("✔ Cleared {Count} expired seat logs at {Time}", expiredLogs.Count, DateTime.UtcNow);
