@@ -62,6 +62,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         private readonly ILogger<BookingTicketService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly MovieContext _context;
+        private readonly IGenericRepository<Promotion> _promotionRepo;
 
         public BookingTicketService(
             IUserRepository userRepository,
@@ -77,7 +78,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             IBookingRepository bookingRepository,
             ILogger<BookingTicketService> logger,
             IHttpContextAccessor httpContextAccessor,
-            MovieContext context)
+            MovieContext context,
+            IGenericRepository<Promotion> promotionRepo)
         {
             _userRepository = userRepository;
             _movieRepo = movieRepo;
@@ -93,6 +95,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
             _context = context;
+            _promotionRepo = promotionRepo;
         }
 
 
@@ -924,6 +927,24 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 // 5. Calculate final total
                 decimal finalTotal = Math.Max(0, totalPrice - scoreDiscount);
 
+                // --- Áp dụng khuyến mãi nếu có ---
+                decimal promotionDiscount = 0;
+                int? discountPercent = null;
+                if (request.PromotionId.HasValue)
+                {
+                    var promotion = await _promotionRepo.FindByIdAsync(request.PromotionId.Value);
+                    if (promotion != null && promotion.StartDate <= DateTime.UtcNow && promotion.EndDate >= DateTime.UtcNow)
+                    {
+                        discountPercent = promotion.DiscountPercent;
+                        if (discountPercent > 0)
+                        {
+                            promotionDiscount = Math.Round(finalTotal * discountPercent.Value / 100);
+                            finalTotal = Math.Max(0, finalTotal - promotionDiscount);
+                        }
+                    }
+                }
+                // --- END Áp dụng khuyến mãi ---
+
                 // 6. Create booking (AC-05: Finalize booking regardless of score usage)
                 var newBooking = new Booking
                 {
@@ -1001,6 +1022,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     SubTotal = totalPrice,
                     ScoreDiscount = scoreDiscount,
                     Total = finalTotal,
+                    // Có thể bổ sung PromotionDiscount nếu muốn trả về
 
                     // Score usage details
                     ScoreUsed = actualTicketsConverted > 0,
@@ -1012,8 +1034,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     PaymentMethod = request.PaymentMethod,
                     BookingDate = DateTime.UtcNow.ToString("dd/MM/yyyy HH:mm"),
                     Message = actualTicketsConverted > 0 
-                        ? $"Booking confirmed! {actualTicketsConverted} tickets converted from {scoreToDeduct} points."
-                        : "Booking confirmed successfully!"
+                        ? $"Booking confirmed! {actualTicketsConverted} tickets converted from {scoreToDeduct} points." + (promotionDiscount > 0 ? $" Promotion discount: {promotionDiscount} ({discountPercent}%)" : "")
+                        : "Booking confirmed successfully!" + (promotionDiscount > 0 ? $" Promotion discount: {promotionDiscount} ({discountPercent}%)" : "")
                 };
 
                 return SuccessResp.Ok(successResponse);

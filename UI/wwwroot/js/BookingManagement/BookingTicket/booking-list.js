@@ -483,7 +483,7 @@ class BookingListManager {
             this.showError("Có lỗi xảy ra khi hủy đặt vé");
         } finally {
             this.hideLoading();
-        }
+        }   
     }
 
     showLoading() {
