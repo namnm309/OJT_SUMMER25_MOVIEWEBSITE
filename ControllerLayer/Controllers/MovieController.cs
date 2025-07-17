@@ -43,6 +43,17 @@ namespace ControllerLayer.Controllers
             return await _movieService.GetByIdAsync(movieId);
         }
 
+        /// <summary>
+        /// [UI] Quản trị phim: Tạo phim mới.
+        /// </summary>
+        [Protected]
+        [HttpPost("Create")]
+        public async Task<IActionResult> CreateMovie([FromBody] MovieCreateDto dto)
+        {
+            _logger.LogInformation("Create Movie: {Title}", dto.Title);
+            return await _movieService.CreateMovie(dto);
+        }
+
         [HttpGet("ViewPagination")]
         public async Task<IActionResult> ViewListMovie([FromQuery] PaginationReq query)
         {
