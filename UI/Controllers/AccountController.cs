@@ -110,13 +110,20 @@ namespace UI.Controllers
 
                     // RedirectUrl tuỳ API, có thể không có
                     string? redirectUrl = null;
-                    // Tự động redirect theo role
-                    if (role.ToLower() == "admin" || role == "2")
-                        redirectUrl = "/Dashboard/AdminDashboard";
-                    else if (role.ToLower() == "staff" || role == "3")
-                        redirectUrl = "/Dashboard/StaffDashboard";
+                    if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
+                    {
+                        redirectUrl = model.ReturnUrl;
+                    }
                     else
-                        redirectUrl = "/";
+                    {
+                        // Tự động redirect theo role
+                        if (role.ToLower() == "admin" || role == "2")
+                            redirectUrl = "/Dashboard/AdminDashboard";
+                        else if (role.ToLower() == "staff" || role == "3")
+                            redirectUrl = "/Dashboard/StaffDashboard";
+                        else
+                            redirectUrl = "/";
+                    }
 
                     return new JsonResult(new
                     {

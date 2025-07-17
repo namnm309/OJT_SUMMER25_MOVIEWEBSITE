@@ -80,6 +80,42 @@ namespace UI
                             ctx.Token = token;
                         }
                         return Task.CompletedTask;
+                    },
+                    // Nếu request không phải API (hoặc không yêu cầu JSON) và chưa xác thực, chuyển hướng tới trang đăng nhập
+                    OnChallenge = context =>
+                    {
+                        // Chỉ can thiệp nếu chưa bắt đầu gửi response
+                        if (!context.HttpContext.Response.HasStarted)
+                        {
+                            var request = context.HttpContext.Request;
+
+                            // Xác định request API hay Razor page dựa trên đường dẫn hoặc header Accept
+                            var isApiRequest = request.Path.StartsWithSegments("/api", StringComparison.OrdinalIgnoreCase) ||
+                                               request.Headers["Accept"].Any(h => h.Contains("application/json", StringComparison.OrdinalIgnoreCase));
+
+                            if (!isApiRequest)
+                            {
+                                context.HandleResponse(); // Ngăn JWT middleware trả về 401 mặc định
+                                var returnUrl = Uri.EscapeDataString(request.Path + request.QueryString);
+                                context.Response.Redirect($"/Account/Login?returnUrl={returnUrl}");
+                            }
+                        }
+                        return Task.CompletedTask;
+                    },
+                    OnForbidden = context =>
+                    {
+                        // Tương tự OnChallenge nhưng cho trường hợp đã xác thực nhưng không có quyền
+                        if (!context.Response.HasStarted)
+                        {
+                            var request = context.Request;
+                            var isApiRequest = request.Path.StartsWithSegments("/api", StringComparison.OrdinalIgnoreCase) ||
+                                               request.Headers["Accept"].Any(h => h.Contains("application/json", StringComparison.OrdinalIgnoreCase));
+                            if (!isApiRequest)
+                            {
+                                context.Response.Redirect("/Home/AccessDenied");
+                            }
+                        }
+                        return Task.CompletedTask;
                     }
                 };
             });
