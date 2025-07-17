@@ -83,7 +83,11 @@
                             <li>
                                 <a class="shared-dropdown-item" href="/Dashboard">
                                     <i class="fas fa-tachometer-alt"></i>
-                                    <span>Dashboard</span>
+                                    @if (User.IsInRole("Admin")) {
+    <span>Dashboard</span>
+} else {
+    <span>Thông tin cá nhân</span>
+}
                                 </a>
                             </li>
                             <li><hr class="shared-dropdown-divider"></li>
@@ -167,4 +171,4 @@
             window.location.href = searchUrl;
         }
     });
-</script> 
+</script>

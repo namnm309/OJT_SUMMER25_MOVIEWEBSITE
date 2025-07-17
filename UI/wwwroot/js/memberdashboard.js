@@ -1,4 +1,4 @@
-﻿    function showTab(tabName) {
+function showTab(tabName, button) {
             // Hide all tab contents
             const tabContents = document.querySelectorAll('.tab-content');
             tabContents.forEach(content => {
@@ -7,15 +7,15 @@
 
     // Remove active class from all tab buttons
     const tabButtons = document.querySelectorAll('.tab-btn');
-            tabButtons.forEach(button => {
-        button.classList.remove('active');
+            tabButtons.forEach(btn => {
+        btn.classList.remove('active');
             });
 
     // Show selected tab content
     document.getElementById(tabName).classList.add('active');
 
     // Add active class to clicked button
-    event.target.classList.add('active');
+    button.classList.add('active');
         }
 
     // Initialize page

@@ -27,7 +27,8 @@ namespace ControllerLayer.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                return BadRequest(new { message = "Validation failed", errors = errors });
             }
 
             var result = await _userService.LoginAsync(loginRequest);
@@ -113,7 +114,7 @@ namespace ControllerLayer.Controllers
         }
 
         [HttpPut("profile")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> EditProfile([FromBody] EditProfileRequestDto editRequest)
         {
             if (!ModelState.IsValid)
@@ -122,8 +123,10 @@ namespace ControllerLayer.Controllers
             }
 
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
             {
+
                 return Unauthorized();
             }
 

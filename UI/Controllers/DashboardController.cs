@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using UI.Services;
 using System.Collections.Generic;
+using UI.Models;
 
 namespace UI.Controllers
 {
@@ -130,6 +131,11 @@ namespace UI.Controllers
                     double nextTier = scoreVal < 2000 ? 2000 : (scoreVal < 5000 ? 5000 : (scoreVal < 10000 ? 10000 : Math.Ceiling(scoreVal/5000)*5000));
                     ViewBag.PointsNeeded = nextTier - scoreVal;
                     ViewBag.ProgressPercent = (nextTier == 0) ? 0 : Math.Min(100, Math.Round(scoreVal / nextTier * 100, 1));
+                    ViewBag.Phone = p.TryGetProperty("phone", out var ph) ? ph.GetString() : "";
+                    ViewBag.IdentityCard = p.TryGetProperty("identityCard", out var ic) ? ic.GetString() : "";
+                    ViewBag.Address = p.TryGetProperty("address", out var ad) ? ad.GetString() : "";
+                    ViewBag.BirthDate = p.TryGetProperty("birthDate", out var bd) && bd.ValueKind == JsonValueKind.String ? DateTime.Parse(bd.GetString()).ToString("yyyy-MM-dd") : "";
+                    ViewBag.Gender = p.TryGetProperty("gender", out var gd) ? gd.GetString() : "";
                     ViewBag.IsActive = p.TryGetProperty("isActive", out var ia) && ia.GetBoolean();
                     ViewBag.CreatedAt = p.TryGetProperty("createdAt", out var ca) ? ca.GetDateTime().ToString("dd/MM/yyyy HH:mm") : "N/A";
                 }
@@ -198,6 +204,39 @@ namespace UI.Controllers
         public IActionResult BookTicketStep3()
         {
             return View();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> EditProfile([FromBody] EditProfileModel model)
+        {
+            try
+            {
+                var data = new
+                {
+                    Email = model.Email,
+                    FullName = model.FullName,
+                    Phone = model.Phone,
+                    IdentityCard = model.IdentityCard,
+                    Address = model.Address,
+                    BirthDate = model.BirthDate,
+                    Gender = model.Gender
+                };
+
+                var response = await _apiService.PutAsync<object>("/api/user/profile", data);
+
+                if (response.Success)
+                {
+                    return Json(new { success = true, message = "Profile updated successfully" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = response.Message });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
         }
     }
 }
