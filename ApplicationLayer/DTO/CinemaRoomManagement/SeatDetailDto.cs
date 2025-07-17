@@ -14,5 +14,6 @@ namespace ApplicationLayer.DTO.CinemaRoomManagement
         public SeatType SeatType { get; set; }
         public int RowIndex { get; set; }
         public int ColumnIndex { get; set; }
+        public SeatStatus Status { get; set; }
     }
 }

@@ -22,6 +22,31 @@ namespace InfrastructureLayer.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("DomainLayer.Entities.Actor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_actors");
+                });
+
             modelBuilder.Entity("DomainLayer.Entities.Booking", b =>
                 {
                     b.Property<Guid>("Id")
@@ -157,6 +182,31 @@ namespace InfrastructureLayer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tbl_cinema_rooms");
+                });
+
+            modelBuilder.Entity("DomainLayer.Entities.Director", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_directors");
                 });
 
             modelBuilder.Entity("DomainLayer.Entities.Employee", b =>
@@ -323,6 +373,60 @@ namespace InfrastructureLayer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tbl_movies");
+                });
+
+            modelBuilder.Entity("DomainLayer.Entities.MovieActor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ActorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActorId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("tbl_movie_actors");
+                });
+
+            modelBuilder.Entity("DomainLayer.Entities.MovieDirector", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DirectorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DirectorId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("tbl_movie_directors");
                 });
 
             modelBuilder.Entity("DomainLayer.Entities.MovieGenre", b =>
@@ -510,6 +614,49 @@ namespace InfrastructureLayer.Migrations
                     b.ToTable("tbl_seats");
                 });
 
+            modelBuilder.Entity("DomainLayer.Entities.SeatLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BookingId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("SeatId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ShowTimeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId");
+
+                    b.HasIndex("SeatId");
+
+                    b.HasIndex("ShowTimeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("tbl_seat_log");
+                });
+
             modelBuilder.Entity("DomainLayer.Entities.ShowTime", b =>
                 {
                     b.Property<Guid>("Id")
@@ -552,6 +699,55 @@ namespace InfrastructureLayer.Migrations
                     b.ToTable("tbl_show_times");
                 });
 
+            modelBuilder.Entity("DomainLayer.Entities.Ticket", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BookingId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("MovieName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Screen")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SeatCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ShowDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<TimeSpan>("ShowTime")
+                        .HasColumnType("interval");
+
+                    b.Property<Guid>("ShowTimeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId");
+
+                    b.HasIndex("ShowTimeId");
+
+                    b.ToTable("tbl_tickets");
+                });
+
             modelBuilder.Entity("DomainLayer.Entities.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
@@ -591,7 +787,7 @@ namespace InfrastructureLayer.Migrations
 
                     b.HasIndex("BookingId");
 
-                    b.ToTable("Transaction");
+                    b.ToTable("tbl_transaction");
                 });
 
             modelBuilder.Entity("DomainLayer.Entities.Users", b =>
@@ -719,6 +915,44 @@ namespace InfrastructureLayer.Migrations
                     b.Navigation("Seat");
                 });
 
+            modelBuilder.Entity("DomainLayer.Entities.MovieActor", b =>
+                {
+                    b.HasOne("DomainLayer.Entities.Actor", "Actor")
+                        .WithMany("MovieActors")
+                        .HasForeignKey("ActorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainLayer.Entities.Movie", "Movie")
+                        .WithMany("MovieActors")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Actor");
+
+                    b.Navigation("Movie");
+                });
+
+            modelBuilder.Entity("DomainLayer.Entities.MovieDirector", b =>
+                {
+                    b.HasOne("DomainLayer.Entities.Director", "Director")
+                        .WithMany("MovieDirectors")
+                        .HasForeignKey("DirectorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainLayer.Entities.Movie", "Movie")
+                        .WithMany("MovieDirectors")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Director");
+
+                    b.Navigation("Movie");
+                });
+
             modelBuilder.Entity("DomainLayer.Entities.MovieGenre", b =>
                 {
                     b.HasOne("DomainLayer.Entities.Genre", "Genre")
@@ -777,6 +1011,41 @@ namespace InfrastructureLayer.Migrations
                     b.Navigation("Room");
                 });
 
+            modelBuilder.Entity("DomainLayer.Entities.SeatLog", b =>
+                {
+                    b.HasOne("DomainLayer.Entities.Booking", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainLayer.Entities.Seat", "Seat")
+                        .WithMany()
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainLayer.Entities.ShowTime", "ShowTime")
+                        .WithMany()
+                        .HasForeignKey("ShowTimeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainLayer.Entities.Users", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Seat");
+
+                    b.Navigation("ShowTime");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DomainLayer.Entities.ShowTime", b =>
                 {
                     b.HasOne("DomainLayer.Entities.Movie", "Movie")
@@ -796,6 +1065,25 @@ namespace InfrastructureLayer.Migrations
                     b.Navigation("Room");
                 });
 
+            modelBuilder.Entity("DomainLayer.Entities.Ticket", b =>
+                {
+                    b.HasOne("DomainLayer.Entities.Booking", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainLayer.Entities.ShowTime", "ShowTimeRef")
+                        .WithMany()
+                        .HasForeignKey("ShowTimeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("ShowTimeRef");
+                });
+
             modelBuilder.Entity("DomainLayer.Entities.Transaction", b =>
                 {
                     b.HasOne("DomainLayer.Entities.Booking", "Booking")
@@ -805,6 +1093,11 @@ namespace InfrastructureLayer.Migrations
                         .IsRequired();
 
                     b.Navigation("Booking");
+                });
+
+            modelBuilder.Entity("DomainLayer.Entities.Actor", b =>
+                {
+                    b.Navigation("MovieActors");
                 });
 
             modelBuilder.Entity("DomainLayer.Entities.Booking", b =>
@@ -821,6 +1114,11 @@ namespace InfrastructureLayer.Migrations
                     b.Navigation("ShowTimes");
                 });
 
+            modelBuilder.Entity("DomainLayer.Entities.Director", b =>
+                {
+                    b.Navigation("MovieDirectors");
+                });
+
             modelBuilder.Entity("DomainLayer.Entities.Genre", b =>
                 {
                     b.Navigation("MovieGenres");
@@ -828,6 +1126,10 @@ namespace InfrastructureLayer.Migrations
 
             modelBuilder.Entity("DomainLayer.Entities.Movie", b =>
                 {
+                    b.Navigation("MovieActors");
+
+                    b.Navigation("MovieDirectors");
+
                     b.Navigation("MovieGenres");
 
                     b.Navigation("MovieImages");

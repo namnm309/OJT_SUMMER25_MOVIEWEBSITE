@@ -20,7 +20,8 @@ using InfrastructureLayer.Core.Mail;
 using InfrastructureLayer.Core.Cache;
 using StackExchange.Redis;
 using ApplicationLayer.Mappings;
-using ApplicationLayer.Services.Payment;   
+using ApplicationLayer.Services.Payment;
+using ApplicationLayer.Services.TicketSellingManagement;
 using ApplicationLayer.Services.ConcessionManagement;
 using ApplicationLayer.DTO.ConcessionManagement;
 namespace ControllerLayer
@@ -93,6 +94,25 @@ namespace ControllerLayer
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero
                 };
+
+                // Thêm phần này để lấy token từ query string cho SignalR
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        // Nếu request là đến /seathub
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/seathub"))
+                        {
+                            context.Token = accessToken;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
+
             })
             .AddCookie(options =>
             {
@@ -174,6 +194,9 @@ namespace ControllerLayer
             var smtpPassword = builder.Configuration.GetValue<string>("SMTPPassword") ?? "smtp_password";
             builder.Services.AddSingleton<IMailService>(new MailService("smtp.gmail.com", 587, smtpUsername, smtpPassword));
 
+            // SignalR
+            builder.Services.AddSignalR();
+
 
             // Đăng ký Repository và Services
             builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -202,6 +225,10 @@ namespace ControllerLayer
             // Đăng ký Repository và Service cho ConcessionItem
             builder.Services.AddScoped<IConcessionItemRepository, ConcessionItemRepository>();
             builder.Services.AddScoped<IConcessionItemService, ConcessionItemService>();
+
+            builder.Services.AddScoped<ITicketService, TicketService>();
+
+            builder.Services.AddScoped<ISeatSignalService, SeatSignalService>();
 
             // Thêm vào Program.cs
             builder.Services.AddAutoMapper(typeof(BookingProfile));
@@ -271,6 +298,9 @@ namespace ControllerLayer
             
             // Enable CORS
             app.UseCors("AllowUI");
+
+            // Map hub endpoint
+            app.MapHub<SeatHub>("/seathub");
 
             app.UseAuthentication();
             app.UseAuthorization();

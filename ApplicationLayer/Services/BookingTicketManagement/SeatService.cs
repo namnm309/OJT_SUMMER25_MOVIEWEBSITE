@@ -14,6 +14,8 @@ using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace ApplicationLayer.Services.BookingTicketManagement
 {
@@ -38,6 +40,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         private readonly IGenericRepository<Booking> _bookingRepo;
         private readonly IGenericRepository<BookingDetail> _bookingDetailRepo;
         private readonly IGenericRepository<Users> _userRepo;
+        private readonly IGenericRepository<SeatLog> _seatLogRepo;
+        private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpCtx;
 
@@ -47,6 +51,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             IGenericRepository<Booking> bookingRepo,
             IGenericRepository<BookingDetail> bookingDetailRepo,
             IGenericRepository<Users> userRepo,
+            IGenericRepository<SeatLog> seatLogRepo,
             IMapper mapper,
             IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
         {
@@ -55,6 +60,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             _bookingRepo = bookingRepo;
             _bookingDetailRepo = bookingDetailRepo;
             _userRepo = userRepo;
+            _seatLogRepo = seatLogRepo;
             _mapper = mapper;
             _httpCtx = httpCtx;
         }

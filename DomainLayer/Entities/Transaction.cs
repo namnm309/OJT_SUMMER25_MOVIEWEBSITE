@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace DomainLayer.Entities
 {
+    [Table("tbl_transaction")]
     public class Transaction : BaseEntity
     {
         [Required]
