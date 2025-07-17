@@ -7,6 +7,7 @@ using InfrastructureLayer.Data;
 using ApplicationLayer.Services.UserManagement;
 using ApplicationLayer.DTO.UserManagement;
 using ApplicationLayer.Middlewares;
+using Microsoft.EntityFrameworkCore;
 
 namespace ControllerLayer.Controllers
 {
@@ -316,6 +317,33 @@ namespace ControllerLayer.Controllers
             }
  
             return Ok(new { bookingId = id });
+        }
+
+        [HttpGet("user-bookings-count")]
+        [Authorize]
+        public async Task<IActionResult> GetUserBookingCount()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            var count = await _context.Bookings.CountAsync(b => b.UserId == userId);
+            return Ok(new { success = true, count });
+        }
+
+        [HttpGet("user-bookings")]
+        [Authorize]
+        public async Task<IActionResult> GetUserBookings()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            return await _bookingTicketService.GetUserBookingHistoryAsync(userId);
         }
     }
 }

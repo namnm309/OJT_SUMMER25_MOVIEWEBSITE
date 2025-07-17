@@ -3,6 +3,8 @@
     Layout = null;
 }
 
+@using System.Text.Json
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -50,11 +52,11 @@
                         <p>@ViewBag.Email</p>
                         <div class="profile-stats">
                             <div class="stat-item">
-                                <div class="stat-value">1,250</div>
+                                <div class="stat-value">@(ViewBag.Score ?? 0)</div>
                                 <div class="stat-label">Điểm thưởng</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-value">8</div>
+                                <div class="stat-value">@(ViewBag.TicketCount ?? 0)</div>
                                 <div class="stat-label">Vé đã đặt</div>
                             </div>
                             <div class="stat-item">
@@ -199,18 +201,18 @@
             <div id="points" class="tab-content">
                 <div class="points-overview">
                     <div class="points-card">
-                        <div class="points-value">1,250</div>
+                        <div class="points-value">@ViewBag.Score</div>
                         <div class="points-label">Điểm hiện tại</div>
                     </div>
                     <div class="points-card">
-                        <div class="points-value">750</div>
+                        <div class="points-value">@ViewBag.PointsNeeded</div>
                         <div class="points-label">Điểm cần để lên hạng</div>
                     </div>
                     <div class="points-card">
-                        <div class="points-value">120</div>
+                        <div class="points-value">-</div>
                         <div class="points-label">Điểm tháng này</div>
-                        </div>
                     </div>
+                </div>
 
                 <div class="profile-card">
                     <div class="card-header">
@@ -222,11 +224,11 @@
                             <span style="font-size: 1.2rem; color: var(--text-secondary);">Tiến trình đến hạng Vàng</span>
                             </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: 62.5%;"></div>
+                            <div class="progress-fill" style="width: @ViewBag.ProgressPercent%;"></div>
                         </div>
                         <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
-                            <span>1,250 điểm</span>
-                            <span>2,000 điểm</span>
+                            <span>@ViewBag.Score điểm</span>
+                            <span>@(ViewBag.Score + ViewBag.PointsNeeded) điểm</span>
                         </div>
                     </div>
                 </div>
@@ -265,42 +267,33 @@
                         <h3>Voucher của bạn</h3>
                         </div>
                     <div class="voucher-grid">
-                        <div class="voucher-item">
-                            <div class="voucher-header">
-                                <div class="voucher-discount">20%</div>
-                                <div class="voucher-code">SAVE20</div>
+                        @if(ViewBag.UserVouchers != null)
+                        {
+                            foreach(var voucherEl in (IEnumerable<JsonElement>)ViewBag.UserVouchers)
+                            {
+                                var title = voucherEl.GetProperty("title").GetString();
+                                var discount = voucherEl.TryGetProperty("discountPercent", out var discProp) ? discProp.GetInt32() : 0;
+                                var description = voucherEl.GetProperty("description").GetString();
+                                var endDate = voucherEl.GetProperty("endDate").GetDateTime();
+
+                                <div class="voucher-item">
+                                    <div class="voucher-header">
+                                        <div class="voucher-discount">@discount% </div>
+                                        <div class="voucher-code">@title</div>
+                                    </div>
+                                    <div class="voucher-description">
+                                        @description
+                                    </div>
+                                    <div class="voucher-expiry">
+                                        <i class="fas fa-clock"></i> Hết hạn: @endDate.ToString("dd/MM/yyyy")
+                                    </div>
                                 </div>
-                            <div class="voucher-description">
-                                Giảm 20% cho tất cả vé phim
-                                </div>
-                            <div class="voucher-expiry">
-                                <i class="fas fa-clock"></i> Hết hạn: 31/12/2024
-                            </div>
-                                </div>
-                        <div class="voucher-item">
-                            <div class="voucher-header">
-                                <div class="voucher-discount">50K</div>
-                                <div class="voucher-code">COMBO50</div>
-                                </div>
-                            <div class="voucher-description">
-                                Giảm 50K cho combo bắp nước
-                            </div>
-                            <div class="voucher-expiry">
-                                <i class="fas fa-clock"></i> Hết hạn: 15/01/2025
-                                </div>
-                                </div>
-                        <div class="voucher-item">
-                            <div class="voucher-header">
-                                <div class="voucher-discount">1+1</div>
-                                <div class="voucher-code">FRIEND</div>
-                            </div>
-                            <div class="voucher-description">
-                                Mua 1 tặng 1 vé phim cuối tuần
-                                </div>
-                            <div class="voucher-expiry">
-                                <i class="fas fa-clock"></i> Hết hạn: 28/02/2025
-                            </div>
-                        </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>Không có voucher nào.</p>
+                        }
                     </div>
                 </div>
             </div>
@@ -313,71 +306,39 @@
                         <h3>Lịch sử giao dịch</h3>
                     </div>
                     <div class="transaction-list">
-                        <div class="transaction-item">
-                            <div class="transaction-icon booking">
-                                <i class="fas fa-ticket-alt"></i>
-                            </div>
-                            <div class="transaction-details">
-                                <div class="transaction-title">Đặt vé phim "Avengers: Endgame"</div>
-                                <div class="transaction-subtitle">Rạp Cinema City - Phòng 1</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div class="transaction-amount negative">-180,000đ</div>
-                                <div class="transaction-time">Hôm nay, 14:30</div>
-                            </div>
-                        </div>
-                        <div class="transaction-item">
-                            <div class="transaction-icon payment">
-                                <i class="fas fa-star"></i>
+                        @if(ViewBag.BookingHistory != null)
+                        {
+                            @foreach(var histEl in (IEnumerable<JsonElement>)ViewBag.BookingHistory)
+                            {
+                                var status = histEl.GetProperty("status").GetString();
+                                var amount = histEl.GetProperty("amount").GetDecimal();
+                                var isRefund = histEl.GetProperty("isRefund").GetBoolean();
+                                var movieTitle = histEl.GetProperty("movieTitle").GetString();
+                                var cinemaRoom = histEl.GetProperty("cinemaRoom").GetString();
+                                var bookingDate = histEl.GetProperty("bookingDate").GetDateTime();
+
+                                var iconClass = status == "Canceled" ? "refund" : "booking";
+                                var amountClass = isRefund ? "positive" : "negative";
+                                var amountText = (isRefund ? "+" : "-") + String.Format("{0:N0}đ", amount);
+
+                                <div class="transaction-item">
+                                    <div class="transaction-icon @iconClass">
+                                        <i class="fas fa-ticket-alt"></i>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <div class="transaction-title">Đặt vé phim "@movieTitle"</div>
+                                        <div class="transaction-subtitle">@cinemaRoom</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div class="transaction-amount @amountClass">@amountText</div>
+                                        <div class="transaction-time">@bookingDate.ToString("dd/MM/yyyy HH:mm")</div>
+                                    </div>
                                 </div>
-                            <div class="transaction-details">
-                                <div class="transaction-title">Nhận điểm thưởng</div>
-                                <div class="transaction-subtitle">Từ việc đặt vé phim</div>
-                                </div>
-                            <div style="text-align: right;">
-                                <div class="transaction-amount positive">+120 điểm</div>
-                                <div class="transaction-time">Hôm nay, 14:30</div>
-                            </div>
-                                </div>
-                        <div class="transaction-item">
-                            <div class="transaction-icon booking">
-                                <i class="fas fa-popcorn"></i>
-                                </div>
-                            <div class="transaction-details">
-                                <div class="transaction-title">Mua combo bắp nước</div>
-                                <div class="transaction-subtitle">Combo couple size L</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div class="transaction-amount negative">-85,000đ</div>
-                                <div class="transaction-time">Hôm qua, 19:15</div>
-                            </div>
-                        </div>
-                        <div class="transaction-item">
-                            <div class="transaction-icon refund">
-                                <i class="fas fa-undo"></i>
-                            </div>
-                            <div class="transaction-details">
-                                <div class="transaction-title">Hoàn tiền vé</div>
-                                <div class="transaction-subtitle">Hủy vé phim "Spider-Man"</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div class="transaction-amount positive">+150,000đ</div>
-                                <div class="transaction-time">2 ngày trước, 10:20</div>
-                    </div>
-                        </div>
-                        <div class="transaction-item">
-                            <div class="transaction-icon payment">
-                                <i class="fas fa-gift"></i>
-                            </div>
-                            <div class="transaction-details">
-                                <div class="transaction-title">Sử dụng voucher</div>
-                                <div class="transaction-subtitle">Voucher giảm 20% - SAVE20</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div class="transaction-amount positive">-36,000đ</div>
-                                <div class="transaction-time">3 ngày trước, 16:45</div>
-                            </div>
-                        </div>
+                            }
+                        }
+                        else {
+                           <p>Chưa có giao dịch.</p>
+                        }
                     </div>
                 </div>
             </div>

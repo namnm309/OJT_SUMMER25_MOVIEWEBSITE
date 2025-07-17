@@ -262,6 +262,7 @@ namespace ControllerLayer
 
             // Thêm vào phần đăng ký services
             builder.Services.AddScoped<ICustomerSearchService, CustomerSearchService>();
+            builder.Services.AddScoped<IUserPromotionService, UserPromotionService>();
 
             //===================================================================================================================================================
 

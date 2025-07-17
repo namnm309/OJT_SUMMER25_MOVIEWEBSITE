@@ -41,6 +41,9 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<IActionResult> GetBookingListAsync(BookingFilterDto filter);
         Task<IActionResult> UpdateBookingStatusAsync(Guid bookingId, string newStatus);
         Task<IActionResult> CancelBookingAsync(Guid bookingId, string reason);
+
+        // Booking history for member dashboard
+        Task<IActionResult> GetUserBookingHistoryAsync(Guid userId);
     }
 
     public class BookingTicketService : IBookingTicketService
@@ -1242,6 +1245,44 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             {
                 _logger.LogError(ex, "Error cancelling booking {BookingId}", bookingId);
                 return ErrorResp.InternalServerError("Error cancelling booking");
+            }
+        }
+
+        public async Task<IActionResult> GetUserBookingHistoryAsync(Guid userId)
+        {
+            try
+            {
+                var bookings = await _bookingRepo.WhereAsync(b => b.UserId == userId,
+                    "ShowTime",
+                    "ShowTime.Movie",
+                    "ShowTime.Room",
+                    "BookingDetails",
+                    "BookingDetails.Seat");
+                if (bookings == null || !bookings.Any())
+                {
+                    return ErrorResp.NotFound("No booking history found for this user.");
+                }
+
+                var bookingDtos = bookings.Select(b => new BookingHistoryItemDto
+                {
+                    BookingId = b.Id,
+                    BookingCode = b.BookingCode,
+                    MovieTitle = b.ShowTime?.Movie?.Title ?? "N/A",
+                    CinemaRoom = b.ShowTime?.Room?.RoomName ?? "N/A",
+                    ShowDate = b.ShowTime?.ShowDate ?? DateTime.MinValue,
+                    ShowTime = b.ShowTime?.ShowDate?.TimeOfDay ?? TimeSpan.Zero,
+                    Amount = b.TotalPrice,
+                    Status = b.Status.ToString(),
+                    BookingDate = b.BookingDate,
+                    IsRefund = b.Status == BookingStatus.Canceled
+                }).ToList();
+
+                return SuccessResp.Ok(bookingDtos);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting user booking history for user {UserId}", userId);
+                return ErrorResp.InternalServerError("Error retrieving user booking history");
             }
         }
     }
