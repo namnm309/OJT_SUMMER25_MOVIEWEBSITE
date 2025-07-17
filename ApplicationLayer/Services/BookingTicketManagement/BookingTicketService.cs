@@ -14,6 +14,10 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using DomainLayer.Entities;
+using DomainLayer.Enum;
+using DomainLayer.Entities;
+using DomainLayer.Enum;
 
 namespace ApplicationLayer.Services.BookingTicketManagement
 {
@@ -55,6 +59,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         private readonly IGenericRepository<Users> _userRepo;
         private readonly IGenericRepository<PointHistory> _pointHistoryRepo;
         private readonly ISeatRepository _seatRepository;
+        private readonly IGenericRepository<Promotion> _promotionRepo;
+        private readonly IGenericRepository<UserPromotion> _userPromotionRepo;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IMailService _mailService;
@@ -62,7 +68,6 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         private readonly ILogger<BookingTicketService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly MovieContext _context;
-        private readonly IGenericRepository<Promotion> _promotionRepo;
 
         public BookingTicketService(
             IUserRepository userRepository,
@@ -73,13 +78,14 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             IGenericRepository<Users> userRepo,
             IGenericRepository<PointHistory> pointHistoryRepo,
             ISeatRepository seatRepository,
+            IGenericRepository<Promotion> promotionRepo,
+            IGenericRepository<UserPromotion> userPromotionRepo,
             IMapper mapper,
             IMailService mailService,
             IBookingRepository bookingRepository,
             ILogger<BookingTicketService> logger,
             IHttpContextAccessor httpContextAccessor,
-            MovieContext context,
-            IGenericRepository<Promotion> promotionRepo)
+            MovieContext context)
         {
             _userRepository = userRepository;
             _movieRepo = movieRepo;
@@ -89,13 +95,14 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             _userRepo = userRepo;
             _pointHistoryRepo = pointHistoryRepo;
             _seatRepository = seatRepository;
+            _promotionRepo = promotionRepo;
+            _userPromotionRepo = userPromotionRepo;
             _mapper = mapper;
             _mailService = mailService;
             _bookingRepository = bookingRepository;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
             _context = context;
-            _promotionRepo = promotionRepo;
         }
 
 
@@ -236,6 +243,10 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     PhoneNumber = request.PhoneNumber
                 };
 
+                // 5. Cộng điểm và tự động cấp voucher nếu đủ điểm
+                await AwardPointsAndVouchersAsync(request.UserId, request.SeatIds.Count, newBooking.Id, newBooking.BookingCode);
+
+                // 6. Gửi email xác nhận cho người dùng (nếu cần)
                 return SuccessResp.Ok(successResponse);
             }
             catch (NotFoundException ex)
@@ -1305,6 +1316,49 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             {
                 _logger.LogError(ex, "Error getting user booking history for user {UserId}", userId);
                 return ErrorResp.InternalServerError("Error retrieving user booking history");
+            }
+        }
+
+        private async Task AwardPointsAndVouchersAsync(Guid userId, int seatsBooked, Guid bookingId, string bookingCode)
+        {
+            var user = await _userRepo.FindByIdAsync(userId);
+            if(user == null) return;
+
+            // 100 điểm mỗi vé
+            var earned = seatsBooked * 100;
+            user.Score += earned;
+            await _userRepo.UpdateAsync(user);
+
+            // Lưu point history
+            await _pointHistoryRepo.CreateAsync(new PointHistory
+            {
+                UserId = user.Id,
+                Points = earned,
+                Type = PointType.Earned,
+                Description = $"Earned {earned} pts for booking {bookingCode}",
+                BookingId = bookingId,
+                IsUsed = false
+            });
+
+            // Check and grant vouchers
+            var silverPromo = await _promotionRepo.FirstOrDefaultAsync(p => p.Title.ToLower().Contains("silver"));
+            var goldPromo = await _promotionRepo.FirstOrDefaultAsync(p => p.Title.ToLower().Contains("gold"));
+
+            if(silverPromo != null && user.Score >= 2000)
+            {
+                var exist = await _userPromotionRepo.FirstOrDefaultAsync(up => up.UserId == user.Id && up.PromotionId == silverPromo.Id);
+                if(exist == null)
+                {
+                    await _userPromotionRepo.CreateAsync(new UserPromotion{ UserId = user.Id, PromotionId = silverPromo.Id });
+                }
+            }
+            if(goldPromo != null && user.Score >= 5000)
+            {
+                var exist = await _userPromotionRepo.FirstOrDefaultAsync(up => up.UserId == user.Id && up.PromotionId == goldPromo.Id);
+                if(exist == null)
+                {
+                    await _userPromotionRepo.CreateAsync(new UserPromotion{ UserId = user.Id, PromotionId = goldPromo.Id });
+                }
             }
         }
     }

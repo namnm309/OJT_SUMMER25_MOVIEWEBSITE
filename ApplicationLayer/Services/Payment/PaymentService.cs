@@ -28,12 +28,28 @@ namespace ApplicationLayer.Services.Payment
         private readonly IGenericRepository<BookingDetail> _bookingDetailRepo;
         private readonly IGenericRepository<Seat> _seatRepo;
         private readonly IGenericRepository<SeatLog> _seatLogRepo;
+        private readonly IGenericRepository<Users> _userRepo;
+        private readonly IGenericRepository<PointHistory> _pointHistoryRepo;
+        private readonly IGenericRepository<Promotion> _promotionRepo;
+        private readonly IGenericRepository<UserPromotion> _userPromotionRepo;
         private readonly ITicketService _ticketService;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpCtx;
 
-        public PaymentService(IGenericRepository<Booking> bookingRepo, IGenericRepository<Transaction> transactionRepo, IGenericRepository<BookingDetail> bookingDetailRepo, IGenericRepository<Seat> seatRepo, IGenericRepository<SeatLog> seatLogRepo, ITicketService ticketService, IConfiguration config, IMapper mapper, IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
+        public PaymentService(IGenericRepository<Booking> bookingRepo,
+            IGenericRepository<Transaction> transactionRepo,
+            IGenericRepository<BookingDetail> bookingDetailRepo,
+            IGenericRepository<Seat> seatRepo,
+            IGenericRepository<SeatLog> seatLogRepo,
+            IGenericRepository<Users> userRepo,
+            IGenericRepository<PointHistory> pointHistoryRepo,
+            IGenericRepository<Promotion> promotionRepo,
+            IGenericRepository<UserPromotion> userPromotionRepo,
+            ITicketService ticketService,
+            IConfiguration config,
+            IMapper mapper,
+            IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
         {
             _bookingRepo = bookingRepo;
             _transactionRepo = transactionRepo;
@@ -44,6 +60,10 @@ namespace ApplicationLayer.Services.Payment
             _config = config;
             _mapper = mapper;
             _httpCtx = httpCtx;
+            _userRepo = userRepo;
+            _pointHistoryRepo = pointHistoryRepo;
+            _promotionRepo = promotionRepo;
+            _userPromotionRepo = userPromotionRepo;
         }
 
         public async Task<string> CreateVnPayPayment(HttpContext context, PaymentRequestDto Dto)
@@ -179,6 +199,9 @@ namespace ApplicationLayer.Services.Payment
                         await _seatLogRepo.DeleteRangeAsync(logs);
                     }
 
+                    // Award points and vouchers
+                    await AwardPointsAndVouchersAsync(booking.UserId, booking.TotalSeats, booking.Id, booking.BookingCode);
+
                 }
             }
             else
@@ -220,6 +243,38 @@ namespace ApplicationLayer.Services.Payment
                 VnPayResponseCode = vnp_ResponseCode,
                 BookingCode = booking != null ? booking.BookingCode : string.Empty
             };
+        }
+
+        private async Task AwardPointsAndVouchersAsync(Guid userId, int seatsBooked, Guid bookingId, string bookingCode)
+        {
+            var user = await _userRepo.FindByIdAsync(userId);
+            if(user == null) return;
+
+            int earned = seatsBooked * 100;
+            user.Score += earned;
+            await _userRepo.UpdateAsync(user);
+
+            await _pointHistoryRepo.CreateAsync(new PointHistory{
+                UserId = user.Id,
+                Points = earned,
+                Type = PointType.Earned,
+                Description = $"Earned {earned} pts for booking {bookingCode}",
+                BookingId = bookingId,
+                IsUsed = false
+            });
+
+            var silver = await _promotionRepo.FirstOrDefaultAsync(p=>p.Title.ToLower().Contains("silver"));
+            var gold = await _promotionRepo.FirstOrDefaultAsync(p=>p.Title.ToLower().Contains("gold"));
+            if(silver!=null && user.Score>=2000)
+            {
+                var exist=await _userPromotionRepo.FirstOrDefaultAsync(u=>u.UserId==user.Id && u.PromotionId==silver.Id);
+                if(exist==null) await _userPromotionRepo.CreateAsync(new UserPromotion{UserId=user.Id,PromotionId=silver.Id});
+            }
+            if(gold!=null && user.Score>=5000)
+            {
+                var exist=await _userPromotionRepo.FirstOrDefaultAsync(u=>u.UserId==user.Id && u.PromotionId==gold.Id);
+                if(exist==null) await _userPromotionRepo.CreateAsync(new UserPromotion{UserId=user.Id,PromotionId=gold.Id});
+            }
         }
     }
 }

@@ -1238,96 +1238,96 @@
             main.classList.toggle('expanded');
         }
     </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('userSearchInput');
-        const suggestionsContainer = document.getElementById('searchSuggestions');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('userSearchInput');
+            const suggestionsContainer = document.getElementById('searchSuggestions');
 
-        searchInput.addEventListener('input', async function(e) {
-            const query = e.target.value.trim();
-            console.log('Search query:', query);
-            if (query.length === 0) {
-                suggestionsContainer.style.display = 'none';
-                return;
-            }
+            searchInput.addEventListener('input', async function(e) {
+                const query = e.target.value.trim();
+                console.log('Search query:', query);
+                if (query.length === 0) {
+                    suggestionsContainer.style.display = 'none';
+                    return;
+                }
 
-            try {
-                const url = `${apiBaseUrl}/api/User/members?search=${encodeURIComponent(query)}`;
-                console.log('Fetching from:', url);
-                const response = await fetch(url);
-                console.log('Response status:', response.status);
-                const data = await response.json();
-                console.log('Received data:', data);
-                if (data.success && data.data && data.data.length > 0) {
-                    suggestionsContainer.innerHTML = '';
-                    data.data.forEach(member => {
-                        const div = document.createElement('div');
-                        div.classList.add('suggestion-item');
-                        div.textContent = member.fullName;
-                        div.addEventListener('click', () => {
-                            searchInput.value = member.fullName;
-                            suggestionsContainer.style.display = 'none';
-                            window.location.href = `/UserManagement/Members?search=${encodeURIComponent(member.fullName)}&sortOrder=${'@ViewBag.CurrentSort'}`;
+                try {
+                    const url = `${apiBaseUrl}/api/User/members?search=${encodeURIComponent(query)}`;
+                    console.log('Fetching from:', url);
+                    const response = await fetch(url);
+                    console.log('Response status:', response.status);
+                    const data = await response.json();
+                    console.log('Received data:', data);
+                    if (data.success && data.data && data.data.length > 0) {
+                        suggestionsContainer.innerHTML = '';
+                        data.data.forEach(member => {
+                            const div = document.createElement('div');
+                            div.classList.add('suggestion-item');
+                            div.textContent = member.fullName;
+                            div.addEventListener('click', () => {
+                                searchInput.value = member.fullName;
+                                suggestionsContainer.style.display = 'none';
+                                window.location.href = `/UserManagement/Members?search=${encodeURIComponent(member.fullName)}&sortOrder=${'@ViewBag.CurrentSort'}`;
+                            });
+                            suggestionsContainer.appendChild(div);
                         });
-                        suggestionsContainer.appendChild(div);
-                    });
-                    suggestionsContainer.style.display = 'block';
-                    console.log('Suggestions shown:', data.data.length);
-                } else {
+                        suggestionsContainer.style.display = 'block';
+                        console.log('Suggestions shown:', data.data.length);
+                    } else {
+                        suggestionsContainer.style.display = 'none';
+                        console.log('No suggestions found');
+                    }
+                } catch (error) {
+                    console.error('Error fetching suggestions:', error);
                     suggestionsContainer.style.display = 'none';
-                    console.log('No suggestions found');
                 }
-            } catch (error) {
-                console.error('Error fetching suggestions:', error);
-                suggestionsContainer.style.display = 'none';
-            }
-        });
+            });
 
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const query = searchInput.value.trim();
-                if (query.length > 0) {
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const query = searchInput.value.trim();
+                    if (query.length > 0) {
+                        suggestionsContainer.style.display = 'none';
+                        window.location.href = `/UserManagement/Members?search=${encodeURIComponent(query)}&sortOrder=${'@ViewBag.CurrentSort'}`;
+                    }
+                }
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
                     suggestionsContainer.style.display = 'none';
-                    window.location.href = `/UserManagement/Members?search=${encodeURIComponent(query)}&sortOrder=${'@ViewBag.CurrentSort'}`;
                 }
-            }
+            });
         });
-
-        // Hide suggestions when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
-                suggestionsContainer.style.display = 'none';
-            }
+    </script>
+    <style>
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--content-border);
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background: var(--content-secondary);
+        }
+    </style>
+    <script>
+        document.getElementById('sortOrder').addEventListener('change', function() {
+            window.location.href = '?sortOrder=' + this.value;
         });
-    });
-</script>
-<style>
-    .search-suggestions {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: white;
-        border: 1px solid var(--content-border);
-        border-radius: 8px;
-        max-height: 200px;
-        overflow-y: auto;
-        z-index: 1000;
-        box-shadow: var(--shadow-sm);
-    }
-    .suggestion-item {
-        padding: 10px 15px;
-        cursor: pointer;
-    }
-    .suggestion-item:hover {
-        background: var(--content-secondary);
-    }
-</style>
-<script>
-    document.getElementById('sortOrder').addEventListener('change', function() {
-        window.location.href = '?sortOrder=' + this.value;
-    });
-</script>
+    </script>
 </body>
 </html>
