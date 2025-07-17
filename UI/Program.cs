@@ -21,7 +21,7 @@ namespace UI
             // Add HttpClient for API calls với credential sharing
             builder.Services.AddHttpClient("ApiClient", client =>
             {
-                var baseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5274";
+                var baseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7049";
                 client.BaseAddress = new Uri(baseUrl);
             }).ConfigurePrimaryHttpMessageHandler(() =>
             {
@@ -119,6 +119,10 @@ namespace UI
             // Đăng ký CinemaManagementUIService
             builder.Services.AddScoped<UI.Areas.CinemaManagement.Services.ICinemaManagementUIService,
                           UI.Areas.CinemaManagement.Services.CinemaManagementUIService>();
+
+            // Register ConcessionManagementUIService
+            builder.Services.AddScoped<UI.Areas.ConcessionManagement.Services.IConcessionManagementUIService,
+                          UI.Areas.ConcessionManagement.Services.ConcessionManagementUIService>();
 
             var app = builder.Build();
 

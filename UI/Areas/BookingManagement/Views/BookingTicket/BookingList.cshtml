@@ -9,33 +9,33 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Cinema City</title>
-    
-    
+
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="~/css/new-dashboard.css" />
-    
+
     <link rel="stylesheet" href="~/css/book-ticket-fix.css" />
-    
+
     <link rel="stylesheet" href="~/css/BookingManagement/BookingTicket/booking-list.css" />
-    
+
 </head>
 <body>
-    
-    
+
+
     <div class="new-dashboard-layout">
-        
-        
+
+
         @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
 
-        
+
         <main class="new-dashboard-main">
             <div class="booking-list-container">
-                
+
                 <div class="movie-page-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -63,8 +63,8 @@
                     </h1>
                     <p class="movie-page-subtitle">Xem và quản lý tất cả các đặt vé trong hệ thống</p>
                 </div>
-                
-                
+
+
                 <div class="filter-card">
                     <div class="card-body">
                         <div class="row filter-row">
@@ -115,7 +115,7 @@
                     </div>
                 </div>
 
-                
+
                 <div class="booking-table">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
@@ -135,19 +135,17 @@
                                 </tr>
                             </thead>
                             <tbody id="bookingTableBody">
-                                
                             </tbody>
                         </table>
                     </div>
-                    
-                    
+
+
                     <div class="d-flex justify-content-between align-items-center p-3">
                         <div class="pagination-info">
                             Hiển thị <span id="showingFrom">0</span> - <span id="showingTo">0</span> trong tổng số <span id="totalRecords">0</span> bản ghi
                         </div>
                         <nav>
                             <ul class="pagination mb-0" id="pagination">
-                                
                             </ul>
                         </nav>
                     </div>
@@ -156,7 +154,7 @@
         </main>
     </div>
 
-    
+
     <div class="loading-overlay" id="loadingOverlay" style="display: none;">
         <div class="loading-spinner">
             <i class="fas fa-spinner fa-spin"></i>
@@ -164,7 +162,7 @@
         </div>
     </div>
 
-    
+
     <div class="modal fade" id="bookingDetailModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -173,13 +171,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="bookingDetailContent">
-                    
                 </div>
             </div>
         </div>
     </div>
 
-    
+
     <div class="modal fade" id="cancelBookingModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -201,7 +198,7 @@
         </div>
     </div>
 
-    
+
     <div class="modal fade" id="updateStatusModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -213,9 +210,10 @@
                     <div class="mb-3">
                         <label for="newStatus" class="form-label">Trạng thái mới</label>
                         <select class="form-select" id="newStatus">
-                            <option value="Confirmed">Đã xác nhận</option>
                             <option value="Pending">Chờ xác nhận</option>
-                            <option value="Cancelled">Đã hủy</option>
+                            <option value="Confirmed">Đã xác nhận</option>
+                            <option value="Canceled">Đã hủy</option>
+                            <option value="Completed">Đã hoàn thành</option>
                         </select>
                     </div>
                 </div>
@@ -227,7 +225,7 @@
         </div>
     </div>
 
-    
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/BookingManagement/BookingTicket/booking-list.js"></script>

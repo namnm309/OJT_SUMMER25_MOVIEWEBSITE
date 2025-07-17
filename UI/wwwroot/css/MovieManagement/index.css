@@ -582,7 +582,7 @@
     max-width: 800px;
 }
 
-@@keyframes modalShow {
+@keyframes modalShow {
     from {
         opacity: 0;
         transform: translateY(-50px);
@@ -775,7 +775,7 @@
     animation: spin 1s linear infinite;
 }
 
-@@keyframes ripple {
+@keyframes ripple {
     0% {
         transform: scale(0, 0);
         opacity: 0.5;
@@ -803,7 +803,7 @@
         animation: spin 1s linear infinite;
     }
 
-@@keyframes spin {
+@keyframes spin {
     0% {
         transform: rotate(0deg);
     }
@@ -1626,7 +1626,7 @@
     border-top: 1px solid var(--content-border, #e2e8f0);
 }
 
-@@keyframes fadeIn {
+@keyframes fadeIn {
     from {
         opacity: 0;
         transform: translateY(10px);
@@ -1695,7 +1695,7 @@
         color: white;
     }
 
-@@keyframes slideIn {
+@keyframes slideIn {
     from {
         transform: translateX(100%);
         opacity: 0;
@@ -1787,8 +1787,8 @@
 }
 
 .movie-title {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 300;
     margin-bottom: 20px;
     color: var(--text-dark, #1a202c);
 }
@@ -1973,7 +1973,7 @@
 }
 
 
-@@media (max-width: 768px) {
+@media (max-width: 768px) {
     .movie-detail-header {
         flex-direction: column;
         align-items: center;
@@ -2011,7 +2011,7 @@
 }
 
 
-@@media (max-width: 768px) {
+@media (max-width: 768px) {
     .movie-management-content {
         padding: 1rem;
     }
@@ -2086,7 +2086,8 @@
     border: 1px solid var(--content-border, #d1d5db);
     border-radius: 8px;
     min-height: 44px;
-    height: 44px; /* force equal height */
+    /* đặt height auto cho multiple để không tràn ô bên dưới */
+    height: auto;
     padding: 8px 12px;
     color: var(--text-dark, #374151);
     font-size: 1rem;
@@ -2118,8 +2119,22 @@
     gap:4px;
 }
 .select2-container--default .select2-selection--multiple .select2-selection__choice{
-    margin:2px 4px;
-    line-height:20px;
+    background: #6f42c1; /* tím đồng bộ theme */
+    border: 0;
+    border-radius: 4px;
+    color: #fff;
+    padding: 2px 6px 2px 8px;
+    margin: 2px 4px;
+    line-height: 20px;
+}
+/* màu nút remove (x) của chip */
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
+    color:#fff;
+    margin-right:4px;
+}
+/* hover chip */
+.select2-container--default .select2-selection--multiple .select2-selection__choice:hover{
+    background:#5a34a3;
 }
 .select2-container--default .select2-selection--multiple .select2-search__field{
     line-height:28px;
@@ -2181,5 +2196,4 @@
     background:rgba(255,255,255,0.2);
     transform:rotate(90deg);
 }
-
 

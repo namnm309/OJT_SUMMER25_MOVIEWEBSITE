@@ -43,6 +43,7 @@ namespace InfrastructureLayer.Data
         public DbSet<Ticket> Ticket { get; set; }
         public DbSet<SeatLog> SeatLog { get; set; }
 
+        public DbSet<ConcessionItem> ConcessionItems { get; set; }
 
         // Cấu hình chi tiết Entity - sử dụng khi cần cấu hình phức tạp ngoài Data Annotations 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
