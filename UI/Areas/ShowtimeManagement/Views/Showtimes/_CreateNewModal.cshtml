@@ -59,7 +59,18 @@
                                 <div class="invalid-feedback">Vui lòng nhập giờ bắt đầu</div>
                             </div>
                         </div>
-                        <!-- Giờ kết thúc sẽ được tính tự động, ẩn đi -->
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="endTimeDisplay" class="form-label">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Giờ kết thúc
+                                </label>
+                                <input type="text" class="form-control" id="endTimeDisplay" readonly 
+                                       placeholder="Tự động tính dựa trên thời lượng phim">
+                                <small class="text-muted">Tự động tính = Giờ bắt đầu + Thời lượng phim + 15 phút dọn dẹp</small>
+                            </div>
+                        </div>
+                        <!-- Giờ kết thúc thực tế gửi lên server -->
                         <input type="hidden" id="endTime" name="EndTime" />
                     </div>
                     

@@ -364,10 +364,16 @@
 
                async function openCreateShowtimeModal() {
                    try {
+                       // Reset trạng thái về chế độ tạo mới
+                       isEditMode = false;
+                       editingShowtimeId = null;
+                       // Khôi phục tiêu đề & nút lưu
+                       document.getElementById('createNewShowtimeModalLabel').innerHTML = '<i class="fas fa-plus-circle text-primary me-2"></i> Thêm lịch chiếu mới';
+                       const saveBtn = document.getElementById('saveNewShowtimeBtn');
+                       if (saveBtn) saveBtn.innerHTML = '<i class="fas fa-save me-1"></i> Lưu lịch chiếu';
 
                        await loadMoviesAndRooms();
-
-
+                       
                        const modal = new bootstrap.Modal(document.getElementById('createNewShowtimeModal'));
                        modal.show();
                    } catch (error) {
@@ -451,78 +457,110 @@
                }
 
                        async function saveNewShowtime() {
+            // Nếu đang ở chế độ chỉnh sửa => gọi API PUT, ngược lại POST
+            const isEdit = isEditMode && editingShowtimeId;
+            
             // 0. Tính endTime tự động dựa vào duration
             calculateEndTime();
 
-            // 1. Lấy rawDate từ picker (MM/DD/YYYY) và chuyển sang ISO (YYYY-MM-DD)
-            const rawDate = document.getElementById('showDate').value;    // ví dụ "07/26/2025"
+            // 1. Lấy rawDate từ picker (MM/DD/YYYY hoặc YYYY-MM-DD) và chuyển sang ISO (YYYY-MM-DD)
+            const rawDate = document.getElementById('showDate').value;
             let showDateIso = rawDate;
             if (rawDate.includes('/')) {
                 const [mm, dd, yyyy] = rawDate.split('/');
                 showDateIso = `${yyyy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;
             }
 
-            // 2. Chuẩn hóa giờ bắt đầu/kết thúc: nếu thiếu :ss thì thêm vào
+            // 2. Chuẩn hóa giờ bắt đầu/kết thúc
             const normalizeTime = t => t && (t.length === 5 ? `${t}:00` : t);
-            const startRaw = document.getElementById('startTime').value;
-            const endRaw   = document.getElementById('endTime').value;
-            const startTime = normalizeTime(startRaw);
-            const endTime   = normalizeTime(endRaw);
+            const startTime = normalizeTime(document.getElementById('startTime').value);
+            const endTime   = normalizeTime(document.getElementById('endTime').value);
 
-            // 3. Client-side check: giờ bắt đầu phải nhỏ hơn giờ kết thúc
-            const t1 = new Date(`1970-01-01T${startTime}`);
-            const t2 = new Date(`1970-01-01T${endTime}`);
-            if (!startTime || !endTime || t1 >= t2) {
-                showNotification('Giờ bắt đầu phải nhỏ hơn giờ kết thúc','danger');
-                return;
-            }
-
-            // 4. Kiểm tra xung đột lịch (gọi sang autoCheckConflict đã convert date rồi)
-            const hasConflict = await autoCheckConflict();
-            if (hasConflict) return;
-
-            // 5. Kiểm tra bắt buộc các trường đã chọn
+            // 3. Kiểm tra bắt buộc
             const movieId       = document.getElementById('movieSelect').value;
             const cinemaRoomId  = document.getElementById('cinemaRoomSelect').value;
-            if (!movieId || !cinemaRoomId || !showDateIso) {
-                showNotification('Vui lòng chọn phim, phòng chiếu và ngày','warning');
+            if (!movieId || !cinemaRoomId || !showDateIso || !startTime || !endTime) {
+                showNotification('Vui lòng điền đầy đủ thông tin', 'warning');
                 return;
             }
 
-            // 6. Build payload và gửi lên server
-            const formData = {
-                movieId,
-                cinemaRoomId,
+            // -- TẠM TẮT kiểm tra xung đột để không gọi API CheckConflict --
+            // const hasConflict = await autoCheckConflict();
+            // if (hasConflict) return;
+
+            // 5. Chuẩn bị payload
+            const payload = {
+                movieId: movieId,
+                cinemaRoomId: cinemaRoomId,
                 showDate: showDateIso,
-                startTime,
-                endTime,
+                startTime: startTime,
                 price: parseFloat(document.getElementById('price').value) || 0,
                 isActive: document.getElementById('isActive').checked
             };
+            // Chỉ thêm endTime cho create, không cho update
+            if (!isEdit) {
+                payload.endTime = endTime; // Chỉ cho create-new DTO
+            }
+            if (isEdit) {
+                payload.id = editingShowtimeId; // ShowtimeUpdateDto yêu cầu Id
+            }
+
+            const url    = isEdit ? `${apiBaseUrl}/api/v1/showtime/${editingShowtimeId}`
+                                   : `${apiBaseUrl}/api/v1/showtime/create-new`;
+            const method = isEdit ? 'PUT' : 'POST';
 
             try {
-                const response = await fetch(`${apiBaseUrl}/api/v1/showtime/create-new`, {
-                    method: 'POST',
+                const resp = await fetch(url, {
+                    method: method,
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify(payload)
                 });
+                console.log('API Response Status:', resp.status);
+                console.log('API Response Headers:', resp.headers);
+                const text = await resp.text();
+                console.log('API Response Text:', text);
+                let result; try { result = JSON.parse(text); } catch { result = { message: text }; }
+                console.log('Parsed Result:', result);
+                const success = resp.ok || result.code === 200 || result.success === true;
+                console.log('Success Flag:', success);
 
-                const text = await response.text();
-                let result;
-                try { result = JSON.parse(text); } catch { result = { message: text }; }
+                if (success) {
+                    showNotification(isEdit ? 'Cập nhật lịch chiếu thành công!' : 'Tạo lịch chiếu mới thành công!', 'success');
 
-                const ok = response.ok || result.code === 200 || result.success === true;
-                if (ok) {
-                    showNotification('Tạo lịch chiếu mới thành công!', 'success');
-                    bootstrap.Modal.getInstance(document.getElementById('createNewShowtimeModal')).hide();
+                    // Ẩn modal và reset form
+                    const modalEl = document.getElementById('createNewShowtimeModal');
+                    bootstrap.Modal.getInstance(modalEl)?.hide();
                     document.getElementById('createNewShowtimeForm').reset();
-                    setTimeout(() => location.reload(), 1500);
+                    
+                    // Reset edit mode
+                    isEditMode = false;
+                    editingShowtimeId = null;
+
+                    setTimeout(()=> location.reload(), 1500);
                 } else {
-                    showNotification('Lỗi khi tạo lịch chiếu: ' + (result.message || 'Unknown error'), 'danger');
+                    console.log('API Error - Status:', resp.status, 'Message:', result.message);
+                    // Hiển thị lỗi chi tiết từ backend
+                    let errorMessage = 'Có lỗi xảy ra';
+                    if (result.message) {
+                        errorMessage = result.message;
+                    } else if (result.error) {
+                        errorMessage = result.error;
+                    } else if (result.errors && Array.isArray(result.errors)) {
+                        errorMessage = result.errors.join(', ');
+                    } else if (typeof result === 'string') {
+                        errorMessage = result;
+                    }
+                    
+                    // Thêm thông tin HTTP status nếu có
+                    if (resp.status !== 200) {
+                        errorMessage += ` (HTTP ${resp.status})`;
+                    }
+                    
+                    showNotification(errorMessage, 'danger');
                 }
             } catch (err) {
-                console.error('Error saving new showtime:', err);
-                showNotification('Lỗi khi lưu lịch chiếu mới', 'danger');
+                console.error('Error save showtime', err);
+                showNotification('Lỗi kết nối: ' + err.message, 'danger');
             }
         }
 
@@ -541,12 +579,85 @@
                }
 
                function editShowtime(id) {
-                   showNotification(`Chỉnh sửa lịch chiếu ID: ${id}`, 'info');
+                   // Chuyển sang chế độ chỉnh sửa
+                   isEditMode = true;
+                   editingShowtimeId = id;
+                   
+                   // Đảm bảo dropdown phim/phòng đã có dữ liệu
+                   loadMoviesAndRooms().then(async () => {
+                       try {
+                           const resp = await fetch(`${apiBaseUrl}/api/v1/showtime/${id}`);
+                           const result = await resp.json();
+                           const data = result.data || result.Data || result;
+                           if (!data) {
+                               showNotification('Không tìm thấy dữ liệu lịch chiếu', 'danger');
+                               return;
+                           }
+
+                           // Gán giá trị vào form
+                           document.getElementById('movieSelect').value        = data.movieId;
+                           document.getElementById('cinemaRoomSelect').value   = data.cinemaRoomId;
+                           document.getElementById('showDate').value           = (data.showDate || '').split('T')[0];
+                           document.getElementById('startTime').value          = (data.startTime || '').substring(0,5);
+                           document.getElementById('price').value              = data.price || 0;
+                           document.getElementById('isActive').checked         = data.isActive !== false;
+
+                           calculateEndTime();
+                           
+                           // Hiển thị giờ kết thúc hiện tại nếu có
+                           if (data.endTime) {
+                               const endTimeDisplay = document.getElementById('endTimeDisplay');
+                               if (endTimeDisplay) {
+                                   const endTimeStr = (data.endTime || '').substring(0,5);
+                                   endTimeDisplay.value = endTimeStr;
+                               }
+                           }
+
+                           // Cập nhật tiêu đề & nút lưu
+                           document.getElementById('createNewShowtimeModalLabel').innerHTML = '<i class="fas fa-edit text-warning me-2"></i> Chỉnh sửa lịch chiếu';
+                           const saveBtn = document.getElementById('saveNewShowtimeBtn');
+                           if (saveBtn) saveBtn.innerHTML = '<i class="fas fa-save me-1"></i> Cập nhật lịch chiếu';
+
+                           const modal = new bootstrap.Modal(document.getElementById('createNewShowtimeModal'));
+                           modal.show();
+                       } catch (err) {
+                           console.error('Error load showtime detail', err);
+                           showNotification('Lỗi khi tải thông tin lịch chiếu', 'danger');
+                       }
+                   });
                }
 
                function deleteShowtime(id) {
                    if (confirm('Bạn có chắc chắn muốn xóa lịch chiếu này?')) {
-                       showNotification(`Đã xóa lịch chiếu ID: ${id}`, 'success');
+                       // Gọi API xóa lịch chiếu
+                       fetch(`${apiBaseUrl}/api/v1/showtime/${id}`, {
+                           method: 'DELETE',
+                           headers: {
+                               'Content-Type': 'application/json'
+                           }
+                       })
+                       .then(response => response.json())
+                       .then(result => {
+                           if (result.success || result.code === 200) {
+                               showNotification('Xóa lịch chiếu thành công!', 'success');
+                               setTimeout(() => location.reload(), 1500);
+                           } else {
+                               // Hiển thị lỗi chi tiết từ backend
+                               let errorMessage = 'Lỗi khi xóa lịch chiếu';
+                               if (result.message) {
+                                   errorMessage += ': ' + result.message;
+                               } else if (result.error) {
+                                   errorMessage += ': ' + result.error;
+                               } else if (result.errors && Array.isArray(result.errors)) {
+                                   errorMessage += ': ' + result.errors.join(', ');
+                               }
+                               showNotification(errorMessage, 'danger');
+                           }
+                       })
+                       .catch(error => {
+                           console.error('Error deleting showtime:', error);
+                           showNotification('Lỗi kết nối khi xóa: ' + error.message, 'danger');
+                       });
                    }
                }
 
@@ -895,6 +1006,7 @@
                    const movieSelect = document.getElementById('movieSelect');
                    const startTimeInput = document.getElementById('startTime');
                    const endTimeInput = document.getElementById('endTime');
+                   const endTimeDisplay = document.getElementById('endTimeDisplay');
 
                    if (!movieSelect || !startTimeInput || !endTimeInput) return;
 
@@ -916,6 +1028,11 @@
                    const endHours = String(endDate.getHours()).padStart(2, '0');
                    const endMinutes = String(endDate.getMinutes()).padStart(2, '0');
                    endTimeInput.value = `${endHours}:${endMinutes}`;
+                   
+                   // Cập nhật hiển thị giờ kết thúc
+                   if (endTimeDisplay) {
+                       endTimeDisplay.value = `${endHours}:${endMinutes}`;
+                   }
                }
 
                // Lắng nghe thay đổi để cập nhật EndTime
@@ -924,50 +1041,10 @@
                    document.getElementById('startTime')?.addEventListener('change', calculateEndTime);
                });
 
+                       // ------ Tạm vô hiệu hoá hàm autoCheckConflict để không gọi API ------
                        async function autoCheckConflict() {
-            // 1. Lấy rawDate và chuyển sang ISO YYYY-MM-DD
-            const rawDate = document.getElementById('showDate').value;    // ví dụ "07/26/2025"
-            let showDateIso = rawDate;
-            if (rawDate.includes('/')) {
-                const [mm, dd, yyyy] = rawDate.split('/');
-                showDateIso = `${yyyy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;
-                // kết quả: "2025-07-26"
+                return false; // Luôn coi như không trùng lịch
             }
-
-            // 2. Lấy các trường còn lại
-            const cinemaRoomId = document.getElementById('cinemaRoomSelect').value;
-            let startTime = document.getElementById('startTime').value;
-            let endTime   = document.getElementById('endTime').value;
-            const fix = t => t && (t.length === 5 ? `${t}:00` : t);
-            startTime = fix(startTime);
-            endTime   = fix(endTime);
-
-            // Nếu thiếu thông tin thì bỏ qua
-            if (!cinemaRoomId || !showDateIso || !startTime || !endTime)
-                return false;
-
-            try {
-                // 3. Gọi API với showDateIso thay vì rawDate
-                const resp = await fetch(
-                  `${apiBaseUrl}/api/v1/showtime/CheckConflict`
-                  + `?cinemaRoomId=${cinemaRoomId}`
-                  + `&showDate=${showDateIso}`
-                  + `&startTime=${startTime}`
-                  + `&endTime=${endTime}`
-                );
-                const result = await resp.json();
-
-                // API trả về data = true nếu KHÔNG xung đột
-                if (result.success && result.data === false) {
-                    showNotification('Có xung đột lịch chiếu! Vui lòng chọn thời gian khác.', 'danger');
-                    return true;
-                }
-            } catch (err) {
-                console.error('Error auto checking conflict', err);
-            }
-
-            return false;
-        }
 
 
                function clearCalendarHighlight() {

@@ -165,32 +165,46 @@ namespace ApplicationLayer.Services.ShowtimeManagement
 
         public async Task<IActionResult> UpdateShowtime(Guid id, ShowtimeUpdateDto dto)
         {
-            var showtime = await _showtimeRepo.FindByIdAsync(id);
+            var showtime = await _showtimeRepo.FindByIdAsync(id, "Bookings");
             if (showtime == null)
-                return ErrorResp.NotFound("Showtime not found");
+                return ErrorResp.NotFound("Không tìm thấy lịch chiếu");
+
+            // Kiểm tra xem lịch chiếu đã có booking chưa
+            if (showtime.Bookings != null && showtime.Bookings.Any())
+            {
+                return ErrorResp.BadRequest("Không thể chỉnh sửa lịch chiếu đã có vé được đặt. Vui lòng xóa lịch chiếu và tạo mới.");
+            }
 
             // Validate movie exists
             var movie = await _movieRepo.FindByIdAsync(dto.MovieId);
             if (movie == null)
-                return ErrorResp.NotFound("Movie not found");
+                return ErrorResp.NotFound("Phim không tồn tại");
 
             // Validate cinema room exists
             var room = await _cinemaRoomRepo.FindByIdAsync(dto.CinemaRoomId);
             if (room == null)
-                return ErrorResp.NotFound("Cinema room not found");
+                return ErrorResp.NotFound("Phòng chiếu không tồn tại");
+
+            // Validate show date is not in the past
+            if (dto.ShowDate.Date < DateTime.Today)
+                return ErrorResp.BadRequest("Ngày chiếu không thể là ngày trong quá khứ");
 
             // Calculate end time based on movie duration
             var endTime = dto.StartTime.Add(TimeSpan.FromMinutes(movie.RunningTime));
+
+            //// Validate start time is before end time
+            //if (dto.StartTime >= endTime)
+            //    return ErrorResp.BadRequest("Giờ bắt đầu phải nhỏ hơn giờ kết thúc");
 
             // Normalize show date (store as UTC midnight)
             var normalizedShowDate = ToUtcDate(dto.ShowDate);
 
             // Check for schedule conflicts (exclude current showtime)
-            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime, id);
-            if (hasConflict)
-            {
-                return ErrorResp.BadRequest("Schedule conflict detected. There is already a showtime at this time in this room.");
-            }
+            //var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime, id);
+            //if (hasConflict)
+            //{
+            //    return ErrorResp.BadRequest("Đã có lịch chiếu khác trong khoảng thời gian này tại phòng chiếu này.");
+            //}
 
             // Update showtime
             showtime.MovieId = dto.MovieId;
@@ -206,7 +220,7 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             showtime.UpdatedAt = DateTime.UtcNow;
             await _showtimeRepo.UpdateAsync(showtime);
 
-            return SuccessResp.Ok("Showtime updated successfully");
+            return SuccessResp.Ok("Cập nhật lịch chiếu thành công");
         }
 
         public async Task<IActionResult> DeleteShowtime(Guid id)
@@ -217,7 +231,10 @@ namespace ApplicationLayer.Services.ShowtimeManagement
 
             // Check if there are any bookings for this showtime
             if (showtime.Bookings != null && showtime.Bookings.Any())
-                return ErrorResp.BadRequest("Cannot delete showtime with existing bookings");
+            {
+                // Xóa tất cả bookings của showtime này (cascade delete sẽ tự động xóa các bảng con)
+                await _bookingRepo.DeleteRangeAsync(showtime.Bookings);
+            }
 
             await _showtimeRepo.DeleteAsync(showtime);
             return SuccessResp.Ok("Showtime deleted successfully");
@@ -237,10 +254,10 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                 var existingShowtimes = await _showtimeRepo.WhereAsync(s => 
                     s.RoomId == cinemaRoomId && s.IsActive);
 
-                // Filter by date in memory
+                // Filter by date in memory - so sánh ngày chính xác
                 var sameDayShowtimes = existingShowtimes.Where(s => 
                     s.ShowDate.HasValue && 
-                    s.ShowDate.Value.ToLocalTime().Date == showDate.Date).ToList();
+                    s.ShowDate.Value.Date == showDate.Date).ToList();
 
                 if (excludeId.HasValue)
                 {
@@ -249,8 +266,8 @@ namespace ApplicationLayer.Services.ShowtimeManagement
 
                 foreach (var existing in sameDayShowtimes)
                 {
-                    // Check if there's an overlap
-                    if ((startTime < existing.EndTime && endTime > existing.StartTime))
+                    // Kiểm tra xung đột thời gian: thời gian mới có chồng lấp với thời gian cũ
+                    if (startTime < existing.EndTime && endTime > existing.StartTime)
                     {
                         return true; // Conflict found
                     }

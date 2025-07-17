@@ -128,6 +128,14 @@ namespace InfrastructureLayer.Repository
 
         public virtual async Task<T> UpdateAsync(T updated)
         {
+            // Ensure only one instance with given key is tracked
+            var existingEntry = _context.ChangeTracker.Entries<T>()
+                .FirstOrDefault(e => e.Entity.Id.Equals(updated.Id));
+            if (existingEntry != null)
+            {
+                existingEntry.State = EntityState.Detached;
+            }
+
             updated.UpdatedAt = DateTime.UtcNow;
             _context.Attach(updated).State = EntityState.Modified;
             await _context.SaveChangesAsync();
