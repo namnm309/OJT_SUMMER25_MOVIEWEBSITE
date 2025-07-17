@@ -263,13 +263,6 @@ namespace ControllerLayer.Controllers
             return await _bookingTicketService.CancelBookingAsync(bookingId, request.Reason);
         }
 
-        [Protected]
-        [HttpPost("holdSeat")]
-        public async Task<IActionResult> HoldSeat([FromBody] HoldSeatRequestDto request)
-        {
-            return await _seatService.HoldSeat(request);
-        }
-
         [HttpGet("booking-id/{bookingCode}")]
         public IActionResult GetBookingIdByCode(string bookingCode)
         {

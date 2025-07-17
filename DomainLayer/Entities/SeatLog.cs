@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DomainLayer.Entities
 {
@@ -30,5 +27,17 @@ namespace DomainLayer.Entities
         [Required]
         public SeatStatus Status { get; set; } = SeatStatus.Pending;
 
+        // Navigation Properties
+        [ForeignKey("SeatId")]
+        public virtual Seat Seat { get; set; }
+
+        [ForeignKey("ShowTimeId")]
+        public virtual ShowTime ShowTime { get; set; }
+
+        [ForeignKey("UserId")]
+        public virtual Users User { get; set; }
+
+        [ForeignKey("BookingId")]
+        public virtual Booking Booking { get; set; }
     }
 }

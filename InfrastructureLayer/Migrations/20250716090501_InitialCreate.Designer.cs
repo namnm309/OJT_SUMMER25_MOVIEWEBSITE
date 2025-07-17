@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InfrastructureLayer.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20250716075124_InitialCreate")]
+    [Migration("20250716090501_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -649,6 +649,14 @@ namespace InfrastructureLayer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BookingId");
+
+                    b.HasIndex("SeatId");
+
+                    b.HasIndex("ShowTimeId");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("tbl_seat_log");
                 });
 
@@ -1004,6 +1012,41 @@ namespace InfrastructureLayer.Migrations
                         .IsRequired();
 
                     b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("DomainLayer.Entities.SeatLog", b =>
+                {
+                    b.HasOne("DomainLayer.Entities.Booking", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainLayer.Entities.Seat", "Seat")
+                        .WithMany()
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainLayer.Entities.ShowTime", "ShowTime")
+                        .WithMany()
+                        .HasForeignKey("ShowTimeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DomainLayer.Entities.Users", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Seat");
+
+                    b.Navigation("ShowTime");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DomainLayer.Entities.ShowTime", b =>

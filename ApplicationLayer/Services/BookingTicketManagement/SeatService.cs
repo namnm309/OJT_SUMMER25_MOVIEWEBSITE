@@ -28,8 +28,6 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<IActionResult> ValidateSelectedSeats(Guid showTimeId, List<Guid> seatIds);
 
         Task<IActionResult> GetShowTimeDetails(Guid showTimeId);
-
-        Task<IActionResult> HoldSeat(HoldSeatRequestDto request);
     }
     public class SeatService : BaseService, ISeatService
     {
@@ -216,89 +214,6 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             catch (Exception ex)
             {
                 return ErrorResp.InternalServerError(ex.Message);
-            }
-        }
-
-        public async Task<IActionResult> HoldSeat(HoldSeatRequestDto request)
-        {
-            var payload = ExtractPayload();
-            if (payload == null)
-                return ErrorResp.Unauthorized("Invalid token");
-
-            var userId = payload.UserId;
-
-            try
-            {
-                var seatIds = request.SeatIds;
-                var showTimeId = request.ShowTimeId;
-
-                if (seatIds == null || seatIds.Count == 0 || seatIds.Count > 8)
-                    return ErrorResp.BadRequest("You must select between 1 and 8 seats");
-
-                var showTime = await _showTimeRepository.FindByIdAsync(showTimeId, "Room");
-                if (showTime == null)
-                    return ErrorResp.NotFound("ShowTime Not Found");
-
-                var selectedSeats = await _seatRepository.GetSeatsByIdsAsync(seatIds);
-                if (selectedSeats.Count != seatIds.Count)
-                    return ErrorResp.BadRequest("One or more selected seats are invalid");
-
-                var bookedSeatId = await _seatRepository.GetBookedSeatIdsForShowTimeAsync(showTimeId);
-                if (seatIds.Any(Id => bookedSeatId.Contains(Id)))
-                    return ErrorResp.BadRequest("Some seats are already booked");
-
-                var user = await _userRepo.FindByIdAsync(userId);
-                if (user == null)
-                    return ErrorResp.NotFound("User Not Found");
-
-                // Tính tổng tiền
-                decimal total = selectedSeats.Sum(s => s.PriceSeat);
-
-                // Tạo booking
-                var booking = new Booking
-                {
-                    Id = Guid.NewGuid(),
-                    BookingCode = GenerateBookingCode(),
-                    FullName = user.FullName,
-                    Email = user.Email,
-                    PhoneNumber = user.Phone,
-                    IdentityCardNumber = user.IdentityCard,
-                    TotalPrice = total,
-                    TotalSeats = seatIds.Count,
-                    BookingDate = DateTime.UtcNow,
-                    Status = BookingStatus.Pending,
-                    UserId = userId,
-                    ShowTimeId = showTimeId
-                };
-
-                await _bookingRepo.CreateAsync(booking);
-
-                // Tạo SeatLog cho từng ghế
-                var log = seatIds.Select(seatId => new SeatLog
-                {
-                    Id = Guid.NewGuid(),
-                    SeatId = seatId,
-                    ShowTimeId = showTimeId,
-                    UserId = userId,
-                    BookingId = booking.Id,
-                    ExpiredAt = DateTime.UtcNow.AddMinutes(5),
-                    Status = SeatStatus.Pending
-                }).ToList();
-
-                await _seatLogRepo.CreateRangeAsync(log);
-
-                return SuccessResp.Ok(new
-                {
-                    BookingId = booking.Id,
-                    BookingCode = booking.BookingCode,
-                    ExpiredAt = log.First().ExpiredAt,
-                    TotalPrice = total
-                });
-            }
-            catch (TaskCanceledException ex)
-            {
-                _logger.LogWarning("HoldSeat task was canceled. Message: " + ex.Message);
-                return ErrorResp.BadRequest("The seat holding request was cancelled.");
             }
         }
     }
