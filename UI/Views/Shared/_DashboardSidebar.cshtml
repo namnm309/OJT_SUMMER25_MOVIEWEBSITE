@@ -97,6 +97,18 @@
                     <i class="fas fa-users"></i>
                     <span>Quản lý người dùng</span>
                 </a>
+                <div class="new-nav-dropdown @(ViewContext.RouteData.Values["Area"]?.ToString() == "UserManagement" ? "show" : "")">
+                    <a href="@Url.Action("Index", "Members", new { area = "UserManagement", type = "staff" })" 
+                       class="new-nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Members" && (string)ViewContext.RouteData.Values["type"] == "staff" ? "active" : "")">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Quản lý nhân viên</span>
+                    </a>
+                    <a href="@Url.Action("Index", "Members", new { area = "UserManagement", type = "customer" })" 
+                       class="new-nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Members" && (string)ViewContext.RouteData.Values["type"] == "customer" ? "active" : "")">
+                        <i class="fas fa-user"></i>
+                        <span>Quản lý khách hàng</span>
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -163,4 +175,4 @@
 </div> 
 
 
-<script src="~/js/dashboard-sidebar.js"></script> 
+<script src="~/js/dashboard-sidebar.js"></script>
