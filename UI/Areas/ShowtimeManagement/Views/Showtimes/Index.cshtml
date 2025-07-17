@@ -316,6 +316,8 @@
                // Sử dụng HTTPS để trùng với backend và tránh lỗi mixed-scheme/CORS
                const apiBaseUrl = 'https://localhost:7049';
 
+               let isEditMode = false;
+               let editingShowtimeId = null;
 
                function searchShowtimes() {
                    const searchTerm = document.getElementById('showtimeSearch').value.toLowerCase();
@@ -448,75 +450,82 @@
                    }
                }
 
-               async function saveNewShowtime() {
-                   calculateEndTime(); // đảm bảo endTime cập nhật
+                       async function saveNewShowtime() {
+            // 0. Tính endTime tự động dựa vào duration
+            calculateEndTime();
 
-                   // Kiểm tra xung đột trước khi gửi
-                   const hasConflict = await autoCheckConflict();
-                   if (hasConflict) {
-                       return; // Ngừng nếu trùng lịch
-                   }
+            // 1. Lấy rawDate từ picker (MM/DD/YYYY) và chuyển sang ISO (YYYY-MM-DD)
+            const rawDate = document.getElementById('showDate').value;    // ví dụ "07/26/2025"
+            let showDateIso = rawDate;
+            if (rawDate.includes('/')) {
+                const [mm, dd, yyyy] = rawDate.split('/');
+                showDateIso = `${yyyy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;
+            }
 
-                   const startRaw = document.getElementById('startTime').value;
-                   const endRaw = document.getElementById('endTime').value;
+            // 2. Chuẩn hóa giờ bắt đầu/kết thúc: nếu thiếu :ss thì thêm vào
+            const normalizeTime = t => t && (t.length === 5 ? `${t}:00` : t);
+            const startRaw = document.getElementById('startTime').value;
+            const endRaw   = document.getElementById('endTime').value;
+            const startTime = normalizeTime(startRaw);
+            const endTime   = normalizeTime(endRaw);
 
-                   // Bổ sung :00 nếu thiếu giây
-                   const normalizeTime = (t) => t && (t.length === 5 ? `${t}:00` : t);
+            // 3. Client-side check: giờ bắt đầu phải nhỏ hơn giờ kết thúc
+            const t1 = new Date(`1970-01-01T${startTime}`);
+            const t2 = new Date(`1970-01-01T${endTime}`);
+            if (!startTime || !endTime || t1 >= t2) {
+                showNotification('Giờ bắt đầu phải nhỏ hơn giờ kết thúc','danger');
+                return;
+            }
 
-                   const formData = {
-                       movieId: document.getElementById('movieSelect').value,
-                       cinemaRoomId: document.getElementById('cinemaRoomSelect').value,
-                       showDate: document.getElementById('showDate').value,
-                       startTime: normalizeTime(startRaw),
-                       endTime: normalizeTime(endRaw),
-                       price: parseFloat(document.getElementById('price').value),
-                       isActive: document.getElementById('isActive').checked
-                   };
+            // 4. Kiểm tra xung đột lịch (gọi sang autoCheckConflict đã convert date rồi)
+            const hasConflict = await autoCheckConflict();
+            if (hasConflict) return;
 
+            // 5. Kiểm tra bắt buộc các trường đã chọn
+            const movieId       = document.getElementById('movieSelect').value;
+            const cinemaRoomId  = document.getElementById('cinemaRoomSelect').value;
+            if (!movieId || !cinemaRoomId || !showDateIso) {
+                showNotification('Vui lòng chọn phim, phòng chiếu và ngày','warning');
+                return;
+            }
 
-                   if (!formData.movieId || !formData.cinemaRoomId || !formData.showDate ||
-                       !formData.startTime || !formData.endTime) {
-                       showNotification('Vui lòng điền đầy đủ thông tin', 'warning');
-                       return;
-                   }
+            // 6. Build payload và gửi lên server
+            const formData = {
+                movieId,
+                cinemaRoomId,
+                showDate: showDateIso,
+                startTime,
+                endTime,
+                price: parseFloat(document.getElementById('price').value) || 0,
+                isActive: document.getElementById('isActive').checked
+            };
 
-                   try {
-                       const response = await fetch(`${apiBaseUrl}/api/v1/showtime/create-new`, {
-                           method: 'POST',
-                           headers: {
-                               'Content-Type': 'application/json'
-                           },
-                           body: JSON.stringify(formData)
-                       });
+            try {
+                const response = await fetch(`${apiBaseUrl}/api/v1/showtime/create-new`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
 
-                       const resultText = await response.text();
-                       let result;
-                       try { result = JSON.parse(resultText); } catch { result = { message: resultText }; }
+                const text = await response.text();
+                let result;
+                try { result = JSON.parse(text); } catch { result = { message: text }; }
 
-                       const isOk = response.ok || result.code === 200 || result.success === true;
+                const ok = response.ok || result.code === 200 || result.success === true;
+                if (ok) {
+                    showNotification('Tạo lịch chiếu mới thành công!', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('createNewShowtimeModal')).hide();
+                    document.getElementById('createNewShowtimeForm').reset();
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showNotification('Lỗi khi tạo lịch chiếu: ' + (result.message || 'Unknown error'), 'danger');
+                }
+            } catch (err) {
+                console.error('Error saving new showtime:', err);
+                showNotification('Lỗi khi lưu lịch chiếu mới', 'danger');
+            }
+        }
 
-                       if (isOk) {
-                           showNotification('Tạo lịch chiếu mới thành công!', 'success');
-
-
-                           const modal = bootstrap.Modal.getInstance(document.getElementById('createNewShowtimeModal'));
-                           modal.hide();
-
-
-                           document.getElementById('createNewShowtimeForm').reset();
-
-
-                           setTimeout(() => {
-                               location.reload();
-                           }, 1500);
-                       } else {
-                           showNotification('Lỗi khi tạo lịch chiếu: ' + (result.message || result.error || 'Unknown error'), 'danger');
-                       }
-                   } catch (error) {
-                       console.error('Error saving new showtime:', error);
-                       showNotification('Lỗi khi lưu lịch chiếu mới', 'danger');
-                   }
-               }
 
                function openFilterModal() {
                    showNotification('Chức năng lọc đang được phát triển', 'info');
@@ -744,35 +753,42 @@
                    initializeShowtimeTooltips();
                }
 
-               function generateShowtimesForDay(date) {
-                      // mới: lấy ngày theo giờ local, không qua UTC
-        const y = date.getFullYear();
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const d = String(date.getDate()).padStart(2, '0');
-        const dateStr = `${y}-${m}-${d}`;   // "YYYY-MM-DD"
+                       function generateShowtimesForDay(date) {
+            // Lấy ngày theo giờ local, format "YYYY-MM-DD"
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            const dateStr = `${y}-${m}-${d}`;   // "YYYY-MM-DD"
 
-        const dayShowtimes = showtimeData.filter(st => {
-            // st.showDate format: "YYYY-MM-DDTHH:mm:ss"
-            return (st.showDate || '').startsWith(dateStr);
-        });
+            // 1. Lọc showtimes trùng ngày
+            let dayShowtimes = showtimeData.filter(st => {
+                // st.showDate format: "YYYY-MM-DDTHH:mm:ss"
+                return (st.showDate || '').startsWith(dateStr);
+            });
 
-                   return dayShowtimes.map(showtime => {
-                       const posterUrl = showtime.moviePoster && showtime.moviePoster.trim() !== ''
-                           ? showtime.moviePoster
-                           : '/images/default-movie-poster.jpg';
+            // 2. Sort theo startTime tăng dần
+            dayShowtimes.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-                       return `
-                           <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')"
-                                data-movie-id="${showtime.movieId || ''}"
-                                data-movie-title="${(showtime.movieTitle || '').toLowerCase()}"
-                                data-bs-toggle="tooltip" data-bs-html="true"
-                                data-poster="${posterUrl}" title="<img src='${posterUrl}' width='140' height='200' style='object-fit:cover;border-radius:6px;'>">
-                               <span class="calendar-showtime-title">${showtime.movieTitle}</span>
-                               <span class="calendar-showtime-time">${formatTime(showtime.startTime)}</span>
-                           </div>
-                       `;
-                   }).join('');
-               }
+            // 3. Render ra HTML
+            return dayShowtimes.map(showtime => {
+                const posterUrl = showtime.moviePoster?.trim()
+                    ? showtime.moviePoster
+                    : '/images/default-movie-poster.jpg';
+
+                return `
+                    <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')"
+                         data-movie-id="${showtime.movieId || ''}"
+                         data-movie-title="${(showtime.movieTitle || '').toLowerCase()}"
+                         data-bs-toggle="tooltip" data-bs-html="true"
+                         data-poster="${posterUrl}"
+                         title="<img src='${posterUrl}' width='140' height='200' style='object-fit:cover;border-radius:6px;'>">
+                        <span class="calendar-showtime-title">${showtime.movieTitle}</span>
+                        <span class="calendar-showtime-time">${formatTime(showtime.startTime)}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
 
                function formatTime(timeSpan) {
 
@@ -908,30 +924,51 @@
                    document.getElementById('startTime')?.addEventListener('change', calculateEndTime);
                });
 
-               async function autoCheckConflict() {
-                   const cinemaRoomId = document.getElementById('cinemaRoomSelect').value;
-                   const showDate = document.getElementById('showDate').value;
-                   let startTime = document.getElementById('startTime').value;
-                   let endTime = document.getElementById('endTime').value;
-                   const fix = (t)=> t && (t.length===5? `${t}:00`: t);
-                   startTime = fix(startTime);
-                   endTime = fix(endTime);
+                       async function autoCheckConflict() {
+            // 1. Lấy rawDate và chuyển sang ISO YYYY-MM-DD
+            const rawDate = document.getElementById('showDate').value;    // ví dụ "07/26/2025"
+            let showDateIso = rawDate;
+            if (rawDate.includes('/')) {
+                const [mm, dd, yyyy] = rawDate.split('/');
+                showDateIso = `${yyyy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`;
+                // kết quả: "2025-07-26"
+            }
 
-                   if (!cinemaRoomId || !showDate || !startTime || !endTime) return false; // Thiếu dữ liệu -> bỏ qua
+            // 2. Lấy các trường còn lại
+            const cinemaRoomId = document.getElementById('cinemaRoomSelect').value;
+            let startTime = document.getElementById('startTime').value;
+            let endTime   = document.getElementById('endTime').value;
+            const fix = t => t && (t.length === 5 ? `${t}:00` : t);
+            startTime = fix(startTime);
+            endTime   = fix(endTime);
 
-                   try {
-                       const resp = await fetch(`${apiBaseUrl}/api/v1/showtime/CheckConflict?cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
-                       const result = await resp.json();
-                       // API trả về data = true nếu KHÔNG xung đột.
-                       if (result.success && result.data === false) {
-                           showNotification('Có xung đột lịch chiếu! Vui lòng chọn thời gian khác.', 'danger');
-                           return true;
-                       }
-                   } catch (err) {
-                       console.error('Error auto checking conflict', err);
-                   }
-                   return false;
-               }
+            // Nếu thiếu thông tin thì bỏ qua
+            if (!cinemaRoomId || !showDateIso || !startTime || !endTime)
+                return false;
+
+            try {
+                // 3. Gọi API với showDateIso thay vì rawDate
+                const resp = await fetch(
+                  `${apiBaseUrl}/api/v1/showtime/CheckConflict`
+                  + `?cinemaRoomId=${cinemaRoomId}`
+                  + `&showDate=${showDateIso}`
+                  + `&startTime=${startTime}`
+                  + `&endTime=${endTime}`
+                );
+                const result = await resp.json();
+
+                // API trả về data = true nếu KHÔNG xung đột
+                if (result.success && result.data === false) {
+                    showNotification('Có xung đột lịch chiếu! Vui lòng chọn thời gian khác.', 'danger');
+                    return true;
+                }
+            } catch (err) {
+                console.error('Error auto checking conflict', err);
+            }
+
+            return false;
+        }
+
 
                function clearCalendarHighlight() {
                    document.querySelectorAll('.calendar-showtime-item.selected-movie').forEach(el => el.classList.remove('selected-movie'));
