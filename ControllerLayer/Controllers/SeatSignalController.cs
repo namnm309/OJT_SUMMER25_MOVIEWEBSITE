@@ -8,7 +8,7 @@ namespace ControllerLayer.Controllers
 {
     [ApiController]
     [Route("api/seatsignal")]
-    public class SeatSignalController : ControllerBase
+    public class SeatSignalController : Controller
     {
         private readonly ISeatSignalService _seatSignalService;
 
@@ -19,28 +19,24 @@ namespace ControllerLayer.Controllers
 
         [Protected]
         [HttpPost("hold")]
-        public async Task<IActionResult> Hold([FromBody] HoldSeatSignalRequest req)
+        public async Task<IActionResult> HoldSeats([FromBody] HoldSeatRequestDto dto)
         {
-            var result = await _seatSignalService.HoldSeatAsync(req);
-            if (!result.Success)
-                return BadRequest(result.Message);
-
-            return Ok(new
-            {
-                bookingId = result.BookingId,
-                seatIds = req.SeatIds,
-                expiredAt = result.ExpiredAt
-            });
+            return await _seatSignalService.HoldSeatsAsync(dto);
         }
 
         [Protected]
-        [HttpPost("release")]
-        public async Task<IActionResult> Release([FromBody] ReleaseSeatSignalRequest req)
+        [HttpGet("summary")]
+        public async Task<IActionResult> GetSummary([FromQuery] SeatSummaryRequestDto dto )
         {
-            var result = await _seatSignalService.ReleaseSeatAsync(req);
-            if (result.Success)
-                return Ok(new { message = "Released successfully" });
-            return BadRequest(new { message = result.Message });
+            var summary = await _seatSignalService.GetSummaryAsync(dto);
+            return Ok(summary);
+        }
+
+        [Protected]
+        [HttpDelete("release/{seatLogId}")]
+        public async Task<IActionResult> ReleaseSeats([FromRoute] Guid seatLogId)
+        {
+            return await _seatSignalService.ReleaseSeatsAsync(seatLogId);
         }
     }
 }

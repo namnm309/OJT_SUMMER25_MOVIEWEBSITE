@@ -24,6 +24,8 @@ using ApplicationLayer.Services.Payment;
 using ApplicationLayer.Services.TicketSellingManagement;
 using ApplicationLayer.Services.ConcessionManagement;
 using ApplicationLayer.DTO.ConcessionManagement;
+using static ApplicationLayer.Services.BookingTicketManagement.ISeatSignalService;
+using ApplicationLayer.Helper;
 namespace ControllerLayer
 {
     public class Program
@@ -224,6 +226,9 @@ namespace ControllerLayer
             builder.Services.AddScoped<ITicketService, TicketService>();
 
             builder.Services.AddScoped<ISeatSignalService, SeatSignalService>();
+
+            // Background
+            builder.Services.AddHostedService<ExpiredSeatCleanupService>();
 
             // Thêm vào Program.cs
             builder.Services.AddAutoMapper(typeof(BookingProfile));

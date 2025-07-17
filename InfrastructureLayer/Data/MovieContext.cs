@@ -42,6 +42,7 @@ namespace InfrastructureLayer.Data
         public DbSet<MovieDirector> MovieDirectors { get; set; }
         public DbSet<Ticket> Ticket { get; set; }
         public DbSet<SeatLog> SeatLog { get; set; }
+        public DbSet<SeatLogDetail> SeatLogDetail { get; set; }
 
         public DbSet<ConcessionItem> ConcessionItems { get; set; }
 

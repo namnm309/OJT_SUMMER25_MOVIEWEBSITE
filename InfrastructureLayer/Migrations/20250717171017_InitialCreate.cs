@@ -12,6 +12,24 @@ namespace InfrastructureLayer.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ConcessionItems",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false),
+                    ImageUrl = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConcessionItems", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tbl_actors",
                 columns: table => new
                 {
@@ -438,12 +456,11 @@ namespace InfrastructureLayer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    SeatId = table.Column<Guid>(type: "uuid", nullable: false),
                     ShowTimeId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    BookingId = table.Column<Guid>(type: "uuid", nullable: false),
                     ExpiredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
+                    BookingId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -454,12 +471,6 @@ namespace InfrastructureLayer.Migrations
                         name: "FK_tbl_seat_log_tbl_bookings_BookingId",
                         column: x => x.BookingId,
                         principalTable: "tbl_bookings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tbl_seat_log_tbl_seats_SeatId",
-                        column: x => x.SeatId,
-                        principalTable: "tbl_seats",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -535,6 +546,33 @@ namespace InfrastructureLayer.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "tbl_seat_log_detail",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SeatLogId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SeatId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_seat_log_detail", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbl_seat_log_detail_tbl_seat_log_SeatLogId",
+                        column: x => x.SeatLogId,
+                        principalTable: "tbl_seat_log",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tbl_seat_log_detail_tbl_seats_SeatId",
+                        column: x => x.SeatId,
+                        principalTable: "tbl_seats",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_booking_details_BookingId",
                 table: "tbl_booking_details",
@@ -606,11 +644,6 @@ namespace InfrastructureLayer.Migrations
                 column: "BookingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_seat_log_SeatId",
-                table: "tbl_seat_log",
-                column: "SeatId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_tbl_seat_log_ShowTimeId",
                 table: "tbl_seat_log",
                 column: "ShowTimeId");
@@ -619,6 +652,16 @@ namespace InfrastructureLayer.Migrations
                 name: "IX_tbl_seat_log_UserId",
                 table: "tbl_seat_log",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_seat_log_detail_SeatId",
+                table: "tbl_seat_log_detail",
+                column: "SeatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_seat_log_detail_SeatLogId",
+                table: "tbl_seat_log_detail",
+                column: "SeatLogId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_seats_RoomId",
@@ -667,6 +710,9 @@ namespace InfrastructureLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ConcessionItems");
+
+            migrationBuilder.DropTable(
                 name: "tbl_booking_details");
 
             migrationBuilder.DropTable(
@@ -691,7 +737,7 @@ namespace InfrastructureLayer.Migrations
                 name: "tbl_promotions");
 
             migrationBuilder.DropTable(
-                name: "tbl_seat_log");
+                name: "tbl_seat_log_detail");
 
             migrationBuilder.DropTable(
                 name: "tbl_tickets");
@@ -707,6 +753,9 @@ namespace InfrastructureLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_genres");
+
+            migrationBuilder.DropTable(
+                name: "tbl_seat_log");
 
             migrationBuilder.DropTable(
                 name: "tbl_seats");
