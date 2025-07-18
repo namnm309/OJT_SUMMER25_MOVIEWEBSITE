@@ -120,21 +120,23 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
         public async Task<IActionResult> GetShowDatesByMovie(Guid movieId)
         {
-            var showtimes = await _showtimeRepo.WhereAsync(s => s.MovieId == movieId);
+            // Lấy tất cả lịch chiếu còn hoạt động của phim
+            var showtimes = await _showtimeRepo.WhereAsync(s => s.MovieId == movieId && s.IsActive);
             if (showtimes == null || !showtimes.Any())
             {
                 return ErrorResp.NotFound("No show dates found for this movie.");
             }
 
+            // Chuyển ShowDate (UTC) về LocalTime để hiển thị đúng ngày cho người dùng
             var dates = showtimes
                 .Where(s => s.ShowDate.HasValue)
-                .Select(s => s.ShowDate.Value.Date)
+                .Select(s => s.ShowDate!.Value.ToLocalTime().Date)
                 .Distinct()
                 .OrderBy(d => d)
                 .Select(d => new
                 {
-                    Code = d.ToString("yyyy-MM-dd"),
-                    Text = d.ToString("dd/MM")
+                    Code = d.ToString("yyyy-MM-dd"), // Ví dụ: 2025-07-18
+                    Text = d.ToString("dd/MM")        // Ví dụ: 18/07
                 })
                 .ToList();
 
@@ -143,19 +145,23 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
         public async Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate)
         {
-            var showtime = await _showtimeRepo.WhereAsync(s =>
+            // Chỉ lấy lịch chiếu còn hoạt động
+            var showtimes = await _showtimeRepo.WhereAsync(s =>
                 s.MovieId == movieId &&
-                s.ShowDate.HasValue);
+                s.ShowDate.HasValue &&
+                s.IsActive);
 
-            // Sử dụng trường StartTime để hiển thị giờ chiếu thay vì lấy từ ShowDate
-            var timeList = showtime
-                .Where(s => s.ShowDate!.Value.Date == selectedDate.Date)
-                .Select(s => new
+            // Convert ShowDate về LocalTime để so sánh chính xác theo ngày địa phương
+            var timeList = showtimes
+                .Where(s => s.ShowDate!.Value.ToLocalTime().Date == selectedDate.Date)
+                .GroupBy(s => s.StartTime)
+                .Select(g => new
                 {
-                    s.Id,
-                    Time = s.StartTime.ToString(@"hh\:mm"),
-                    FullDate = s.ShowDate!.Value
+                    Id = g.First().Id,
+                    Time = g.Key.ToString(@"hh\:mm"),
+                    FullDate = g.First().ShowDate!.Value
                 })
+                .OrderBy(t => t.Time)
                 .ToList();
 
             return SuccessResp.Ok(timeList);
