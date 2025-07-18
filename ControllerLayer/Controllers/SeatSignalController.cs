@@ -26,7 +26,7 @@ namespace ControllerLayer.Controllers
 
         [Protected]
         [HttpGet("summary")]
-        public async Task<IActionResult> GetSummary([FromQuery] SeatSummaryRequestDto dto )
+        public async Task<IActionResult> GetSummary([FromBody] SeatSummaryRequestDto dto )
         {
             var summary = await _seatSignalService.GetSummaryAsync(dto);
             return Ok(summary);

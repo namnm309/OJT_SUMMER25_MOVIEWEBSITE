@@ -140,7 +140,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 var now = DateTime.UtcNow;
 
                 // Lấy danh sách seatLogs còn hiệu lực và include ghế
-                var seatLogs = await _seatLogRepo.WhereAsync(s => request.SeatLogId.Contains(s.Id) && s.ExpiredAt > now, "Seat");
+                var seatLogs = await _seatLogRepo.WhereAsync(s => request.SeatLogId.Contains(s.Id) && s.ExpiredAt > now && s.UserId == userId, "Seat");
 
                 if (seatLogs == null || seatLogs.Count == 0)
                     return ErrorResp.BadRequest("No valid seat logs found");
@@ -219,11 +219,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     return ErrorResp.Unauthorized("Invalid token");
 
                 // Chỉ Include SeatLogDetails, không Include Seat => tránh EF tracking dư thừa
-                var seatLog = await _seatLogRepo.FoundOrThrowAsync(
-                    seatLogId,
-                    "Seat log not found",
-                    "SeatLogDetails"
-                );
+                var seatLog = await _seatLogRepo.FoundOrThrowAsync(seatLogId, "Seat log not found", new[] { nameof(SeatLog.Seat) });
 
                 // Chỉ người tạo log mới được xóa
                 if (seatLog.UserId != payload.UserId)
