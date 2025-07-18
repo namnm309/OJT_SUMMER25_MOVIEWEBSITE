@@ -10,16 +10,13 @@ namespace DomainLayer.Entities
     public class SeatLog : BaseEntity
     {
         [Required]
-        public Guid SeatId { get; set; }
-
-        [Required]
         public Guid ShowTimeId { get; set; }
 
         [Required]
         public Guid UserId { get; set; }
 
         [Required]
-        public Guid BookingId { get; set; }
+        public Guid SeatId { get; set; }
 
         [Required]
         public DateTime ExpiredAt { get; set; }
@@ -27,17 +24,14 @@ namespace DomainLayer.Entities
         [Required]
         public SeatStatus Status { get; set; } = SeatStatus.Pending;
 
-        // Navigation Properties
-        [ForeignKey("SeatId")]
-        public virtual Seat Seat { get; set; }
-
+        // Navigation
         [ForeignKey("ShowTimeId")]
         public virtual ShowTime ShowTime { get; set; }
 
         [ForeignKey("UserId")]
         public virtual Users User { get; set; }
 
-        [ForeignKey("BookingId")]
-        public virtual Booking Booking { get; set; }
+        [ForeignKey("SeatId")]
+        public virtual Seat Seat { get; set; }
     }
 }

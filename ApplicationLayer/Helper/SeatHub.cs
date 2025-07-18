@@ -13,56 +13,25 @@ using System.Threading.Tasks;
 
 public class SeatHub : Hub
 {
-    private readonly ISeatSignalService _seatSignalService;
-
-    public SeatHub(ISeatSignalService seatSignalService)
+    public override async Task OnConnectedAsync()
     {
-        _seatSignalService = seatSignalService;
-    }
-
-    private Guid? GetUserIdFromToken()
-    {
-        var claim = Context.User?.Claims.FirstOrDefault(c => c.Type == "UserId");
-        if (claim != null && Guid.TryParse(claim.Value, out var userId))
-            return userId;
-
-        return null;
-    }
-
-    public async Task HoldSeat(HoldSeatSignalRequest request)
-    {
-        var result = await _seatSignalService.HoldSeatAsync(request);
-        if (!result.Success)
+        var showTimeId = Context.GetHttpContext()?.Request.Query["showTimeId"];
+        if (!string.IsNullOrEmpty(showTimeId))
         {
-            await Clients.Caller.SendAsync("HoldFailed", result.Message);
-            return;
+            await Groups.AddToGroupAsync(Context.ConnectionId, showTimeId);
         }
 
-        var userId = GetUserIdFromToken();
-
-        await Clients.Others.SendAsync("SeatHeld", new
-        {
-            request.ShowTimeId,
-            request.SeatIds,
-            UserId = userId,
-            result.ExpiredAt
-        });
-
-        await Clients.Caller.SendAsync("HoldSuccess", new
-        {
-            request.SeatIds,
-            result.ExpiredAt
-        });
+        await base.OnConnectedAsync();
     }
 
-    public async Task ReleaseSeat(ReleaseSeatSignalRequest request)
+    public override async Task OnDisconnectedAsync(Exception exception)
     {
-        await _seatSignalService.ReleaseSeatAsync(request);
-
-        await Clients.All.SendAsync("SeatReleased", new
+        var showTimeId = Context.GetHttpContext()?.Request.Query["showTimeId"];
+        if (!string.IsNullOrEmpty(showTimeId))
         {
-            request.ShowTimeId,
-            request.SeatIds
-        });
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, showTimeId);
+        }
+
+        await base.OnDisconnectedAsync(exception);
     }
 }

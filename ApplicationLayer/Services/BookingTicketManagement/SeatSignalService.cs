@@ -6,6 +6,10 @@ using DomainLayer.Enum;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.Mapping;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,158 +20,250 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 {
     public interface ISeatSignalService
     {
-        Task<HoldSeatResult> HoldSeatAsync(HoldSeatSignalRequest req);
-        Task<(bool Success, string? Message)> ReleaseSeatAsync(ReleaseSeatSignalRequest req);
-    }
-    public class SeatSignalService : BaseService, ISeatSignalService
-    {
-        private readonly IGenericRepository<SeatLog> _seatLogRepo;
-        private readonly IGenericRepository<Seat> _seatRepo;
-        private readonly IGenericRepository<ShowTime> _showTimeRepo;
-        private readonly IGenericRepository<Booking> _bookingRepo;
-        private readonly IGenericRepository<BookingDetail> _bookingDetailRepo;
-        private readonly IGenericRepository<Users> _userRepo;
-        private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpCtx;
-
-        public SeatSignalService(IGenericRepository<SeatLog> seatLogRepo, IGenericRepository<Seat> seatRepo, IGenericRepository<ShowTime> showTimeRepo, IGenericRepository<Booking> bookingRepo, IGenericRepository<BookingDetail> bookingDetailRepo, IGenericRepository<Users> userRepo, IMapper mapper, IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
+        Task<IActionResult> HoldSeatsAsync(HoldSeatRequestDto dto);
+        Task<IActionResult> GetSummaryAsync(SeatSummaryRequestDto request);
+        Task<IActionResult> ReleaseSeatsAsync(Guid bookingId);
+        //Task<IActionResult> GetSeatLog();
+        public class SeatSignalService : BaseService, ISeatSignalService
         {
-            _seatLogRepo = seatLogRepo;
-            _seatRepo = seatRepo;
-            _showTimeRepo = showTimeRepo;
-            _bookingRepo = bookingRepo;
-            _bookingDetailRepo = bookingDetailRepo;
-            _userRepo = userRepo;
-            _mapper = mapper;
-            _httpCtx = httpCtx;
-        }
+            private readonly IGenericRepository<SeatLog> _seatLogRepo;
+            private readonly IGenericRepository<Seat> _seatRepo;
+            private readonly IGenericRepository<Booking> _bookingRepo;
+            private readonly IGenericRepository<BookingDetail> _bookingDetailRepo;
+            private readonly IGenericRepository<ShowTime> _showTimeRepo;
+            private readonly IGenericRepository<Users> _userRepo;
+            private readonly IGenericRepository<Promotion> _promotionRepo;
+            private readonly IHubContext<SeatHub> _hubContext;
+            private readonly IMapper _mapper;
+            private readonly IHttpContextAccessor _httpCtx;
 
-        private string GenerateBookingCode()
-        {
-            // Logic tạo mã booking duy nhất (ví dụ: kết hợp thời gian và random string)
-            return "BK" + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + Guid.NewGuid().ToString().Substring(0, 4).ToUpper();
-
-        }
-
-        public async Task<HoldSeatResult> HoldSeatAsync(HoldSeatSignalRequest req)
-        {
-            var payload = ExtractPayload();
-            if (payload == null)
-                return new HoldSeatResult { Success = false, Message = "Invalid token" };
-
-            var userId = payload.UserId;
-
-            var showTime = await _showTimeRepo.FindByIdAsync(req.ShowTimeId);
-            if (showTime == null)
-                return new HoldSeatResult { Success = false, Message = "ShowTime Not Found" };
-
-            var seats = await _seatRepo.FindAllAsync(s => req.SeatIds.Contains(s.Id));
-            if (seats.Count() != req.SeatIds.Count)
-                return new HoldSeatResult { Success = false, Message = "Some selected seats do not exist" };
-
-            if (seats.Any(s => s.RoomId != showTime.RoomId))
-                return new HoldSeatResult { Success = false, Message = "Selected seats do not belong to the specified showtime room" };
-
-            var heldLogs = await _seatLogRepo.FindAllAsync(s =>
-                s.ShowTimeId == req.ShowTimeId && s.ExpiredAt > DateTime.UtcNow);
-
-            var conflict = heldLogs.Any(log => req.SeatIds.Contains(log.SeatId));
-            if (conflict)
-                return new HoldSeatResult { Success = false, Message = "Some seats are already held by another user" };
-
-            var user = await _userRepo.FindByIdAsync(userId);
-            if (user == null)
-                return new HoldSeatResult { Success = false, Message = "User not found" };
-
-            var totalPrice = seats.Sum(s => s.PriceSeat);
-
-            var booking = new Booking
+            public SeatSignalService(IGenericRepository<SeatLog> seatLogRepo,
+                                    IGenericRepository<Seat> seatRepo,
+                                    IGenericRepository<Booking> bookingRepo,
+                                    IGenericRepository<BookingDetail> bookingDetailRepo,
+                                    IGenericRepository<ShowTime> showTimeRepo,
+                                    IGenericRepository<Users> userRepo,
+                                    IGenericRepository<Promotion> promotionRepo,
+                                    IHubContext<SeatHub> hubContext, 
+                                    IMapper mapper, 
+                                    IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
             {
-                Id = Guid.NewGuid(),
-                UserId = userId,
-                ShowTimeId = req.ShowTimeId,
-                FullName = user.FullName,
-                Email = user.Email,
-                PhoneNumber = user.Phone,
-                IdentityCardNumber = user.IdentityCard,
-                BookingCode = GenerateBookingCode(),
-                BookingDate = DateTime.UtcNow,
-                TotalPrice = totalPrice,
-                TotalSeats = req.SeatIds.Count,
-                Status = BookingStatus.Pending
-            };
-
-            await _bookingRepo.CreateAsync(booking);
-
-            var now = DateTime.UtcNow;
-            var expiredAt = now.AddMinutes(5);
-
-            var logs = req.SeatIds.Select(seatId => new SeatLog
-            {
-                Id = Guid.NewGuid(),
-                SeatId = seatId,
-                ShowTimeId = req.ShowTimeId,
-                UserId = userId,
-                BookingId = booking.Id,
-                ExpiredAt = expiredAt,
-                Status = SeatStatus.Pending
-            });
-
-            await _seatLogRepo.CreateRangeAsync(logs);
-
-            // Change status seat
-            foreach (var seat in seats)
-            {
-                seat.Status = SeatStatus.Pending;
+                _seatLogRepo = seatLogRepo;
+                _seatRepo = seatRepo;
+                _bookingRepo = bookingRepo;
+                _bookingDetailRepo = bookingDetailRepo;
+                _showTimeRepo = showTimeRepo;
+                _userRepo = userRepo;
+                _promotionRepo = promotionRepo;
+                _hubContext = hubContext;
+                _mapper = mapper;
+                _httpCtx = httpCtx;
             }
-            await _seatRepo.UpdateRangeAsync(seats);
 
-            var bookingDetails = req.SeatIds.Select(seatId => new BookingDetail
+            private string GenerateBookingCode()
             {
-                Id = Guid.NewGuid(),
-                BookingId = booking.Id,
-                SeatId = seatId,
-            });
-            await _bookingDetailRepo.CreateRangeAsync(bookingDetails);
+                // Logic tạo mã booking duy nhất (ví dụ: kết hợp thời gian và random string)
+                return "BK" + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + Guid.NewGuid().ToString().Substring(0, 4).ToUpper();
 
-            return new HoldSeatResult
+            }
+
+            public async Task<IActionResult> HoldSeatsAsync(HoldSeatRequestDto dto)
             {
-                Success = true,
-                BookingId = booking.Id,
-                BookingCode = booking.BookingCode,
-                ExpiredAt = expiredAt
-            };
-        }
+                var payload = ExtractPayload();
+                if (payload == null)
+                    return ErrorResp.Unauthorized("Invaild token");
 
-        public async Task<(bool Success, string? Message)> ReleaseSeatAsync(ReleaseSeatSignalRequest req)
-        {
-            var payload = ExtractPayload();
-            if (payload == null)
-                return (false, "Invalid token");
+                var userId = payload.UserId;
+                var now = DateTime.UtcNow;
+                var expiredAt = now.AddMinutes(15);
 
-            var logs = await _seatLogRepo.FindAllAsync(s =>
-                req.SeatIds.Contains(s.SeatId) &&
-                s.ShowTimeId == req.ShowTimeId
-            );
+                var exitsShowTime = await _showTimeRepo.FindByIdAsync(dto.ShowTimeId);
+                if (exitsShowTime == null)
+                    return ErrorResp.NotFound("ShowTime Not Found");
 
-            if (logs.Any())
-            {
-                // Xoá seat log
-                await _seatLogRepo.DeleteRangeAsync(logs);
+                // Kiểm tra ghế
+                var seat = await _seatRepo.FindByIdAsync(dto.SeatId);
+                if (seat == null)
+                    return ErrorResp.NotFound("Seat not found");
 
-                // Cập nhật lại trạng thái seat
-                var seatIds = logs.Select(l => l.SeatId).ToList();
-                var seatsToUpdate = await _seatRepo.FindAllAsync(s => seatIds.Contains(s.Id));
+                // Check nếu ghế đang Pending hoặc Selected thì không giữ được nữa
+                if (seat.Status != SeatStatus.Available)
+                    return ErrorResp.BadRequest("Seat is already held or booked");
 
-                foreach (var seat in seatsToUpdate)
+                // Cập nhật trạng thái ghế
+                seat.Status = SeatStatus.Pending;
+                await _seatRepo.UpdateAsync(seat);
+
+                // Tạo SeatLog mới cho 1 ghế
+                var seatLog = new SeatLog
                 {
-                    seat.Status = SeatStatus.Available;
+                    Id = Guid.NewGuid(),
+                    ShowTimeId = dto.ShowTimeId,
+                    UserId = userId,
+                    SeatId = seat.Id,
+                    ExpiredAt = expiredAt,
+                    Status = SeatStatus.Pending
+                };
+                await _seatLogRepo.CreateAsync(seatLog);
+
+                // Push real-time update qua SignalR
+                await _hubContext.Clients.Group(dto.ShowTimeId.ToString())
+                    .SendAsync("SeatsHeld", new
+                    {
+                        SeatId = seat.Id,
+                        SeatCode = seat.SeatCode,
+                        Status = SeatStatus.Pending.ToString()
+                    });
+
+                return SuccessResp.Ok(new
+                {
+                    SeatLogId = seatLog.Id,
+                    SeatId = seat.Id,
+                    ExpiredAt = seatLog.ExpiredAt
+                });
+            }
+
+            public async Task<IActionResult> GetSummaryAsync(SeatSummaryRequestDto request)
+            {
+                var payload = ExtractPayload();
+                if (payload == null)
+                    return ErrorResp.Unauthorized("Invalid token");
+
+                var userId = payload.UserId;
+
+                var user = await _userRepo.FindByIdAsync(userId);
+                if (user == null)
+                    return ErrorResp.NotFound("User Not Found");
+
+                if (request.SeatLogId == null || request.SeatLogId.Count == 0)
+                    return ErrorResp.BadRequest("SeatLogId list is required");
+
+                var now = DateTime.UtcNow;
+
+                // Lấy danh sách seatLogs còn hiệu lực và include ghế
+                var seatLogs = await _seatLogRepo.WhereAsync(s => request.SeatLogId.Contains(s.Id) && s.ExpiredAt > now && s.UserId == userId, "Seat");
+
+                if (seatLogs == null || seatLogs.Count == 0)
+                    return ErrorResp.BadRequest("No valid seat logs found");
+
+                // Dữ liệu tính toán
+                var seatCodes = seatLogs.Select(x => x.Seat.SeatCode).ToList();
+                var totalPrice = seatLogs.Sum(x => x.Seat.PriceSeat);
+                var showTimeId = seatLogs.First().ShowTimeId;
+                var expiredAt = seatLogs.Max(x => x.ExpiredAt);
+
+                decimal finalPrice = totalPrice;
+                int discountPercent = 0;
+
+                if (request.PromotionId.HasValue)
+                {
+                    var promotion = await _promotionRepo.FindByIdAsync(request.PromotionId.Value);
+                    if (promotion != null && promotion.StartDate <= now && promotion.EndDate >= now)
+                    {
+                        discountPercent = promotion.DiscountPercent;
+                        finalPrice = totalPrice * (1 - discountPercent / 100m);
+                    }
+                    else
+                    {
+                        // Nếu PromotionId không hợp lệ hoặc không nằm trong thời gian áp dụng
+                        discountPercent = 0;
+                        finalPrice = totalPrice;
+                    }
+                }
+                else
+                {
+                    // Nếu không có PromotionId thì giữ nguyên giá
+                    discountPercent = 0;
+                    finalPrice = totalPrice;
                 }
 
-                await _seatRepo.UpdateRangeAsync(seatsToUpdate);
+                // Tạo Booking
+                var booking = new Booking
+                {
+                    Id = Guid.NewGuid(),
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    PhoneNumber = user.Phone,
+                    IdentityCardNumber = user.IdentityCard,
+                    BookingCode = GenerateBookingCode(),
+                    BookingDate = DateTime.UtcNow,
+                    Status = BookingStatus.Pending,
+                    TotalPrice = finalPrice,
+                    TotalSeats = seatLogs.Count,
+                    ShowTimeId = showTimeId,
+                    UserId = payload.UserId,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _bookingRepo.CreateAsync(booking);
+
+                // Tạo các BookingDetail tương ứng
+                foreach (var log in seatLogs)
+                {
+                    var bookingDetail = new BookingDetail
+                    {
+                        Id = Guid.NewGuid(),
+                        BookingId = booking.Id,
+                        SeatId = log.SeatId,
+                        Price = log.Seat.PriceSeat,
+                        CreatedAt = now
+                    };
+
+                    await _bookingDetailRepo.CreateAsync(bookingDetail);
+                }
+
+                return SuccessResp.Ok(new SeatSummaryDto
+                {
+                    BookingId = booking.Id,
+                    BookingCode = booking.BookingCode,
+                    SeatCodes = seatCodes,
+                    Quantity = seatCodes.Count,
+                    TotalPrice = totalPrice,
+                    DiscountPercent = discountPercent,
+                    FinalPrice = finalPrice,
+                    ExpiredAt = expiredAt
+                });
             }
 
-            return (true, null);
+            public async Task<IActionResult> ReleaseSeatsAsync(Guid seatLogId)
+            {
+                var payload = ExtractPayload();
+                if (payload == null)
+                    return ErrorResp.Unauthorized("Invalid token");
+
+                // Chỉ Include SeatLogDetails, không Include Seat => tránh EF tracking dư thừa
+                var seatLog = await _seatLogRepo.FoundOrThrowAsync(seatLogId, "Seat log not found", new[] { nameof(SeatLog.Seat) });
+
+                // Chỉ người tạo log mới được xóa
+                if (seatLog.UserId != payload.UserId)
+                    return ErrorResp.Forbidden("You are not allowed to release this seat");
+
+                var seat = seatLog.Seat;
+                seat.Status = SeatStatus.Available;
+
+                /// Cập nhật trạng thái ghế
+                await _seatRepo.UpdateAsync(seat);
+
+                // Xóa seat log sau khi release
+                await _seatLogRepo.DeleteAsync(seatLog);
+
+                // Gửi thông báo tới tất cả client đang xem showtime đó
+                await _hubContext.Clients.Group(seatLog.ShowTimeId.ToString())
+                    .SendAsync("SeatsReleased", new List<Guid> { seat.Id });
+
+                return SuccessResp.Ok("Seats released successfully");
+            }
+
+            //public async Task<IActionResult> GetSeatLog()
+            //{
+            //    var payload = ExtractPayload();
+            //    if (payload == null)
+            //        return ErrorResp.Unauthorized("Invalid token");
+
+            //    var seatLog = await _seatLogRepo.ListAsync();
+
+            //}
         }
+        
     }
 }
