@@ -127,16 +127,17 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 return ErrorResp.NotFound("No show dates found for this movie.");
             }
 
-            // Chuyển ShowDate (UTC) về LocalTime để hiển thị đúng ngày cho người dùng
+            var today = DateTime.Now.Date;
+            // Filter showtimes có ngày chiếu từ hôm nay trở đi
             var dates = showtimes
-                .Where(s => s.ShowDate.HasValue)
+                .Where(s => s.ShowDate.HasValue && s.ShowDate!.Value.ToLocalTime().Date >= today)
                 .Select(s => s.ShowDate!.Value.ToLocalTime().Date)
                 .Distinct()
                 .OrderBy(d => d)
                 .Select(d => new
                 {
-                    Code = d.ToString("yyyy-MM-dd"), // Ví dụ: 2025-07-18
-                    Text = d.ToString("dd/MM")        // Ví dụ: 18/07
+                    Code = d.ToString("yyyy-MM-dd"),
+                    Text = d.ToString("dd/MM")
                 })
                 .ToList();
 
@@ -151,8 +152,19 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 s.ShowDate.HasValue &&
                 s.IsActive);
 
+            var today = DateTime.Now.Date;
+            var nowTime = DateTime.Now.TimeOfDay;
             // Convert ShowDate về LocalTime để so sánh chính xác theo ngày địa phương
-            var timeList = showtimes
+            var filteredShowtimes = showtimes
+                .Where(s =>
+                    {
+                        var localDate = s.ShowDate!.Value.ToLocalTime().Date;
+                        if (localDate < today) return false;
+                        if (localDate == today && s.StartTime <= nowTime) return false; // bỏ giờ đã qua hôm nay
+                        return true;
+                    });
+
+            var timeList = filteredShowtimes
                 .Where(s => s.ShowDate!.Value.ToLocalTime().Date == selectedDate.Date)
                 .GroupBy(s => s.StartTime)
                 .Select(g => new
