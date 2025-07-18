@@ -37,7 +37,7 @@ namespace UI.Areas.EmployeeManagement.Services
             try
             {
                 _logger.LogInformation("Getting employees list");
-                return await _apiService.GetAsync<dynamic>("admin/employees");
+                return await _apiService.GetAsync<dynamic>("api/v1/employee/GetAll");
             }
             catch (Exception ex)
             {
@@ -55,7 +55,7 @@ namespace UI.Areas.EmployeeManagement.Services
             try
             {
                 _logger.LogInformation("Searching employees with term: {SearchTerm}", searchTerm);
-                return await _apiService.GetAsync<dynamic>($"admin/employees/search?term={Uri.EscapeDataString(searchTerm)}");
+                return await _apiService.GetAsync<dynamic>($"api/v1/employee/Search?query={Uri.EscapeDataString(searchTerm)}");
             }
             catch (Exception ex)
             {
@@ -73,7 +73,24 @@ namespace UI.Areas.EmployeeManagement.Services
             try
             {
                 _logger.LogInformation("Adding new employee: {Username}", model.Username);
-                return await _apiService.PostAsync<dynamic>("admin/employees", model);
+
+                // Ánh xạ ViewModel -> DTO backend
+                var requestBody = new
+                {
+                    Account = model.Username,
+                    Password = model.Password,
+                    ConfirmPassword = model.Password, // Tạm dùng luôn Password làm ConfirmPassword (form hiện tại chưa có trường confirm)
+                    FullName = model.FullName,
+                    Email = model.Email,
+                    IdentityCard = model.IdentityCard,
+                    Gender = model.Gender ?? "Male", // backend nhận enum, string "Male"/"Female" vẫn được bind
+                    PhoneNumber = model.Phone,
+                    Address = model.Address,
+                    DateOfBirth = model.BirthDate ?? DateTime.UtcNow.AddYears(-18),
+                    ProfileImageUrl = (string?)null
+                };
+
+                return await _apiService.PostAsync<dynamic>("api/v1/employee/Add", requestBody);
             }
             catch (Exception ex)
             {
@@ -91,7 +108,7 @@ namespace UI.Areas.EmployeeManagement.Services
             try
             {
                 _logger.LogInformation("Getting employee detail: {EmployeeId}", employeeId);
-                return await _apiService.GetAsync<dynamic>($"admin/employees/{employeeId}");
+                return await _apiService.GetAsync<dynamic>($"api/v1/employee/GetById?Id={employeeId}");
             }
             catch (Exception ex)
             {
@@ -109,7 +126,22 @@ namespace UI.Areas.EmployeeManagement.Services
             try
             {
                 _logger.LogInformation("Updating employee: {EmployeeId}", employeeId);
-                return await _apiService.PutAsync<dynamic>($"admin/employees/{employeeId}", model);
+
+                var updateBody = new
+                {
+                    FullName = model.FullName,
+                    Email = model.Email,
+                    IdentityCard = model.IdentityCard,
+                    Gender = model.Gender ?? "Male",
+                    PhoneNumber = model.Phone,
+                    Address = model.Address,
+                    DateOfBirth = model.BirthDate ?? DateTime.UtcNow.AddYears(-18),
+                    ProfileImageUrl = (string?)null,
+                    Password = model.Password,
+                    ConfirmPassword = model.Password
+                };
+
+                return await _apiService.PatchAsync<dynamic>($"api/v1/employee/Update?Id={employeeId}", updateBody);
             }
             catch (Exception ex)
             {
@@ -127,7 +159,7 @@ namespace UI.Areas.EmployeeManagement.Services
             try
             {
                 _logger.LogInformation("Deleting employee: {EmployeeId}", employeeId);
-                var result = await _apiService.DeleteAsync($"admin/employees/{employeeId}");
+                var result = await _apiService.DeleteAsync($"api/v1/employee/Detele?Id={employeeId}");
                 return new ApiResponse<dynamic> 
                 { 
                     Success = result.Success, 

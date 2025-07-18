@@ -19,9 +19,16 @@ namespace ApplicationLayer.DTO.UserManagement
         [MinLength(6)]
         public string Password { get; set; } = string.Empty;
         
-        public string? Phone { get; set; }
-        public string? Address { get; set; }
-        public string? IdentityCard { get; set; }
+        [Required]
+        [Phone]
+        public string Phone { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(255)]
+        public string Address { get; set; } = string.Empty;
+        [Required]
+        [MaxLength(20)]
+        public string IdentityCard { get; set; } = string.Empty;
         
         [Required]
         public UserRole Role { get; set; } = UserRole.Member;

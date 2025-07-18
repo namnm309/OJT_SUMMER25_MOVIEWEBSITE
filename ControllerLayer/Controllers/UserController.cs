@@ -180,7 +180,13 @@ namespace ControllerLayer.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => string.IsNullOrEmpty(e.ErrorMessage) ? "Invalid value" : e.ErrorMessage)
+                                              .ToList();
+                return BadRequest(new {
+                    success = false,
+                    message = string.Join("; ", errors)
+                });
             }
 
             var result = await _userService.CreateUserAsync(createRequest);

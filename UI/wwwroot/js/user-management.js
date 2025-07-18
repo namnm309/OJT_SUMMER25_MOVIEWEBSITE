@@ -290,20 +290,24 @@ async function confirmDeleteUser() {
 
 async function addUser() {
     const formData = {
-        username: document.getElementById('newUsername').value,
-        fullName: document.getElementById('newFullName').value,
-        email: document.getElementById('newEmail').value,
-        phone: document.getElementById('newPhone').value,
-        password: document.getElementById('newPassword').value,
-        role: document.getElementById('newRole').value
+        Username: document.getElementById('newUsername').value.trim(),
+        FullName: document.getElementById('newFullName').value.trim(),
+        Email: document.getElementById('newEmail').value.trim(),
+        Phone: document.getElementById('newPhone').value.trim(),
+        IdentityCard: document.getElementById('newIdentityCard').value.trim(),
+        identityCard: document.getElementById('newIdentityCard').value.trim(),
+        Address: document.getElementById('newAddress').value.trim(),
+        Password: document.getElementById('newPassword').value,
+        Role: document.getElementById('newRole').value
     };
     
 
-    if (!formData.username || !formData.fullName || !formData.email || !formData.password || !formData.role) {
+    if (!formData.Username || !formData.FullName || !formData.Email || !formData.Phone || !formData.IdentityCard || !formData.Address || !formData.Password || !formData.Role) {
         alert('Vui lòng điền đầy đủ các trường bắt buộc!');
         return;
     }
     
+    console.log('Create user payload:', formData);
     try {
         const response = await fetch(`${API_BASE_URL}/api/User`, {
             method: 'POST',

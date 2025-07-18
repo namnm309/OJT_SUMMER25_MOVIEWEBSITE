@@ -325,11 +325,11 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                 return ErrorResp.BadRequest("Giờ bắt đầu phải nhỏ hơn giờ kết thúc");
 
             // Check for schedule conflicts
-            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, dto.ShowDate, dto.StartTime, dto.EndTime);
-            if (hasConflict)
-            {
-                return ErrorResp.BadRequest("Đã có lịch chiếu khác trong khoảng thời gian này tại phòng chiếu này.");
-            }
+            //var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, dto.ShowDate, dto.StartTime, dto.EndTime);
+            //if (hasConflict)
+            //{
+            //    return ErrorResp.BadRequest("Đã có lịch chiếu khác trong khoảng thời gian này tại phòng chiếu này.");
+            //}
 
             // Chuẩn hóa ngày chiếu: từ ngày địa phương về UTC 0h
             var showDateUtc = ToUtcDate(dto.ShowDate);
