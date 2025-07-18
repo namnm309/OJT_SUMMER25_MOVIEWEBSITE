@@ -25,7 +25,7 @@ namespace ControllerLayer.Controllers
         }
 
         [Protected]
-        [HttpGet("summary")]
+        [HttpPost("summary")]
         public async Task<IActionResult> GetSummary([FromBody] SeatSummaryRequestDto dto )
         {
             var summary = await _seatSignalService.GetSummaryAsync(dto);

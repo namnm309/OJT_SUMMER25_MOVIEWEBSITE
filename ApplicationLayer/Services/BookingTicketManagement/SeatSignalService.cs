@@ -22,7 +22,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
     {
         Task<IActionResult> HoldSeatsAsync(HoldSeatRequestDto dto);
         Task<IActionResult> GetSummaryAsync(SeatSummaryRequestDto request);
-        Task <IActionResult> ReleaseSeatsAsync(Guid bookingId);
+        Task<IActionResult> ReleaseSeatsAsync(Guid bookingId);
+        //Task<IActionResult> GetSeatLog();
         public class SeatSignalService : BaseService, ISeatSignalService
         {
             private readonly IGenericRepository<SeatLog> _seatLogRepo;
@@ -162,6 +163,18 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                         discountPercent = promotion.DiscountPercent;
                         finalPrice = totalPrice * (1 - discountPercent / 100m);
                     }
+                    else
+                    {
+                        // Nếu PromotionId không hợp lệ hoặc không nằm trong thời gian áp dụng
+                        discountPercent = 0;
+                        finalPrice = totalPrice;
+                    }
+                }
+                else
+                {
+                    // Nếu không có PromotionId thì giữ nguyên giá
+                    discountPercent = 0;
+                    finalPrice = totalPrice;
                 }
 
                 // Tạo Booking
@@ -240,6 +253,16 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
                 return SuccessResp.Ok("Seats released successfully");
             }
+
+            //public async Task<IActionResult> GetSeatLog()
+            //{
+            //    var payload = ExtractPayload();
+            //    if (payload == null)
+            //        return ErrorResp.Unauthorized("Invalid token");
+
+            //    var seatLog = await _seatLogRepo.ListAsync();
+
+            //}
         }
         
     }
