@@ -15,5 +15,6 @@ namespace ApplicationLayer.Services.PromotionManagement
         Task<IActionResult> GetPromotionById(Guid id);
         Task<IActionResult> UpdatePromotion(PromotionUpdateDto Dto);
         Task<IActionResult> DeletePromotion(Guid id);
+        Task<IActionResult> SaveUserPromotionAsync(Guid userId, Guid promotionId);
     }
 }

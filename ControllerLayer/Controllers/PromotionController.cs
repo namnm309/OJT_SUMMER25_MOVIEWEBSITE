@@ -36,7 +36,12 @@ namespace ControllerLayer.Controllers
             return await _promotionService.CreatePromotion(Dto);
         }
 
-        
+        public class SaveUserPromotionRequest
+        {
+            public Guid UserId { get; set; }
+            public Guid PromotionId { get; set; }
+        }
+       
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPromotionById(Guid id)
@@ -57,6 +62,16 @@ namespace ControllerLayer.Controllers
         {
             _logger.LogInformation($"Deleting promotion with ID: {id}");
             return await _promotionService.DeletePromotion(id);
+        }
+
+        /// <summary>
+        /// lưu khuyến mãi cho người dùng
+        /// </summary>
+        [HttpPost("save-user-promotion")]
+        public async Task<IActionResult> SaveUserPromotion([FromBody] SaveUserPromotionRequest request)
+        {
+            _logger.LogInformation($"Saving promotion {request.PromotionId} for user {request.UserId}");
+            return await _promotionService.SaveUserPromotionAsync(request.UserId, request.PromotionId);
         }
     }
 }

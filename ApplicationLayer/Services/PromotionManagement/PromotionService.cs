@@ -16,10 +16,14 @@ namespace ApplicationLayer.Services.PromotionManagement
     {
         private readonly IGenericRepository<Promotion> _promotionRepo;
         private readonly IMapper _mapper;
-        public PromotionService(IGenericRepository<Promotion> promotionRepo, IMapper mapper)
+        private readonly IGenericRepository<UserPromotion> _userPromotionRepo;
+        private readonly IGenericRepository<Users> _userRepo;
+        public PromotionService(IGenericRepository<Promotion> promotionRepo, IMapper mapper, IGenericRepository<UserPromotion> userPromotionRepo, IGenericRepository<Users> userRepo)
         {
             _promotionRepo = promotionRepo;
             _mapper = mapper;
+            _userPromotionRepo = userPromotionRepo;
+            _userRepo = userRepo;
         }
 
         public async Task<IActionResult> CreatePromotion(PromotionCreateDto Dto)
@@ -92,6 +96,35 @@ namespace ApplicationLayer.Services.PromotionManagement
 
             await _promotionRepo.DeleteAsync(promotion);
             return SuccessResp.Ok("Promotion deleted successfully");
+        }
+
+        public async Task<IActionResult> SaveUserPromotionAsync(Guid userId, Guid promotionId)
+        {
+            // Kiểm tra user tồn tại
+            var user = await _userRepo.FindByIdAsync(userId);
+            if (user == null)
+                return ErrorResp.NotFound("User not found");
+
+            // Kiểm tra promotion tồn tại
+            var promotion = await _promotionRepo.FindByIdAsync(promotionId);
+            if (promotion == null)
+                return ErrorResp.NotFound("Promotion not found");
+
+            // Kiểm tra đã lưu chưa
+            var exist = await _userPromotionRepo.FirstOrDefaultAsync(up => up.UserId == userId && up.PromotionId == promotionId);
+            if (exist != null)
+                return ErrorResp.BadRequest("User already saved this promotion");
+
+            // Lưu mới
+            var userPromotion = new UserPromotion
+            {
+                UserId = userId,
+                PromotionId = promotionId,
+                IsRedeemed = false,
+                RedeemedAt = null
+            };
+            await _userPromotionRepo.CreateAsync(userPromotion);
+            return SuccessResp.Ok("Promotion saved for user successfully");
         }
     }
 }

@@ -24,6 +24,7 @@ using ApplicationLayer.Services.Payment;
 using ApplicationLayer.Services.TicketSellingManagement;
 using ApplicationLayer.Services.ConcessionManagement;
 using ApplicationLayer.DTO.ConcessionManagement;
+using DomainLayer.Entities;
 namespace ControllerLayer
 {
     public class Program
@@ -205,7 +206,14 @@ namespace ControllerLayer
             builder.Services.AddScoped<IMovieService, MovieService>();
             builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 
-            builder.Services.AddScoped<IPromotionService, PromotionService>();
+            builder.Services.AddScoped<IPromotionService, PromotionService>(provider =>
+            {
+                var promotionRepo = provider.GetRequiredService<IGenericRepository<Promotion>>();
+                var mapper = provider.GetRequiredService<AutoMapper.IMapper>();
+                var userPromotionRepo = provider.GetRequiredService<IGenericRepository<UserPromotion>>();
+                var userRepo = provider.GetRequiredService<IGenericRepository<Users>>();
+                return new PromotionService(promotionRepo, mapper, userPromotionRepo, userRepo);
+            });
 
             builder.Services.AddScoped<ICinemaRoomService, CinemaRoomService>();
 
