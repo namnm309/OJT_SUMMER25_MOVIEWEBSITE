@@ -193,7 +193,8 @@ namespace ApplicationLayer.Services.Payment
                     await _ticketService.CreateTicketFromBookingAsync(booking.Id);
 
                     //Xóa SeatLog sau khi thanh toán thành công
-                    var logs = await _seatLogRepo.FindAllAsync(l => l.BookingId == booking.Id);
+                    var logs = await _seatLogRepo.FindAllAsync(l =>l.ShowTimeId == booking.ShowTimeId && l.UserId == booking.UserId);
+
                     if (logs.Any())
                     {
                         await _seatLogRepo.DeleteRangeAsync(logs);
