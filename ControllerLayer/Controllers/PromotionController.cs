@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ControllerLayer.Controllers
 {
@@ -14,13 +16,16 @@ namespace ControllerLayer.Controllers
     {
         private readonly IPromotionService _promotionService;
         private readonly ILogger<PromotionController> _logger;
+        private readonly IUserPromotionService _userPromotionService;
 
         public PromotionController(
             IPromotionService promotionService,
-            ILogger<PromotionController> logger)
+            ILogger<PromotionController> logger,
+            IUserPromotionService userPromotionService)
         {
             _promotionService = promotionService;
             _logger = logger;
+            _userPromotionService = userPromotionService;
         }
 
         [HttpGet]
@@ -73,6 +78,33 @@ namespace ControllerLayer.Controllers
         {
             _logger.LogInformation($"Saving promotion {request.PromotionId} for authenticated user");
             return await _promotionService.SaveUserPromotionAsync(request.PromotionId);
+        }
+
+        /// <summary>
+        /// Get vouchers of currently authenticated user
+        /// </summary>
+        [HttpGet("my")]
+        [Authorize]
+        public async Task<IActionResult> GetMyVouchers()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            _logger.LogInformation("Fetching vouchers for user {UserId}", userId);
+            return await _userPromotionService.GetUserVouchersAsync(userId);
+        }
+
+        /// <summary>
+        /// Redeem voucher
+        /// </summary>
+        [HttpPost("redeem/{userPromotionId}")]
+        [Authorize]
+        public async Task<IActionResult> RedeemVoucher(Guid userPromotionId)
+        {
+            return await _userPromotionService.RedeemVoucherAsync(userPromotionId);
         }
     }
 }
