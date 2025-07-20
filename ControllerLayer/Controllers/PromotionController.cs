@@ -1,5 +1,6 @@
 ﻿using ApplicationLayer.DTO.PromotionManagement;
 using ApplicationLayer.Services.PromotionManagement;
+using ApplicationLayer.Middlewares;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -38,7 +39,6 @@ namespace ControllerLayer.Controllers
 
         public class SaveUserPromotionRequest
         {
-            public Guid UserId { get; set; }
             public Guid PromotionId { get; set; }
         }
        
@@ -67,11 +67,12 @@ namespace ControllerLayer.Controllers
         /// <summary>
         /// lưu khuyến mãi cho người dùng
         /// </summary>
+        [Protected]
         [HttpPost("save-user-promotion")]
         public async Task<IActionResult> SaveUserPromotion([FromBody] SaveUserPromotionRequest request)
         {
-            _logger.LogInformation($"Saving promotion {request.PromotionId} for user {request.UserId}");
-            return await _promotionService.SaveUserPromotionAsync(request.UserId, request.PromotionId);
+            _logger.LogInformation($"Saving promotion {request.PromotionId} for authenticated user");
+            return await _promotionService.SaveUserPromotionAsync(request.PromotionId);
         }
     }
 }

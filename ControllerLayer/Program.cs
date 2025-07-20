@@ -217,7 +217,8 @@ namespace ControllerLayer
                 var mapper = provider.GetRequiredService<AutoMapper.IMapper>();
                 var userPromotionRepo = provider.GetRequiredService<IGenericRepository<UserPromotion>>();
                 var userRepo = provider.GetRequiredService<IGenericRepository<Users>>();
-                return new PromotionService(promotionRepo, mapper, userPromotionRepo, userRepo);
+                var httpCtx = provider.GetRequiredService<IHttpContextAccessor>();
+                return new PromotionService(promotionRepo, mapper, userPromotionRepo, userRepo, httpCtx);
             });
 
             builder.Services.AddScoped<ICinemaRoomService, CinemaRoomService>();

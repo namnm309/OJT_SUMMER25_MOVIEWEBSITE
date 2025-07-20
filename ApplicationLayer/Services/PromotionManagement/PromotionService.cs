@@ -5,23 +5,29 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.ResponseCode;
 using ApplicationLayer.DTO.PromotionManagement;
+using ApplicationLayer.Services;
 using AutoMapper;
 using DomainLayer.Entities;
 using InfrastructureLayer.Repository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApplicationLayer.Services.PromotionManagement
 {
-    public class PromotionService : IPromotionService
+    public class PromotionService : BaseService, IPromotionService
     {
         private readonly IGenericRepository<Promotion> _promotionRepo;
-        private readonly IMapper _mapper;
         private readonly IGenericRepository<UserPromotion> _userPromotionRepo;
         private readonly IGenericRepository<Users> _userRepo;
-        public PromotionService(IGenericRepository<Promotion> promotionRepo, IMapper mapper, IGenericRepository<UserPromotion> userPromotionRepo, IGenericRepository<Users> userRepo)
+        
+        public PromotionService(
+            IGenericRepository<Promotion> promotionRepo, 
+            IMapper mapper, 
+            IGenericRepository<UserPromotion> userPromotionRepo, 
+            IGenericRepository<Users> userRepo,
+            IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
         {
             _promotionRepo = promotionRepo;
-            _mapper = mapper;
             _userPromotionRepo = userPromotionRepo;
             _userRepo = userRepo;
         }
@@ -98,8 +104,15 @@ namespace ApplicationLayer.Services.PromotionManagement
             return SuccessResp.Ok("Promotion deleted successfully");
         }
 
-        public async Task<IActionResult> SaveUserPromotionAsync(Guid userId, Guid promotionId)
+        public async Task<IActionResult> SaveUserPromotionAsync(Guid promotionId)
         {
+            // Lấy userId từ JWT token
+            var payload = ExtractPayload();
+            if (payload == null)
+                throw new UnauthorizedAccessException("Invalid token");
+
+            var userId = payload.UserId;
+
             // Kiểm tra user tồn tại
             var user = await _userRepo.FindByIdAsync(userId);
             if (user == null)

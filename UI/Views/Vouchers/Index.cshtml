@@ -297,6 +297,41 @@
             background: linear-gradient(90deg, #4f8cff 0%, #6c63ff 100%);
             box-shadow: 0 4px 16px 0 rgba(76, 99, 255, 0.22);
         }
+        .voucher-saved-badge {
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 8px 0 rgba(40, 167, 69, 0.3);
+        }
+        .voucher-saved-badge i {
+            font-size: 0.9rem;
+        }
+        .btn-success {
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+            color: white;
+            font-weight: 600;
+            border-radius: 30px;
+            padding: 0.6rem 1.5rem;
+            font-size: 1rem;
+            border: none;
+            box-shadow: 0 2px 8px 0 rgba(40, 167, 69, 0.3);
+            transition: all 0.2s ease;
+        }
+        .btn-success:hover {
+            background: linear-gradient(90deg, #20c997 0%, #28a745 100%);
+            box-shadow: 0 4px 16px 0 rgba(40, 167, 69, 0.4);
+        }
+        .btn-success:disabled {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
     </style>
 }
 
@@ -389,6 +424,7 @@
         {
             foreach(var voucherEl in (IEnumerable<JsonElement>)ViewBag.AllVouchers)
             {
+                var id = voucherEl.GetProperty("id").GetString();
                 var title = voucherEl.GetProperty("title").GetString();
                 var discount = voucherEl.TryGetProperty("discountPercent", out var discProp) ? discProp.GetInt32() : 0;
                 var description = voucherEl.GetProperty("description").GetString();
@@ -397,6 +433,7 @@
                 var imageUrl = voucherEl.TryGetProperty("imageUrl", out var imgProp) ? imgProp.GetString() : null;
                 <text>
                 allVouchers.push({
+                    id: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(id)),
                     title: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(title)),
                     discount: @discount,
                     description: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(description)),
@@ -404,6 +441,19 @@
                     startDate: '@startDate.ToString("yyyy-MM-dd")',
                     imageUrl: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(imageUrl))
                 });
+                </text>
+            }
+        }
+
+        // Prepare user's saved vouchers data
+        const userSavedVouchers = new Set();
+        @if(ViewBag.UserVouchers != null && ((IEnumerable<JsonElement>)ViewBag.UserVouchers).Any())
+        {
+            foreach(var userVoucherEl in (IEnumerable<JsonElement>)ViewBag.UserVouchers)
+            {
+                var promotionId = userVoucherEl.GetProperty("promotionId").GetString();
+                <text>
+                userSavedVouchers.add(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promotionId)));
                 </text>
             }
         }
@@ -438,7 +488,9 @@
                 grid.innerHTML = `<div class="no-vouchers">Không có voucher nào phù hợp.</div>`;
                 return;
             }
-            grid.innerHTML = vouchers.map((v, idx) => `
+            grid.innerHTML = vouchers.map((v, idx) => {
+                const isSaved = userSavedVouchers.has(v.id);
+                return `
                 <div class="voucher-card" style="transition-delay:${idx*80}ms">
                     <div class="voucher-image">
                         <img src="${v.imageUrl || 'https://via.placeholder.com/400x140/181830/ffffff?text=%25'}" alt="Voucher Image">
@@ -449,10 +501,11 @@
                     <div class="voucher-info">
                         <div class="voucher-date"><i class="fas fa-calendar-alt"></i> ${formatDate(v.startDate)} - ${formatDate(v.endDate)}</div>
                         <div class="voucher-title">${v.title}</div>
-                        
+                        ${isSaved ? '<div class="voucher-saved-badge"><i class="fas fa-check-circle"></i> Đã lưu</div>' : ''}
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
             // Animate cards
             setTimeout(() => {
                 document.querySelectorAll('.voucher-card').forEach((card, i) => {
@@ -491,8 +544,76 @@
             else usageText = diffDays + ' ngày';
             document.getElementById('modalVoucherUsage').textContent = usageText;
             lastModalVoucher = v;
+            
+            // Update save button based on saved status
+            const saveBtn = document.getElementById('saveVoucherBtn');
+            const isSaved = userSavedVouchers.has(v.id);
+            
+            if (isSaved) {
+                saveBtn.innerHTML = '<i class="fas fa-check-circle"></i> ĐÃ LƯU';
+                saveBtn.className = 'btn btn-success';
+                saveBtn.disabled = true;
+            } else {
+                saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> LƯU VOUCHER';
+                saveBtn.className = 'btn btn-gradient-save';
+                saveBtn.disabled = false;
+            }
+            
             const modal = new bootstrap.Modal(document.getElementById('voucherDetailModal'));
             modal.show();
+        }
+
+        // Function to save voucher for user
+        async function saveVoucherForUser(promotionId) {
+            try {
+                // Show loading state
+                const saveBtn = document.getElementById('saveVoucherBtn');
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+                saveBtn.disabled = true;
+
+                const response = await fetch('/Vouchers/SaveUserPromotion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        promotionId: promotionId
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Success - add to saved vouchers set
+                    userSavedVouchers.add(promotionId);
+                    
+                    // Update button state
+                    saveBtn.innerHTML = '<i class="fas fa-check-circle"></i> ĐÃ LƯU';
+                    saveBtn.className = 'btn btn-success';
+                    saveBtn.disabled = true;
+                    
+                    
+                    
+                    // Update the voucher card to show saved badge
+                    renderVouchers();
+                } else {
+                    // Error
+                    alert('Lỗi: ' + (result.message || 'Không thể lưu voucher'));
+                    // Restore button state
+                    saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> LƯU VOUCHER';
+                    saveBtn.className = 'btn btn-gradient-save';
+                    saveBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error saving voucher:', error);
+                alert('Có lỗi xảy ra khi lưu voucher. Vui lòng thử lại.');
+                // Restore button state
+                const saveBtn = document.getElementById('saveVoucherBtn');
+                saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> LƯU VOUCHER';
+                saveBtn.className = 'btn btn-gradient-save';
+                saveBtn.disabled = false;
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -515,8 +636,7 @@
             // Save voucher button handler
             document.getElementById('saveVoucherBtn').addEventListener('click', function() {
                 if (lastModalVoucher) {
-                    // TODO: Call API to save voucher for user
-                    alert('Lưu voucher: ' + lastModalVoucher.title);
+                    saveVoucherForUser(lastModalVoucher.id);
                 }
             });
         });
