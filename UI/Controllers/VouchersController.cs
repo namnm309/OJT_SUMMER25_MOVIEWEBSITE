@@ -24,7 +24,7 @@ namespace UI.Controllers
             ViewBag.AllVouchers = allVouchersResp.Success ? allVouchersResp.Data : null;
 
             // Call the API to get user's saved vouchers
-            var userVouchersResp = await _apiService.GetAsync<List<JsonElement>>("/api/v1/vouchers/my");
+            var userVouchersResp = await _apiService.GetAsync<List<JsonElement>>("/api/v1/promotions/my");
             ViewBag.UserVouchers = userVouchersResp.Success ? userVouchersResp.Data : new List<JsonElement>();
 
             return View();
