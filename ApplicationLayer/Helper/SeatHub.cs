@@ -34,4 +34,17 @@ public class SeatHub : Hub
 
         await base.OnDisconnectedAsync(exception);
     }
+
+    public async Task SelectSeat(string showTimeId, string seatId, string userId)
+    {
+        // Broadcast tới tất cả client khác trong cùng showTimeId
+        await Clients.OthersInGroup(showTimeId)
+            .SendAsync("SeatSelected", seatId, userId);
+    }
+
+    public async Task DeselectSeat(string showTimeId, string seatId, string userId)
+    {
+        await Clients.OthersInGroup(showTimeId)
+            .SendAsync("SeatDeselected", seatId, userId);
+    }
 }
