@@ -26,10 +26,6 @@ using ApplicationLayer.Services.ConcessionManagement;
 using ApplicationLayer.DTO.ConcessionManagement;
 using static ApplicationLayer.Services.BookingTicketManagement.ISeatSignalService;
 using ApplicationLayer.Helper;
-using DomainLayer.Entities;
-using static ApplicationLayer.Services.BookingTicketManagement.ISeatSignalService;
-using ApplicationLayer.Helper;
-using DomainLayer.Entities;
 namespace ControllerLayer
 {
     public class Program
@@ -211,15 +207,7 @@ namespace ControllerLayer
             builder.Services.AddScoped<IMovieService, MovieService>();
             builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 
-            builder.Services.AddScoped<IPromotionService, PromotionService>(provider =>
-            {
-                var promotionRepo = provider.GetRequiredService<IGenericRepository<Promotion>>();
-                var mapper = provider.GetRequiredService<AutoMapper.IMapper>();
-                var userPromotionRepo = provider.GetRequiredService<IGenericRepository<UserPromotion>>();
-                var userRepo = provider.GetRequiredService<IGenericRepository<Users>>();
-                var httpCtx = provider.GetRequiredService<IHttpContextAccessor>();
-                return new PromotionService(promotionRepo, mapper, userPromotionRepo, userRepo, httpCtx);
-            });
+            builder.Services.AddScoped<IPromotionService, PromotionService>();
 
             builder.Services.AddScoped<ICinemaRoomService, CinemaRoomService>();
 
@@ -318,7 +306,7 @@ namespace ControllerLayer
             app.UseCors("AllowUI");
 
             // Map hub endpoint
-            app.MapHub<SeatHub>("/seathub");
+            app.MapHub<SeatHub>("/seatHub");
 
             app.UseAuthentication();
             app.UseAuthorization();
