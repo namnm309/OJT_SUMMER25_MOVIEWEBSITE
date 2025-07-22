@@ -158,20 +158,24 @@
         try {
             seatMapContainer.innerHTML = `<div id="loadingSeats" style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.7);"><i class="fas fa-spinner fa-spin"></i> Đang tải ghế...</div>`;
             
-            const roomId = window.SeatModule.roomId || (typeof window.roomId !== 'undefined' ? window.roomId : null);
-            if (!roomId) {
-                seatMapContainer.innerHTML = `<div style='color:red;text-align:center'>Không tìm thấy roomId để lấy ghế!</div>`;
+            if (!showTimeId) {
+                seatMapContainer.innerHTML = `<div style='color:red;text-align:center'>Không tìm thấy showTimeId!</div>`;
                 return;
             }
 
-            const response = await fetch(`https://localhost:7049/api/v1/cinemaroom/ViewSeat?roomId=${roomId}`, {
+            const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/available?showTimeId=${showTimeId}`, {
                 headers: { 'Authorization': `Bearer ${getAuthToken()}` }
             });
 
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
+
             const data = await response.json();
-            if (data.data && data.data.seats && data.data.seats.length > 0) {
+            if (data.value && data.value.code === 200 && data.value.data && data.value.data.seats) {
+                const payload = data.value.data;
+                allSeats = payload.seats;
+                renderSeats(payload.seats);
+                if (payload.roomName) updateRoomName(payload.roomName);
+            } else if (data.data && data.data.seats) { // Trường hợp cũ
                 allSeats = data.data.seats;
                 renderSeats(data.data.seats);
                 if (data.data.roomName) updateRoomName(data.data.roomName);
@@ -215,7 +219,7 @@
                 
                 rowSeats.forEach(seat => {
                     const seatClass = getSeatClass(seat);
-                    const isDisabled = seat.status && seat.status.toLowerCase() !== 'available';
+                    const isDisabled = seat.status ? seat.status.toLowerCase() !== 'available' : (seat.isAvailable === false);
                     const seatCode = seat.seatCode || seat.code || `${rowLabel}${seat.columnIndex || seat.column || '?'}`;
                     const seatPrice = seat.price || 0;
                     
@@ -285,7 +289,14 @@
                     return baseClass + ' seat-pending';
                 case 'selected':
                 case 'occupied':
-                    return baseClass + ' seat-selected';
+                    return baseClass + ' seat-unavailable';
+            }
+        }
+        if (seat.hasOwnProperty('isAvailable')) {
+            if (seat.isAvailable) {
+                // ghế trống
+            } else {
+                return baseClass + ' seat-unavailable';
             }
         }
         
@@ -403,7 +414,7 @@
     function attachSeatEventListeners() {
         const seats = document.querySelectorAll('.seat');
         seats.forEach(seat => {
-            if (seat.classList.contains('occupied') || seat.classList.contains('pending-others')) {
+            if (seat.classList.contains('seat-unavailable')) {
                 seat.style.cursor = 'not-allowed';
                 return;
             }
@@ -486,10 +497,16 @@
                 continueBtn.disabled = false;
                 continueBtn.textContent = `THANH TOÁN ${selectedSeats.length} GHẾ`;
                 continueBtn.style.display = 'block';
+                const payBtn = document.getElementById('payVnpayBtn');
+                if (payBtn && payBtn.dataset.manualVisible !== 'true') {
+                    payBtn.style.display = 'none'; // chỉ hiện sau khi summary thành công
+                }
             } else {
                 continueBtn.disabled = true;
                 continueBtn.textContent = 'CHỌN GHẾ ĐỂ THANH TOÁN';
                 continueBtn.style.display = 'block';
+                const payBtn = document.getElementById('payVnpayBtn');
+                if (payBtn) payBtn.style.display = 'none';
             }
         }
     }
@@ -539,7 +556,17 @@
         cleanup: cleanup
     };
 
-    // Cleanup khi trang được unload
-    window.addEventListener('beforeunload', cleanup);
+    // Khi unload, gửi release cho tất cả ghế đang hold
+    window.addEventListener('beforeunload', async function () {
+        if (heldSeatLogIds.length === 0) return;
+        heldSeatLogIds.forEach(id => {
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(`https://localhost:7049/api/seatsignal/release/${id}`);
+            } else {
+                fetch(`https://localhost:7049/api/seatsignal/release/${id}`, { method: 'DELETE', keepalive: true });
+            }
+        });
+        cleanup();
+    });
     
 })(window);

@@ -4,19 +4,25 @@
     Layout = "_Layout";
 }
 <link rel="stylesheet" href="~/css/BookingManagement/select-seat.css" />
-
-<div class="main-container">
+<link rel="stylesheet" href="~/css/Shared/fix-header-offset.css" />
+    <link rel="stylesheet" href="~/css/HomePage/layout.css" />
+    <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" />
+    <link rel="stylesheet" href="~/css/HomePage/responsive.css" />
+    <link rel="stylesheet" href="~/css/MovieDetails/movie-details-mostly.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/MovieDetails/movie-details.css" asp-append-version="true" />
+    
+<div class="main-container with-header-offset">
     <!-- Phần thông tin phim và chọn ghế -->
     <div class="movie-section">
         <!-- Thông tin phim -->
-        <div class="movie-info-card">
-            <div class="movie-poster">
-                <div class="movie-poster">
+        <div class="movie-info-cards select-seat-scope">
+            <div class="movie-posters">
+                <div class="movie-posters">
                     <h1 class="movie-title">@Model.MovieTitle</h1>
                 </div>
             </div>
 
-            <div class="movie-details">
+            <div class="movie-detailss">
                 <h1 class="movie-title">@Model.MovieTitle</h1>
 
                 <div class="movie-meta" id="movieMeta">
@@ -128,6 +134,12 @@
                     <span class="label">Total</span>
                     <span class="value total-amount" id="ticketTotal">@String.Format("{0:N0}", Model.TotalPrice)₫</span>
                 </div>
+                <div class="detail-row promotion-row">
+                    <span class="label">Khuyến mãi</span>
+                    <button type="button" id="showPromotionsBtn" class="btn-show-promotions">
+                        <i class="fas fa-ticket-alt"></i> Chọn mã
+                    </button>
+                </div>
             </div>
 
             <div class="selected-seats-display">
@@ -163,10 +175,159 @@
                 <button id="payVnpayBtn" class="btn-continue" style="display:none; margin-top: 10px;">
                     THANH TOÁN QUA VNPAY
                 </button>
+                <button id="cancelSeatsBtn" type="button" class="btn-cancel" style="display:none; margin-top: 10px;">
+                    HỦY GHẾ
+                </button>
+                <button id="cancelVoucherBtn" type="button" class="btn-cancel" style="display:none; margin-top: 10px;">
+                    BỎ VOUCHER
+                </button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Popup cho promotions -->
+<div id="promotionsPopup" class="promotions-popup" style="display: none;">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h4>Mã khuyến mãi của bạn</h4>
+            <button class="close-popup">&times;</button>
+        </div>
+        <div class="promotions-list">
+            <!-- Promotions sẽ được load vào đây -->
+        </div>
+    </div>
+</div>
+
+<!-- Styles cho popup khuyến mãi -->
+<style>
+    /* Hàng khuyến mãi trong bảng chi tiết */
+    .promotion-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    /* Nút mở popup */
+    .btn-show-promotions {
+        background: linear-gradient(45deg,#ff416c,#ff4b2b);
+        color: #fff;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all .25s ease;
+    }
+
+    .btn-show-promotions:hover {
+        filter: brightness(1.05);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255,75,43,.35);
+    }
+
+    /* Overlay popup */
+    .promotions-popup {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.55);
+        display: none; /* hiển thị bằng JS */
+        align-items: center;
+        justify-content: center;
+        z-index: 1050;
+        animation: fadeIn .25s forwards;
+    }
+
+    @@keyframes fadeIn {
+        from {opacity: 0;} to {opacity: 1;}
+    }
+
+    .popup-content {
+        background: #fff;
+        border-radius: 12px;
+        width: 95%;
+        max-width: 420px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 8px 30px rgba(0,0,0,.25);
+        transform: translateY(-15px);
+        animation: slideDown .3s forwards;
+    }
+
+    @@keyframes slideDown {
+        to {transform: translateY(0);}
+    }
+
+    .popup-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 18px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .popup-header h4 {margin: 0;font-size: 1.05rem;color: #333;font-weight: 600;}
+
+    .close-popup {
+        background: none;
+        border: none;
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        color: #999;
+        transition: color .2s;
+    }
+
+    .close-popup:hover {color:#333;}
+
+    .promotions-list {padding: 14px 18px;}
+
+    .promotion-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        margin-bottom: 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        background: #fafafa;
+        transition: all .25s ease;
+        cursor: pointer;
+    }
+
+    .promotion-item:hover {box-shadow: 0 4px 12px rgba(0,0,0,.08);border-color:#ff4b2b;}
+    .promotion-item.selected {border-color:#ff4b2b;background:#ffeae4;}
+
+    .promotion-discount {font-size: 1rem;font-weight: 700;color:#ff4b2b;}
+    .promotion-expiry {font-size: .85rem;color:#666;}
+
+    .btn-select-promotion {
+        background:#ff4b2b;
+        border:none;
+        color:#fff;
+        padding:6px 10px;
+        border-radius:6px;
+        font-size:.8rem;
+        cursor:pointer;
+        transition:background .2s;
+    }
+
+    .btn-select-promotion:hover {background:#ff416c;}
+    .btn-cancel {
+        background: #343a40;
+        color: #fff;
+        border: 1px solid #495057;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all .25s ease;
+    }
+    .btn-cancel:hover {background:#495057;}
+</style>
 
 <script src="~/js/BookingManagement/SelectSeat/Seats.js"></script>
 <script src="~/js/BookingManagement/SelectSeat/MovieInfo.js"></script>

@@ -102,7 +102,13 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     SeatType = s.SeatType.ToString(),
                     RowIndex = s.RowIndex,
                     ColumnIndex = s.ColumnIndex,
-                    IsAvailable = s.Status == SeatStatus.Available && !bookedSeatIds.Contains(s.Id),
+                    // Nếu ghế đã book cho showtime -> Selected
+                    // Nếu ghế đang Pending trong DB -> Pending
+                    // Ngược lại Available
+                    Status = bookedSeatIds.Contains(s.Id)
+                                ? "Selected"
+                                : (s.Status == SeatStatus.Pending ? "Pending" : "Available"),
+                    IsAvailable = !bookedSeatIds.Contains(s.Id) && s.Status != SeatStatus.Selected,
                     Price = s.PriceSeat,
 
                 }).ToList();
@@ -209,7 +215,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 {
                     MovieId = showTime.MovieId,
                     RoomId = showTime.RoomId,
-                    ShowDate = showTime.ShowDate
+                    ShowDate = showTime.ShowDate,
+                    StartTime = showTime.StartTime
                 };
 
                 return SuccessResp.Ok(response);

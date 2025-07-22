@@ -63,7 +63,7 @@
         .brand-logo {
             width: 50px;
             height: 40px;
-            background: #df2144;
+            background: #rgb(129, 85, 238);
             border-radius: 8px;
         }
 
@@ -92,11 +92,11 @@
         }
 
         .nav-link:hover {
-            color: #df2144;
+            color: #rgb(129, 85, 238);
         }
 
         .nav-link.active {
-            color: #df2144;
+            color: #rgb(129, 85, 238);
         }
 
         /* Main Content */

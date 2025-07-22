@@ -17,7 +17,11 @@
     <link rel="stylesheet" href="~/css/movie-card-fix.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/movie-card-emergency-fix.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pagination-fix.css" asp-append-version="true" />
-    
+    <!-- Unified header styles -->
+    <link rel="stylesheet" href="~/css/HomePage/base.css" />
+    <link rel="stylesheet" href="~/css/HomePage/header.css" />
+    <link rel="stylesheet" href="~/css/Shared/_header.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Shared/fix-header-offset.css" />
     @await RenderSectionAsync("Styles", required: false)
     <style>
         /* Cho phép scroll cho modal khi nội dung quá dài */
@@ -46,6 +50,9 @@
     </style>
 </head>
 <body>
+
+    <!-- Global header -->
+    @await Html.PartialAsync("_Header")
 
     @if (ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index")
     {

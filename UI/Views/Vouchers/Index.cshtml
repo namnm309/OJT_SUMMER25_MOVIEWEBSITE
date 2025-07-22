@@ -4,14 +4,17 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/HomePage/base.css" />
-    <link rel="stylesheet" href="~/css/Shared/_header.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/HomePage/layout.css" />
-    <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" />
-    <link rel="stylesheet" href="~/css/HomePage/responsive.css" />
+    <!-- Header CSS đã nằm trong _Layout. -->
+    <link rel="stylesheet" href="~/css/Shared/fix-header-offset.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/HomePage/layout.css" />
+    <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" />
+    <link rel="stylesheet" href="~/css/HomePage/responsive.css" />
+    <link rel="stylesheet" href="~/css/MovieDetails/movie-details-mostly.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/MovieDetails/movie-details.css" asp-append-version="true" />
+    
     <style>
         html, body {
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
@@ -63,7 +66,7 @@
             font-weight: 700;
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            background: linear-gradient(45deg, #fff, #df2144);
+            background: linear-gradient(45deg, #fff, #8155EE);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -127,8 +130,8 @@
             transform: translateY(-2px);
         }
         .filter-tab.active {
-            background: linear-gradient(135deg, #df2144 0%, #ff4466 100%);
-            border-color: #df2144;
+            background: linear-gradient(135deg, #8155EE 0%, #ff4466 100%);
+            border-color: #8155EE;
             color: white;
             box-shadow: 0 8px 25px rgba(223, 33, 68, 0.4);
         }
@@ -332,11 +335,63 @@
             opacity: 0.8;
             cursor: not-allowed;
         }
+
+        /* === Modernized Vouchers === */
+.voucher-container.modern{
+  max-width:1400px;margin:0 auto;padding:0 40px;
+  font-family:'Inter',sans-serif;
+}
+
+/* hero */
+.hero-section-voucher{
+  background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 50%,#16213e 100%);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  height:260px;
+}
+.hero-title-voucher{
+  font-size:2.8rem;font-weight:700;
+  background:linear-gradient(45deg,#fff,#8155EE);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+/* filter tabs */
+.filter-tab{
+  background:rgba(255,255,255,.05);
+  border:2px solid rgba(255,255,255,.15);
+  border-radius:50px;
+  transition:.3s;
+}
+.filter-tab.active,
+.filter-tab:hover{
+  background:#8155EE;border-color:#8155EE;
+  color:#fff;
+}
+
+/* voucher card */
+.voucher-card{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;
+  padding:2rem;
+  backdrop-filter:blur(12px);
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+  transition:.3s;
+}
+.voucher-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.5);}
+
+/* action button */
+.btn-redeem{
+  background:linear-gradient(45deg,#8155EE,#4FC3F7);
+  border:none;color:#fff;font-weight:600;letter-spacing:.5px;
+  padding:.6rem 1.6rem;border-radius:30px;transition:.3s;position:relative;
+}
+.btn-redeem:hover{filter:brightness(1.1);}
+.btn-redeem::after{content:'';position:absolute;inset:-2px;border-radius:30px;
+  background:inherit;filter:blur(12px);opacity:.5;z-index:-1;}
     </style>
 }
 
-@Html.Partial("_Header")
-<div class="cinema-vouchers-page">
+<div class="voucher-container modern">
     <div class="hero-section-voucher">
         <div class="hero-content-voucher">
             <div class="hero-title-voucher"><i class="fas fa-gift"></i> Voucher của bạn</div>
