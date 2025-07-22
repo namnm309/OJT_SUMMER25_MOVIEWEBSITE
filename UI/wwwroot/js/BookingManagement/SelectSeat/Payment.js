@@ -383,6 +383,9 @@
 
     function displayPromotions(promotions) {
         const listElement = document.querySelector('.promotions-list');
+        // lọc bỏ voucher đã đổi
+        promotions = (promotions || []).filter(p=> !p.isRedeemed && !p.isRedeemed === false ? true : !p.isRedeemed);
+
         if (!promotions || promotions.length === 0) {
             listElement.innerHTML = '<div class="no-promotions">Bạn chưa có mã khuyến mãi nào</div>';
             return;

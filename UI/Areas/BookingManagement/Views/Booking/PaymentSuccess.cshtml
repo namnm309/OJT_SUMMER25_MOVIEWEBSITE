@@ -115,6 +115,135 @@
 
 @section Styles{
     <link rel="stylesheet" href="~/css/Shared/fix-header-offset.css" />
+
+    <style>
+        /* --- Global background giống trang kết quả đặt vé --- */
+        body {
+            background: linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 50%,#16213e 100%);
+            color: white;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- Success container với offset header --- */
+        .success-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #F5F5DC;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.3);
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 20px;
+            background: rgba(79,195,247,.12);
+            border: 2px solid #4fc3f7;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #4fc3f7;
+            backdrop-filter: blur(6px);
+        }
+
+        .success-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        /* --- Booking summary --- */
+        .booking-summary {
+            background: rgba(26,26,46,.05);
+            border-radius: 10px;
+            padding: 25px 20px;
+            border: 2px solid #1a1a2e;
+            color: #1a1a2e;
+        }
+
+        .booking-summary h3 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: #1a1a2e;
+            border-bottom: 2px solid #4fc3f7;
+            padding-bottom: 6px;
+            letter-spacing: .5px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .summary-row span:first-child {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .summary-row span:last-child {
+            font-weight: 600;
+            color: #16213e;
+        }
+
+        /* --- Action buttons --- */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            transition: all .3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg,#4fc3f7,#29b6f6);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,.12);
+            color: white;
+            border: 1px solid rgba(255,255,255,.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg,#29b6f6,#4fc3f7);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,.2);
+            border-color: #4fc3f7;
+        }
+
+        /* --- Responsive --- */
+        @@media (max-width: 768px) {
+            .success-container { padding: 30px 15px; }
+            .summary-row { font-size: 13px; }
+            .action-buttons { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
 }
 
 <div class="success-container with-header-offset">
@@ -206,8 +335,8 @@
 
             async function fetchTicket(byId){
                 const url = byId
-                   ? `https://localhost:7049/api/v1/ticket/booking?id=${encodeURIComponent(byId)}`
-                   : `https://localhost:7049/api/v1/ticket/booking?code=${encodeURIComponent(code)}`;
+                   ? `https://localhost:7049/api/v1/ticket/booking?bookingId=${encodeURIComponent(byId)}`
+                   : `https://localhost:7049/api/v1/booking-ticket/booking/${encodeURIComponent(code)}`;
                 const resp = await fetch(url,{
                     headers:{'Authorization':`Bearer ${sessionStorage.getItem('jwtToken')||localStorage.getItem('jwtToken')||''}`}
                 });
@@ -225,17 +354,46 @@
         });
 
         function renderTicket(data){
+            // "data" có thể là 1 object hoặc 1 mảng tickets
+            let bookingInfo = {};
+
+            if(Array.isArray(data)){
+                const tickets = data;
+                if(tickets.length===0) return;
+                const first = tickets[0];
+                bookingInfo = {
+                    bookingCode: new URLSearchParams(window.location.search).get('bookingCode')||'---',
+                    movieTitle: first.movieName||first.movieTitle||'---',
+                    cinemaRoomName: first.screen||first.cinemaRoomName||'---',
+                    showDate: (first.showDate||'').split('T')[0],
+                    showTime: first.showTime||'---',
+                    seats: tickets.map(t=>t.seatCode||t.seat||t.seatName||'').filter(Boolean),
+                    totalPrice: tickets.reduce((sum,t)=> sum + (Number(t.price)||0),0)
+                };
+            }else{
+                bookingInfo = {
+                    bookingCode: data.bookingCode,
+                    movieTitle: data.movieTitle,
+                    cinemaRoomName: data.cinemaRoomName,
+                    showDate: data.showDate,
+                    showTime: data.showTime,
+                    seats: data.seats||[],
+                    totalPrice: data.totalPrice||0
+                };
+            }
+
             const summary = document.querySelector('.booking-summary');
             if(!summary) return;
+
             summary.innerHTML = `
                 <h3 style="margin-bottom:20px;color:#4caf50;">Thông tin vé</h3>
-                <div class="summary-row"><span>Mã đặt vé:</span><span><strong>${data.bookingCode}</strong></span></div>
-                <div class="summary-row"><span>Phim:</span><span><strong>${data.movieTitle}</strong></span></div>
-                <div class="summary-row"><span>Phòng chiếu:</span><span><strong>${data.cinemaRoomName}</strong></span></div>
-                <div class="summary-row"><span>Ngày chiếu:</span><span><strong>${data.showDate}</strong></span></div>
-                <div class="summary-row"><span>Giờ chiếu:</span><span><strong>${data.showTime}</strong></span></div>
-                <div class="summary-row"><span>Ghế ngồi:</span><span><strong>${data.seats?.join(', ')}</strong></span></div>
-                <div class="summary-row"><span>Tổng tiền:</span><span><strong>${Number(data.totalPrice).toLocaleString('vi-VN')}₫</strong></span></div>`;
+                <div class="summary-row"><span>Mã đặt vé:</span><span><strong>${bookingInfo.bookingCode}</strong></span></div>
+                <div class="summary-row"><span>Phim:</span><span><strong>${bookingInfo.movieTitle}</strong></span></div>
+                <div class="summary-row"><span>Phòng chiếu:</span><span><strong>${bookingInfo.cinemaRoomName}</strong></span></div>
+                <div class="summary-row"><span>Ngày chiếu:</span><span><strong>${bookingInfo.showDate}</strong></span></div>
+                <div class="summary-row"><span>Giờ chiếu:</span><span><strong>${bookingInfo.showTime}</strong></span></div>
+                <div class="summary-row"><span>Ghế ngồi:</span><span><strong>${bookingInfo.seats.join(', ')}</strong></span></div>
+                <div class="summary-row"><span>Tổng tiền:</span><span><strong>${Number(bookingInfo.totalPrice).toLocaleString('vi-VN')}₫</strong></span></div>`;
         }
     </script>
     <script src="~/js/movie-details-mostly.js" asp-append-version="true"></script>
