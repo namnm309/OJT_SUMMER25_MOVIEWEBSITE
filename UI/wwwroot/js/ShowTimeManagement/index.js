@@ -1,6 +1,6 @@
 
-        // Sử dụng HTTPS để trùng với backend và tránh lỗi mixed-scheme/CORS
-        const apiBaseUrl = 'https://localhost:7049';
+        // BaseUrl trỏ tới Controller của Area ShowtimeManagement
+        const apiBaseUrl = '/ShowtimeManagement/Showtimes';
 
 
         function searchShowtimes() {
@@ -63,7 +63,7 @@
         async function loadMoviesAndRooms() {
             try {
 
-                const moviesResponse = await fetch(`${apiBaseUrl}/api/v1/booking-ticket/dropdown/movies`);
+                const moviesResponse = await fetch(`${apiBaseUrl}/GetMoviesDropdown`);
                 const moviesResult = await moviesResponse.json();
 
                 // Một số API trả về { data: [...] } hoặc { Data: [...] } hoặc trả thẳng mảng
@@ -83,7 +83,7 @@
                 }
                 
 
-                const roomsResponse = await fetch(`${apiBaseUrl}/api/v1/cinemaroom/ViewRoom`);
+                const roomsResponse = await fetch(`${apiBaseUrl}/GetCinemaRoomsDropdown`);
                 const roomsResult = await roomsResponse.json();
                 
                 const roomsData = roomsResult.data || roomsResult;
@@ -92,7 +92,8 @@
                     const roomSelect = document.getElementById('cinemaRoomSelect');
                     roomSelect.innerHTML = '<option value="">-- Chọn phòng chiếu --</option>';
                     roomsData.forEach(room => {
-                        roomSelect.innerHTML += `<option value="${room.id}">${room.roomName}</option>`;
+                        const name = room.name || room.Name || room.roomName || room.RoomName;
+                        roomSelect.innerHTML += `<option value="${room.id}">${name}</option>`;
                     });
                 } else {
                     showNotification('Lỗi khi tải dữ liệu phòng chiếu', 'danger');
@@ -116,11 +117,11 @@
             }
             
             try {
-                const response = await fetch(`${apiBaseUrl}/api/v1/showtime/CheckConflict?movieId=${movieId}&cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
+                const response = await fetch(`${apiBaseUrl}/ProxyCheckConflict?cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
                 const result = await response.json();
                 
                 if (result.success) {
-                    if (result.data.hasConflict) {
+                    if (result.data === false) {
                         showNotification('Có xung đột lịch chiếu! Vui lòng chọn thời gian khác.', 'danger');
                     } else {
                         showNotification('Không có xung đột lịch chiếu. Có thể tạo lịch chiếu này.', 'success');
@@ -167,7 +168,7 @@
             }
             
             try {
-                const response = await fetch(`${apiBaseUrl}/api/v1/showtime/create-new`, {
+                const response = await fetch(`${apiBaseUrl}/create-new-json`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -255,6 +256,8 @@
 
 
         function showNotification(message, type = 'info') {
+            // Xóa tất cả notification cũ trước khi tạo mới
+            document.querySelectorAll('.alert-dismissible.position-fixed').forEach(el => el.remove());
             const notification = document.createElement('div');
             notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
             notification.style.cssText = `
@@ -609,7 +612,7 @@
             if (!cinemaRoomId || !showDate || !startTime || !endTime) return false; // Thiếu dữ liệu -> bỏ qua
 
             try {
-                const resp = await fetch(`${apiBaseUrl}/api/v1/showtime/CheckConflict?cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
+                const resp = await fetch(`${apiBaseUrl}/ProxyCheckConflict?cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
                 const result = await resp.json();
                 // API trả về data = true nếu KHÔNG xung đột.
                 if (result.success && result.data === false) {
@@ -641,7 +644,7 @@
             container.style.display = 'block';
 
             try {
-                const resp = await fetch(`${apiBaseUrl}/api/v1/movie/Search?keyword=${encodeURIComponent(term)}`);
+                const resp = await fetch(`${apiBaseUrl}/SearchMovies?keyword=${encodeURIComponent(term)}`);
                 const result = await resp.json();
                 const movies = result.data || result || [];
 
@@ -680,7 +683,7 @@
             container.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i></div>';
 
             try {
-                const resp = await fetch(`${apiBaseUrl}/api/v1/movie/GetById?movieId=${movieId}`);
+                const resp = await fetch(`${apiBaseUrl}/GetMovieById?movieId=${movieId}`);
                 const result = await resp.json();
                 const movie = result.data || result;
 
@@ -730,7 +733,7 @@
 
             try {
                 tablePageSize = parseInt(document.getElementById('pageSizeSelect')?.value || 10);
-                const resp = await fetch(`${apiBaseUrl}/api/v1/showtime?page=${page}&pageSize=${tablePageSize}`);
+                const resp = await fetch(`${apiBaseUrl}/GetShowtimesPage?page=${page}&pageSize=${tablePageSize}`);
                 const result = await resp.json();
                 const data = result.data || result.Data || result;
                 const items = data.items || data.Items || data;
