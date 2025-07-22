@@ -508,6 +508,146 @@ namespace UI.Areas.ShowtimeManagement.Controllers
             }
         }
 
+        // ====== API  ENDPOINTS CHO FE GỌI QUA CONTROLLER (AJAX) ======
+
+        /// <summary>
+        /// Trả về danh sách phim đang hoạt động cho dropdown (JSON)
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetMoviesDropdown()
+        {
+            try
+            {
+                var movies = await _showtimeService.GetActiveMoviesAsync();
+                return Json(new { success = true, data = movies });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Trả về danh sách phòng chiếu cho dropdown (JSON)
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetCinemaRoomsDropdown()
+        {
+            try
+            {
+                var rooms = await _showtimeService.GetCinemaRoomsAsync();
+                return Json(new { success = true, data = rooms });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Tạo lịch chiếu mới (nhận JSON từ FE)
+        /// </summary>
+        [HttpPost("create-new-json")]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> CreateNewJson([FromBody] CreateShowtimeRequestDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Dữ liệu không hợp lệ" });
+            }
+            try
+            {
+                var model = new CreateShowtimeViewModel
+                {
+                    MovieId = dto.MovieId,
+                    CinemaRoomId = dto.CinemaRoomId,
+                    ShowDate = dto.ShowDate.Date,
+                    StartTime = TimeSpan.Parse(dto.StartTime),
+                    Price = dto.Price
+                };
+                var result = await _showtimeService.CreateShowtimeAsync(model);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Tìm kiếm phim theo keyword (cho auto-suggest)
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> SearchMovies(string keyword)
+        {
+            try
+            {
+                var apiResult = await _apiService.GetAsync<dynamic>($"/api/v1/movie/Search?keyword={Uri.EscapeDataString(keyword)}");
+                return Json(new { success = apiResult.Success, data = apiResult.Data, message = apiResult.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Lấy chi tiết phim theo Id
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetMovieById(Guid movieId)
+        {
+            try
+            {
+                var apiResult = await _apiService.GetAsync<dynamic>($"/api/v1/movie/GetById?movieId={movieId}");
+                return Json(new { success = apiResult.Success, data = apiResult.Data, message = apiResult.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách showtime có phân trang cho table view
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetShowtimesPage(int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var apiResult = await _apiService.GetAsync<dynamic>($"/api/v1/showtime?page={page}&pageSize={pageSize}");
+                return Json(new { success = apiResult.Success, data = apiResult.Data, message = apiResult.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Proxy kiểm tra xung đột (dùng startTime, endTime) cho FE cho dễ dùng.
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> ProxyCheckConflict(Guid cinemaRoomId, DateTime showDate, string startTime, string endTime)
+        {
+            try
+            {
+                if (!TimeSpan.TryParse(startTime, out var startTs) || !TimeSpan.TryParse(endTime, out var endTs))
+                {
+                    return Json(new { success = false, message = "Thời gian không hợp lệ" });
+                }
+                var duration = (int)(endTs - startTs).TotalMinutes;
+                var hasConflict = await _showtimeService.CheckScheduleConflictAsync(cinemaRoomId, showDate, startTs, duration);
+                // Trả về data = false nếu CÓ xung đột để giữ logic cũ của FE
+                return Json(new { success = true, data = !hasConflict });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         private WeekInfo GetCurrentWeek()
         {
             var today = DateTime.Today;
