@@ -26,10 +26,12 @@
     <link rel="stylesheet" href="~/css/Shared/_header.css" />
     <link rel="stylesheet" href="~/css/shared-footer.css" />
     <link rel="stylesheet" href="~/css/memberdashboard.css" />
+    <link rel="stylesheet" href="~/css/Shared/fix-header-offset.css" />
 
 </head>
 <body>
-    <div class="profile-page">
+    @await Html.PartialAsync("_Header")
+    <div class="profile-page with-header-offset">
 
             
         <!-- Profile Hero Section -->
