@@ -77,26 +77,41 @@
         }
     }
     function updateShowtimeInfo(showtimeInfo) {
-        if (showtimeInfo.showDate) {
-            const showDate = new Date(showtimeInfo.showDate);
+        const rawDate = showtimeInfo.showDate || showtimeInfo.ShowDate || showtimeInfo.date || null;
+        if (rawDate) {
+            const showDate = new Date(rawDate);
             const showDateElement = document.getElementById('showDate');
             if (showDateElement) showDateElement.textContent = showDate.toLocaleDateString('vi-VN');
             const showTimeElement = document.getElementById('showTime');
             if (showTimeElement) {
-                const hours = showDate.getUTCHours().toString().padStart(2, '0');
-                const minutes = showDate.getUTCMinutes().toString().padStart(2, '0');
-                showTimeElement.textContent = `${hours}:${minutes}`;
+                let timeStr = '';
+                if (showtimeInfo.startTime || showtimeInfo.StartTime) {
+                    timeStr = (showtimeInfo.startTime || showtimeInfo.StartTime).toString().substring(0,5); // HH:mm
+                } else {
+                    const hours = showDate.getHours().toString().padStart(2,'0');
+                    const minutes = showDate.getMinutes().toString().padStart(2,'0');
+                    timeStr = `${hours}:${minutes}`;
+                }
+                showTimeElement.textContent = timeStr;
             }
             const ticketDateTimeElement = document.getElementById('ticketDateTime');
             if (ticketDateTimeElement) {
                 const formattedDate = showDate.toLocaleDateString('vi-VN');
-                const formattedTime = showDate.getUTCHours().toString().padStart(2, '0') + ':' + showDate.getUTCMinutes().toString().padStart(2, '0');
-                ticketDateTimeElement.textContent = `${formattedDate}, ${formattedTime}`;
+                let timeStr = '';
+                if (showtimeInfo.startTime || showtimeInfo.StartTime) {
+                    timeStr = (showtimeInfo.startTime || showtimeInfo.StartTime).toString().substring(0,5);
+                } else {
+                    const hours = showDate.getHours().toString().padStart(2,'0');
+                    const minutes = showDate.getMinutes().toString().padStart(2,'0');
+                    timeStr = `${hours}:${minutes}`;
+                }
+                ticketDateTimeElement.textContent = `${formattedDate}, ${timeStr}`;
             }
         }
-        if (showtimeInfo.cinemaRoomName) {
+        const roomName = showtimeInfo.cinemaRoomName || showtimeInfo.roomName || showtimeInfo.RoomName;
+        if (roomName) {
             const cinemaRoomElement = document.getElementById('cinemaRoom');
-            if (cinemaRoomElement) cinemaRoomElement.textContent = showtimeInfo.cinemaRoomName;
+            if (cinemaRoomElement) cinemaRoomElement.textContent = roomName;
         }
         const ticketTypeElement = document.getElementById('ticketType');
         if (ticketTypeElement) {
