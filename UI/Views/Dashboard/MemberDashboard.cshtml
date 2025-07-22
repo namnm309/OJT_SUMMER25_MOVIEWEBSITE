@@ -87,6 +87,9 @@
                 <button class="tab-btn" onclick="showTab('history', this)">
                     <i class="fas fa-history"></i> Lịch sử giao dịch
                         </button>
+                <button class="tab-btn" onclick="showTab('my-tickets', this)">
+                    <i class="fas fa-ticket-alt"></i> Vé đã đặt
+                </button>
             </div>
 
             <!-- Personal Info Tab -->
@@ -344,6 +347,18 @@
                     </div>
                 </div>
             </div>
+
+            <!-- My Tickets Tab -->
+            <div id="my-tickets" class="tab-content">
+                <div style="text-align:center;margin-bottom:1rem;">
+                    <button id="loadTicketsBtn" class="action-btn" style="padding:.75rem 1.5rem;border-radius:25px;background:var(--primary-purple);color:#fff;border:none;">
+                        <i class="fas fa-sync-alt"></i> Tải danh sách vé
+                    </button>
+                </div>
+                <div id="ticketsList" class="transaction-list">
+                    <p>Nhấn nút trên để tải vé của bạn.</p>
+                </div>
+            </div>
         </main>
 
         <!-- Footer từ homepage -->
@@ -418,6 +433,57 @@
                     }
                 });
             };
+
+            // ---- Load Tickets ----
+            let ticketsLoaded=false;
+            $(document).on('click','#loadTicketsBtn',async function(){
+                await fetchTickets();
+            });
+
+            async function fetchTickets(){
+                try{
+                    const resp = await fetch('https://localhost:7049/api/v1/ticket/User',{
+                        headers:{'Authorization':`Bearer ${sessionStorage.getItem('jwtToken')||localStorage.getItem('jwtToken')||''}`}
+                    });
+                    if(!resp.ok){
+                        $('#ticketsList').html('<p class="text-danger">Không thể tải vé!</p>');
+                        return;
+                    }
+                    const result = await resp.json();
+                    if(result && result.data && Array.isArray(result.data)){
+                        renderTickets(result.data);
+                        ticketsLoaded=true;
+                    }else{
+                        $('#ticketsList').html('<p>Không có vé nào.</p>');
+                    }
+                }catch(e){
+                    console.error('fetchTickets error',e);
+                    $('#ticketsList').html('<p class="text-danger">Lỗi tải vé!</p>');
+                }
+            }
+
+            function renderTickets(tickets){
+                if(tickets.length===0){ $('#ticketsList').html('<p>Không có vé nào.</p>'); return; }
+                const html = tickets.map(t=>{
+                    const date = (t.showDate||'').split('T')[0];
+                    const time = t.showTime||'';
+                    return `<div class="transaction-item">
+                                <div class="transaction-icon booking"><i class="fas fa-ticket-alt"></i></div>
+                                <div class="transaction-details">
+                                    <div class="transaction-title">${t.movieName||t.movieTitle}</div>
+                                    <div class="transaction-subtitle">Ghế: ${t.seatCode||t.seat}</div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div class="transaction-amount">${Number(t.price||0).toLocaleString('vi-VN')}đ</div>
+                                    <div class="transaction-time">${date} ${time}</div>
+                                </div>
+                            </div>`;
+                }).join('');
+                $('#ticketsList').html(html);
+            }
+
+            // Auto load when tab chosen first time
+            window.openTicketsTab=function(){ if(!ticketsLoaded) fetchTickets(); }
         });
     </script>
     
