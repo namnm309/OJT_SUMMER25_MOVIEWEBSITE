@@ -200,12 +200,20 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 // Tạo các BookingDetail tương ứng
                 foreach (var log in seatLogs)
                 {
+                    var originalPrice = log.Seat.PriceSeat;
+                    decimal finalSeatPrice = originalPrice;
+
+                    if (discountPercent > 0)
+                    {
+                        finalSeatPrice = originalPrice * (1 - discountPercent / 100m);
+                    }
+
                     var bookingDetail = new BookingDetail
                     {
                         Id = Guid.NewGuid(),
                         BookingId = booking.Id,
                         SeatId = log.SeatId,
-                        Price = log.Seat.PriceSeat,
+                        Price = finalSeatPrice,
                         CreatedAt = now
                     };
 

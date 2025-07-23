@@ -82,34 +82,21 @@ namespace ApplicationLayer.Services.TicketSellingManagement
             if (!seatCodes.Any())
                 return ErrorResp.BadRequest("No valid seats found");
 
-            var tickets = new List<Ticket>();
-
-            foreach (var detail in bookingDetails)
+            var ticket = new Ticket
             {
-                var seat = await _seatRepo.FindByIdAsync(detail.SeatId);
-                if (seat == null) continue;
+                Id = Guid.NewGuid(),
+                BookingId = bookingId,
+                ShowTimeId = showTime.Id,
+                MovieName = movie.Title,
+                Screen = room.RoomName,
+                ShowDate = showTime.ShowDate ?? DateTime.MinValue,
+                ShowTime = showTime.StartTime,
+                SeatCode = string.Join(", ", seatCodes),
+                Price = totalPrice,
+                CreatedAt = DateTime.UtcNow
+            };
 
-                var ticket = new Ticket
-                {
-                    Id = Guid.NewGuid(),
-                    BookingId = bookingId,
-                    ShowTimeId = showTime.Id,
-                    MovieName = movie.Title,
-                    Screen = room.RoomName,
-                    ShowDate = showTime.ShowDate ?? DateTime.MinValue,
-                    ShowTime = showTime.StartTime,
-                    SeatCode = string.Join(", ", seatCodes),
-                    Price = detail.Price,
-                    CreatedAt = DateTime.UtcNow
-                };
-
-                tickets.Add(ticket);
-            }
-
-            if (!tickets.Any())
-                return ErrorResp.BadRequest("Không có vé nào được tạo do dữ liệu ghế không hợp lệ");
-
-            await _ticketRepo.CreateRangeAsync(tickets);
+            await _ticketRepo.CreateAsync(ticket);
 
             return SuccessResp.Ok("Tickets created successfully");
         }
