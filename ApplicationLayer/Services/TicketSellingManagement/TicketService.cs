@@ -51,7 +51,7 @@ namespace ApplicationLayer.Services.TicketSellingManagement
         public async Task<IActionResult> CreateTicketFromBookingAsync(Guid bookingId)
         {
             var booking = await _bookingRepo.FindByIdAsync(bookingId);
-            if (booking == null || booking.Status != BookingStatus.Confirmed)
+            if (booking == null || booking.Status != BookingStatus.Completed)
                 return ErrorResp.BadRequest("Invalid booking");
 
             var showTime = await _showTimeRepo.FindAsync(s => s.Id == booking.ShowTimeId,"Movie", "Room");

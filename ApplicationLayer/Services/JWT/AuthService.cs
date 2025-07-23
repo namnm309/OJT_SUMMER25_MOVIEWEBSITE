@@ -141,7 +141,7 @@ namespace ApplicationLayer.Services.JWT
 
             var result = new LoginResp
             {
-                UserId = user.Id, // ✅ Thêm UserId từ database
+                UserId = user.Id, 
                 Token = accessToken,
                 Email = user.Email,
                 FullName = user.FullName,

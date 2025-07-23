@@ -162,10 +162,10 @@ namespace ControllerLayer
                 //File upload support
                 c.SupportNonNullableReferenceTypes();
 
-                // Thêm dòng này để Swagger đọc XML comment
-                var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
+                //// Thêm dòng này để Swagger đọc XML comment
+                //var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                //var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+                //c.IncludeXmlComments(xmlPath);
             });
 
             // Cấu hình DbContext

@@ -356,6 +356,35 @@ namespace InfrastructureLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tbl_user_promotions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PromotionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsRedeemed = table.Column<bool>(type: "boolean", nullable: false),
+                    RedeemedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_user_promotions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbl_user_promotions_tbl_promotions_PromotionId",
+                        column: x => x.PromotionId,
+                        principalTable: "tbl_promotions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tbl_user_promotions_tbl_users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "tbl_users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tbl_bookings",
                 columns: table => new
                 {
@@ -657,6 +686,16 @@ namespace InfrastructureLayer.Migrations
                 column: "BookingId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tbl_user_promotions_PromotionId",
+                table: "tbl_user_promotions",
+                column: "PromotionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_user_promotions_UserId",
+                table: "tbl_user_promotions",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
                 table: "tbl_users",
                 column: "Email",
@@ -697,9 +736,6 @@ namespace InfrastructureLayer.Migrations
                 name: "tbl_point_histories");
 
             migrationBuilder.DropTable(
-                name: "tbl_promotions");
-
-            migrationBuilder.DropTable(
                 name: "tbl_seat_log");
 
             migrationBuilder.DropTable(
@@ -707,6 +743,9 @@ namespace InfrastructureLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_transaction");
+
+            migrationBuilder.DropTable(
+                name: "tbl_user_promotions");
 
             migrationBuilder.DropTable(
                 name: "tbl_actors");
@@ -722,6 +761,9 @@ namespace InfrastructureLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_bookings");
+
+            migrationBuilder.DropTable(
+                name: "tbl_promotions");
 
             migrationBuilder.DropTable(
                 name: "tbl_show_times");

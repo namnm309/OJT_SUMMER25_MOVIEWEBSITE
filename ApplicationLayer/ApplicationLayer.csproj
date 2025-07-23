@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\AccoutManagement\**" />
+    <EmbeddedResource Remove="Services\AccoutManagement\**" />
+    <None Remove="Services\AccoutManagement\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DomainLayer\DomainLayer.csproj" />
     <ProjectReference Include="..\InfrastructureLayer\InfrastructureLayer.csproj" />
   </ItemGroup>
@@ -22,7 +28,6 @@
   <ItemGroup>
     <Folder Include="DTO\AccoutManagement\" />
     <Folder Include="DTO\UserManagement\" />
-    <Folder Include="Services\AccoutManagement\" />
   </ItemGroup>
 
 </Project>
