@@ -11,5 +11,6 @@ namespace ApplicationLayer.DTO.CinemaRoomManagement
         public Guid MovieId { get; set; }
         public Guid RoomId { get; set; }
         public DateTime? ShowDate { get; set; }
+        public TimeSpan StartTime { get; set; }
     }
 }

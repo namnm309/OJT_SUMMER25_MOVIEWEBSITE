@@ -3,8 +3,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="~/css/user-dropdown-sync.css" rel="stylesheet" />
 
-<header class="shared-header-wrapper">
-    <nav class="shared-header-nav">
+
+<header class="hero-nav-wrapper shared-header-wrapper">
+    <nav class="hero-nav shared-header-nav">
         <div class="nav-content">
             <!-- Brand Section -->
             <div class="nav-left">
@@ -30,10 +31,11 @@
             <!-- Navigation Links -->
             <div class="nav-right">
                 <div class="nav-links">
-                    <a href="@Url.Action("Index", "Home")" class="nav-link">Trang chủ</a>
-                    <a href="@Url.Action("Index", "Movies")" class="nav-link">Phim</a>
-                    <a href="@Url.Action("Index", "Events")" class="nav-link">Sự Kiện</a>
-                    <a href="@Url.Action("Index", "Products")" class="nav-link">Sản Phẩm</a>
+                    <a href="@Url.Action("Index","Home",  new { area = "" })"  class="nav-link">Trang chủ</a>
+                    <a href="@Url.Action("Index","Movies", new { area = "" })" class="nav-link">Phim</a>
+                    <a href="@Url.Action("Index","Events", new { area = "" })" class="nav-link">Sự Kiện</a>
+                    <a href="@Url.Action("Index","Products",new { area = "" })" class="nav-link">Sản Phẩm</a>
+                    <a href="@Url.Action("Index","Vouchers",new { area = "" })" class="nav-link">Vouchers</a>
                 </div>
 
                 <!-- User Profile -->
@@ -64,7 +66,7 @@
                                 <li><hr class="dropdown-divider"></li>
                                 
                                 <li>
-                                    <a class="dropdown-item" href="@Url.Action("Index", "Dashboard")">
+                                    <a class="dropdown-item" href="@Url.Action("Index", "Dashboard", new { area = "" })">
                                         <i class="fas fa-tachometer-alt"></i>
                                         Thông tin cá nhân
                                     </a>

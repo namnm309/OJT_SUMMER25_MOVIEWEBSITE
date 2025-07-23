@@ -148,7 +148,7 @@ namespace UI.Controllers
                 }
 
                 // 3) Vouchers of user
-                var voucherResp = await _apiService.GetAsync<List<JsonElement>>("/api/v1/vouchers/my");
+                var voucherResp = await _apiService.GetAsync<List<JsonElement>>("/api/v1/promotions/my");
                 if (voucherResp.Success)
                 {
                     ViewBag.UserVouchers = voucherResp.Data;

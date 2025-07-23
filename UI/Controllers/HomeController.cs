@@ -25,11 +25,22 @@ namespace UI.Controllers
 
             try
             {
-
                 await LoadInitialData(viewModel);
 
-
-                SetPromotionsData(viewModel);
+                // Gọi API lấy danh sách khuyến mãi
+                var promoResult = await _apiService.GetAsync<JsonElement>("/api/v1/promotions");
+                if (promoResult.Success && promoResult.Data.TryGetProperty("data", out var dataProp))
+                {
+                    var promotions = System.Text.Json.JsonSerializer.Deserialize<List<PromotionViewModel>>(
+                        dataProp.GetRawText(), new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    // Lọc khuyến mãi đang hoạt động
+                    var now = DateTime.Now;
+                    viewModel.Promotions = promotions?.Where(p => p.StartDate <= now && p.EndDate >= now).ToList() ?? new List<PromotionViewModel>();
+                }
+                else
+                {
+                    viewModel.Promotions = new List<PromotionViewModel>();
+                }
 
                 _logger.LogInformation("✅ HOMEPAGE LOADED with Medium Dynamic Pagination");
                 _logger.LogInformation("🎬 Hero movies: {Count}", viewModel.HeroMovies?.Count ?? 0);

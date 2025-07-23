@@ -1,7 +1,7 @@
 @model UI.Models.MovieViewModel
 @{
     ViewData["Title"] = Model?.Title ?? "Chi tiết phim";
-    Layout = null; // Remove layout to have full control
+    Layout = "_Layout"; // Use layout with header
                    // Process API data
     var movieData = Model;
     var hasValidData = movieData != null && !string.IsNullOrEmpty(movieData.Title);
@@ -43,23 +43,15 @@
         }
     }
 }
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <!-- External Stylesheets -->
-    <link rel="stylesheet" href="~/css/HomePage/base.css" />
-    <link rel="stylesheet" href="~/css/HomePage/header.css" />
-    <link rel="stylesheet" href="~/css/Shared/_header.css" asp-append-version="true" />
+@section Styles {
     <link rel="stylesheet" href="~/css/HomePage/layout.css" />
     <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" />
     <link rel="stylesheet" href="~/css/HomePage/responsive.css" />
     <link rel="stylesheet" href="~/css/MovieDetails/movie-details-mostly.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/MovieDetails/movie-details.css" asp-append-version="true" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+}
+
     <style>
         /* Video Background */
         .video-background {
@@ -503,8 +495,8 @@
             }
 
             .date-btn.active, .time-btn.active {
-                background: #df2144;
-                border-color: #df2144;
+                background: #rgb(129, 85, 238);
+                border-color: #rgb(129, 85, 238);
                 color: white;
                 transform: translateY(-2px);
                 box-shadow: 0 6px 15px rgba(223, 33, 68, 0.4);
@@ -590,9 +582,7 @@
             100% { transform: rotate(360deg); }
         }
     </style>
-</head>
-<body class="details-page">
-    @Html.Partial("_Header")
+<div class="details-page with-header-offset">
     <!-- Hero Section -->
     <section class="hero-section" style="margin-top: 0; padding-top: 120px;">
         <div class="hero-background" style="top: 0; height: 100vh;">
@@ -1233,5 +1223,4 @@
             return timeString.substring(0, 5); // Returns HH:mm format
         }
     </script>
-</body>
-</html>
+</div>

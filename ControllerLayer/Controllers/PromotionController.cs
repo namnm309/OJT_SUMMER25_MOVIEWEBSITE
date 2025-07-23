@@ -1,9 +1,12 @@
 ﻿using ApplicationLayer.DTO.PromotionManagement;
 using ApplicationLayer.Services.PromotionManagement;
+using ApplicationLayer.Middlewares;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ControllerLayer.Controllers
 {
@@ -13,13 +16,16 @@ namespace ControllerLayer.Controllers
     {
         private readonly IPromotionService _promotionService;
         private readonly ILogger<PromotionController> _logger;
+        private readonly IUserPromotionService _userPromotionService;
 
         public PromotionController(
             IPromotionService promotionService,
-            ILogger<PromotionController> logger)
+            ILogger<PromotionController> logger,
+            IUserPromotionService userPromotionService)
         {
             _promotionService = promotionService;
             _logger = logger;
+            _userPromotionService = userPromotionService;
         }
 
         [HttpGet]
@@ -36,7 +42,11 @@ namespace ControllerLayer.Controllers
             return await _promotionService.CreatePromotion(Dto);
         }
 
-        
+        public class SaveUserPromotionRequest
+        {
+            public Guid PromotionId { get; set; }
+        }
+       
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPromotionById(Guid id)
@@ -57,6 +67,44 @@ namespace ControllerLayer.Controllers
         {
             _logger.LogInformation($"Deleting promotion with ID: {id}");
             return await _promotionService.DeletePromotion(id);
+        }
+
+        /// <summary>
+        /// lưu khuyến mãi cho người dùng
+        /// </summary>
+        [Protected]
+        [HttpPost("save-user-promotion")]
+        public async Task<IActionResult> SaveUserPromotion([FromBody] SaveUserPromotionRequest request)
+        {
+            _logger.LogInformation($"Saving promotion {request.PromotionId} for authenticated user");
+            return await _promotionService.SaveUserPromotionAsync(request.PromotionId);
+        }
+
+        /// <summary>
+        /// Get vouchers of currently authenticated user
+        /// </summary>
+        [HttpGet("my")]
+        [Authorize]
+        public async Task<IActionResult> GetMyVouchers()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            _logger.LogInformation("Fetching vouchers for user {UserId}", userId);
+            return await _userPromotionService.GetUserVouchersAsync(userId);
+        }
+
+        /// <summary>
+        /// Redeem voucher
+        /// </summary>
+        [HttpPost("redeem/{userPromotionId}")]
+        [Authorize]
+        public async Task<IActionResult> RedeemVoucher(Guid userPromotionId)
+        {
+            return await _userPromotionService.RedeemVoucherAsync(userPromotionId);
         }
     }
 }

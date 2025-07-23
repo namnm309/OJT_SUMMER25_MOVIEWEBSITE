@@ -483,3 +483,29 @@
 .fa-info-circle:before {
     content: "\f05a";
 }
+
+/* --- global override added by AI --- */
+.shared-header-nav .search-box{
+    display:flex;        /* luôn hiện icon + input */
+    align-items:center;
+    padding:4px 10px;
+    gap:8px;
+    background:rgba(255,255,255,.08)!important;
+    border:1px solid rgba(255,255,255,.15)!important;
+    border-radius:30px;
+    max-width:260px;
+}
+.shared-header-nav .search-input{
+    flex:1 1 140px;      /* luôn có chỗ cho ô nhập */
+    min-width:0;
+    background:transparent;
+    border:none;
+    outline:none;
+    color:#fff!important;
+}
+.shared-header-nav .search-input::placeholder{
+    color:rgba(255,255,255,.7)!important;
+}
+@media(max-width:992px){
+    .shared-header-nav .search-box{max-width:180px;}
+}

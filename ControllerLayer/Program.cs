@@ -306,7 +306,7 @@ namespace ControllerLayer
             app.UseCors("AllowUI");
 
             // Map hub endpoint
-            app.MapHub<SeatHub>("/seathub");
+            app.MapHub<SeatHub>("/seatHub");
 
             app.UseAuthentication();
             app.UseAuthorization();

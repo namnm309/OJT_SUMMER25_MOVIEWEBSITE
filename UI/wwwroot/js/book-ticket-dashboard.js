@@ -483,8 +483,16 @@ class BookTicketDashboard {
       );
 
       if (response.ok) {
-        const result = await response.json();
-
+          const result = await response.json();
+          console.log("thong tinh ne", result);
+          //data:
+          //email:"namnguyen@example.com"
+          //fullName:"Nguyễn Văn Nammmmm"
+          //id:"aa6ea0df-33ca-4914-b265-eaf9880ccfd1"
+          //lastBookingDate:"2025-07-19"
+          //phoneNumber:"0912345678"
+          //points: 475
+          //totalBookings:30
         if (result.success) {
           this.hideLoading();
           this.customerInfo = result.data;

@@ -5,21 +5,31 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.ResponseCode;
 using ApplicationLayer.DTO.PromotionManagement;
+using ApplicationLayer.Services;
 using AutoMapper;
 using DomainLayer.Entities;
 using InfrastructureLayer.Repository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApplicationLayer.Services.PromotionManagement
 {
-    public class PromotionService : IPromotionService
+    public class PromotionService : BaseService, IPromotionService
     {
         private readonly IGenericRepository<Promotion> _promotionRepo;
-        private readonly IMapper _mapper;
-        public PromotionService(IGenericRepository<Promotion> promotionRepo, IMapper mapper)
+        private readonly IGenericRepository<UserPromotion> _userPromotionRepo;
+        private readonly IGenericRepository<Users> _userRepo;
+        
+        public PromotionService(
+            IGenericRepository<Promotion> promotionRepo, 
+            IMapper mapper, 
+            IGenericRepository<UserPromotion> userPromotionRepo, 
+            IGenericRepository<Users> userRepo,
+            IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
         {
             _promotionRepo = promotionRepo;
-            _mapper = mapper;
+            _userPromotionRepo = userPromotionRepo;
+            _userRepo = userRepo;
         }
 
         public async Task<IActionResult> CreatePromotion(PromotionCreateDto Dto)
@@ -92,6 +102,42 @@ namespace ApplicationLayer.Services.PromotionManagement
 
             await _promotionRepo.DeleteAsync(promotion);
             return SuccessResp.Ok("Promotion deleted successfully");
+        }
+
+        public async Task<IActionResult> SaveUserPromotionAsync(Guid promotionId)
+        {
+            // Lấy userId từ JWT token
+            var payload = ExtractPayload();
+            if (payload == null)
+                throw new UnauthorizedAccessException("Invalid token");
+
+            var userId = payload.UserId;
+
+            // Kiểm tra user tồn tại
+            var user = await _userRepo.FindByIdAsync(userId);
+            if (user == null)
+                return ErrorResp.NotFound("User not found");
+
+            // Kiểm tra promotion tồn tại
+            var promotion = await _promotionRepo.FindByIdAsync(promotionId);
+            if (promotion == null)
+                return ErrorResp.NotFound("Promotion not found");
+
+            // Kiểm tra đã lưu chưa
+            var exist = await _userPromotionRepo.FirstOrDefaultAsync(up => up.UserId == userId && up.PromotionId == promotionId);
+            if (exist != null)
+                return ErrorResp.BadRequest("User already saved this promotion");
+
+            // Lưu mới
+            var userPromotion = new UserPromotion
+            {
+                UserId = userId,
+                PromotionId = promotionId,
+                IsRedeemed = false,
+                RedeemedAt = null
+            };
+            await _userPromotionRepo.CreateAsync(userPromotion);
+            return SuccessResp.Ok("Promotion saved for user successfully");
         }
     }
 }

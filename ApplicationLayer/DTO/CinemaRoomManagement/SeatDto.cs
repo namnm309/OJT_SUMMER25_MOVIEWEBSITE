@@ -17,6 +17,7 @@ namespace ApplicationLayer.DTO.CinemaRoomManagement
         public int RowIndex { get; set; }
         public int ColumnIndex { get; set; }
         public bool IsAvailable { get; set; }
+        public string Status { get; set; } = string.Empty;
         public decimal Price { get; set; }
     }
     // tôi là PhucAn,
