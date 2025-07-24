@@ -222,27 +222,48 @@ namespace UI.Areas.BookingManagement.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> PaymentSuccess(string bookingCode)
+        public async Task<IActionResult> PaymentSuccess(string bookingCode, string bookingId = null)
         {
-            var bookingResp = await _bookingService.GetBookingByCodeAsync(bookingCode);
-
-            // truyền JSON sang view fancy nếu cần
-            var model = new BookingResultViewModel
+            object bookingInfo = null;
+            if (!string.IsNullOrEmpty(bookingId))
             {
-                Data = bookingResp.Data
-            };
-
-            return View("~/Areas/BookingManagement/Views/Booking/PaymentSuccess.cshtml", model);
+                // Ưu tiên lấy theo bookingId cho admin
+                var beResp = await _apiService.GetAsync<System.Text.Json.JsonElement>($"api/v1/booking-ticket/admin-booking/{bookingId}");
+                if (beResp.Success && beResp.Data.ValueKind == System.Text.Json.JsonValueKind.Object)
+                {
+                    bookingInfo = beResp.Data;
+                }
+            }
+            if (bookingInfo == null && !string.IsNullOrEmpty(bookingCode))
+            {
+                // Fallback lấy theo bookingCode như cũ
+                var bookingResp = await _bookingService.GetBookingByCodeAsync(bookingCode);
+                bookingInfo = bookingResp.Data;
+            }
+            ViewBag.Booking = bookingInfo;
+            return View("~/Areas/BookingManagement/Views/BookingTicket/PaymentSuccess.cshtml");
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> PaymentFail(string bookingCode)
+        public async Task<IActionResult> PaymentFail(string bookingCode, string bookingId = null)
         {
-            var bookingResp = await _bookingService.GetBookingByCodeAsync(bookingCode);
-            ViewBag.Booking = bookingResp.Data;
-
-            return View("~/Areas/BookingManagement/Views/Booking/PaymentFailed.cshtml");
+            object bookingInfo = null;
+            if (!string.IsNullOrEmpty(bookingId))
+            {
+                var beResp = await _apiService.GetAsync<System.Text.Json.JsonElement>($"api/v1/booking-ticket/admin-booking/{bookingId}");
+                if (beResp.Success && beResp.Data.ValueKind == System.Text.Json.JsonValueKind.Object)
+                {
+                    bookingInfo = beResp.Data;
+                }
+            }
+            if (bookingInfo == null && !string.IsNullOrEmpty(bookingCode))
+            {
+                var bookingResp = await _bookingService.GetBookingByCodeAsync(bookingCode);
+                bookingInfo = bookingResp.Data;
+            }
+            ViewBag.Booking = bookingInfo;
+            return View("~/Areas/BookingManagement/Views/BookingTicket/PaymentFail.cshtml");
         }
 
         // Xử lý callback từ VNPay

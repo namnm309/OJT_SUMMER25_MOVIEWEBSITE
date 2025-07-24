@@ -145,7 +145,7 @@ namespace ControllerLayer.Controllers
         }
 
         [HttpGet("member-booking/{bookingId}/details")]
-        [Authorize(Roles = "Member")]
+        [Authorize(Roles = "Member,Admin")]
         public async Task<IActionResult> GetMemberBookingDetails(Guid bookingId)
         {
             // Get user ID from claims
@@ -317,6 +317,16 @@ namespace ControllerLayer.Controllers
             }
  
             return Ok(new { bookingId = id });
+        }
+
+        /// <summary>
+        /// [Admin] Lấy chi tiết booking theo bookingId (không kiểm tra userId)
+        /// </summary>
+        [HttpGet("admin-booking/{bookingId}")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> GetAdminBookingDetails(Guid bookingId)
+        {
+            return await _bookingTicketService.GetAdminBookingDetailsAsync(bookingId);
         }
 
         [HttpGet("user-bookings-count")]
