@@ -32,9 +32,10 @@
                     headers: { 'Authorization': `Bearer ${getAuthToken()}` }
                 });
                 if (!movieResponse.ok) return;
-                const movieData = await movieResponse.json();
-                if (movieData.code === 200 && movieData.data) {
-                    updateMovieInfo(movieData.data);
+                const movieDataRaw = await movieResponse.json();
+                const payload = movieDataRaw.data || movieDataRaw.value?.data || movieDataRaw;
+                if (payload && payload.title) {
+                    updateMovieInfo(payload);
                     updateShowtimeInfo(showtimeData.data);
                 }
             }
@@ -45,10 +46,24 @@
     function updateMovieInfo(movieInfo) {
         const movieTitles = document.querySelectorAll('.movie-title');
         movieTitles.forEach(title => { if (movieInfo.title) title.textContent = movieInfo.title; });
-        const moviePoster = document.querySelector('.movie-poster');
-        if (moviePoster && movieInfo.primaryImageUrl) {
-            moviePoster.innerHTML = `<img src="${movieInfo.primaryImageUrl}" alt="${movieInfo.title || 'Movie Poster'}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" onerror="this.src='/images/placeholder-movie.jpg';" />`;
+        let poster = movieInfo.primaryImageUrl;
+        if(!poster && Array.isArray(movieInfo.images) && movieInfo.images.length){
+            poster = movieInfo.images[0].imageUrl || movieInfo.images[0].url;
         }
+        const moviePoster = document.querySelector('.movie-poster');
+        if(moviePoster && poster){
+            console.log('Set movie poster to', poster);
+            if (moviePoster.tagName.toLowerCase() === 'img') {
+                moviePoster.src = poster;
+                moviePoster.onerror = function(){ this.src='/images/placeholder-movie.jpg'; };
+                if(window.$){ $('.movie-poster').attr('src',poster); }
+            } else {
+                moviePoster.innerHTML = `<img src="${poster}" alt="${movieInfo.title || 'Movie Poster'}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.src='/images/placeholder-movie.jpg';"/>`;
+            }
+        } else {
+            console.warn('Poster not found in movie info', movieInfo);
+        }
+
         const movieDescription = document.getElementById('movieDescription');
         if (movieDescription && movieInfo.content) movieDescription.textContent = movieInfo.content;
         const movieMeta = document.getElementById('movieMeta');

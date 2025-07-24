@@ -4,6 +4,8 @@
     let showTimeId = null;
     let lastBookingId = null;
     let selectedPromotion = null;
+    // Lưu tổng tiền gốc (chưa khuyến mãi) để tính toán FE
+    let originalTotal = 0;
     
     function getAuthToken() {
         return sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken') || localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
@@ -56,23 +58,38 @@
         const summaryResult = await getSeatSummary();
         console.log('summaryResult:', summaryResult);
         
+        let bookingId = null;
+        let amount = null;
+
         if (
             summaryResult &&
             summaryResult.value &&
             summaryResult.value.code === 200 &&
-            summaryResult.value.data &&
-            summaryResult.value.data.bookingId
+            summaryResult.value.data
         ) {
-            showVnpayButton(summaryResult.value.data.bookingId);
-            // Lưu booking info để trang success có thể dùng
+            const data = summaryResult.value.data;
+            bookingId = data.bookingId;
+            amount = data.finalPrice || data.totalAmount || data.amount || data.totalPrice || data.total;
+        }
+
+        if (bookingId) {
             try {
-               sessionStorage.setItem('lastBookingId', summaryResult.value.data.bookingId);
-               if(summaryResult.value.data.bookingCode){
-                   sessionStorage.setItem('lastBookingCode', summaryResult.value.data.bookingCode);
-               }
-            }catch(e){console.warn('Cannot save booking info',e);}
-            await updateSummaryWithPromotion(); // cập nhật giá với promotion
+                sessionStorage.setItem('lastBookingId', bookingId);
+                if (summaryResult.value.data.bookingCode) {
+                    sessionStorage.setItem('lastBookingCode', summaryResult.value.data.bookingCode);
+                }
+            } catch (e) {
+                console.warn('Cannot save booking info', e);
+            }
+
+            // Cập nhật UI tạm thời
+            if (summaryResult && summaryResult.value && summaryResult.value.data) {
+                applySummaryData(summaryResult.value.data);
+            }
             if (typeof disableContinueBtn === 'function') disableContinueBtn();
+
+            // Gọi VNPay ngay
+            await callVnpayPayment(bookingId, amount);
         } else {
             alert(
                 (summaryResult && summaryResult.value && summaryResult.value.message) ||
@@ -259,12 +276,32 @@
     
     // FIXED: Event handler cho confirm seats
     if (document.getElementById('confirmSeatsBtn')) {
-        document.getElementById('confirmSeatsBtn').onclick = async function() {
+        document.getElementById('confirmSeatsBtn').onclick = async function () {
             const summaryResult = await getSeatSummary();
-            if (summaryResult && summaryResult.success && summaryResult.data) {
-                lastBookingId = summaryResult.data.bookingId;
-                document.getElementById('payVnpayBtn').style.display = 'inline-block';
-                alert('Đặt ghế thành công! Bấm Thanh toán để tiếp tục.');
+            let bookingId = null;
+            let amount = null;
+
+            // Trường hợp response được wrap trong property "value" (ASP.NET IActionResult)
+            if (
+                summaryResult &&
+                summaryResult.value &&
+                summaryResult.value.code === 200 &&
+                summaryResult.value.data
+            ) {
+                const data = summaryResult.value.data;
+                bookingId = data.bookingId;
+                amount = data.finalPrice || data.totalAmount || data.amount || data.totalPrice || data.total;
+            }
+            // Trường hợp response ở dạng { success, data, ... }
+            else if (summaryResult && summaryResult.success && summaryResult.data) {
+                bookingId = summaryResult.data.bookingId;
+                amount = summaryResult.data.finalPrice || summaryResult.data.totalAmount || summaryResult.data.amount || summaryResult.data.totalPrice || summaryResult.data.total;
+            }
+
+            if (bookingId) {
+                lastBookingId = bookingId;
+                // Gọi VNPay trực tiếp, không cần nút riêng
+                await callVnpayPayment(lastBookingId, amount);
             } else {
                 alert('Không thể đặt ghế!');
             }
@@ -428,9 +465,8 @@
                     item.classList.add('selected');
                 }
                 
-                // Update UI and recalculate total
+                // Chỉ cập nhật UI, KHÔNG gọi API summary
                 updateSelectedPromotionUI();
-                await updateSummaryWithPromotion();
                 
                 // Close popup
                 document.getElementById('promotionsPopup').style.display = 'none';
@@ -480,7 +516,6 @@
         if (!selectedPromotion) return;
         selectedPromotion = null;
         updateSelectedPromotionUI();
-        updateSummaryWithPromotion();
         const cancelVoucherBtn = document.getElementById('cancelVoucherBtn');
         if (cancelVoucherBtn) cancelVoucherBtn.style.display = 'none';
     }
@@ -491,12 +526,55 @@
             btn.innerHTML = `<i class="fas fa-ticket-alt"></i> Giảm ${selectedPromotion.discountPercent}%`;
             const cancelVoucherBtn = document.getElementById('cancelVoucherBtn');
             if (cancelVoucherBtn) cancelVoucherBtn.style.display = 'inline-block';
+            // Lưu promotionId để dùng khi thanh toán
+            sessionStorage.setItem('selectedPromotionId', selectedPromotion.promotionId || selectedPromotion.id || '');
         } else {
             btn.innerHTML = `<i class="fas fa-ticket-alt"></i> Chọn mã`;
             const cancelVoucherBtn = document.getElementById('cancelVoucherBtn');
             if (cancelVoucherBtn) cancelVoucherBtn.style.display = 'none';
+            sessionStorage.removeItem('selectedPromotionId');
         }
-        updateSummaryWithPromotion();
+        // Cập nhật lại tổng hiển thị ở FE
+        recalculateTotalDisplay();
+    }
+
+    // Tính lại số tiền hiển thị ở FE theo khuyến mãi (không gọi API)
+    function recalculateTotalDisplay() {
+        // Hàm parse số tiền đang hiển thị ("100.000đ" => 100000)
+        function parseDisplayedTotal() {
+            const el = document.getElementById('totalPrice') || document.getElementById('ticketTotal');
+            if (!el) return 0;
+            const text = (el.textContent || '').replace(/[^0-9]/g, '');
+            return Number(text) || 0;
+        }
+
+        // Nếu originalTotal chưa được set, lấy từ DOM
+        if (!originalTotal || originalTotal === 0) {
+            originalTotal = parseDisplayedTotal();
+        }
+
+        let total = originalTotal;
+        if (selectedPromotion && selectedPromotion.discountPercent) {
+            total = Math.max(0, Math.round(originalTotal * (1 - selectedPromotion.discountPercent / 100)));
+        }
+        const formatted = Number(total).toLocaleString('vi-VN') + '₫';
+        const totalPriceEl = document.getElementById('totalPrice');
+        const ticketTotalEl = document.getElementById('ticketTotal');
+        if (totalPriceEl) totalPriceEl.textContent = formatted;
+        if (ticketTotalEl) ticketTotalEl.textContent = formatted;
+    }
+
+    // Hàm áp dụng dữ liệu tổng giá từ server vào FE và cập nhật originalTotal
+    function applySummaryData(data) {
+        if (!data) return;
+        // Ưu tiên các trường tổng tiền từ server
+        const totalServer = data.totalAmount || data.totalPrice || data.total || data.finalPrice || 0;
+        // Chỉ cập nhật originalTotal khi chưa áp dụng khuyến mãi nào
+        if (!selectedPromotion) {
+            originalTotal = Number(totalServer) || 0;
+        }
+        // Sau khi có originalTotal, hiển thị theo khuyến mãi hiện tại (nếu có)
+        recalculateTotalDisplay();
     }
 
     async function updateSummaryWithPromotion() {
@@ -508,13 +586,7 @@
                 summaryResult.value.code === 200 &&
                 summaryResult.value.data
             ) {
-                const data = summaryResult.value.data;
-                const total = data.finalPrice || data.totalAmount || data.totalPrice || data.total || 0;
-                const formatted = Number(total).toLocaleString('vi-VN') + '₫';
-                const totalPriceEl = document.getElementById('totalPrice');
-                const ticketTotalEl = document.getElementById('ticketTotal');
-                if (totalPriceEl) totalPriceEl.textContent = formatted;
-                if (ticketTotalEl) ticketTotalEl.textContent = formatted;
+                applySummaryData(summaryResult.value.data);
                 // đồng bộ giá trong SeatModule (nếu cần)
             }
         } catch (e) {

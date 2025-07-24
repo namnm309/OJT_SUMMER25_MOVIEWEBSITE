@@ -17,9 +17,7 @@
         <!-- Thông tin phim -->
         <div class="movie-info-cards select-seat-scope">
             <div class="movie-posters">
-                <div class="movie-posters">
-                    <h1 class="movie-title">@Model.MovieTitle</h1>
-                </div>
+                <img src="/images/placeholder-movie.jpg" alt="Movie Poster" class="movie-poster" />
             </div>
 
             <div class="movie-detailss">
@@ -86,27 +84,27 @@
             <!-- Legend cải tiến -->
             <div class="seat-legend">
                 <div class="legend-item">
-                    <div class="legend-color seat-available"></div>
+                    <div class="legend-seat" style="color: #ffffff;"></div>
                     <span>Ghế trống</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color seat-selected"></div>
+                    <div class="legend-seat selected"></div>
                     <span>Ghế đã chọn</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color seat-unavailable"></div>
+                    <div class="legend-seat" style="color: #5a899d;"></div>
                     <span>Ghế đã đặt</span>
                 </div>
                 <div class="legend-item">
-                <div class="legend-color seat-vip"></div>
+                <div class="legend-seat" style="color: #ffffff;"></div>
                 <span>Ghế VIP</span>
             </div>
             <div class="legend-item">
-                <div class="legend-seat pending-mine"></div>
+                <div class="legend-seat selected"></div>
                 <span>Đang chờ (của bạn)</span>
             </div>
             <div class="legend-item">
-                <div class="legend-seat pending-others"></div>
+                <div class="legend-seat" style="color: #5a899d;"></div>
                 <span>Đang chờ (người khác)</span>
             </div>
             </div>
@@ -329,10 +327,10 @@
     .btn-cancel:hover {background:#495057;}
 </style>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script src="~/js/BookingManagement/SelectSeat/Seats.js"></script>
 <script src="~/js/BookingManagement/SelectSeat/MovieInfo.js"></script>
 <script src="~/js/BookingManagement/SelectSeat/Payment.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Khởi tạo module seat
