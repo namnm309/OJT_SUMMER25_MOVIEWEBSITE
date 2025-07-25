@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace ApplicationLayer.Services.ShowtimeManagement
 {
@@ -22,8 +23,18 @@ namespace ApplicationLayer.Services.ShowtimeManagement
         Task<IActionResult> CreateNewShowtime(ShowtimeCreateNewDto dto);
         Task<IActionResult> UpdateShowtime(Guid id, ShowtimeUpdateDto dto);
         Task<IActionResult> DeleteShowtime(Guid id);
-        Task<IActionResult> CheckScheduleConflict(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, TimeSpan endTime, Guid? excludeId = null);
-        Task<bool> HasScheduleConflict(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, TimeSpan endTime, Guid? excludeId = null);
+        Task<IActionResult> CheckScheduleConflict(  Guid cinemaRoomId, 
+                                                    DateTime showDate,
+                                                    TimeSpan startTime,
+                                                    TimeSpan endTime,
+                                                    Guid? excludeId = null,
+                                                    Guid? movieId = null);
+        Task<bool> HasScheduleConflict(     Guid cinemaRoomId,
+                                            DateTime showDate,
+                                            TimeSpan startTime,
+                                            TimeSpan endTime,
+                                            Guid? excludeId = null,
+                                            Guid? movieId = null);
         Task<IActionResult> GetShowtimesByMovie(Guid movieId);
         Task<IActionResult> GetShowtimesByRoom(Guid roomId);
         Task<IActionResult> GetMoviesForDropdown();
@@ -37,6 +48,7 @@ namespace ApplicationLayer.Services.ShowtimeManagement
         private readonly IGenericRepository<CinemaRoom> _cinemaRoomRepo;
         private readonly IGenericRepository<Booking> _bookingRepo;
         private readonly IMapper _mapper;
+        private readonly ILogger<ShowtimeService> _logger;
 
         // Convert a local date (date portion only) to UTC midnight for storage
         private static DateTime ToUtcDate(DateTime localDate)
@@ -51,13 +63,15 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             IGenericRepository<Movie> movieRepo,
             IGenericRepository<CinemaRoom> cinemaRoomRepo,
             IGenericRepository<Booking> bookingRepo,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<ShowtimeService> logger)
         {
             _showtimeRepo = showtimeRepo;
             _movieRepo = movieRepo;
             _cinemaRoomRepo = cinemaRoomRepo;
             _bookingRepo = bookingRepo;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<IActionResult> GetAllShowtimes(int page = 1, int pageSize = 20)
@@ -145,13 +159,13 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             var endTime = dto.StartTime.Add(TimeSpan.FromMinutes(movie.RunningTime));
 
             // Normalize show date (store as UTC midnight)
-            var normalizedShowDate = ToUtcDate(dto.ShowDate);
+            var normalizedShowDate = DateTime.SpecifyKind(dto.ShowDate.Date, DateTimeKind.Utc);
 
-            // Check for schedule conflicts
-            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime);
+            // Check for schedule conflicts (BACKEND CHẶN TRÙNG)
+            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime, null, dto.MovieId);
             if (hasConflict)
             {
-                return ErrorResp.BadRequest("Schedule conflict detected. There is already a showtime at this time in this room.");
+                return ErrorResp.BadRequest("Lịch chiếu bị trùng! Không thể tạo mới.");
             }
 
             var showtime = _mapper.Map<ShowTime>(dto);
@@ -197,7 +211,7 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             //    return ErrorResp.BadRequest("Giờ bắt đầu phải nhỏ hơn giờ kết thúc");
 
             // Normalize show date (store as UTC midnight)
-            var normalizedShowDate = ToUtcDate(dto.ShowDate);
+            var normalizedShowDate = DateTime.SpecifyKind(dto.ShowDate.Date, DateTimeKind.Utc);
 
             // Check for schedule conflicts (exclude current showtime)
             //var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime, id);
@@ -240,44 +254,54 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             return SuccessResp.Ok("Showtime deleted successfully");
         }
 
-        public async Task<IActionResult> CheckScheduleConflict(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, TimeSpan endTime, Guid? excludeId = null)
-        {
-            var hasConflict = await HasScheduleConflict(cinemaRoomId, showDate, startTime, endTime, excludeId);
-            return SuccessResp.Ok(!hasConflict); // Return opposite of hasConflict
-        }
+        public async Task<IActionResult> CheckScheduleConflict(
+    Guid cinemaRoomId,
+    DateTime showDate,
+    TimeSpan startTime,
+    TimeSpan endTime,
+    Guid? excludeId = null,
+    Guid? movieId = null)
+{
+    var hasConflict = await HasScheduleConflict(cinemaRoomId, showDate, startTime, endTime, excludeId, movieId);
+    return SuccessResp.Ok(!hasConflict);
+}
 
-        public async Task<bool> HasScheduleConflict(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, TimeSpan endTime, Guid? excludeId = null)
+        public async Task<bool> HasScheduleConflict(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, TimeSpan endTime, Guid? excludeId = null, Guid? movieId = null)
         {
             try
             {
-                // Get showtimes for the room and filter in memory to avoid PostgreSQL datetime issues
+                _logger.LogInformation($"[CONFLICT CHECK] INPUT: showDate={showDate:yyyy-MM-dd}, startTime={startTime}, endTime={endTime}, movieId={movieId}, roomId={cinemaRoomId}");
                 var existingShowtimes = await _showtimeRepo.WhereAsync(s => 
                     s.RoomId == cinemaRoomId && s.IsActive);
 
-                // Filter by date in memory - so sánh ngày chính xác
-                var sameDayShowtimes = existingShowtimes.Where(s => 
-                    s.ShowDate.HasValue && 
-                    s.ShowDate.Value.Date == showDate.Date).ToList();
-
-                if (excludeId.HasValue)
+                var inputDateStr = showDate.ToString("yyyy-MM-dd");
+                foreach (var existing in existingShowtimes)
                 {
-                    sameDayShowtimes = sameDayShowtimes.Where(s => s.Id != excludeId.Value).ToList();
-                }
+                    if (!existing.ShowDate.HasValue) continue;
+                    var dbDateStr = existing.ShowDate.Value.ToString("yyyy-MM-dd");
+                    _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] DB: showDate={dbDateStr}, startTime={existing.StartTime}, endTime={existing.EndTime}, movieId={existing.MovieId}, roomId={existing.RoomId}, existingId={existing.Id}");
+                    if (dbDateStr != inputDateStr) continue;
 
-                foreach (var existing in sameDayShowtimes)
-                {
-                    // Kiểm tra xung đột thời gian: thời gian mới có chồng lấp với thời gian cũ
-                    if (startTime < existing.EndTime && endTime > existing.StartTime)
+                    _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] So sánh: input (movieId={movieId}, startTime={startTime}) với DB (movieId={existing.MovieId}, startTime={existing.StartTime}, endTime={existing.EndTime})");
+                    // 1. Không cho phép giờ bắt đầu trùng với giờ bắt đầu của cùng 1 bộ phim, cùng phòng, cùng ngày
+                    if (movieId.HasValue && existing.MovieId == movieId.Value && existing.StartTime == startTime)
                     {
-                        return true; // Conflict found
+                        _logger.LogWarning($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Trùng giờ bắt đầu cùng phim: movieId={movieId}, startTime={startTime}");
+                        return true;
+                    }
+                    // 2. Không cho phép giờ bắt đầu trùng với giờ kết thúc của bất kỳ lịch chiếu nào khác cùng phòng, cùng ngày
+                    if (existing.EndTime == startTime)
+                    {
+                        _logger.LogWarning($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Trùng giờ bắt đầu với giờ kết thúc phim khác: startTime={startTime}, endTime={existing.EndTime}");
+                        return true;
                     }
                 }
-
-                return false; // No conflict
+                _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Không phát hiện conflict cho movieId={movieId}, startTime={startTime}, endTime={endTime}");
+                return false;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // In case of error, assume no conflict to allow operation to continue
+                _logger.LogError(ex, "[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Lỗi khi kiểm tra conflict");
                 return false;
             }
         }
@@ -324,15 +348,14 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             if (dto.StartTime >= dto.EndTime)
                 return ErrorResp.BadRequest("Giờ bắt đầu phải nhỏ hơn giờ kết thúc");
 
-            // Check for schedule conflicts
-            //var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, dto.ShowDate, dto.StartTime, dto.EndTime);
-            //if (hasConflict)
-            //{
-            //    return ErrorResp.BadRequest("Đã có lịch chiếu khác trong khoảng thời gian này tại phòng chiếu này.");
-            //}
+            var showDateUtc = DateTime.SpecifyKind(dto.ShowDate.Date, DateTimeKind.Utc);
 
-            // Chuẩn hóa ngày chiếu: từ ngày địa phương về UTC 0h
-            var showDateUtc = ToUtcDate(dto.ShowDate);
+            // Check for schedule conflicts (BACKEND CHẶN TRÙNG)
+            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, showDateUtc, dto.StartTime, dto.EndTime, null, dto.MovieId);
+            if (hasConflict)
+            {
+                return ErrorResp.BadRequest("Lịch chiếu bị trùng! Không thể tạo mới.");
+            }
 
             var showtime = new ShowTime
             {
@@ -344,8 +367,8 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                 EndTime = dto.EndTime,
                 Price = dto.Price,
                 IsActive = dto.IsActive,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
             };
 
             await _showtimeRepo.CreateAsync(showtime);
