@@ -369,7 +369,7 @@ namespace UI.Areas.BookingManagement.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateBookingStatus(Guid bookingId, [FromBody] dynamic statusData)
+        public async Task<IActionResult> UpdateBookingStatusApi(Guid bookingId, [FromBody] dynamic statusData)
         {
             try
             {
@@ -378,17 +378,17 @@ namespace UI.Areas.BookingManagement.Controllers
 
                 if (response.Success)
                 {
-                    return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                    return Json(new { success = true, message = "Cập nhật trạng thái thành công", data = response.Data });
                 }
                 else
                 {
-                    return Json(new { success = false, message = response.Message });
+                    return Json(new { success = false, message = response.Message, data = (object)null });
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating booking status for {BookingId}", bookingId);
-                return Json(new { success = false, message = "Có lỗi xảy ra khi cập nhật trạng thái" });
+                return Json(new { success = false, message = "Có lỗi xảy ra khi cập nhật trạng thái", data = (object)null });
             }
         }
 

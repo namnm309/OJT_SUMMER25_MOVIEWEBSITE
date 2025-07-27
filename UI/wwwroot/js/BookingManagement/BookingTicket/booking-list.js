@@ -80,7 +80,23 @@ class BookingListManager {
       if (result.success) {
         this.allBookings = result.data.bookings; // Lưu lại toàn bộ danh sách
         this.currentPage = 1;
-        this.applyFilters(); // Hiển thị lần đầu (có thể filter mặc định)
+        // Hiển thị tất cả vé, không lọc mặc định
+        const start = (this.currentPage - 1) * this.pageSize;
+        const end = start + this.pageSize;
+        const paged = this.allBookings.slice(start, end);
+        this.renderBookingTable(paged);
+        this.renderPagination({
+          totalRecords: this.allBookings.length,
+          currentPage: this.currentPage,
+          pageSize: this.pageSize,
+          totalPages: Math.ceil(this.allBookings.length / this.pageSize),
+        });
+        this.updatePaginationInfo({
+          totalRecords: this.allBookings.length,
+          currentPage: this.currentPage,
+          pageSize: this.pageSize,
+          totalPages: Math.ceil(this.allBookings.length / this.pageSize),
+        });
       } else {
         this.showError(result.message || "Không thể tải danh sách đặt vé");
       }
@@ -198,7 +214,7 @@ class BookingListManager {
 
   getStatusClass(status) {
     switch (status) {
-      case "Confirmed":
+        case "Completed":
         return "status-confirmed";
       case "Pending":
         return "status-pending";
@@ -211,7 +227,7 @@ class BookingListManager {
 
   getStatusText(status) {
     switch (status) {
-      case "Confirmed":
+        case "Completed":
         return "Đã xác nhận";
       case "Pending":
         return "Chờ xác nhận";
