@@ -440,13 +440,27 @@ namespace UI.Areas.BookingManagement.Controllers
             try
             {
                 var response = await _bookingService.GetPromotionsAsync();
-                return Json(response);
+                if (response.Success)
+                    return Json(new { success = true, data = response.Data, message = "Lấy danh sách khuyến mãi thành công" });
+                return Json(new { success = false, data = new object[0], message = response.Message ?? "Không có khuyến mãi" });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting promotions for booking");
-                return Json(new { success = false, message = "Có lỗi xảy ra khi tải danh sách khuyến mãi" });
+                return Json(new { success = false, data = new object[0], message = "Có lỗi xảy ra khi tải danh sách khuyến mãi" });
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmBookingWithScore([FromBody] BookingConfirmWithScoreViewModel model)
+        {
+            // Gọi API backend thực sự qua _apiService hoặc _bookingService
+            var beResp = await _apiService.PostAsync<object>(
+                "api/v1/booking-ticket/confirm-booking-with-score", model);
+
+            if (beResp.Success)
+                return Json(new { success = true, message = "Booking confirmed successfully!", data = beResp.Data });
+            return StatusCode(500, new { success = false, message = beResp.Message ?? "Có lỗi xảy ra", data = (object)null });
         }
 
     }

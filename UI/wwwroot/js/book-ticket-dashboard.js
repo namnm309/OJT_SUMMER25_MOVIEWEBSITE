@@ -483,16 +483,16 @@ class BookTicketDashboard {
       );
 
       if (response.ok) {
-          const result = await response.json();
-          console.log("thong tinh ne", result);
-          //data:
-          //email:"namnguyen@example.com"
-          //fullName:"Nguyễn Văn Nammmmm"
-          //id:"aa6ea0df-33ca-4914-b265-eaf9880ccfd1"
-          //lastBookingDate:"2025-07-19"
-          //phoneNumber:"0912345678"
-          //points: 475
-          //totalBookings:30
+        const result = await response.json();
+        console.log("thong tinh ne", result);
+        //data:
+        //email:"namnguyen@example.com"
+        //fullName:"Nguyễn Văn Nammmmm"
+        //id:"aa6ea0df-33ca-4914-b265-eaf9880ccfd1"
+        //lastBookingDate:"2025-07-19"
+        //phoneNumber:"0912345678"
+        //points: 475
+        //totalBookings:30
         if (result.success) {
           this.hideLoading();
           this.customerInfo = result.data;
@@ -1053,20 +1053,23 @@ class BookTicketDashboard {
       };
 
       console.log("bookingData id khuyen mai", bookingData);
-        const response = await fetch(`${this.API_BASE_BE}/api/v1/booking-ticket/confirm-booking-with-score`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(bookingData),
-      });
+      const response = await fetch(
+        "/BookingManagement/BookingTicket/ConfirmBookingWithScore",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(bookingData),
+        }
+      );
 
       const result = await response.json();
       this.hideLoading();
       console.log("result", result);
 
-      if (result.code === 200 && result.data) {
+      if (result.success && result.data) {
         const confirmModal = bootstrap.Modal.getInstance(
           document.getElementById("bookingConfirmModal")
         );
@@ -1442,16 +1445,19 @@ class BookTicketDashboard {
   async loadPromotions() {
     try {
       this.showLoading();
-      const response = await fetch("https://localhost:7049/api/v1/promotions", {
-        method: "GET",
-        headers: {
-          Accept: "*/*",
-        },
-      });
+      const response = await fetch(
+        "/BookingManagement/BookingTicket/GetPromotions",
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
       const data = await response.json();
       console.log("dataaa", data);
 
-      if (data.code === 200 && Array.isArray(data.data)) {
+      if (data.success && Array.isArray(data.data)) {
         // Lọc khuyến mãi đang diễn ra
         const now = new Date();
         const validPromotions = data.data.filter((promo) => {
@@ -1463,10 +1469,6 @@ class BookTicketDashboard {
         });
         this.promotions = validPromotions;
         this.displayPromotions(validPromotions);
-      } else if (Array.isArray(data)) {
-        // fallback if API returns array directly
-        this.promotions = data;
-        this.displayPromotions(data);
       } else {
         this.promotions = [];
         this.displayPromotions([]);
