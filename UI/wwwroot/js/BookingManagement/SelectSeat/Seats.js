@@ -19,7 +19,7 @@
         }
 
         connection = new signalR.HubConnectionBuilder()
-            .withUrl(`https://localhost:7049/seatHub?showTimeId=${showTimeId}`, {
+            .withUrl(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/seatHub?showTimeId=${showTimeId}`, {
                 accessTokenFactory: () => getAuthToken()
             })
             .withAutomaticReconnect()
@@ -164,7 +164,7 @@
                 return;
             }
 
-            const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/available?showTimeId=${showTimeId}`, {
+            const response = await fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/available?showTimeId=${showTimeId}`, {
                 headers: { 'Authorization': `Bearer ${getAuthToken()}` }
             });
 
@@ -343,7 +343,7 @@
             
             const requestData = { seatId: seatIdPayload, showTimeId: showTimeId };
             
-            const response = await fetch('https://localhost:7049/api/seatsignal/hold', {
+            const response = await fetch('https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/seatsignal/hold', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json', 
@@ -367,7 +367,7 @@
     // Hàm release seat
     async function releaseSeat(seatLogId) {
         try {
-            const response = await fetch(`https://localhost:7049/api/seatsignal/release/${seatLogId}`, {
+            const response = await fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/seatsignal/release/${seatLogId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${getAuthToken()}` }
             });
@@ -566,9 +566,9 @@
         if (heldSeatLogIds.length === 0) return;
         heldSeatLogIds.forEach(id => {
             if (navigator.sendBeacon) {
-                navigator.sendBeacon(`https://localhost:7049/api/seatsignal/release/${id}`);
+                navigator.sendBeacon(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/seatsignal/release/${id}`);
             } else {
-                fetch(`https://localhost:7049/api/seatsignal/release/${id}`, { method: 'DELETE', keepalive: true });
+                fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/seatsignal/release/${id}`, { method: 'DELETE', keepalive: true });
             }
         });
         cleanup();

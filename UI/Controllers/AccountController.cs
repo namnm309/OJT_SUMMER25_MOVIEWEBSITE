@@ -244,7 +244,7 @@ namespace UI.Controllers
         {
             try
             {
-                await _apiService.PostAsync("https://localhost:7049/api/v1/Auth/Logout"); // (nếu có endpoint)
+                await _apiService.PostAsync("https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/Auth/Logout"); // (nếu có endpoint)
             }
             catch
             {

@@ -170,7 +170,7 @@ namespace UI.Areas.MovieManagement.Controllers
             ViewData["Title"] = "Thêm phim mới";
 
             var configuration = HttpContext.RequestServices.GetRequiredService<IConfiguration>();
-            ViewBag.ApiBaseUrl = configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5274";
+            ViewBag.ApiBaseUrl = configuration["ApiSettings:BaseUrl"] ?? "https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net";
 
             return View(new MovieCreateViewModel());
         }

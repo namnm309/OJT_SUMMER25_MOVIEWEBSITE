@@ -906,7 +906,7 @@
         async function loadMainShowtimes(movieId) {
             try {
                 // Load dates first
-                const datesResponse = await fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`);
+                const datesResponse = await fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`);
                 const datesResult = await datesResponse.json();
                 const dates = datesResult.data;
 
@@ -1051,7 +1051,7 @@
             `;
 
             try {
-                const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(date + ' 10:00:00+07')}`);
+                const response = await fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(date + ' 10:00:00+07')}`);
                 const result = await response.json();
                 const times = result.data;
 
@@ -1152,7 +1152,7 @@
             datesContainer.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải ngày chiếu...</div>';
 
             try {
-                const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`);
+                const response = await fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`);
                 const result = await response.json();
                 const dates = result.data;
 
@@ -1182,7 +1182,7 @@
             event.currentTarget.classList.add('active');
 
             try {
-                const response = await fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(date + ' 10:00:00+07')}`);
+                const response = await fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(date + ' 10:00:00+07')}`);
                 const result = await response.json();
                 const times = result.data;
 

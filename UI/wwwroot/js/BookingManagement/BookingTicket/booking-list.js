@@ -15,7 +15,7 @@ class BookingListManager {
         };
         this.allBookings = []; // Thêm biến lưu toàn bộ danh sách
 
-        this.API_BASE_BE = "https://localhost:7049";
+        this.API_BASE_BE = "https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net";
         this.init();
     }
 

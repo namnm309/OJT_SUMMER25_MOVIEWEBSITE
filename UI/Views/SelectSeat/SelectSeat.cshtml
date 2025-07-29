@@ -505,7 +505,7 @@
                 
 
                 $.ajax({
-                    url: `https://localhost:7049/api/v1/booking-ticket/${showtimeId}/details`,
+                    url: `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/${showtimeId}/details`,
                     success: function(response) {
                         console.log('Showtime API response:', response);
                         
@@ -531,7 +531,7 @@
                             statusText: xhr.statusText,
                             responseText: xhr.responseText,
                             error: error,
-                            url: `https://localhost:7049/api/v1/booking-ticket/${showtimeId}/details`  // Sửa từ 7069 → 7049
+                            url: `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/${showtimeId}/details`  // Sửa từ 7069 → 7049
                         });
                     }
                 
@@ -540,7 +540,7 @@
                         console.log('Loading movie details for movieId:', movieId);
                         
                         $.ajax({
-                            url: `https://localhost:7049/api/v1/movie/GetById?movieId=${movieId}`,  // Sửa từ 7069 → 7049
+                            url: `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/movie/GetById?movieId=${movieId}`,  // Sửa từ 7069 → 7049
                             type: 'GET',
                             success: function(response) {
                                 console.log('Movie API response:', response);
@@ -968,7 +968,7 @@
                             if (paymentMethod === 'vnpay') {
                                 // Gọi API VNPay
                                 $.ajax({
-                                    url: 'https://localhost:7049/api/v1/payment/vnpay',
+                                    url: 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/payment/vnpay',
                                     type: 'POST',
                                     contentType: 'application/json',
                                     headers: {

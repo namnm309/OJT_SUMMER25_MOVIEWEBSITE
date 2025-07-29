@@ -1,7 +1,7 @@
 
 
 
-const API_BASE_URL = 'https://localhost:7049';
+const API_BASE_URL = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net';
 
 
 function extractUserDataFromRow(row) {

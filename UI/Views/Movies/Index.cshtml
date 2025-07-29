@@ -801,7 +801,7 @@
             document.getElementById('movieDatesSection').style.display = 'block';
             document.getElementById('movieTimesSection').style.display = 'none';
 
-            const apiUrl = `https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`;
+            const apiUrl = `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`;
             console.log('API URL:', apiUrl);
 
             fetch(apiUrl)
@@ -859,7 +859,7 @@
             document.getElementById('movieTimes').innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải suất chiếu...</div>';
             document.getElementById('movieTimesSection').style.display = 'block';
 
-            const apiUrl = `https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(date + ' 10:00:00+07')}`;
+            const apiUrl = `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(date + ' 10:00:00+07')}`;
             console.log('API URL:', apiUrl);
 
             fetch(apiUrl)

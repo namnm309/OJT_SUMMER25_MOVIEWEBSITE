@@ -455,7 +455,7 @@
             // Hàm lấy dữ liệu từ API
             async function fetchProducts() {
                 try {
-                    const url = `https://localhost:7049/api/ConcessionItems/paginated?page=${currentPage}&pageSize=${pageSize}&searchTerm=${searchTerm}&isActive=${isActive}`;
+                    const url = `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/ConcessionItems/paginated?page=${currentPage}&pageSize=${pageSize}&searchTerm=${searchTerm}&isActive=${isActive}`;
                     const response = await fetch(url);
 
                     if (!response.ok) {

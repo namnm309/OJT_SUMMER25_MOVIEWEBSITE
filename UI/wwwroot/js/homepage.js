@@ -1262,7 +1262,7 @@ function loadMovieDates(movieId) {
     const datesContainer = document.getElementById('movieDates');
     datesContainer.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải ngày chiếu...</div>';
 
-    fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`)
+    fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/dropdown/movies/${movieId}/dates`)
         .then(response => response.json())
         .then(data => {
             if (data.data && Array.isArray(data.data) && data.data.length > 0) {
@@ -1303,7 +1303,7 @@ function loadMovieTimes(movieId, date) {
     timesContainer.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i>Đang tải suất chiếu...</div>';
     timesContainer.style.display = 'block';
 
-    fetch(`https://localhost:7049/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(date + ' 10:00:00+07')}`)
+    fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/dropdown/movies/${movieId}/times?date=${encodeURIComponent(date + ' 10:00:00+07')}`)
         .then(response => response.json())
         .then(data => {
             if (data.data && Array.isArray(data.data) && data.data.length > 0) {

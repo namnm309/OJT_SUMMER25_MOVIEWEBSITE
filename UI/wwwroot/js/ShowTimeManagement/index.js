@@ -1,41 +1,42 @@
 
 
                // Sử dụng HTTPS để trùng với backend và tránh lỗi mixed-scheme/CORS
-               const apiBaseUrl = 'https://localhost:7049';
+               const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net';
 
                let isEditMode = false;
+
                let editingShowtimeId = null;
 
-               function searchShowtimes() {
-                   const searchTerm = document.getElementById('showtimeSearch').value.toLowerCase();
-                   const tableBody = document.getElementById('showtimeTableBody');
-                   const rows = tableBody.querySelectorAll('tr');
+               //function searchShowtimes() {
+               //    const searchTerm = document.getElementById('showtimeSearch').value.toLowerCase();
+               //    const tableBody = document.getElementById('showtimeTableBody');
+               //    const rows = tableBody.querySelectorAll('tr');
 
-                   rows.forEach(row => {
-                       const movieTitle = row.querySelector('.movie-details h6')?.textContent.toLowerCase() || '';
-                       const roomName = row.querySelectorAll('td')[2]?.textContent.toLowerCase() || '';
+               //    rows.forEach(row => {
+               //        const movieTitle = row.querySelector('.movie-details h6')?.textContent.toLowerCase() || '';
+               //        const roomName = row.querySelectorAll('td')[2]?.textContent.toLowerCase() || '';
 
-                       if (movieTitle.includes(searchTerm) || roomName.includes(searchTerm)) {
-                           row.style.display = '';
-                       } else {
-                           row.style.display = 'none';
-                       }
-                   });
+               //        if (movieTitle.includes(searchTerm) || roomName.includes(searchTerm)) {
+               //            row.style.display = '';
+               //        } else {
+               //            row.style.display = 'none';
+               //        }
+               //    });
 
-                   showMovieSuggestions(searchTerm);
-               }
+               //    showMovieSuggestions(searchTerm);
+               //}
 
 
-               function toggleSelectAll() {
-                   const selectAllCheckbox = document.getElementById('selectAll');
-                   const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+               //function toggleSelectAll() {
+               //    const selectAllCheckbox = document.getElementById('selectAll');
+               //    const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
 
-                   checkboxes.forEach(checkbox => {
-                       checkbox.checked = selectAllCheckbox.checked;
-                   });
+               //    checkboxes.forEach(checkbox => {
+               //        checkbox.checked = selectAllCheckbox.checked;
+               //    });
 
-                   updateBulkActionButtons();
-               }
+               //    updateBulkActionButtons();
+               //}
 
 
                function updateBulkActionButtons() {
@@ -125,7 +126,7 @@
                    }
 
                    try {
-                       const response = await fetch(`${apiBaseUrl}/api/v1/showtime/CheckConflict?movieId=${movieId}&cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
+                       const response = await fetch(`${apiBaseUrl}/api/v1/showtime/CheckConflict?cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}&movieId=${movieId}`);
                        const result = await response.json();
 
                        if (result.success) {
@@ -143,7 +144,7 @@
                    }
                }
 
-                       async function saveNewShowtime() {
+               async function saveNewShowtime() {
             // Nếu đang ở chế độ chỉnh sửa => gọi API PUT, ngược lại POST
             const isEdit = isEditMode && editingShowtimeId;
             
@@ -268,19 +269,14 @@
             }
         }
 
-
-               function openFilterModal() {
-                   showNotification('Chức năng lọc đang được phát triển', 'info');
-               }
-
-               function exportShowtimes() {
-                   showNotification('Đang xuất dữ liệu...', 'info');
-               }
-
-
-               function viewShowtime(id) {
-                   showNotification(`Xem chi tiết lịch chiếu ID: ${id}`, 'info');
-               }
+               //Lọc
+               //function openFilterModal() {
+               //    showNotification('Chức năng đang được phát triển hẹ hẹ hẹ', 'info');
+               //}
+               ////Xuất excel
+               //function exportShowtimes() {
+               //    showNotification('Đang xuất dữ liệu...', 'info');
+               //}
 
                function editShowtime(id) {
                    // Chuyển sang chế độ chỉnh sửa
@@ -365,31 +361,31 @@
                    }
                }
 
-               function bulkDeleteShowtimes() {
-                   const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
-                   if (checkedBoxes.length === 0) {
-                       showNotification('Vui lòng chọn ít nhất một lịch chiếu để xóa', 'warning');
-                       return;
-                   }
+               //function bulkDeleteShowtimes() {
+               //    const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+               //    if (checkedBoxes.length === 0) {
+               //        showNotification('Vui lòng chọn ít nhất một lịch chiếu để xóa', 'warning');
+               //        return;
+               //    }
 
-                   if (confirm(`Bạn có chắc chắn muốn xóa ${checkedBoxes.length} lịch chiếu đã chọn?`)) {
-                       showNotification(`Đã xóa ${checkedBoxes.length} lịch chiếu`, 'success');
-                       checkedBoxes.forEach(checkbox => {
-                           checkbox.closest('tr').remove();
-                       });
-                       updateBulkActionButtons();
-                   }
-               }
+               //    if (confirm(`Bạn có chắc chắn muốn xóa ${checkedBoxes.length} lịch chiếu đã chọn?`)) {
+               //        showNotification(`Đã xóa ${checkedBoxes.length} lịch chiếu`, 'success');
+               //        checkedBoxes.forEach(checkbox => {
+               //            checkbox.closest('tr').remove();
+               //        });
+               //        updateBulkActionButtons();
+               //    }
+               //}
 
-               function bulkUpdateStatus() {
-                   const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
-                   if (checkedBoxes.length === 0) {
-                       showNotification('Vui lòng chọn ít nhất một lịch chiếu để cập nhật', 'warning');
-                       return;
-                   }
+               //function bulkUpdateStatus() {
+               //    const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+               //    if (checkedBoxes.length === 0) {
+               //        showNotification('Vui lòng chọn ít nhất một lịch chiếu để cập nhật', 'warning');
+               //        return;
+               //    }
 
-                   showNotification(`Đã cập nhật trạng thái cho ${checkedBoxes.length} lịch chiếu`, 'success');
-               }
+               //    showNotification(`Đã cập nhật trạng thái cho ${checkedBoxes.length} lịch chiếu`, 'success');
+               //}
 
 
                function showNotification(message, type = 'info') {
@@ -568,41 +564,41 @@
                    initializeShowtimeTooltips();
                }
 
-                       function generateShowtimesForDay(date) {
-            // Lấy ngày theo giờ local, format "YYYY-MM-DD"
-            const y = date.getFullYear();
-            const m = String(date.getMonth() + 1).padStart(2, '0');
-            const d = String(date.getDate()).padStart(2, '0');
-            const dateStr = `${y}-${m}-${d}`;   // "YYYY-MM-DD"
+               function generateShowtimesForDay(date) {
+                    // Lấy ngày theo giờ local, format "YYYY-MM-DD"
+                    const y = date.getFullYear();
+                    const m = String(date.getMonth() + 1).padStart(2, '0');
+                    const d = String(date.getDate()).padStart(2, '0');
+                    const dateStr = `${y}-${m}-${d}`;   // "YYYY-MM-DD"
 
-            // 1. Lọc showtimes trùng ngày
-            let dayShowtimes = showtimeData.filter(st => {
-                // st.showDate format: "YYYY-MM-DDTHH:mm:ss"
-                return (st.showDate || '').startsWith(dateStr);
-            });
+                    // 1. Lọc showtimes trùng ngày
+                    let dayShowtimes = showtimeData.filter(st => {
+                        // st.showDate format: "YYYY-MM-DDTHH:mm:ss"
+                        return (st.showDate || '').startsWith(dateStr);
+                    });
 
-            // 2. Sort theo startTime tăng dần
-            dayShowtimes.sort((a, b) => a.startTime.localeCompare(b.startTime));
+                    // 2. Sort theo startTime tăng dần
+                    dayShowtimes.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-            // 3. Render ra HTML
-            return dayShowtimes.map(showtime => {
-                const posterUrl = showtime.moviePoster?.trim()
-                    ? showtime.moviePoster
-                    : '/images/default-movie-poster.jpg';
+                    // 3. Render ra HTML
+                    return dayShowtimes.map(showtime => {
+                        const posterUrl = showtime.moviePoster?.trim()
+                            ? showtime.moviePoster
+                            : '/images/default-movie-poster.jpg';
 
-                return `
-                    <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')"
-                         data-movie-id="${showtime.movieId || ''}"
-                         data-movie-title="${(showtime.movieTitle || '').toLowerCase()}"
-                         data-bs-toggle="tooltip" data-bs-html="true"
-                         data-poster="${posterUrl}"
-                         title="<img src='${posterUrl}' width='140' height='200' style='object-fit:cover;border-radius:6px;'>">
-                        <span class="calendar-showtime-title">${showtime.movieTitle}</span>
-                        <span class="calendar-showtime-time">${formatTime(showtime.startTime)}</span>
-                    </div>
-                `;
-            }).join('');
-        }
+                        return `
+                            <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')"
+                                 data-movie-id="${showtime.movieId || ''}"
+                                 data-movie-title="${(showtime.movieTitle || '').toLowerCase()}"
+                                 data-bs-toggle="tooltip" data-bs-html="true"
+                                 data-poster="${posterUrl}"
+                                 title="<img src='${posterUrl}' width='140' height='200' style='object-fit:cover;border-radius:6px;'>">
+                                <span class="calendar-showtime-title">${showtime.movieTitle}</span>
+                                <span class="calendar-showtime-time">${formatTime(showtime.startTime)}</span>
+                            </div>
+                        `;
+                    }).join('');
+                }
 
 
                function formatTime(timeSpan) {
@@ -745,7 +741,7 @@
                    document.getElementById('startTime')?.addEventListener('change', calculateEndTime);
                });
 
-                       async function autoCheckConflict() {
+               async function autoCheckConflict() {
                 return false; // Luôn coi như không trùng lịch
             }
 
@@ -754,6 +750,7 @@
                    document.querySelectorAll('.calendar-showtime-item.selected-movie').forEach(el => el.classList.remove('selected-movie'));
                }
 
+               //Search và in xanh 
                function highlightMovieInCalendar(movieId) {
                    if (!movieId) return;
                    document.querySelectorAll(`.calendar-showtime-item[data-movie-id='${movieId}']`).forEach(el => el.classList.add('selected-movie'));
@@ -976,7 +973,7 @@
                    loadShowtimesTable(1);
                }
 
-        /*============== END TABLE PAGINATION =============*/
+               /*============== END TABLE PAGINATION =============*/
 
 
                document.addEventListener('DOMContentLoaded', function() {

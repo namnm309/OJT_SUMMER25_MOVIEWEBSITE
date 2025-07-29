@@ -185,7 +185,7 @@
         if (!promoId) return;
 
         try {
-            const response = await fetch(`https://localhost:7049/api/v1/promotions/redeem/${promoId}`, {
+            const response = await fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/promotions/redeem/${promoId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('jwtToken') || localStorage.getItem('jwtToken') || localStorage.getItem('authToken') || sessionStorage.getItem('authToken')}`
@@ -213,8 +213,8 @@
 
             async function fetchTicket(byId){
                 const url = byId
-                   ? `https://localhost:7049/api/v1/ticket/booking?bookingId=${encodeURIComponent(byId)}`
-                   : `https://localhost:7049/api/v1/booking-ticket/booking/${encodeURIComponent(code)}`;
+                   ? `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/ticket/booking?bookingId=${encodeURIComponent(byId)}`
+                   : `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/booking/${encodeURIComponent(code)}`;
                 const resp = await fetch(url,{
                     headers:{'Authorization':`Bearer ${sessionStorage.getItem('jwtToken')||localStorage.getItem('jwtToken')||''}`}
                 });
