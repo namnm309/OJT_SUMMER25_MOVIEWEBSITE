@@ -73,24 +73,51 @@ namespace UI.Areas.PromotionManagement.Controllers
         {
             ViewData["Title"] = "Khuyến mãi";
 
+            // Log user info for debugging
+            _logger.LogInformation("User authenticated: {IsAuthenticated}, User: {UserName}, Roles: {Roles}", 
+                User.Identity?.IsAuthenticated, 
+                User.Identity?.Name,
+                string.Join(", ", User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(c => c.Value)));
+
             try
             {
-                var result = await _apiService.GetAsync<JsonElement>("api/v1/promotions");
+                _logger.LogInformation("Attempting to get promotions from API");
+                var result = await _apiService.GetAsync<JsonElement>("/api/v1/promotions");
+                
+                _logger.LogInformation("API Response - Success: {Success}, StatusCode: {StatusCode}, Message: {Message}", 
+                    result.Success, result.StatusCode, result.Message);
 
                 if (result.Success && result.Data.ValueKind != JsonValueKind.Undefined)
                 {
+                    _logger.LogInformation("API returned data, attempting to parse");
+                    _logger.LogInformation("Raw API response: {Response}", result.Data.ToString());
+                    
                     if (result.Data.TryGetProperty("data", out var dataProp))
                     {
+                        _logger.LogInformation("Found 'data' property, attempting to deserialize");
                         var options = new JsonSerializerOptions
                         {
                             PropertyNameCaseInsensitive = true
                         };
 
-                        // Deserialize the promotions into a List<PromotionViewModel>
-                        var promotions = JsonSerializer.Deserialize<List<PromotionDto>>(dataProp.GetRawText(), options);
+                        try
+                        {
+                            // Deserialize the promotions into a List<PromotionViewModel>
+                            var promotions = JsonSerializer.Deserialize<List<PromotionDto>>(dataProp.GetRawText(), options);
 
-                        _logger.LogInformation("Received {Count} promotions", promotions?.Count);
-                        return View(promotions);
+                            _logger.LogInformation("Successfully parsed {Count} promotions", promotions?.Count);
+                            return View(promotions);
+                        }
+                        catch (JsonException ex)
+                        {
+                            _logger.LogError(ex, "Failed to deserialize promotions: {RawData}", dataProp.GetRawText());
+                            TempData["ErrorMessage"] = "Lỗi khi xử lý dữ liệu từ server";
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogWarning("API response does not contain 'data' property. Available properties: {Properties}", 
+                            string.Join(", ", result.Data.EnumerateObject().Select(p => p.Name)));
                     }
                 }
 

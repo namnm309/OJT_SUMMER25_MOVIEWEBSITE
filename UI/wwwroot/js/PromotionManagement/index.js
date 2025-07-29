@@ -110,7 +110,7 @@ const API_BASE = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurew
                 showTableLoading();
                 
                 // Tạm thời comment API call và dùng data demo để tránh lỗi
-                const response = await fetch(`${API_BASE}/promotions`);
+                const response = await fetch(`${API_BASE}/api/v1/promotions`);
 
 
                 if (response.ok) {
@@ -658,7 +658,7 @@ const API_BASE = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurew
             }
             
             try {
-                const response = await fetch(`${API_BASE}/promotions/${promotionId}`, {
+                const response = await fetch(`${API_BASE}/api/v1/promotions/${promotionId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -830,7 +830,7 @@ const API_BASE = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurew
                     imageUrl: formData.get('imageUrl')
                 };
                 
-                const response = await fetch(`${API_BASE}/promotions`, {
+                const response = await fetch(`${API_BASE}/api/v1/promotions`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -878,7 +878,7 @@ const API_BASE = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurew
                     imageUrl: formData.get('imageUrl')
                 };
                 
-                const response = await fetch(`${API_BASE}/promotions`, {
+                const response = await fetch(`${API_BASE}/api/v1/promotions`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
