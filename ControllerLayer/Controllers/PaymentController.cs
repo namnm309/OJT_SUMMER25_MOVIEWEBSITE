@@ -43,12 +43,12 @@ namespace ControllerLayer.Controllers
                     if (response.Success)
                     {
                         // Redirect to UI success page
-                        var uiBase = "https://localhost:7069"; // TODO: move to config
+                        var uiBase = "https://cinemacity-frontend-dcayhqe2h3f7djhq.eastasia-01.azurewebsites.net"; // TODO: move to config
                         return Redirect($"{uiBase}/BookingManagement/BookingTicket/PaymentSuccess?bookingCode={response.BookingCode}");
                     }
 
                     // Redirect to UI fail page
-                    var uiBaseFail = "https://localhost:7069";
+                    var uiBaseFail = "https://cinemacity-frontend-dcayhqe2h3f7djhq.eastasia-01.azurewebsites.net";
                     return Redirect($"{uiBaseFail}/BookingManagement/BookingTicket/PaymentFail?bookingCode={response.BookingCode}");
                 }
                 catch (Exception ex)
