@@ -7,4 +7,4 @@ namespace DomainLayer.Enum
         Canceled = 2,
         Completed = 3
     }
-} 
+}   
