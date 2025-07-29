@@ -10,7 +10,7 @@ class BookTicketDashboard {
     this.promotions = [];
     this.selectedPromotion = null;
     // Base URL backend API
-    this.API_BASE_BE = "https://localhost:7049";
+      this.API_BASE_BE = "https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net";
 
     this.init();
   }
@@ -1442,7 +1442,7 @@ class BookTicketDashboard {
   async loadPromotions() {
     try {
       this.showLoading();
-      const response = await fetch("https://localhost:7049/api/v1/promotions", {
+        const response = await fetch("https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/promotions", {
         method: "GET",
         headers: {
           Accept: "*/*",

@@ -58,7 +58,9 @@ namespace ControllerLayer
                         "http://localhost:5000",
                         "https://localhost:5001",
                         "http://localhost:5274",
-                        "https://localhost:5274")
+                        "https://localhost:5274",
+                        "https://cinemacity-frontend-dcayhqe2h3f7djhq.eastasia-01.azurewebsites.net",
+                        "https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials(); // Cho phép chia sẻ cookie giữa UI và API
@@ -294,11 +296,24 @@ namespace ControllerLayer
             }
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            // Swagger dùng cho mọi môi trường (cả production)
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Movie Cinema API v1");
+                c.RoutePrefix = "swagger";
+            });
+
+            // Redirect từ "/" sang "/swagger"
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path == "/")
+                {
+                    context.Response.Redirect("/swagger");
+                    return;
+                }
+                await next();
+            });
 
             app.UseHttpsRedirection();
             

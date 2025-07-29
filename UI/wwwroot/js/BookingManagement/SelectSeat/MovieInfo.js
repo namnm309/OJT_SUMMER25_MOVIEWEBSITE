@@ -6,7 +6,7 @@
     }
     async function loadMovieAndShowtimeDetails() {
         try {
-            const showtimeResponse = await fetch(`https://localhost:7049/api/v1/booking-ticket/showtime/${showTimeId}/details`, {
+            const showtimeResponse = await fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/booking-ticket/showtime/${showTimeId}/details`, {
                 headers: { 'Authorization': `Bearer ${getAuthToken()}` }
             });
             if (!showtimeResponse.ok) throw new Error('Không thể lấy thông tin suất chiếu');
@@ -28,7 +28,7 @@
                     window.SeatModule.updateDisplay();
                 }
                 const movieIdParam = typeof movieId === 'string' ? movieId : movieId.toString();
-                const movieResponse = await fetch(`https://localhost:7049/api/v1/movie/GetById?movieId=${movieIdParam}`, {
+                const movieResponse = await fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/movie/GetById?movieId=${movieIdParam}`, {
                     headers: { 'Authorization': `Bearer ${getAuthToken()}` }
                 });
                 if (!movieResponse.ok) return;

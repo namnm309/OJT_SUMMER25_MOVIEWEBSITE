@@ -34,7 +34,7 @@
                 promotionId: selectedPromotion ? (selectedPromotion.promotionId || selectedPromotion.id) : null
             };
             
-            const response = await fetch('https://localhost:7049/api/seatsignal/summary', {
+            const response = await fetch('https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/seatsignal/summary', {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${getAuthToken()}`,
@@ -140,7 +140,7 @@
             
             console.log('Request body:', requestBody);
             
-            const response = await fetch('https://localhost:7049/api/v1/payment/vnpay', {
+            const response = await fetch('https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/payment/vnpay', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${getAuthToken()}`,
@@ -399,7 +399,7 @@
 
     async function loadPromotions() {
         try {
-            const response = await fetch('https://localhost:7049/api/v1/promotions/my', {
+            const response = await fetch('https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/promotions/my', {
                 headers: {
                     'Authorization': `Bearer ${getAuthToken()}`
                 }
@@ -485,7 +485,7 @@
             if (!confirms) return;
 
             await Promise.all(
-                seatLogIds.map(id => fetch(`https://localhost:7049/api/seatsignal/release/${id}`, {
+                seatLogIds.map(id => fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/seatsignal/release/${id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${getAuthToken()}` }
                 }))

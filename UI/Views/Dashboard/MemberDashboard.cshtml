@@ -444,7 +444,7 @@
 
             async function fetchTickets(){
                 try{
-                    const resp = await fetch('https://localhost:7049/api/v1/ticket/User',{
+                    const resp = await fetch('https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/ticket/User',{
                         headers:{'Authorization':`Bearer ${sessionStorage.getItem('jwtToken')||localStorage.getItem('jwtToken')||''}`}
                     });
                     if(!resp.ok){

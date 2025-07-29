@@ -21,7 +21,7 @@ namespace UI
             // Add HttpClient for API calls với credential sharing
             builder.Services.AddHttpClient("ApiClient", client =>
             {
-                var baseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7049";
+                var baseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net";
                 client.BaseAddress = new Uri(baseUrl);
             }).ConfigurePrimaryHttpMessageHandler(() =>
             {
