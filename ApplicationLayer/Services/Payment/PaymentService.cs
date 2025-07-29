@@ -152,7 +152,6 @@ namespace ApplicationLayer.Services.Payment
                 {
                     Success = false
                 };
-
             }
 
             // Tìm giao dịch theo MerchantTransactionId

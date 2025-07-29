@@ -4,6 +4,7 @@ using System.Security.Claims;
 using UI.Areas.BookingManagement.Models;
 using UI.Areas.BookingManagement.Services;
 using UI.Services;
+using System.Net.Http;
 
 namespace UI.Areas.BookingManagement.Controllers
 {
@@ -281,23 +282,43 @@ namespace UI.Areas.BookingManagement.Controllers
                 _logger.LogInformation("VNPay return - ResponseCode: {ResponseCode}, Status: {Status}, TxnRef: {TxnRef}", 
                     vnp_ResponseCode, vnp_TransactionStatus, vnp_TxnRef);
 
-                // vnp_TxnRef thường chứa bookingCode hoặc bookingId
-                string bookingCode = vnp_TxnRef;
-
-                // Kiểm tra kết quả thanh toán
-                // ResponseCode = 00: Thành công
-                // ResponseCode = 24: Hủy giao dịch
-                // TransactionStatus = 00: Thành công, 02: Thất bại
+                // Gọi backend API để xử lý callback và cập nhật trạng thái
+                var backendUrl = "https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/payment/vnpay-return";
                 
-                if (vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
+                // Tạo query string với tất cả tham số từ VNPay
+                var queryParams = new List<string>();
+                foreach (var param in Request.Query)
                 {
-                    // Thanh toán thành công
-                    return RedirectToAction("PaymentSuccess", new { bookingCode = bookingCode });
+                    queryParams.Add($"{param.Key}={Uri.EscapeDataString(param.Value)}");
                 }
-                else
+                
+                if (queryParams.Any())
                 {
-                    // Thanh toán thất bại hoặc hủy
-                    return RedirectToAction("PaymentFail", new { bookingCode = bookingCode });
+                    backendUrl += "?" + string.Join("&", queryParams);
+                }
+
+                // Gọi backend API để xử lý callback
+                using (var httpClient = new HttpClient())
+                {
+                    var response = await httpClient.GetAsync(backendUrl);
+                    
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Backend đã xử lý thành công, redirect về trang success/fail
+                        if (vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
+                        {
+                            return RedirectToAction("PaymentSuccess", new { bookingCode = vnp_TxnRef });
+                        }
+                        else
+                        {
+                            return RedirectToAction("PaymentFail", new { bookingCode = vnp_TxnRef });
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogError("Backend API call failed with status: {StatusCode}", response.StatusCode);
+                        return RedirectToAction("PaymentFail", new { bookingCode = vnp_TxnRef });
+                    }
                 }
             }
             catch (Exception ex)
