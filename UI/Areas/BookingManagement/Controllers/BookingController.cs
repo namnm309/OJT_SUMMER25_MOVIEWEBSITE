@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
-using System.Text.Json.Serialization; // Thêm dòng này
+using System.Text.Json.Serialization;
+using System;
 using UI.Areas.BookingManagement.Models;
 using UI.Areas.BookingManagement.Services;
 using UI.Services;
@@ -379,6 +380,80 @@ namespace UI.Areas.BookingManagement.Controllers
 
             var bookingResult = System.Text.Json.JsonSerializer.Deserialize<BookingResultViewModel>(bookingResultJson);
             return View(bookingResult);
+        }
+
+        /// <summary>
+        /// Trang thanh toán thành công cho user thường
+        /// </summary>
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> PaymentSuccess(string bookingCode)
+        {
+            ViewData["Title"] = "Thanh Toán Thành Công";
+
+            if (string.IsNullOrEmpty(bookingCode))
+            {
+                return RedirectToAction("SelectMovie");
+            }
+
+            try
+            {
+                // Lấy thông tin booking từ API
+                var result = await _apiService.GetAsync<dynamic>($"/api/v1/booking-ticket/booking/{bookingCode}");
+                
+                if (result.Success && result.Data != null)
+                {
+                    ViewBag.Booking = result.Data;
+                }
+                else
+                {
+                    ViewBag.Booking = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting booking info for PaymentSuccess");
+                ViewBag.Booking = null;
+            }
+
+            return View();
+        }
+
+        /// <summary>
+        /// Trang thanh toán thất bại cho user thường
+        /// </summary>
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> PaymentFailed(string bookingCode)
+        {
+            ViewData["Title"] = "Thanh Toán Thất Bại";
+
+            if (string.IsNullOrEmpty(bookingCode))
+            {
+                return RedirectToAction("SelectMovie");
+            }
+
+            try
+            {
+                // Lấy thông tin booking từ API
+                var result = await _apiService.GetAsync<dynamic>($"/api/v1/booking-ticket/booking/{bookingCode}");
+                
+                if (result.Success && result.Data != null)
+                {
+                    ViewBag.Booking = result.Data;
+                }
+                else
+                {
+                    ViewBag.Booking = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting booking info for PaymentFailed");
+                ViewBag.Booking = null;
+            }
+
+            return View();
         }
 
 

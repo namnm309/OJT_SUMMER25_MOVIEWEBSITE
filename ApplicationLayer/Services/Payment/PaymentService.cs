@@ -232,6 +232,48 @@ namespace ApplicationLayer.Services.Payment
             // Lưu trạng thái transaction
             await _transactionRepo.UpdateAsync(transaction);
 
+            // Lấy thông tin user role để phân biệt user vs admin
+            // Sử dụng role của user hiện tại đang tạo payment, không phải role của user trong booking
+            string userRole = "Member"; // Default
+            string bookingSource = "user"; // Default
+            
+            // Lấy role của user hiện tại từ JWT token
+            var payload = ExtractPayload();
+            if (payload != null)
+            {
+                userRole = payload.Role.ToString();
+                
+                // Phân biệt nguồn tạo booking dựa trên role
+                if (payload.Role == UserRole.Admin || payload.Role == UserRole.Staff)
+                {
+                    bookingSource = "admin_dashboard";
+                }
+                else
+                {
+                    bookingSource = "user";
+                }
+            }
+            else
+            {
+                // Nếu không lấy được payload, thử lấy từ transaction
+                if (transaction != null)
+                {
+                    var transactionUser = await _userRepo.FindByIdAsync(transaction.UserId);
+                    if (transactionUser != null)
+                    {
+                        userRole = transactionUser.Role.ToString();
+                        if (transactionUser.Role == UserRole.Admin || transactionUser.Role == UserRole.Staff)
+                        {
+                            bookingSource = "admin_dashboard";
+                        }
+                        else
+                        {
+                            bookingSource = "user";
+                        }
+                    }
+                }
+            }
+
             // Trả kết quả về cho người dùng
             return new PaymentResponseDto
             {
@@ -242,7 +284,9 @@ namespace ApplicationLayer.Services.Payment
                 TransactionId = vnp_TransactionId.ToString(),
                 Token = vnp_SecureHash,
                 VnPayResponseCode = vnp_ResponseCode,
-                BookingCode = booking != null ? booking.BookingCode : string.Empty
+                BookingCode = booking != null ? booking.BookingCode : string.Empty,
+                UserRole = userRole,
+                BookingSource = bookingSource
             };
         }
 
