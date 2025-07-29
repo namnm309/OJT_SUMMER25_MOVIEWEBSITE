@@ -2,243 +2,18 @@
 @{
     ViewData["Title"] = ViewData["Title"] ?? "Kết quả tìm kiếm";
     var searchKeyword = ViewData["SearchKeyword"] as string;
-    Layout = null;
 }
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Cinema City</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/HomePage/base.css" />
-    <link rel="stylesheet" href="~/css/HomePage/header.css" />
-    <link rel="stylesheet" href="~/css/HomePage/button.css" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/Movies/modern-list.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Movies/search-modern.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/HomePage/moviecard.css" />
-    <link rel="stylesheet" href="~/css/HomePage/layout.css" />
-    <link rel="stylesheet" href="~/css/HomePage/responsive.css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/HomePage/layout.css" />
-    <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" />
-    <link rel="stylesheet" href="~/css/HomePage/responsive.css" />
-    <link rel="stylesheet" href="~/css/MovieDetails/movie-details-mostly.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/MovieDetails/movie-details.css" asp-append-version="true" />
-    
-    <style>
-        body {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-            min-height: 100vh;
-            font-family: 'Inter', sans-serif;
-        }
-        
-        main {
-            padding-top: 120px;
-            padding-bottom: 60px;
-        }
-        
-        .search-page-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .search-page-header {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #fff;
-        }
-        
-        .search-page-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #fff 0%, #e50914 100%);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .search-page-subtitle {
-            font-size: 1.1rem;
-            color: #ccc;
-            margin-bottom: 0;
-        }
-        
-        .search-container {
-            max-width: 600px;
-            margin: 0 auto 40px auto;
-        }
-        
-        .search-form-control {
-            background: #1a1a1a;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            padding: 12px 20px;
-            font-size: 16px;
-            border-radius: 10px 0 0 10px;
-        }
-        
-        .search-form-control:focus {
-            background: #1a1a1a;
-            border-color: #e50914;
-            color: #fff;
-            box-shadow: 0 0 0 0.2rem rgba(229, 9, 20, 0.25);
-        }
-        
-        .search-form-control::placeholder {
-            color: #888;
-        }
-        
-        .search-btn {
-            background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
-            border: none;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 0 10px 10px 0;
-        }
-        
-        .search-btn:hover {
-            background: linear-gradient(135deg, #b81d24 0%, #a01820 100%);
-            color: white;
-        }
-        
-        .search-btn-outline {
-            background: transparent;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: #fff;
-            padding: 10px 18px;
-            border-radius: 10px;
-            margin-left: 10px;
-        }
-        
-        .search-btn-outline:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-        
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            padding: 20px 0;
-        }
-        
-        .movie-card-search {
-            background: #1a1a1a;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .movie-card-search:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-            border-color: rgba(229, 9, 20, 0.3);
-        }
-        
-        .movie-poster-search {
-            position: relative;
-            aspect-ratio: 2/3;
-            overflow: hidden;
-        }
-        
-        .movie-poster-search img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-        
-        .movie-card-search:hover .movie-poster-search img {
-            transform: scale(1.05);
-        }
-        
-        .movie-overlay-search {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 20px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .movie-card-search:hover .movie-overlay-search {
-            opacity: 1;
-        }
-        
-        .movie-actions-search {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .movie-info-search {
-            padding: 20px;
-        }
-        
-        .movie-title-search {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 8px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .movie-genre-search {
-            color: #e50914;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-        
-        .movie-meta-search {
-            display: flex;
-            justify-content: space-between;
-            color: #ccc;
-            font-size: 0.85rem;
-        }
-        
-        .empty-state-search {
-            text-align: center;
-            padding: 80px 20px;
-            color: #ccc;
-        }
-        
-        .empty-state-search i {
-            color: #666;
-            margin-bottom: 20px;
-        }
-        
-        .empty-state-search h4 {
-            color: #fff;
-            margin-bottom: 15px;
-        }
-    </style>
-</head>
-<body>
-    
-
-    
-    <main>
+    <link rel="stylesheet" href="~/css/HomePage/button.css" />
+}
 
 <div class="search-page-wrapper">
-    <div class="search-page-header">
-        <h1 class="search-page-title">
-            <i class="fas fa-search me-2"></i>@ViewData["Title"]
-        </h1>
+    <div class="search-page-header text-center">
+        <h1 class="search-page-title"><i class="fas fa-search me-2"></i>@ViewData["Title"]</h1>
         @if (!string.IsNullOrEmpty(searchKeyword))
         {
             <p class="search-page-subtitle">Từ khóa: "@searchKeyword" - Tìm thấy @Model.Count kết quả</p>
@@ -249,48 +24,35 @@
         }
     </div>
 
-    
     <div class="search-container">
         <div class="input-group">
-            <input type="text" class="search-form-control" placeholder="Tìm kiếm phim..."
-                   id="searchInput" value="@searchKeyword">
-            <button class="search-btn" type="button" onclick="searchMovies()">
-                <i class="fas fa-search"></i> Tìm kiếm
-            </button>
-            <a href="@Url.Action("Search", "Movies")" class="search-btn-outline">
-                <i class="fas fa-list"></i> Tất cả
-            </a>
+            <input type="text" class="search-form-control form-control" placeholder="Tìm kiếm phim..." id="searchInput" value="@searchKeyword">
+            <button class="search-btn btn" type="button" onclick="searchMovies()"><i class="fas fa-search"></i></button>
+            <a href="@Url.Action("Search", "Movies")" class="search-btn-outline btn"><i class="fas fa-list"></i></a>
         </div>
     </div>
 
-    
     @if (Model != null && Model.Any())
     {
         <div class="movie-grid">
             @foreach (var movie in Model)
             {
-                <div class="movie-card-search">
+                <div class="movie-card movie-card-search" data-id="@movie.Id">
                     <div class="movie-poster-search">
                         @{
                             string imageUrl = movie.PrimaryImageUrl ?? movie.ImageUrl;
                             if (string.IsNullOrEmpty(imageUrl) && movie.Images != null && movie.Images.Any())
                             {
-                                var primaryImage = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
-                                imageUrl = primaryImage?.ImageUrl;
+                                var primary = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
+                                imageUrl = primary?.ImageUrl;
                             }
-                            imageUrl = imageUrl ?? "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
+                            imageUrl ??= "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
                         }
-                        <img src="@imageUrl" alt="@movie.Title" 
-                             onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
-                        
+                        <img src="@imageUrl" alt="@movie.Title" onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
                         <div class="movie-overlay-search">
                             <div class="movie-actions-search">
-                                <a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-info-circle"></i> Chi tiết
-                                </a>
-                                <a href="#" class="btn btn-success btn-sm">
-                                    <i class="fas fa-clock"></i> Lịch chiếu
-                                </a>
+                                <a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="btn btn-primary btn-sm"><i class="fas fa-info-circle"></i> Chi tiết</a>
+                                <a href="#" class="btn btn-success btn-sm"><i class="fas fa-clock"></i> Lịch chiếu</a>
                             </div>
                         </div>
                     </div>
@@ -298,18 +60,12 @@
                         <h5 class="movie-title-search">@movie.Title</h5>
                         <p class="movie-genre-search">@(movie.Genres != null && movie.Genres.Any() ? string.Join(", ", movie.Genres.Select(g => g.Name)) : "Chưa phân loại")</p>
                         <div class="movie-meta-search">
-                            <span>
-                                <i class="fas fa-clock"></i> @movie.RunningTime phút
-                            </span>
-                            <span>
-                                <i class="fas fa-film"></i> @movie.Version
-                            </span>
+                            <span><i class="fas fa-clock"></i> @movie.RunningTime phút</span>
+                            <span><i class="fas fa-film"></i> @movie.Version</span>
                         </div>
                         @if (movie.Rating > 0)
                         {
-                            <div class="movie-rating" style="color: #ffcc00; margin-top: 10px;">
-                                <i class="fas fa-star"></i> @movie.Rating.ToString("F1")
-                            </div>
+                            <div class="movie-rating"><i class="fas fa-star"></i> @movie.Rating.ToString("F1")</div>
                         }
                     </div>
                 </div>
@@ -324,9 +80,7 @@
             @if (!string.IsNullOrEmpty(searchKeyword))
             {
                 <p>Không có phim nào phù hợp với từ khóa "@searchKeyword"</p>
-                <a href="@Url.Action("Search", "Movies")" class="btn btn-primary">
-                    <i class="fas fa-list"></i> Xem tất cả phim
-                </a>
+                <a href="@Url.Action("Search", "Movies")" class="btn btn-primary"><i class="fas fa-list"></i> Xem tất cả phim</a>
             }
             else
             {
@@ -336,31 +90,17 @@
     }
 </div>
 
-<script>
-    function searchMovies() {
-        const keyword = document.getElementById('searchInput').value.trim();
-        alert('Keyword: ' + keyword); // Thêm dòng này để debug
-        const searchUrl = '@Url.Action("Search", "Movies")' + (keyword ? `?keyword=${encodeURIComponent(keyword)}` : '');
-        alert('URL: ' + searchUrl); // Thêm dòng này để debug
-        window.location.href = searchUrl;
-    }
-
-
-    document.getElementById('searchInput')?.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            searchMovies();
+@section Scripts {
+    <script>
+        function searchMovies() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            const url = '@Url.Action("Search", "Movies")' + (keyword ? `?keyword=${encodeURIComponent(keyword)}` : '');
+            window.location.href = url;
         }
-    });
-</script>
-
-    </main>
-    
-    
-    @await Html.PartialAsync("footer")
-    
-    
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/homepage.js"></script>
-</body>
-</html>
+        document.getElementById('searchInput')?.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                searchMovies();
+            }
+        });
+    </script>
+}

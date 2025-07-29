@@ -48,6 +48,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
         // Booking history for member dashboard
         Task<IActionResult> GetUserBookingHistoryAsync(Guid userId);
+
+        Task<IActionResult> GetAdminBookingDetailsAsync(Guid bookingId);
     }
 
     public class BookingTicketService : IBookingTicketService
@@ -1342,8 +1344,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             var user = await _userRepo.FindByIdAsync(userId);
             if(user == null) return;
 
-            // 100 điểm mỗi vé
-            var earned = seatsBooked * 100;
+            // 100 điểm mỗi booking (KHÔNG phải mỗi vé)
+            var earned = 100;
             user.Score += earned;
             await _userRepo.UpdateAsync(user);
 
@@ -1378,6 +1380,44 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     await _userPromotionRepo.CreateAsync(new UserPromotion{ UserId = user.Id, PromotionId = goldPromo.Id });
                 }
             }
+        }
+
+        // API cho admin lấy booking theo bookingId (không kiểm tra userId)
+        public async Task<IActionResult> GetAdminBookingDetailsAsync(Guid bookingId)
+        {
+            var booking = await _bookingRepo.FirstOrDefaultAsync(
+                b => b.Id == bookingId,
+                "User",
+                "ShowTime.Movie",
+                "ShowTime.Room",
+                "BookingDetails.Seat"
+            );
+
+            if (booking == null)
+            {
+                return ErrorResp.NotFound("Booking not found");
+            }
+
+            var response = new
+            {
+                bookingId = booking.Id,
+                bookingCode = booking.BookingCode,
+                status = booking.Status.ToString(),
+                movieTitle = booking.ShowTime?.Movie?.Title,
+                cinemaRoom = booking.ShowTime?.Room?.RoomName,
+                showDate = booking.ShowTime?.ShowDate?.ToString("dd/MM/yyyy"),
+                showTime = booking.ShowTime?.ShowDate?.ToString("HH:mm"),
+                seats = booking.BookingDetails?.Select(bd => bd.Seat?.SeatCode).ToList(),
+                totalPrice = booking.TotalPrice,
+                memberInfo = booking.User == null ? null : new
+                {
+                    memberId = booking.User.Id,
+                    fullName = booking.User.FullName
+                },
+                bookingDate = booking.BookingDate.ToString("dd/MM/yyyy HH:mm:ss"),
+            };
+
+            return SuccessResp.Ok(response);
         }
     }
 }

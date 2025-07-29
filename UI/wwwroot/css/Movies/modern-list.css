@@ -1,0 +1,109 @@
+/* Modern Movies Page - Glassmorphism & Neon Gradient */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+html, body {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%) !important; /* Match Home gradient */
+    font-family: 'Poppins', 'Inter', sans-serif !important;
+    color: #f1f1f1 !important;
+}
+
+/* Hero */
+.hero-section-select {
+    height: 280px !important;
+    background: linear-gradient(180deg, rgba(9,10,15,0) 0%, rgba(9,10,15,0.9) 100%), url('https://images.unsplash.com/photo-1496449903678-68ddcb189a24?auto=format&fit=crop&w=1500&q=80') center/cover !important;
+    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+}
+
+/* Filter Container */
+.filter-section {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Filter Tabs */
+.filter-tab {
+    border: none !important;
+    position: relative !important;
+    overflow: hidden !important;
+    color: #e0e0e0 !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    transition: color .3s ease !important;
+}
+
+.filter-tab::before {
+    content: '';
+    position: absolute !important;
+    inset: 0 !important;
+    background: linear-gradient(135deg, #ff8e3c 0%, #6d5dff 100%) !important;
+    opacity: 0 !important;
+    transition: opacity .3s ease-in-out !important;
+    z-index: -1 !important;
+}
+
+.filter-tab:hover::before,
+.filter-tab.active::before {
+    opacity: 1 !important;
+}
+
+.filter-tab:hover,
+.filter-tab.active {
+    color: #ffffff !important;
+}
+
+/* Movie Card */
+.movie-card {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 20px !important;
+    transition: transform .35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .35s ease !important;
+}
+
+.movie-card:hover {
+    transform: translateY(-8px) scale(1.05) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Poster image zoom */
+.movie-card:hover .poster-image {
+    transform: scale(1.12) !important;
+}
+
+/* Date & Time buttons */
+.date-btn, .time-btn {
+    border: none !important;
+    transition: transform .25s ease, background .25s ease, color .25s ease !important;
+}
+
+.date-btn:hover, .time-btn:hover,
+.date-btn.selected, .time-btn.selected {
+    background: linear-gradient(135deg, #ff8e3c 0%, #6d5dff 100%) !important;
+    color: #fff !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Selected movie info box */
+.selected-movie-info {
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 16px !important;
+}
+
+/* Scrollbar tweak */
+::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #ff8e3c 0%, #6d5dff 100%);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.04);
+} 
