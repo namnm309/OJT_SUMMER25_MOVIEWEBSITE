@@ -80,9 +80,10 @@
             // Thêm tooltip
             seatElement.title = `Ghế đang được giữ bởi người dùng khác`;
             
-            // Cập nhật màu sắc
-            seatElement.style.backgroundColor = '#ff9800'; // Màu cam cho pending others
-            seatElement.style.color = 'white';
+            // Cập nhật màu sắc - để CSS xử lý
+            seatElement.style.backgroundColor = '';
+            seatElement.style.background = '';
+            seatElement.style.color = '';
         }
     }
 
@@ -223,7 +224,7 @@
                     const seatCode = seat.seatCode || seat.code || `${rowLabel}${seat.columnIndex || seat.column || '?'}`;
                     const seatPrice = seat.price || 0;
                     
-                    html += `<button type="button" class="${seatClass}" data-seat-id="${seat.id}" data-seat-code="${seatCode}" data-seat-price="${seatPrice}" data-seat-type="${seat.seatType || 'regular'}" title="Ghế ${seatCode} - ${formatPrice(seatPrice)} VNĐ" ${isDisabled ? 'disabled' : ''}><span class="seat-number">${seatCode}</span></button>`;
+                    html += `<button type="button" class="${seatClass}" data-seat-id="${seat.id}" data-seat-code="${seatCode}" data-seat-price="${seatPrice}" data-seat-type="${seat.seatType || 'regular'}" title="Ghế ${seatCode} - ${formatPrice(seatPrice)} VNĐ" ${isDisabled ? 'disabled' : ''}></button>`;
                 });
                 
                 html += `</div><span class="row-label">${rowLabel}</span></div>`;
@@ -464,6 +465,10 @@
                         const holdResult = await holdSeat([seatId]);
                         if (holdResult.success) {
                             this.classList.add('selected', 'pending-mine');
+                            // Đảm bảo không có background inline style
+                            this.style.backgroundColor = '';
+                            this.style.background = '';
+                            
                             selectedSeats.push({ 
                                 id: seatId, 
                                 code: seatCode, 

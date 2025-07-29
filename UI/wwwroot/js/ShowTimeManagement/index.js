@@ -171,9 +171,26 @@
                 return;
             }
 
-            // -- TẠM TẮT kiểm tra xung đột để không gọi API CheckConflict --
-            // const hasConflict = await autoCheckConflict();
-            // if (hasConflict) return;
+            // BẬT kiểm tra xung đột lịch chiếu trước khi lưu
+            const duration = (() => {
+                const movieSelect = document.getElementById('movieSelect');
+                return parseInt(movieSelect.selectedOptions[0]?.dataset.duration || '0');
+            })();
+            let conflictUrl = `${apiBaseUrl}/api/v1/showtime/CheckConflict?cinemaRoomId=${cinemaRoomId}&showDate=${showDateIso}&startTime=${startTime}&endTime=${endTime}&movieId=${movieId}`;
+            if (isEdit) {
+                conflictUrl += `&excludeId=${editingShowtimeId}`;
+            }
+            try {
+                const conflictResp = await fetch(conflictUrl);
+                const conflictResult = await conflictResp.json();
+                if (conflictResult.hasConflict === true || (conflictResult.data && conflictResult.data.hasConflict)) {
+                    showNotification('Lịch chiếu bị trùng với suất chiếu khác trong phòng này!', 'danger');
+                    return;
+                }
+            } catch (err) {
+                showNotification('Không kiểm tra được xung đột lịch chiếu. Vui lòng thử lại.', 'danger');
+                return;
+            }
 
             // 5. Chuẩn bị payload
             const payload = {
@@ -728,7 +745,6 @@
                    document.getElementById('startTime')?.addEventListener('change', calculateEndTime);
                });
 
-                       // ------ Tạm vô hiệu hoá hàm autoCheckConflict để không gọi API ------
                        async function autoCheckConflict() {
                 return false; // Luôn coi như không trùng lịch
             }

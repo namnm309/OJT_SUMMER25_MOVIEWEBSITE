@@ -3,18 +3,14 @@
 @{
     ViewData["Title"] = "Thanh Toán Thành Công";
     Layout = "_Layout";
-}
 
-@{
+    /* --- Parse booking data (giữ lại logic cũ) --- */
     string bookingCode = "N/A", movieTitle = "N/A", cinemaRoomName = "N/A";
-    string showDate = "N/A", showTime = "N/A", fullName = "N/A";
-    string email = "N/A", phoneNumber = "N/A", identityCard = "N/A";
-    string totalPriceFormatted = "0 VND";
-    string bookedSeats = "N/A";
-    string movieImage = "~/images/default-movie.jpg";
-    string cinemaName = "Cinema City";
-    string cinemaAddress = "Địa chỉ rạp chiếu phim";
+    string showDate = "N/A", showTime = "N/A", customerName = "N/A";
+    string phoneNumber = "N/A";
+    string seatCodesText = "N/A";
     decimal totalPrice = 0;
+    string totalPriceFormatted = "0₫";
 
     if (!string.IsNullOrEmpty(Model?.Data?.ToString()))
     {
@@ -23,282 +19,164 @@
             using var jsonDocument = JsonDocument.Parse(Model.Data.ToString());
             var root = jsonDocument.RootElement;
 
-            // Trích xuất dữ liệu từ JSON
-            if (root.TryGetProperty("bookingCode", out JsonElement bookingCodeElement))
-                bookingCode = bookingCodeElement.GetString() ?? "N/A";
-
-            if (root.TryGetProperty("movieTitle", out JsonElement movieTitleElement))
-                movieTitle = movieTitleElement.GetString() ?? "N/A";
-
-            if (root.TryGetProperty("cinemaRoomName", out JsonElement cinemaRoomElement))
-                cinemaRoomName = cinemaRoomElement.GetString() ?? "N/A";
-
-            if (root.TryGetProperty("showDate", out JsonElement showDateElement))
-                showDate = showDateElement.GetString() ?? "N/A";
-
-            if (root.TryGetProperty("showTime", out JsonElement showTimeElement))
-                showTime = showTimeElement.GetString() ?? "N/A";
-
-            if (root.TryGetProperty("fullName", out JsonElement fullNameElement))
-                fullName = fullNameElement.GetString() ?? "N/A";
-
-            if (root.TryGetProperty("email", out JsonElement emailElement))
-                email = emailElement.GetString() ?? "N/A";
-
-            if (root.TryGetProperty("phoneNumber", out JsonElement phoneNumberElement))
-                phoneNumber = phoneNumberElement.GetString() ?? "N/A";
-
-            if (root.TryGetProperty("identityCard", out JsonElement identityCardElement))
-                identityCard = identityCardElement.GetString() ?? "N/A";
-
-            if (root.TryGetProperty("cinemaName", out JsonElement cinemaNameElement))
-                cinemaName = cinemaNameElement.GetString() ?? "Cinema City";
-
-            if (root.TryGetProperty("cinemaAddress", out JsonElement cinemaAddressElement))
-                cinemaAddress = cinemaAddressElement.GetString() ?? "Địa chỉ rạp chiếu phim";
-
-            // Xử lý totalPrice
-            if (root.TryGetProperty("totalPrice", out JsonElement totalPriceElement))
+            // nếu API trả về { code, data: { .. } }
+            if (root.TryGetProperty("data", out JsonElement dataEl) && dataEl.ValueKind != JsonValueKind.Null)
             {
-                if (totalPriceElement.ValueKind == JsonValueKind.Number)
+                if (dataEl.ValueKind == JsonValueKind.Object)
                 {
-                    totalPrice = totalPriceElement.GetDecimal();
-                    totalPriceFormatted = string.Format("{0:N0} VND", totalPrice);
+                    root = dataEl; // chuyển sang object data cụ thể
                 }
-                else if (totalPriceElement.ValueKind == JsonValueKind.String)
+                else if (dataEl.ValueKind == JsonValueKind.Array && dataEl.GetArrayLength() > 0)
                 {
-                    var priceString = totalPriceElement.GetString();
-                    if (decimal.TryParse(priceString, out decimal price))
-                    {
-                        totalPrice = price;
-                        totalPriceFormatted = string.Format("{0:N0} VND", price);
-                    }
+                    foreach (var elem in dataEl.EnumerateArray()) { root = elem; break; }
                 }
             }
 
-            // Xử lý bookedSeats array
-            if (root.TryGetProperty("bookedSeats", out JsonElement bookedSeatsElement) &&
-                bookedSeatsElement.ValueKind == JsonValueKind.Array)
+            string GetString(string primary, params string[] alts)
             {
-                var seatCodes = new List<string>();
-                foreach (var seat in bookedSeatsElement.EnumerateArray())
-                {
-                    if (seat.ValueKind == JsonValueKind.String)
-                    {
-                        var seatCode = seat.GetString();
-                        if (!string.IsNullOrEmpty(seatCode))
-                            seatCodes.Add(seatCode);
-                    }
-                    else if (seat.ValueKind == JsonValueKind.Object &&
-                            seat.TryGetProperty("seatCode", out JsonElement seatCodeElement))
-                    {
-                        var seatCode = seatCodeElement.GetString();
-                        if (!string.IsNullOrEmpty(seatCode))
-                            seatCodes.Add(seatCode);
-                    }
-                }
-                bookedSeats = seatCodes.Count > 0 ? string.Join(", ", seatCodes) : "N/A";
+                if (root.TryGetProperty(primary, out JsonElement el) && el.ValueKind == JsonValueKind.String)
+                    return el.GetString();
+                foreach (var alt in alts)
+                    if (root.TryGetProperty(alt, out JsonElement el2) && el2.ValueKind == JsonValueKind.String)
+                        return el2.GetString();
+                return null;
             }
+
+            bookingCode = GetString("bookingCode", "bookingId", "id") ?? bookingCode;
+            movieTitle = GetString("movieTitle", "movieName", "filmTitle") ?? movieTitle;
+            cinemaRoomName = GetString("cinemaRoomName", "screen", "cinemaRoom") ?? cinemaRoomName;
+            showDate = GetString("showDate", "date") ?? showDate;
+            showTime = GetString("showTime", "time") ?? showTime;
+            customerName = GetString("fullName", "customerName", "name") ?? customerName;
+            phoneNumber = GetString("phoneNumber", "customerPhone", "phone") ?? phoneNumber;
+
+            // Seats
+            if (root.TryGetProperty("bookedSeats", out JsonElement seatsElem) && seatsElem.ValueKind == JsonValueKind.Array)
+            {
+                var list = seatsElem.EnumerateArray().Select(el => el.ValueKind == JsonValueKind.String ? el.GetString() : (el.TryGetProperty("seatCode", out JsonElement seatCodeEl) ? seatCodeEl.GetString() : null))
+                    .Where(s => !string.IsNullOrEmpty(s));
+                seatCodesText = string.Join(", ", list);
+            }
+            else if (root.TryGetProperty("seatCode", out JsonElement seatCodeSingle) && seatCodeSingle.ValueKind == JsonValueKind.String)
+            {
+                seatCodesText = seatCodeSingle.GetString();
+            }
+
+            // Price
+            if (root.TryGetProperty("totalPrice", out JsonElement priceElem) || root.TryGetProperty("price", out priceElem))
+            {
+                if (priceElem.ValueKind == JsonValueKind.Number)
+                    totalPrice = priceElem.GetDecimal();
+                else if (priceElem.ValueKind == JsonValueKind.String && decimal.TryParse(priceElem.GetString(), out var p))
+                    totalPrice = p;
+                totalPriceFormatted = string.Format("{0:N0}₫", totalPrice);
+            }
+
         }
-        catch (JsonException jsonEx)
-        {
-            // Log JSON parsing error
-            <div style="color: red; margin-bottom: 10px;">Lỗi phân tích JSON: @jsonEx.Message</div>
-        }
-        catch (Exception ex)
-        {
-            // Log general error
-            <div style="color: red; margin-bottom: 10px;">Lỗi: @ex.Message</div>
-        }
+        catch { /* ignore parse */ }
     }
 }
 
-@section Styles{
-    <link rel="stylesheet" href="~/css/Shared/fix-header-offset.css" />
+<link rel="stylesheet" href="~/css/HomePage/layout.css" />
+    <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" />
+    <link rel="stylesheet" href="~/css/HomePage/responsive.css" />
+    <link rel="stylesheet" href="~/css/MovieDetails/movie-details-mostly.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/MovieDetails/movie-details.css" asp-append-version="true" />
 
+@section Styles {
     <style>
-        /* --- Global background giống trang kết quả đặt vé --- */
-        body {
-            background: linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 50%,#16213e 100%);
-            color: white;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
+        .with-header-offset { padding-top: 110px; }
+        @@media (max-width: 992px) {
+        .with-header-offset { padding-top: 130px; }
+        } 
+
+        @@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap");
+
+        :root {
+            --color-primary: #9fa8da;
+            --color-secondary: #3949ab;
+            --color-tertiary: #5c6bc0;
+            --color-bg:rgb(26, 26, 26);
+            --font-heading: Arial, helvetica;
+            --font-body: "open sans", "Roboto", sans-serif;
+            --font-misc: "Oswald", "monospace", "courier";
         }
 
-        /* --- Success container với offset header --- */
-        .success-container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            background: #F5F5DC;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,.3);
-        }
+        *,*::before,*::after{box-sizing:border-box;padding:0;margin:0;backface-visibility:hidden;}
+        body.payment-page-bg{background-color:var(--color-bg);display:flex;justify-content:center;align-items:center;width:100%;min-height:100vh;padding:40px 20px;}
 
-        .success-message {
-            text-align: center;
-            padding: 20px;
-            background: rgba(79,195,247,.12);
-            border: 2px solid #4fc3f7;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            color: #4fc3f7;
-            backdrop-filter: blur(6px);
-        }
+        /* Override container alignment */
+        .payment-page-bg{display:flex;justify-content:center;align-items:flex-start;width:100%;}
+        .ticket{margin:auto;} 
+        /* Header offset */
+        .with-header-offset{margin-top:140px;}
+        @@media (max-width:992px){.with-header-offset{margin-top:160px;}}
 
-        .success-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
-
-        /* --- Booking summary --- */
-        .booking-summary {
-            background: rgba(26,26,46,.05);
-            border-radius: 10px;
-            padding: 25px 20px;
-            border: 2px solid #1a1a2e;
-            color: #1a1a2e;
-        }
-
-        .booking-summary h3 {
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 600;
-            color: #1a1a2e;
-            border-bottom: 2px solid #4fc3f7;
-            padding-bottom: 6px;
-            letter-spacing: .5px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        .summary-row span:first-child {
-            color: #666;
-            font-weight: 500;
-        }
-
-        .summary-row span:last-child {
-            font-weight: 600;
-            color: #16213e;
-        }
-
-        /* --- Action buttons --- */
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border-radius: 25px;
-            border: none;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: .5rem;
-            transition: all .3s ease;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg,#4fc3f7,#29b6f6);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: rgba(255,255,255,.12);
-            color: white;
-            border: 1px solid rgba(255,255,255,.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,.3);
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(45deg,#29b6f6,#4fc3f7);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255,255,255,.2);
-            border-color: #4fc3f7;
-        }
-
-        /* --- Responsive --- */
-        @@media (max-width: 768px) {
-            .success-container { padding: 30px 15px; }
-            .summary-row { font-size: 13px; }
-            .action-buttons { flex-direction: column; }
-            .btn { width: 100%; justify-content: center; }
-        }
+        /* Ticket */
+        .ticket{background-color:var(--color-primary);color:var(--color-secondary);width:600px;display:grid;grid-template-columns:106px calc(100% - 106px);font-family:var(--font-body);}
+        .ticket-sub{writing-mode:vertical-rl;text-orientation:mixed;text-align:center;padding:10px;border-right:6px dotted var(--color-bg);position:relative;z-index:1;}
+        .ticket-sub::before,.ticket-sub::after{background-color:var(--color-bg);width:22px;height:22px;border-radius:50%;content:"";position:absolute;z-index:2;left:50%;transform:translateX(-50%);} 
+        .ticket-sub::before{top:-14px;}
+        .ticket-sub::after{bottom:-14px;}
+        .ticket-sub h3{font-size:30px;padding:10px 8px;background:var(--color-tertiary);color:#fff;font-family:var(--font-heading);position:relative;}
+        .ticket-sub p{font-size:18px;letter-spacing:8px;font-weight:500;padding:14px 4px;font-family:var(--font-heading);}
+        .ticket-main{padding:10px;display:grid;grid-template-columns:23% 77%;}
+        /* Seat area */
+        .ticket-seat{display:grid;grid-template-areas:"suba head" "subb head" "subc head";box-shadow:inset 0 0 0 2px var(--color-secondary);}  
+        .ticket-seat>h3{grid-area:head;height:100%;writing-mode:vertical-rl;text-orientation:sideways;padding:12px 10px 12px 2px;background-color:var(--color-tertiary);color:#fff;position:relative;font-family:var(--font-heading);} 
+        .ticket-seat>h3 span{position:absolute;bottom:0;right:calc(50% + 1px);width:100%;color:#fff;padding:10px 4px;font-size:1.1em;transform:translateX(50%);} 
+        .ticket-seat-box{writing-mode:vertical-rl;text-orientation:sideways;text-align:center;}
+        .ticket-seat-box:not(:last-child){border-bottom:2px solid var(--color-secondary);} 
+        .ticket-seat-box p{font-weight:bold;text-transform:uppercase;font-size:14px;padding-right:4px;font-family:var(--font-heading);} 
+        .ticket-seat-box h4{font-weight:1000;font-size:32px;line-height:32px;padding-top:6px;font-family:var(--font-heading);} 
+        /* Info */
+        .ticket-info{padding-left:10px;text-align:center;display:grid;grid-template-areas:"brand" "brawler" "referee" "date" "misc";box-shadow:inset 0 0 0 2px var(--color-secondary);} 
+        .ticket-info>div:not(:nth-last-child(-n+2)){border-bottom:2px dashed var(--color-secondary);} 
+        .ticket-info-brand{grid-area:brand;align-self:center;padding:0 10px 8px;font-size:26px;font-family:var(--font-heading);}
+        .ticket-info-brawler{grid-area:brawler;display:flex;width:100%;margin-top:-11px;}
+        .separator{writing-mode:vertical-lr;text-orientation:upright;font-weight:1000;width:40px;padding:0 calc(20px - 0.8em);font-family:var(--font-heading);border-left:2px dashed var(--color-secondary);border-right:2px dashed var(--color-secondary);} 
+        .brawler{width:calc(50% - 20px);flex:0 0 auto;align-self:center;}
+        .brawler span{display:block;font-size:16px;font-family:var(--font-misc);font-weight:bold;letter-spacing:2px;}
+        .brawler span:last-child{font-size:32px;text-transform:uppercase;margin-top:-8px;}
+        .ticket-info-referee{grid-area:referee;align-self:center;padding:2px 8px 12px;}
+        .ticket-info-referee span:first-child{font-size:16px;}
+        .ticket-info-referee span:last-child{font-size:20px;font-weight:bold;text-transform:uppercase;padding-left:10px;font-family:var(--font-misc);} 
+        .ticket-info-date{grid-area:date;font-size:22px;line-height:12px;padding:24px 10px 2px;font-family:var(--font-heading);font-weight:600;text-transform:uppercase;letter-spacing:3px;background-color:var(--color-tertiary);color:#fff;margin-top:-12px;border-left:2px solid var(--color-secondary);border-right:2px solid var(--color-secondary);} 
+        .ticket-info-misc{grid-area:misc;font-size:10px;align-self:center;font-family:var(--font-heading);letter-spacing:6px;} 
     </style>
 }
 
-<div class="success-container with-header-offset">
-    <div class="success-message">
-        <i class="fas fa-check-circle success-icon"></i>
-        <h1>Thanh Toán Thành Công!</h1>
-        <p>Cảm ơn bạn đã thanh toán. Vé của bạn đã được xác nhận thành công.</p>
-        
-        <div class="booking-summary">
-            <h3 style="margin-bottom: 20px; color: #4caf50;">Thông Tin Đặt Vé</h3>
-            <div class="summary-row">
-                <span>Mã đặt vé:</span>
-                <span><strong>@bookingCode</strong></span>
-            </div>
-            <div class="summary-row">
-                <span>Phim:</span>
-                <span><strong>@movieTitle</strong></span>
-            </div>
-            <div class="summary-row">
-                <span>Phòng chiếu:</span>
-                <span><strong>@cinemaRoomName</strong></span>
-            </div>
-            <div class="summary-row">
-                <span>Ngày chiếu:</span>
-                <span><strong>@showDate</strong></span>
-            </div>
-            <div class="summary-row">
-                <span>Giờ chiếu:</span>
-                <span><strong>@showTime</strong></span>
-            </div>
-            <div class="summary-row">
-                <span>Ghế ngồi:</span>
-                <span><strong>@bookedSeats</strong></span>
-            </div>
-            <div class="summary-row">
-                <span>Tổng tiền:</span>
-                <span><strong>@totalPriceFormatted</strong></span>
-            </div>
-        </div>
-    </div>
+<div class="payment-page-bg with-header-offset">
+    <main class="ticket">
+        <!-- Left vertical stub -->
+        <section class="ticket-sub">
+            <h3>Admit One</h3>
+            <p>@bookingCode</p>
+        </section>
 
-    <div class="action-buttons">
-        <a href="@Url.Action("BookingResult", "Booking", new { area = "BookingManagement" })" class="btn btn-primary">
-            <i class="fas fa-ticket-alt"></i>
-            Xem Vé Chi Tiết
-        </a>
-        <a href="@Url.Action("Index", "Movies", new { area = "" })" class="btn btn-secondary">
-            <i class="fas fa-film"></i>
-            Đặt Vé Mới
-        </a>
-        <a href="@Url.Action("Index", "Home", new { area = "" })" class="btn btn-secondary">
-            <i class="fas fa-home"></i>
-            Trang Chủ
-        </a>
-    </div>
+        <!-- Main ticket body -->
+        <section class="ticket-main">
+            <!-- Seat/Price sub section -->
+            <section class="ticket-seat">
+                <h3 id="ticket-room">@cinemaRoomName <span id="ticket-price">@totalPriceFormatted</span></h3>
+                <div class="ticket-seat-box"><p>Ngày</p><h4 id="ticket-date">@showDate</h4></div>
+                <div class="ticket-seat-box"><p>Giờ</p><h4 id="ticket-time">@showTime</h4></div>
+                <div class="ticket-seat-box"><p>Ghế</p><h4 id="ticket-seats">@seatCodesText</h4></div>
+            </section>
+            <!-- Info section -->
+            <section class="ticket-info">
+                <div class="ticket-info-brand"><h3 id="ticket-title">@movieTitle</h3></div>
+                <div class="ticket-info-brawler">
+                    <div class="brawler"><span>Khách</span><span id="ticket-customer">@customerName</span></div>
+                    <div class="separator">VS</div>
+                    <div class="brawler"><span>Số ĐT</span><span id="ticket-phone">@phoneNumber</span></div>
+            </div>
+                <div class="ticket-info-referee"><span>Mã vé</span><span id="ticket-code">@bookingCode</span></div>
+                <div class="ticket-info-date"><p>@showDate @showTime</p></div>
+                <div class="ticket-info-misc"><p>Enjoy your movie!</p></div>
+            </section>
+        </section>
+    </main>
 </div>
 
 <script>
@@ -382,18 +260,17 @@
                 };
             }
 
-            const summary = document.querySelector('.booking-summary');
-            if(!summary) return;
-
-            summary.innerHTML = `
-                <h3 style="margin-bottom:20px;color:#4caf50;">Thông tin vé</h3>
-                <div class="summary-row"><span>Mã đặt vé:</span><span><strong>${bookingInfo.bookingCode}</strong></span></div>
-                <div class="summary-row"><span>Phim:</span><span><strong>${bookingInfo.movieTitle}</strong></span></div>
-                <div class="summary-row"><span>Phòng chiếu:</span><span><strong>${bookingInfo.cinemaRoomName}</strong></span></div>
-                <div class="summary-row"><span>Ngày chiếu:</span><span><strong>${bookingInfo.showDate}</strong></span></div>
-                <div class="summary-row"><span>Giờ chiếu:</span><span><strong>${bookingInfo.showTime}</strong></span></div>
-                <div class="summary-row"><span>Ghế ngồi:</span><span><strong>${bookingInfo.seats.join(', ')}</strong></span></div>
-                <div class="summary-row"><span>Tổng tiền:</span><span><strong>${Number(bookingInfo.totalPrice).toLocaleString('vi-VN')}₫</strong></span></div>`;
+            // Ghi vào UI vé mới
+            const set = (id,val)=>{ const el=document.getElementById(id); if(el) el.textContent=val; };
+            set('ticket-code',bookingInfo.bookingCode);
+            set('ticket-title',bookingInfo.movieTitle);
+            set('ticket-room',bookingInfo.cinemaRoomName);
+            set('ticket-date',bookingInfo.showDate);
+            set('ticket-time',bookingInfo.showTime);
+            set('ticket-seats',bookingInfo.seats.join(', '));
+            set('ticket-price',Number(bookingInfo.totalPrice).toLocaleString('vi-VN')+'₫');
+            set('ticket-customer',bookingInfo.customerName||'');
+            set('ticket-phone',bookingInfo.phone||'');
         }
     </script>
     <script src="~/js/movie-details-mostly.js" asp-append-version="true"></script>

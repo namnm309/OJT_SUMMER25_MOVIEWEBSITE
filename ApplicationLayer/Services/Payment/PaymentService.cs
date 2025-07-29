@@ -251,7 +251,7 @@ namespace ApplicationLayer.Services.Payment
             var user = await _userRepo.FindByIdAsync(userId);
             if(user == null) return;
 
-            int earned = seatsBooked * 100;
+            int earned = 100; // 100 điểm mỗi booking
             user.Score += earned;
             await _userRepo.UpdateAsync(user);
 

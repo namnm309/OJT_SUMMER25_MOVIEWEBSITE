@@ -1344,8 +1344,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             var user = await _userRepo.FindByIdAsync(userId);
             if(user == null) return;
 
-            // 100 điểm mỗi vé
-            var earned = seatsBooked * 100;
+            // 100 điểm mỗi booking (KHÔNG phải mỗi vé)
+            var earned = 100;
             user.Score += earned;
             await _userRepo.UpdateAsync(user);
 

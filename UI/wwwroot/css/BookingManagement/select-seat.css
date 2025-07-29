@@ -277,24 +277,43 @@ body {
     flex-wrap: nowrap;
 }
 
-/* Cải tiến style ghế */
+/* Cải tiến style ghế với icon sofa */
 .seat {
     width: 35px;
     height: 35px;
-    border: none;
-    border-radius: 8px;
+    border: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: color 0.3s ease, transform 0.3s ease;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 25px;
+    color: #ffffff;
     flex-shrink: 0;
+    padding: 0 !important;
+    margin: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
+.seat:focus,
+.seat:active,
+.seat:hover:not(.seat-unavailable) {
+    background: transparent !important;
+    background-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.seat::before {
+    content: '\f4b8';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
 }
 
 .seat-number {
@@ -304,41 +323,140 @@ body {
     line-height: 1;
 }
 
-.seat.regular.available {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+.seat.regular.available,
+.seat.vip.available,
+.seat.seat-available {
+    color: #ffffff;
 }
 
-    .seat.regular.available:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: scale(1.1);
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-    }
-
-.seat.vip.available {
-    background: linear-gradient(45deg, #f5c518, #ffd700);
-    border: 1px solid #ffd700;
-    color: #000;
-}
-
-    .seat.vip.available:hover {
-        transform: scale(1.1);
-        box-shadow: 0 0 15px rgba(245, 197, 24, 0.5);
-    }
-
-.seat.selected {
-    background: linear-gradient(45deg, #667eea, #764ba2) !important;
-    border: 1px solid #764ba2 !important;
-    color: white !important;
+.seat.regular.available:hover,
+.seat.vip.available:hover,
+.seat.seat-available:hover {
+    color: #e3417a;
+    opacity: 0.4;
     transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
 }
 
-.seat.occupied {
-    background: #666 !important;
-    border: 1px solid #555 !important;
+.seat.selected,
+.seat.seat-selected,
+.seat.pending-mine {
+    color: #e3417a !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.seat.selected::before,
+.seat.seat-selected::before,
+.seat.pending-mine::before {
+    color: #e3417a !important;
+}
+
+.seat.occupied,
+.seat.seat-unavailable {
+    color: #5a899d !important;
     cursor: not-allowed;
-    opacity: 0.5;
+}
+
+.seat.pending-others {
+    color: #5a899d !important;
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.seat.pending-others::before {
+    color: #b10b0b !important;
+}
+
+/* Loại bỏ hoàn toàn background cho pending-others */
+.seat.pending-others,
+.seat.pending-others:focus,
+.seat.pending-others:active,
+.seat.pending-others:hover,
+.seat.pending-others[style] {
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Ghi đè mọi style có thể */
+button.seat.pending-others {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Loại bỏ hoàn toàn mọi background có thể xuất hiện */
+.seat,
+.seat *,
+.seat::before,
+.seat::after {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Loại bỏ border khi focus/active */
+.seat:focus,
+.seat:active,
+.seat.selected:focus,
+.seat.selected:active {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Đảm bảo button không có style mặc định */
+button.seat {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Ghi đè mọi style có thể can thiệp khi ghế được chọn */
+.seat[style*="background"] {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+.seat.selected[style],
+.seat.pending-mine[style] {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Loại bỏ border màu vàng khi focus */
+.seat.selected,
+.seat.pending-mine {
+    border: none !important;
+    outline: none !important;
+}
+
+.seat.selected:focus,
+.seat.pending-mine:focus,
+.seat.selected:active,
+.seat.pending-mine:active {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* Legend cải tiến */
@@ -365,7 +483,16 @@ body {
     width: 16px;
     height: 16px;
     border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.legend-seat::before {
+    content: '\f4b8';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
 }
 
     .legend-seat.normal {
@@ -381,7 +508,8 @@ body {
     }
 
     .legend-seat.available {
-        background: rgba(255, 255, 255, 0.1);
+        background: transparent;
+        color: #5a899d;
     }
 
     .legend-seat.for-disabilities {
@@ -389,11 +517,13 @@ body {
     }
 
     .legend-seat.selected {
-        background: linear-gradient(45deg, #667eea, #764ba2);
+        background: transparent;
+        color: #e3417a;
     }
 
     .legend-seat.taken {
-        background: #666;
+        background: transparent;
+        color: #ced9e2;
     }
 
 /* Thêm CSS cho ghế đang chờ của người khác */

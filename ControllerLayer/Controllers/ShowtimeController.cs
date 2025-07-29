@@ -88,10 +88,11 @@ namespace ControllerLayer.Controllers
             [FromQuery] DateTime showDate,
             [FromQuery] TimeSpan startTime,
             [FromQuery] TimeSpan endTime,
-            [FromQuery] Guid? excludeId = null)
+            [FromQuery] Guid? excludeId = null,
+            [FromQuery] Guid? movieId = null)
         {
-            _logger.LogInformation("Check schedule conflict for room {RoomId} on {ShowDate}", cinemaRoomId, showDate);
-            return await _showtimeService.CheckScheduleConflict(cinemaRoomId, showDate, startTime, endTime, excludeId);
+            _logger.LogInformation("Check schedule conflict for room {RoomId} on {ShowDate} movieId={MovieId}", cinemaRoomId, showDate, movieId);
+            return await _showtimeService.CheckScheduleConflict(cinemaRoomId, showDate, startTime, endTime, excludeId, movieId);
         }
 
         [HttpGet("movie/{movieId}")]
