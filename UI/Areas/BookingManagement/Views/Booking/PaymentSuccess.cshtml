@@ -5,10 +5,10 @@
     Layout = "_Layout";
 
     /* --- Parse booking data (giữ lại logic cũ) --- */
-    string bookingCode = "N/A", movieTitle = "N/A", cinemaRoomName = "N/A";
-    string showDate = "N/A", showTime = "N/A", customerName = "N/A";
-    string phoneNumber = "N/A";
-    string seatCodesText = "N/A";
+    string bookingCode = "---", movieTitle = "---", cinemaRoomName = "---";
+    string showDate = "---", showTime = "---", customerName = "---";
+    string phoneNumber = "---";
+    string seatCodesText = "---";
     decimal totalPrice = 0;
     string totalPriceFormatted = "0₫";
 
@@ -150,7 +150,7 @@
     <main class="ticket">
         <!-- Left vertical stub -->
         <section class="ticket-sub">
-            <h3>Admit One</h3>
+            <h3>Vé Xem Phim</h3>
             <p>@bookingCode</p>
         </section>
 
@@ -173,7 +173,7 @@
             </div>
                 <div class="ticket-info-referee"><span>Mã vé</span><span id="ticket-code">@bookingCode</span></div>
                 <div class="ticket-info-date"><p>@showDate @showTime</p></div>
-                <div class="ticket-info-misc"><p>Enjoy your movie!</p></div>
+                <div class="ticket-info-misc"><p>Chúc bạn xem phim vui vẻ!</p></div>
             </section>
         </section>
     </main>
@@ -243,7 +243,7 @@
                     bookingCode: new URLSearchParams(window.location.search).get('bookingCode')||'---',
                     movieTitle: first.movieName||first.movieTitle||'---',
                     cinemaRoomName: first.screen||first.cinemaRoomName||'---',
-                    showDate: (first.showDate||'').split('T')[0],
+                    showDate: (first.showDate||'').split('T')[0]||'---',
                     showTime: first.showTime||'---',
                     seats: tickets.map(t=>t.seatCode||t.seat||t.seatName||'').filter(Boolean),
                     totalPrice: tickets.reduce((sum,t)=> sum + (Number(t.price)||0),0)

@@ -2,41 +2,12 @@
     Layout = null;
     var booking = ViewBag.Booking;
     string bookingCode = "";
-    string movieTitle = "";
-    string seats = "";
-    string total = "";
-    string cinemaRoom = "";
-    string showDate = "";
-    string showTime = "";
-    string memberName = "";
     if (booking != null)
     {
         if (booking is System.Text.Json.JsonElement json)
         {
             if (json.TryGetProperty("bookingCode", out var codeProp))
                 bookingCode = codeProp.GetString();
-            if (json.TryGetProperty("movieTitle", out var movieProp))
-                movieTitle = movieProp.GetString();
-            if (json.TryGetProperty("seats", out var seatsProp))
-            {
-                if (seatsProp.ValueKind == System.Text.Json.JsonValueKind.Array)
-                    seats = string.Join(", ", seatsProp.EnumerateArray().Select(x => x.GetString()));
-                else
-                    seats = seatsProp.ToString();
-            }
-            if (json.TryGetProperty("totalPrice", out var totalProp))
-                total = string.Format("{0:N0} VNĐ", totalProp.GetDecimal());
-            if (json.TryGetProperty("cinemaRoom", out var roomProp))
-                cinemaRoom = roomProp.GetString();
-            if (json.TryGetProperty("showDate", out var dateProp))
-                showDate = dateProp.GetString();
-            if (json.TryGetProperty("showTime", out var timeProp))
-                showTime = timeProp.GetString();
-            if (json.TryGetProperty("memberInfo", out var memProp) && memProp.ValueKind == System.Text.Json.JsonValueKind.Object)
-            {
-                if (memProp.TryGetProperty("fullName", out var nameProp))
-                    memberName = nameProp.GetString();
-            }
         }
     }
 }
@@ -46,88 +17,69 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thanh toán thành công</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <style>
         body {
-            background: #f6f8fa;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-        .success-container {
-            max-width: 540px;
-            margin: 60px auto;
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            padding: 36px 32px 32px 32px;
-        }
-        .success-icon {
-            font-size: 3.5rem;
-            color: #28a745;
-            margin-bottom: 12px;
-        }
-        .success-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #28a745;
-            margin-bottom: 8px;
-        }
-        .success-desc {
-            color: #444;
-            font-size: 1.1rem;
-            margin-bottom: 24px;
-        }
-        .ticket-table th {
-            background: #f0f4f8;
-            color: #333;
-            width: 40%;
-        }
-        .ticket-table td {
-            color: #222;
-            font-weight: 500;
-        }
-        .action-btns {
-            margin-top: 32px;
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
             display: flex;
-            gap: 16px;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
-        @@media (max-width: 600px) {
-            .success-container { padding: 18px 6px; }
-            .ticket-table th, .ticket-table td { font-size: 0.95rem; }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        .success {
+            color: #28a745;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .message {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .code {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            font-family: monospace;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background: #0056b3;
         }
     </style>
 </head>
 <body>
-    <div class="success-container text-center">
-        <div class="success-icon">
-            <i class="fas fa-check-circle"></i>
-        </div>
-        <div class="success-title">Thanh toán thành công!</div>
-        <div class="success-desc">Cảm ơn bạn đã thanh toán. Dưới đây là thông tin vé của bạn:</div>
+    <div class="container">
+        <div class="success">✓ Thanh toán thành công</div>
+        <div class="message">Giao dịch đã được xử lý thành công</div>
+        
         @if (!string.IsNullOrEmpty(bookingCode))
         {
-            <div class="table-responsive">
-                <table class="table ticket-table table-bordered align-middle mb-0">
-                    <tr><th>Mã đặt vé</th><td>@bookingCode</td></tr>
-                    <tr><th>Khách hàng</th><td>@memberName</td></tr>
-                    <tr><th>Tên phim</th><td>@movieTitle</td></tr>
-                    <tr><th>Phòng chiếu</th><td>@cinemaRoom</td></tr>
-                    <tr><th>Ngày chiếu</th><td>@showDate</td></tr>
-                    <tr><th>Giờ chiếu</th><td>@showTime</td></tr>
-                    <tr><th>Ghế</th><td>@seats</td></tr>
-                    <tr><th>Tổng tiền</th><td class="text-danger fw-bold">@total</td></tr>
-                </table>
-            </div>
+            <div class="code">Mã: @bookingCode</div>
         }
-        <div class="action-btns">
-            <a href="@Url.Action("BookingList", "BookingTicket", new { area = "BookingManagement" })" class="btn btn-outline-primary">
-                <i class="fas fa-list me-1"></i> Quay lại danh sách
-            </a>
-            <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="btn btn-success">
-                <i class="fas fa-plus-circle me-1"></i> Tiếp tục đặt vé
-            </a>
-        </div>
+        
+        <a href="/Dashboard/AdminDashboard" class="btn">Về Dashboard</a>
     </div>
 </body>
 </html> 

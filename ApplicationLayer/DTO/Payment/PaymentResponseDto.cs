@@ -17,6 +17,11 @@ namespace ApplicationLayer.DTO.Payment
         public string VnPayResponseCode { get; set; }
 
         public string BookingCode { get; set; }
-
+        
+        // Thêm thông tin user role để phân biệt user vs admin
+        public string UserRole { get; set; } = string.Empty;
+        
+        // Thêm thông tin nguồn tạo booking để phân biệt admin dashboard vs user thường
+        public string BookingSource { get; set; } = string.Empty;
     }
 }
