@@ -266,7 +266,12 @@ namespace ApplicationLayer.Services.ShowtimeManagement
     return SuccessResp.Ok(!hasConflict);
 }
 
-        public async Task<bool> HasScheduleConflict(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, TimeSpan endTime, Guid? excludeId = null, Guid? movieId = null)
+        public async Task<bool> HasScheduleConflict(Guid cinemaRoomId, 
+                                                    DateTime showDate, 
+                                                    TimeSpan startTime, 
+                                                    TimeSpan endTime, 
+                                                    Guid? excludeId = null, 
+                                                    Guid? movieId = null)
         {
             try
             {
@@ -277,12 +282,19 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                 var inputDateStr = showDate.ToString("yyyy-MM-dd");
                 foreach (var existing in existingShowtimes)
                 {
+                    //nếu ngày đó có lịch chiếu thì tiếp tục 
                     if (!existing.ShowDate.HasValue) continue;
+
+                    //chuyển giá trị ngày đó ra theo định dạng  để tiếp tục checkk 
                     var dbDateStr = existing.ShowDate.Value.ToString("yyyy-MM-dd");
+
                     _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] DB: showDate={dbDateStr}, startTime={existing.StartTime}, endTime={existing.EndTime}, movieId={existing.MovieId}, roomId={existing.RoomId}, existingId={existing.Id}");
+                    
+                    //nếu ngày đó trùng với ngày đã nhập ở FE thì tiếp tục check 
                     if (dbDateStr != inputDateStr) continue;
 
                     _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] So sánh: input (movieId={movieId}, startTime={startTime}) với DB (movieId={existing.MovieId}, startTime={existing.StartTime}, endTime={existing.EndTime})");
+                    
                     // 1. Không cho phép giờ bắt đầu trùng với giờ bắt đầu của cùng 1 bộ phim, cùng phòng, cùng ngày
                     if (movieId.HasValue && existing.MovieId == movieId.Value && existing.StartTime == startTime)
                     {
@@ -293,6 +305,13 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                     if (existing.EndTime == startTime)
                     {
                         _logger.LogWarning($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Trùng giờ bắt đầu với giờ kết thúc phim khác: startTime={startTime}, endTime={existing.EndTime}");
+                        return true;
+                    }
+
+                    // 3.Không cho phép giờ bắt đầu nằm trong khoảng thời gian của 1 phim khác 
+                    //1 phòng chiếu chỉ có 1 bộ phim và 1 thơi gian chiếu cố định cho phòng đó 
+                    if (existing.StartTime <= startTime && startTime <= existing.EndTime)
+                    {
                         return true;
                     }
                 }
