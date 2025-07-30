@@ -214,11 +214,11 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             var normalizedShowDate = DateTime.SpecifyKind(dto.ShowDate.Date, DateTimeKind.Utc);
 
             // Check for schedule conflicts (exclude current showtime)
-            //var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime, id);
-            //if (hasConflict)
-            //{
-            //    return ErrorResp.BadRequest("Đã có lịch chiếu khác trong khoảng thời gian này tại phòng chiếu này.");
-            //}
+            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime, id);
+            if (hasConflict)
+            {
+                return ErrorResp.BadRequest("Đã có lịch chiếu khác trong khoảng thời gian này tại phòng chiếu này.");
+            }
 
             // Update showtime
             showtime.MovieId = dto.MovieId;
@@ -255,12 +255,12 @@ namespace ApplicationLayer.Services.ShowtimeManagement
         }
 
         public async Task<IActionResult> CheckScheduleConflict(
-    Guid cinemaRoomId,
-    DateTime showDate,
-    TimeSpan startTime,
-    TimeSpan endTime,
-    Guid? excludeId = null,
-    Guid? movieId = null)
+            Guid cinemaRoomId,
+            DateTime showDate,
+            TimeSpan startTime,
+            TimeSpan endTime,
+            Guid? excludeId = null,
+            Guid? movieId = null)
 {
     var hasConflict = await HasScheduleConflict(cinemaRoomId, showDate, startTime, endTime, excludeId, movieId);
     return SuccessResp.Ok(!hasConflict);
@@ -345,8 +345,8 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                 return ErrorResp.BadRequest("Ngày chiếu không thể là ngày trong quá khứ");
 
             // Validate start time is before end time
-            if (dto.StartTime >= dto.EndTime)
-                return ErrorResp.BadRequest("Giờ bắt đầu phải nhỏ hơn giờ kết thúc");
+            //if (dto.StartTime >= dto.EndTime)
+            //    return ErrorResp.BadRequest("Giờ bắt đầu phải nhỏ hơn giờ kết thúc");
 
             var showDateUtc = DateTime.SpecifyKind(dto.ShowDate.Date, DateTimeKind.Utc);
 
