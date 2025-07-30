@@ -279,25 +279,45 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                 {
                     if (!existing.ShowDate.HasValue) continue;
                     var dbDateStr = existing.ShowDate.Value.ToString("yyyy-MM-dd");
-                    _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] DB: showDate={dbDateStr}, startTime={existing.StartTime}, endTime={existing.EndTime}, movieId={existing.MovieId}, roomId={existing.RoomId}, existingId={existing.Id}");
+                    _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] " +
+                        $"DB: showDate={dbDateStr}, " +
+                        $"startTime={existing.StartTime}, " +
+                        $"endTime={existing.EndTime}, " +
+                        $"movieId={existing.MovieId}, " +
+                        $"roomId={existing.RoomId}, existingId={existing.Id}");
                     if (dbDateStr != inputDateStr) continue;
 
-                    _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] So sánh: input (movieId={movieId}, startTime={startTime}) với DB (movieId={existing.MovieId}, startTime={existing.StartTime}, endTime={existing.EndTime})");
+                    _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] So sánh: input (movieId={movieId}, " +
+                        $"startTime={startTime}) với DB (movieId={existing.MovieId}, " +
+                        $"startTime={existing.StartTime}, endTime={existing.EndTime})");
                     // 1. Không cho phép giờ bắt đầu trùng với giờ bắt đầu của cùng 1 bộ phim, cùng phòng, cùng ngày
                     if (movieId.HasValue && existing.MovieId == movieId.Value && existing.StartTime == startTime)
                     {
-                        _logger.LogWarning($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Trùng giờ bắt đầu cùng phim: movieId={movieId}, startTime={startTime}");
+                        _logger.LogWarning($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Trùng giờ bắt đầu cùng phim: movieId={movieId}, " +
+                            $"startTime={startTime}");
                         return true;
                     }
                     // 2. Không cho phép giờ bắt đầu trùng với giờ kết thúc của bất kỳ lịch chiếu nào khác cùng phòng, cùng ngày
                     if (existing.EndTime == startTime)
                     {
-                        _logger.LogWarning($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Trùng giờ bắt đầu với giờ kết thúc phim khác: startTime={startTime}, endTime={existing.EndTime}");
+                        _logger.LogWarning($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Trùng giờ bắt đầu với giờ kết thúc phim khác: startTime={startTime}, " +
+                            $"endTime={existing.EndTime}");
+                        return true;
+                    }
+
+                    // 3.Không cho phép giờ bắt đầu nằm trong khoảng thời gian của 1 phim khác 
+                    //1 phòng chiếu chỉ có 1 bộ phim và 1 thơi gian chiếu cố định cho phòng đó 
+                    if (existing.StartTime <= startTime && startTime <= existing.EndTime)
+                    {
+                        _logger.LogWarning($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Giờ khởi tạo nằm trong 1 khoảng thời gian của phim khác : startTime={startTime}, " +
+                            $"endTime={existing.EndTime}");
                         return true;
                     }
                 }
                 _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Không phát hiện conflict cho movieId={movieId}, startTime={startTime}, endTime={endTime}");
                 return false;
+
+
             }
             catch (Exception ex)
             {
