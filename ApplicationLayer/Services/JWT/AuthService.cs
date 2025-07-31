@@ -245,8 +245,34 @@ namespace ApplicationLayer.Services.JWT
             var redisKey = $"local:otp:{req.Email}:forgot_password";
             await _cacheService.Set(redisKey, otp, TimeSpan.FromMinutes(3));
 
-            var subject = "Forgot Password OTP";
-            var message = $"Your OTP is: {otp}";
+            var subject = "Mã OTP đặt lại mật khẩu - Cinema City";
+            var message = $@"
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
+                    <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;'>
+                        <h1 style='margin: 0; font-size: 24px;'>CINEMA CITY</h1>
+                        <p style='margin: 10px 0 0 0; opacity: 0.9;'>Đặt lại mật khẩu</p>
+                    </div>
+                    <div style='background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px;'>
+                        <h2 style='color: #333; margin-bottom: 20px;'>Xin chào!</h2>
+                        <p style='color: #666; line-height: 1.6; margin-bottom: 20px;'>
+                            Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.
+                        </p>
+                        <div style='background: #fff; border: 2px dashed #667eea; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0;'>
+                            <p style='margin: 0 0 10px 0; color: #666; font-size: 14px;'>Mã OTP của bạn:</p>
+                            <h1 style='margin: 0; color: #667eea; font-size: 32px; font-weight: bold; letter-spacing: 5px;'>{otp}</h1>
+                        </div>
+                        <p style='color: #666; line-height: 1.6; margin-bottom: 20px;'>
+                            <strong>Lưu ý:</strong> Mã OTP này có hiệu lực trong 3 phút. Vui lòng không chia sẻ mã này với bất kỳ ai.
+                        </p>
+                        <p style='color: #666; line-height: 1.6; margin-bottom: 0;'>
+                            Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.
+                        </p>
+                    </div>
+                    <div style='text-align: center; margin-top: 20px; color: #999; font-size: 12px;'>
+                        <p>Email này được gửi tự động, vui lòng không trả lời.</p>
+                        <p>&copy; 2024 Cinema City. All rights reserved.</p>
+                    </div>
+                </div>";
 
             await _mailService.SendEmailAsync(req.Email, subject, message);
 

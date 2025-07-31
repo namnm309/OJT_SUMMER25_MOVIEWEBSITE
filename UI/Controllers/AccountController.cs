@@ -263,5 +263,154 @@ namespace UI.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            // Pass TempData message to view if exists
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
+            return View(new ForgotPasswordViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                    return Json(new { success = false, message = string.Join(", ", errors) });
+                }
+                return View(model);
+            }
+
+            try
+            {
+                var requestData = new
+                {
+                    Email = model.Email
+                };
+
+                var result = await _apiService.PostAsync<JsonElement>("api/v1/Auth/Forgot-Password", requestData);
+
+                if (result.Success)
+                {
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    {
+                        return Json(new { success = true, message = "Mã OTP đã được gửi đến email của bạn." });
+                    }
+
+                    TempData["SuccessMessage"] = "Mã OTP đã được gửi đến email của bạn.";
+                    TempData["Email"] = model.Email;
+                    return RedirectToAction("ResetPassword");
+                }
+                else
+                {
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    {
+                        return Json(new { success = false, message = result.Message });
+                    }
+                    ModelState.AddModelError("", result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = $"Đã xảy ra lỗi: {ex.Message}" });
+                }
+                ModelState.AddModelError("", $"Đã xảy ra lỗi: {ex.Message}");
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string? email = null)
+        {
+            // Try to get email from query parameter first, then from TempData
+            var emailValue = email ?? TempData["Email"]?.ToString();
+            
+
+            
+            if (string.IsNullOrEmpty(emailValue))
+            {
+                return RedirectToAction("ForgotPassword");
+            }
+
+            var model = new ResetPasswordViewModel
+            {
+                Email = emailValue
+            };
+
+            // Pass TempData message to view if exists
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                    return Json(new { success = false, message = string.Join(", ", errors) });
+                }
+                return View(model);
+            }
+
+            try
+            {
+                var requestData = new
+                {
+                    Email = model.Email,
+                    OTP = model.OTP,
+                    NewPassword = model.NewPassword
+                };
+
+                var result = await _apiService.PostAsync<JsonElement>("api/v1/Auth/Verify-ChangePassword", requestData);
+
+                if (result.Success)
+                {
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    {
+                        return Json(new { success = true, message = "Đặt lại mật khẩu thành công! Vui lòng đăng nhập với mật khẩu mới.", redirectUrl = "/Account/Login" });
+                    }
+
+                    TempData["SuccessMessage"] = "Đặt lại mật khẩu thành công! Vui lòng đăng nhập với mật khẩu mới.";
+                    return RedirectToAction("Login");
+                }
+                else
+                {
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    {
+                        return Json(new { success = false, message = result.Message });
+                    }
+                    ModelState.AddModelError("", result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = $"Đã xảy ra lỗi: {ex.Message}" });
+                }
+                ModelState.AddModelError("", $"Đã xảy ra lỗi: {ex.Message}");
+            }
+
+            return View(model);
+        }
     }
 }
