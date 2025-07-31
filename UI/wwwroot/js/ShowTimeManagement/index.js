@@ -60,7 +60,9 @@
                        if (saveBtn) saveBtn.innerHTML = '<i class="fas fa-save me-1"></i> Lưu lịch chiếu';
 
                        await loadMoviesAndRooms();
-                       
+
+                       //
+
                        const modal = new bootstrap.Modal(document.getElementById('createNewShowtimeModal'));
                        modal.show();
                    } catch (error) {
@@ -143,7 +145,7 @@
                    }
                }
 
-                       async function saveNewShowtime() {
+               async function saveNewShowtime() {
             // Nếu đang ở chế độ chỉnh sửa => gọi API PUT, ngược lại POST
             const isEdit = isEditMode && editingShowtimeId;
             
@@ -568,41 +570,41 @@
                    initializeShowtimeTooltips();
                }
 
-                       function generateShowtimesForDay(date) {
-            // Lấy ngày theo giờ local, format "YYYY-MM-DD"
-            const y = date.getFullYear();
-            const m = String(date.getMonth() + 1).padStart(2, '0');
-            const d = String(date.getDate()).padStart(2, '0');
-            const dateStr = `${y}-${m}-${d}`;   // "YYYY-MM-DD"
+               function generateShowtimesForDay(date) {
+                    // Lấy ngày theo giờ local, format "YYYY-MM-DD"
+                    const y = date.getFullYear();
+                    const m = String(date.getMonth() + 1).padStart(2, '0');
+                    const d = String(date.getDate()).padStart(2, '0');
+                    const dateStr = `${y}-${m}-${d}`;   // "YYYY-MM-DD"
 
-            // 1. Lọc showtimes trùng ngày
-            let dayShowtimes = showtimeData.filter(st => {
-                // st.showDate format: "YYYY-MM-DDTHH:mm:ss"
-                return (st.showDate || '').startsWith(dateStr);
-            });
+                    // 1. Lọc showtimes trùng ngày
+                    let dayShowtimes = showtimeData.filter(st => {
+                        // st.showDate format: "YYYY-MM-DDTHH:mm:ss"
+                        return (st.showDate || '').startsWith(dateStr);
+                    });
 
-            // 2. Sort theo startTime tăng dần
-            dayShowtimes.sort((a, b) => a.startTime.localeCompare(b.startTime));
+                    // 2. Sort theo startTime tăng dần
+                    dayShowtimes.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-            // 3. Render ra HTML
-            return dayShowtimes.map(showtime => {
-                const posterUrl = showtime.moviePoster?.trim()
-                    ? showtime.moviePoster
-                    : '/images/default-movie-poster.jpg';
+                    // 3. Render ra HTML
+                    return dayShowtimes.map(showtime => {
+                        const posterUrl = showtime.moviePoster?.trim()
+                            ? showtime.moviePoster
+                            : '/images/default-movie-poster.jpg';
 
-                return `
-                    <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')"
-                         data-movie-id="${showtime.movieId || ''}"
-                         data-movie-title="${(showtime.movieTitle || '').toLowerCase()}"
-                         data-bs-toggle="tooltip" data-bs-html="true"
-                         data-poster="${posterUrl}"
-                         title="<img src='${posterUrl}' width='140' height='200' style='object-fit:cover;border-radius:6px;'>">
-                        <span class="calendar-showtime-title">${showtime.movieTitle}</span>
-                        <span class="calendar-showtime-time">${formatTime(showtime.startTime)}</span>
-                    </div>
-                `;
-            }).join('');
-        }
+                        return `
+                            <div class="calendar-showtime-item" onclick="showShowtimeDetail('${showtime.id}')"
+                                 data-movie-id="${showtime.movieId || ''}"
+                                 data-movie-title="${(showtime.movieTitle || '').toLowerCase()}"
+                                 data-bs-toggle="tooltip" data-bs-html="true"
+                                 data-poster="${posterUrl}"
+                                 title="<img src='${posterUrl}' width='140' height='200' style='object-fit:cover;border-radius:6px;'>">
+                                <span class="calendar-showtime-title">${showtime.movieTitle}</span>
+                                <span class="calendar-showtime-time">${formatTime(showtime.startTime)}</span>
+                            </div>
+                        `;
+                    }).join('');
+                }
 
 
                function formatTime(timeSpan) {
@@ -745,9 +747,9 @@
                    document.getElementById('startTime')?.addEventListener('change', calculateEndTime);
                });
 
-                       async function autoCheckConflict() {
-                return false; // Luôn coi như không trùng lịch
-            }
+            //   async function autoCheckConflict() {
+            //    return false; // Luôn coi như không trùng lịch
+            //}
 
 
                function clearCalendarHighlight() {
