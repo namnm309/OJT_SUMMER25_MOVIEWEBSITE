@@ -20,7 +20,7 @@ namespace UI.Services
             _httpContextAccessor = httpContextAccessor;
             _jsonOptions = new JsonSerializerOptions
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNamingPolicy = null, // Không chuyển đổi tên property
                 PropertyNameCaseInsensitive = true
             };
         }

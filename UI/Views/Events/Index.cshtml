@@ -1,26 +1,8 @@
 @{
     ViewData["Title"] = "Sự Kiện - Cinema City";
-    Layout = null;
 }
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-
-    
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="~/css/HomePage/base.css" />
-    
-    <link rel="stylesheet" href="~/css/dashboard.css" />
-
+@section Styles {
     <style>
         * {
             margin: 0;
@@ -30,17 +12,17 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
             color: white;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        
+        /* Hero Section */
         .events-hero-section {
-            background: linear-gradient(135deg, rgba(223, 33, 68, 0.15) 0%, rgba(0, 0, 0, 0.8) 100%),
-                        linear-gradient(45deg, #0a0a0a 0%, #1a1a1a 50%, #2d2d2d 100%);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%),
+                        linear-gradient(45deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
             padding: 6rem 0 4rem;
             position: relative;
             overflow: hidden;
@@ -55,8 +37,8 @@
             right: 0;
             bottom: 0;
             background: 
-                radial-gradient(circle at 20% 50%, rgba(223, 33, 68, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(223, 33, 68, 0.05) 0%, transparent 50%);
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
             animation: backgroundShift 20s ease-in-out infinite;
         }
 
@@ -76,10 +58,10 @@
             font-size: 3.5rem;
             font-weight: 800;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #rgb(129, 85, 238) 0%, #ff4466 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(223, 33, 68, 0.3);
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
         }
 
         .events-hero-subtitle {
@@ -91,9 +73,9 @@
             margin-right: auto;
         }
 
-        
+        /* Filter Section */
         .filter-section {
-            background: rgba(26, 26, 26, 0.9);
+            background: rgba(26, 26, 46, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             padding: 2rem;
@@ -122,8 +104,8 @@
 
         .search-box-events input:focus {
             outline: none;
-            border-color: rgba(223, 33, 68, 0.6);
-            box-shadow: 0 0 0 4px rgba(223, 33, 68, 0.2);
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
             background: rgba(255, 255, 255, 0.08);
         }
 
@@ -146,17 +128,17 @@
         }
 
         .filter-dropdown:focus, .date-input:focus {
-            border-color: rgba(223, 33, 68, 0.6);
-            box-shadow: 0 0 0 4px rgba(223, 33, 68, 0.2);
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
             background: rgba(255, 255, 255, 0.08);
         }
 
         .filter-dropdown option {
-            background: #1a1a1a;
+            background: #1a1a2e;
             color: white;
         }
 
-        
+        /* Events Content */
         .events-content {
             flex: 1;
             padding: 0 2rem 4rem;
@@ -170,7 +152,7 @@
         }
 
         .event-card {
-            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(45, 45, 45, 0.9) 100%);
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(45, 45, 65, 0.9) 100%);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             overflow: hidden;
@@ -183,8 +165,8 @@
 
         .event-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(223, 33, 68, 0.2);
-            border-color: rgba(223, 33, 68, 0.3);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.3);
         }
 
         .event-image {
@@ -220,7 +202,7 @@
             display: block;
             font-size: 1.5rem;
             font-weight: 700;
-            color: #rgb(129, 85, 238);
+            color: #667eea;
             line-height: 1;
         }
 
@@ -255,7 +237,7 @@
         }
 
         .event-type.premiere {
-            background: linear-gradient(135deg, #rgb(129, 85, 238), #ff4466);
+            background: linear-gradient(135deg, #667eea, #764ba2);
         }
 
         .event-type.contest {
@@ -308,7 +290,7 @@
         }
 
         .event-location i {
-            color: #rgb(129, 85, 238);
+            color: #667eea;
         }
 
         .event-actions {
@@ -344,18 +326,18 @@
         }
 
         .event-actions .btn-success {
-            background: linear-gradient(135deg, #rgb(129, 85, 238), #ff4466);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
         }
 
         .event-actions .btn-success:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(223, 33, 68, 0.3);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
-        
+        /* Calendar Section */
         .calendar-section {
-            background: rgba(26, 26, 26, 0.9);
+            background: rgba(26, 26, 46, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             padding: 2rem;
@@ -364,7 +346,7 @@
         }
 
         .calendar-btn {
-            background: linear-gradient(135deg, #rgb(129, 85, 238), #ff4466);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             border: none;
             color: white;
             padding: 1rem 2rem;
@@ -380,11 +362,11 @@
 
         .calendar-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(223, 33, 68, 0.4);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
             color: white;
         }
 
-        
+        /* Pagination */
         .pagination {
             display: flex;
             justify-content: center;
@@ -402,24 +384,23 @@
         }
 
         .pagination .page-link:hover {
-            background: rgba(223, 33, 68, 0.2);
-            border-color: rgba(223, 33, 68, 0.5);
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
             color: white;
         }
 
         .pagination .page-item.active .page-link {
-            background: linear-gradient(135deg, #rgb(129, 85, 238), #ff4466);
-            border-color: #rgb(129, 85, 238);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
         }
 
-        
+        /* Page Container */
         .cinema-events-page {
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
         }
 
-        
         .cinema-footer {
             margin-top: 4rem !important;
             position: relative !important;
@@ -427,7 +408,7 @@
             width: 100% !important;
         }
 
-        
+        /* Responsive */
         @@media (max-width: 768px) {
             .events-hero-title {
                 font-size: 2.5rem;
@@ -468,17 +449,12 @@
             }
         }
     </style>
-</head>
-<body>
     @{
         ViewBag.CurrentPage = "Events";
     }
     
-    
-    @Html.Partial("_DashboardHeader")
-
     <div class="cinema-events-page">
-        
+        <!-- Hero Section -->
         <div class="events-hero-section">
             <div class="container">
                 <div class="events-hero-content">
@@ -491,7 +467,7 @@
         </div>
 
         <div class="container">
-            
+            <!-- Filter Section -->
             <div class="filter-section">
                 <div class="row">
                     <div class="col-md-4">
@@ -516,12 +492,13 @@
                 </div>
             </div>
 
-            
+            <!-- Events Content -->
             <div class="events-content">
                 <div class="events-grid">
+                    <!-- Event 1: Công chiếu phim -->
                     <div class="event-card">
                         <div class="event-image">
-                            <img src="https://via.placeholder.com/600x250/1a1a1a/ffffff?text=Công+Chiếu+Phim" alt="Công chiếu phim">
+                            <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Công chiếu phim">
                             <div class="event-date-badge">
                                 <span class="day">15</span>
                                 <span class="month">THG 3</span>
@@ -554,9 +531,10 @@
                         </div>
                     </div>
 
+                    <!-- Event 2: Cuộc thi review -->
                     <div class="event-card">
                         <div class="event-image">
-                            <img src="https://via.placeholder.com/600x250/1a1a1a/ffffff?text=Cuộc+Thi+Review" alt="Cuộc thi review">
+                            <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Cuộc thi review">
                             <div class="event-date-badge">
                                 <span class="day">20</span>
                                 <span class="month">THG 3</span>
@@ -589,9 +567,10 @@
                         </div>
                     </div>
 
+                    <!-- Event 3: Khuyến mãi -->
                     <div class="event-card">
                         <div class="event-image">
-                            <img src="https://via.placeholder.com/600x250/1a1a1a/ffffff?text=Khuyến+Mãi" alt="Khuyến mãi">
+                            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Khuyến mãi">
                             <div class="event-date-badge">
                                 <span class="day">25</span>
                                 <span class="month">THG 3</span>
@@ -624,9 +603,10 @@
                         </div>
                     </div>
 
+                    <!-- Event 4: Workshop -->
                     <div class="event-card">
                         <div class="event-image">
-                            <img src="https://via.placeholder.com/600x250/1a1a1a/ffffff?text=Workshop" alt="Workshop">
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Workshop">
                             <div class="event-date-badge">
                                 <span class="day">30</span>
                                 <span class="month">THG 3</span>
@@ -658,9 +638,81 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Event 5: Liên hoan phim -->
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Liên hoan phim">
+                            <div class="event-date-badge">
+                                <span class="day">05</span>
+                                <span class="month">THG 4</span>
+                            </div>
+                        </div>
+                        <div class="event-content">
+                            <div class="event-meta">
+                                <span class="event-type festival">Liên hoan phim</span>
+                                <span class="event-time">
+                                    <i class="fas fa-clock"></i> 18:00 - 23:00
+                                </span>
+                            </div>
+                            <h4 class="event-title">Liên Hoan Phim Độc Lập</h4>
+                            <p class="event-description">
+                                Khám phá những tác phẩm điện ảnh độc lập xuất sắc từ các đạo diễn trẻ.
+                                Giao lưu với nghệ sĩ và thảo luận về nghệ thuật.
+                            </p>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Rạp Lotte Cinema
+                            </div>
+                            <div class="event-actions">
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <button class="btn btn-success">
+                                    <i class="fas fa-ticket-alt"></i> Mua vé
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 6: Gặp gỡ diễn viên -->
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Gặp gỡ diễn viên">
+                            <div class="event-date-badge">
+                                <span class="day">12</span>
+                                <span class="month">THG 4</span>
+                            </div>
+                        </div>
+                        <div class="event-content">
+                            <div class="event-meta">
+                                <span class="event-type premiere">Gặp gỡ</span>
+                                <span class="event-time">
+                                    <i class="fas fa-clock"></i> 20:00
+                                </span>
+                            </div>
+                            <h4 class="event-title">Gặp Gỡ Diễn Viên Nổi Tiếng</h4>
+                            <p class="event-description">
+                                Cơ hội hiếm có để gặp gỡ và chụp ảnh cùng các diễn viên nổi tiếng.
+                                Chương trình bao gồm Q&A và ký tặng.
+                            </p>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Rạp BHD Star
+                            </div>
+                            <div class="event-actions">
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <button class="btn btn-success">
+                                    <i class="fas fa-camera"></i> Đăng ký
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                
+                <!-- Calendar Section -->
                 <div class="calendar-section">
                     <h3 style="margin-bottom: 1rem; color: white;">Xem Lịch Sự Kiện Đầy Đủ</h3>
                     <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem;">
@@ -671,7 +723,7 @@
                     </a>
                 </div>
 
-                
+                <!-- Pagination -->
                 <nav aria-label="Phân trang sự kiện">
                     <ul class="pagination">
                         <li class="page-item disabled">
@@ -699,45 +751,35 @@
         </div>
     </div>
 
-    
-    @Html.Partial("footer")
-
-    
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
             const searchInput = document.getElementById('eventSearch');
             const typeFilter = document.getElementById('eventTypeFilter');
             const dateFilter = document.getElementById('eventDateFilter');
 
             searchInput.addEventListener('input', function() {
-
                 console.log('Searching for events:', this.value);
             });
 
             typeFilter.addEventListener('change', function() {
-
                 console.log('Filter by type:', this.value);
             });
 
             dateFilter.addEventListener('change', function() {
-
                 console.log('Filter by date:', this.value);
             });
 
-
+            // Event registration simulation
             document.querySelectorAll('.btn-success').forEach(button => {
                 button.addEventListener('click', function() {
-                    if (this.textContent.includes('Đăng ký') || this.textContent.includes('Tham gia')) {
-
+                    if (this.textContent.includes('Đăng ký') || this.textContent.includes('Tham gia') || this.textContent.includes('Mua vé')) {
                         this.innerHTML = '<i class="fas fa-check me-2"></i>Đã đăng ký';
                         this.disabled = true;
                         setTimeout(() => {
                             this.innerHTML = this.textContent.includes('Workshop') ? 
                                 '<i class="fas fa-user-plus"></i> Đăng ký' : 
+                                this.textContent.includes('Mua vé') ?
+                                '<i class="fas fa-ticket-alt"></i> Mua vé' :
                                 '<i class="fas fa-pen"></i> Tham gia';
                             this.disabled = false;
                         }, 3000);
@@ -748,5 +790,4 @@
             console.log('🎉 Cinema Events page initialized');
         });
     </script>
-</body>
-</html>
+    }

@@ -1,26 +1,8 @@
 @{
     ViewData["Title"] = "Sản Phẩm - Cinema City";
-    Layout = null;
 }
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-
-
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="~/css/HomePage/base.css" />
-
-    <link rel="stylesheet" href="~/css/dashboard.css" />
-
+@section Styles {
     <style>
         * {
             margin: 0;
@@ -30,45 +12,40 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
             color: white;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-
+        /* Hero Section */
         .products-hero-section {
-            background: linear-gradient(135deg, rgba(223, 33, 68, 0.15) 0%, rgba(0, 0, 0, 0.8) 100%), linear-gradient(45deg, #0a0a0a 0%, #1a1a1a 50%, #2d2d2d 100%);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%),
+                        linear-gradient(45deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
             padding: 6rem 0 4rem;
             position: relative;
             overflow: hidden;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-            .products-hero-section::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: radial-gradient(circle at 20% 50%, rgba(223, 33, 68, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(223, 33, 68, 0.05) 0%, transparent 50%);
-                animation: backgroundShift 20s ease-in-out infinite;
-            }
+        .products-hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
 
         @@keyframes backgroundShift {
-            0%, 100% {
-                transform: translateX(0) translateY(0);
-            }
-
-            33% {
-                transform: translateX(-20px) translateY(-10px);
-            }
-
-            66% {
-                transform: translateX(20px) translateY(10px);
-            }
+            0%, 100% { transform: translateX(0) translateY(0); }
+            33% { transform: translateX(-20px) translateY(-10px); }
+            66% { transform: translateX(20px) translateY(10px); }
         }
 
         .products-hero-content {
@@ -81,10 +58,10 @@
             font-size: 3.5rem;
             font-weight: 800;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #rgb(129, 85, 238) 0%, #ff4466 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(223, 33, 68, 0.3);
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
         }
 
         .products-hero-subtitle {
@@ -96,9 +73,9 @@
             margin-right: auto;
         }
 
-
+        /* Filter Section */
         .filter-section {
-            background: rgba(26, 26, 26, 0.9);
+            background: rgba(26, 26, 46, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             padding: 2rem;
@@ -114,21 +91,21 @@
             margin-bottom: 1rem;
         }
 
-            .search-box-products input {
-                width: 100%;
-                padding: 1rem 1rem 1rem 3rem;
-                border: 2px solid rgba(255, 255, 255, 0.1);
-                border-radius: 50px;
-                background: rgba(255, 255, 255, 0.05);
-                color: white;
+        .search-box-products input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
                 font-size: 1rem;
                 transition: all 0.3s ease;
             }
 
                 .search-box-products input:focus {
                     outline: none;
-                    border-color: rgba(223, 33, 68, 0.6);
-                    box-shadow: 0 0 0 4px rgba(223, 33, 68, 0.2);
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
                     background: rgba(255, 255, 255, 0.08);
                 }
 
@@ -151,17 +128,17 @@
         }
 
             .filter-dropdown:focus {
-                border-color: rgba(223, 33, 68, 0.6);
-                box-shadow: 0 0 0 4px rgba(223, 33, 68, 0.2);
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
                 background: rgba(255, 255, 255, 0.08);
             }
 
             .filter-dropdown option {
-                background: #1a1a1a;
+            background: #1a1a2e;
                 color: white;
             }
 
-
+        /* Products Content */
         .products-content {
             flex: 1;
             padding: 0 2rem 4rem;
@@ -175,7 +152,7 @@
         }
 
         .product-card {
-            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(45, 45, 45, 0.9) 100%);
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(45, 45, 65, 0.9) 100%);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             overflow: hidden;
@@ -188,8 +165,8 @@
 
             .product-card:hover {
                 transform: translateY(-10px);
-                box-shadow: 0 20px 40px rgba(223, 33, 68, 0.2);
-                border-color: rgba(223, 33, 68, 0.3);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.3);
             }
 
         .product-image {
@@ -218,8 +195,8 @@
             font-size: 0.8rem;
             font-weight: 600;
             color: white;
-            background: linear-gradient(135deg, #rgb(129, 85, 238), #ff4466);
-            box-shadow: 0 4px 15px rgba(223, 33, 68, 0.3);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
             .product-badge.new {
@@ -230,6 +207,10 @@
                 background: linear-gradient(135deg, #ffc107, #ffb700);
                 color: #333;
             }
+
+        .product-badge.hot {
+            background: linear-gradient(135deg, #dc3545, #fd7e14);
+        }
 
         .product-info {
             padding: 1.5rem;
@@ -268,7 +249,7 @@
         .current-price {
             font-size: 1.4rem;
             font-weight: 700;
-            color: #rgb(129, 85, 238);
+            color: #667eea;
         }
 
         .original-price {
@@ -278,7 +259,7 @@
         }
 
         .product-actions .btn-add {
-            background: linear-gradient(135deg, #rgb(129, 85, 238), #ff4466);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             border: none;
             color: white;
             padding: 0.75rem 1.5rem;
@@ -289,10 +270,10 @@
 
             .product-actions .btn-add:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 10px 20px rgba(223, 33, 68, 0.3);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
             }
 
-
+        /* Pagination */
         .pagination {
             display: flex;
             justify-content: center;
@@ -310,23 +291,22 @@
             }
 
                 .pagination .page-link:hover {
-                    background: rgba(223, 33, 68, 0.2);
-                    border-color: rgba(223, 33, 68, 0.5);
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
                     color: white;
                 }
 
             .pagination .page-item.active .page-link {
-                background: linear-gradient(135deg, #rgb(129, 85, 238), #ff4466);
-                border-color: #rgb(129, 85, 238);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
             }
 
-
+        /* Page Container */
         .cinema-products-page {
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
         }
-
 
         .cinema-footer {
             margin-top: 4rem !important;
@@ -335,7 +315,7 @@
             width: 100% !important;
         }
 
-
+        /* Responsive */
         @@media (max-width: 768px) {
             .products-hero-title {
                 font-size: 2.5rem;
@@ -373,17 +353,12 @@
             }
         }
     </style>
-</head>
-<body>
     @{
         ViewBag.CurrentPage = "Products";
     }
 
-
-    @Html.Partial("_DashboardHeader")
-
     <div class="cinema-products-page">
-
+        <!-- Hero Section -->
         <div class="products-hero-section">
             <div class="container">
                 <div class="products-hero-content">
@@ -396,7 +371,7 @@
         </div>
 
         <div class="container">
-
+            <!-- Filter Section -->
             <div class="filter-section">
                 <div class="row">
                     <div class="col-md-8">
@@ -417,110 +392,261 @@
                 </div>
             </div>
 
-
+            <!-- Products Content -->
             <div class="products-content">
                 <div class="products-grid">
-                    <!-- Dữ liệu sẽ được tải từ API và hiển thị ở đây -->
+                    <!-- Product 1: Combo Bắp Nước -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Combo Bắp Nước">
+                            <div class="product-badge combo">Combo</div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">Combo Bắp Nước Siêu Tiết Kiệm</h5>
+                            <p class="product-description">Combo gồm 1 bắp rang bơ lớn và 2 nước ngọt, tiết kiệm 30% so với mua lẻ.</p>
+                            <div class="product-meta">
+                                <div class="product-price">
+                                    <span class="current-price">89.000đ</span>
+                                    <span class="original-price">120.000đ</span>
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn-add" data-id="1">
+                                        <i class="fas fa-cart-plus me-2"></i>Thêm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 2: Bắp Rang Bơ -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Bắp Rang Bơ">
+                            <div class="product-badge hot">Bán chạy</div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">Bắp Rang Bơ Caramel</h5>
+                            <p class="product-description">Bắp rang bơ thơm ngon với hương vị caramel đặc biệt, giòn tan trong miệng.</p>
+                            <div class="product-meta">
+                                <div class="product-price">
+                                    <span class="current-price">45.000đ</span>
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn-add" data-id="2">
+                                        <i class="fas fa-cart-plus me-2"></i>Thêm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 3: Nước Ngọt -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1629203851122-3726ecdf080e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Nước Ngọt">
+                            <div class="product-badge new">Mới</div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">Nước Ngọt Coca-Cola</h5>
+                            <p class="product-description">Nước ngọt Coca-Cola mát lạnh, sảng khoái với hương vị đặc trưng.</p>
+                            <div class="product-meta">
+                                <div class="product-price">
+                                    <span class="current-price">25.000đ</span>
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn-add" data-id="3">
+                                        <i class="fas fa-cart-plus me-2"></i>Thêm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 4: Kẹo Bông Gòn -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Kẹo Bông Gòn">
+                            <div class="product-badge">Phổ biến</div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">Kẹo Bông Gòn Đường</h5>
+                            <p class="product-description">Kẹo bông gòn ngọt ngào, mềm mại với nhiều màu sắc hấp dẫn.</p>
+                            <div class="product-meta">
+                                <div class="product-price">
+                                    <span class="current-price">35.000đ</span>
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn-add" data-id="4">
+                                        <i class="fas fa-cart-plus me-2"></i>Thêm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 5: Combo Gia Đình -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Combo Gia Đình">
+                            <div class="product-badge combo">Combo</div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">Combo Gia Đình 4 Người</h5>
+                            <p class="product-description">Combo hoàn hảo cho gia đình gồm 4 bắp, 4 nước và 2 kẹo bông gòn.</p>
+                            <div class="product-meta">
+                                <div class="product-price">
+                                    <span class="current-price">199.000đ</span>
+                                    <span class="original-price">280.000đ</span>
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn-add" data-id="5">
+                                        <i class="fas fa-cart-plus me-2"></i>Thêm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 6: Áo Thun Cinema -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Áo Thun Cinema">
+                            <div class="product-badge new">Mới</div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">Áo Thun Cinema City</h5>
+                            <p class="product-description">Áo thun cotton cao cấp với logo Cinema City độc quyền, thiết kế thời trang.</p>
+                            <div class="product-meta">
+                                <div class="product-price">
+                                    <span class="current-price">150.000đ</span>
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn-add" data-id="6">
+                                        <i class="fas fa-cart-plus me-2"></i>Thêm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 7: Móc Khóa Phim -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Móc Khóa Phim">
+                            <div class="product-badge">Quà tặng</div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">Móc Khóa Phim Độc Quyền</h5>
+                            <p class="product-description">Móc khóa với thiết kế phim độc quyền, chất liệu cao cấp, quà tặng hoàn hảo.</p>
+                            <div class="product-meta">
+                                <div class="product-price">
+                                    <span class="current-price">75.000đ</span>
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn-add" data-id="7">
+                                        <i class="fas fa-cart-plus me-2"></i>Thêm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 8: Bánh Quy -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Bánh Quy">
+                            <div class="product-badge hot">Bán chạy</div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">Bánh Quy Socola Chip</h5>
+                            <p class="product-description">Bánh quy giòn tan với socola chip thơm ngon, hoàn hảo để nhâm nhi khi xem phim.</p>
+                            <div class="product-meta">
+                                <div class="product-price">
+                                    <span class="current-price">55.000đ</span>
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn-add" data-id="8">
+                                        <i class="fas fa-cart-plus me-2"></i>Thêm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-
+                <!-- Pagination -->
                 <nav aria-label="Phân trang sản phẩm">
                     <ul class="pagination">
-                        <!-- Phân trang sẽ được tạo động từ JavaScript -->
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">
+                                <i class="fas fa-chevron-left"></i> Trước
+                            </a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                Sau <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
         </div>
     </div>
 
-
-    @Html.Partial("footer")
-
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const productsGrid = document.querySelector('.products-grid');
             const searchInput = document.getElementById('productSearch');
             const categoryFilter = document.getElementById('categoryFilter');
-            const paginationContainer = document.querySelector('.pagination');
 
-            let currentPage = 1;
-            let pageSize = 6;
-            let searchTerm = '';
-            let isActive = true;
-
-            // Hàm lấy dữ liệu từ API
-            async function fetchProducts() {
-                try {
-                    const url = `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/ConcessionItems/paginated?page=${currentPage}&pageSize=${pageSize}&searchTerm=${searchTerm}&isActive=${isActive}`;
-                    const response = await fetch(url);
-
-                    if (!response.ok) {
-                        throw new Error('Không thể lấy dữ liệu sản phẩm');
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const productCards = document.querySelectorAll('.product-card');
+                
+                productCards.forEach(card => {
+                    const title = card.querySelector('.product-title').textContent.toLowerCase();
+                    const description = card.querySelector('.product-description').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
                     }
+                });
+            });
 
-                    const data = await response.json();
-                    renderProducts(data.items);
-                    renderPagination(data.page, data.pageSize, data.total);
-                } catch (error) {
-                    console.error('Lỗi:', error);
-                    productsGrid.innerHTML = `<div class="alert alert-danger">Không thể tải sản phẩm. Vui lòng thử lại sau.</div>`;
-                }
-            }
-
-            // Hàm hiển thị sản phẩm
-            function renderProducts(products) {
-                if (!products || products.length === 0) {
-                    productsGrid.innerHTML = `<div class="col-12 text-center">
-                        <div class="alert alert-info">Không tìm thấy sản phẩm nào.</div>
-                    </div>`;
+            // Category filter functionality
+            categoryFilter.addEventListener('change', function() {
+                const category = this.value.toLowerCase();
+                const productCards = document.querySelectorAll('.product-card');
+                
+                if (!category) {
+                    productCards.forEach(card => card.style.display = 'block');
                     return;
                 }
 
-                productsGrid.innerHTML = '';
-
-                products.forEach(product => {
-                    const productCard = document.createElement('div');
-                    productCard.className = 'product-card';
-
-                    // Xác định loại badge
-                    let badgeHTML = '';
-                    if (product.name.toLowerCase().includes('combo')) {
-                        badgeHTML = `<div class="product-badge combo">Combo</div>`;
-                    } else if (new Date(product.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) {
-                        badgeHTML = `<div class="product-badge new">Mới</div>`;
+                productCards.forEach(card => {
+                    const title = card.querySelector('.product-title').textContent.toLowerCase();
+                    const description = card.querySelector('.product-description').textContent.toLowerCase();
+                    
+                    if (title.includes(category) || description.includes(category)) {
+                        card.style.display = 'block';
                     } else {
-                        badgeHTML = `<div class="product-badge">Bán chạy</div>`;
+                        card.style.display = 'none';
                     }
-
-                    productCard.innerHTML = `
-                        <div class="product-image">
-                            <img src="${product.imageUrl || 'https://via.placeholder.com/300x250/1a1a1a/ffffff?text=Sản+Phẩm'}" alt="${product.name}">
-                            ${badgeHTML}
-                        </div>
-                        <div class="product-info">
-                            <h5 class="product-title">${product.name}</h5>
-                            <p class="product-description">${product.description || 'Không có mô tả'}</p>
-                            <div class="product-meta">
-                                <div class="product-price">
-                                    <span class="current-price">${product.price.toLocaleString('vi-VN')}đ</span>
-                                </div>
-                                <div class="product-actions">
-                                    <button class="btn-add" data-id="${product.id}">
-                                        <i class="fas fa-cart-plus me-2"></i>Thêm
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-
-                    productsGrid.appendChild(productCard);
                 });
+            });
 
-                // Thêm event listener cho các nút "Thêm"
+            // Add to cart functionality
                 document.querySelectorAll('.btn-add').forEach(button => {
                     button.addEventListener('click', function() {
                         const productId = this.getAttribute('data-id');
@@ -534,80 +660,13 @@
                         }, 2000);
                     });
                 });
-            }
 
-            // Hàm hiển thị phân trang
-            function renderPagination(page, pageSize, total) {
-                const totalPages = Math.ceil(total / pageSize);
-
-                let paginationHTML = `
-                    <li class="page-item ${page === 1 ? 'disabled' : ''}">
-                        <a class="page-link" href="#" data-page="${page - 1}" tabindex="-1">
-                            <i class="fas fa-chevron-left"></i> Trước
-                        </a>
-                    </li>
-                `;
-
-                for (let i = 1; i <= totalPages; i++) {
-                    paginationHTML += `
-                        <li class="page-item ${i === page ? 'active' : ''}">
-                            <a class="page-link" href="#" data-page="${i}">${i}</a>
-                        </li>
-                    `;
-                }
-
-                paginationHTML += `
-                    <li class="page-item ${page === totalPages ? 'disabled' : ''}">
-                        <a class="page-link" href="#" data-page="${page + 1}">
-                            Sau <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                `;
-
-                paginationContainer.innerHTML = paginationHTML;
-
-                // Thêm event listener cho các nút phân trang
-                document.querySelectorAll('.page-link').forEach(link => {
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const newPage = parseInt(this.getAttribute('data-page'));
-                        if (newPage && newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
-                            currentPage = newPage;
-                            fetchProducts();
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }
-                    });
-                });
-            }
-
-            // Hàm thêm vào giỏ hàng (có thể phát triển sau)
             function addToCart(productId) {
                 console.log(`Đã thêm sản phẩm ${productId} vào giỏ hàng`);
                 // Ở đây bạn có thể gọi API để thêm vào giỏ hàng
             }
 
-            // Xử lý tìm kiếm
-            searchInput.addEventListener('input', function() {
-                searchTerm = this.value;
-                currentPage = 1;
-                fetchProducts();
-            });
-
-            // Xử lý lọc danh mục
-            categoryFilter.addEventListener('change', function() {
-                const category = this.value;
-                // Trong trường hợp này, chúng ta không có trường category trong API
-                // Bạn có thể thêm trường này vào ConcessionItem hoặc sử dụng searchTerm
-                searchTerm = category ? category : '';
-                currentPage = 1;
-                fetchProducts();
-            });
-
-            // Tải dữ liệu ban đầu
-            fetchProducts();
-
-            console.log('🛍️ Cinema Products page initialized with API data');
+            console.log('🛍️ Cinema Products page initialized with dummy data');
         });
     </script>
-</body>
-</html>
+    }
