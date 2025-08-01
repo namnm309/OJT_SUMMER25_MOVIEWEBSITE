@@ -1,359 +1,367 @@
-
-
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 .shared-footer {
-    background: linear-gradient(180deg, #141414 0%, #0a0a0a 100%);
-    color: #ffffff;
-    padding: 50px 0 30px;
-    margin-top: 60px;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    position: relative;
-    overflow: hidden;
-    border-top: 1px solid rgba(139, 92, 246, 0.1);
+  background: linear-gradient(180deg, #141414 0%, #0a0a0a 100%);
+  color: #ffffff;
+  padding: 50px 0 30px;
+  margin-top: 60px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(139, 92, 246, 0.1);
 }
-
 
 .shared-footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
-
 
 .shared-footer-divider {
-    height: 4px;
-    background: linear-gradient(90deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.6) 50%, rgba(139, 92, 246, 0.1) 100%);
-    margin-bottom: 40px;
-    border-radius: 2px;
-    position: relative;
-    overflow: hidden;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    rgba(139, 92, 246, 0.1) 0%,
+    rgba(139, 92, 246, 0.6) 50%,
+    rgba(139, 92, 246, 0.1) 100%
+  );
+  margin-bottom: 40px;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
 }
 
-    .shared-footer-divider::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 50%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        animation: shine 3s infinite;
-    }
+.shared-footer-divider::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shine 3s infinite;
+}
 
 @keyframes shine {
-    0% {
-        left: -100%;
-    }
+  0% {
+    left: -100%;
+  }
 
-    100% {
-        left: 200%;
-    }
+  100% {
+    left: 200%;
+  }
 }
 
-
 .shared-footer-top {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin-bottom: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 40px;
 }
 
 .shared-footer-logo {
-    flex: 0 0 100%;
-    max-width: 350px;
-    margin-bottom: 30px;
+  flex: 0 0 100%;
+  max-width: 350px;
+  margin-bottom: 30px;
 }
 
 .shared-footer-brand-content {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .shared-footer-brand-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .shared-footer-brand-name {
-    font-size: 24px;
-    font-weight: 700;
-    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-right: 10px;
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-right: 10px;
 }
 
 .shared-footer-brand-logo {
-    width: 40px;
-    height: 40px;
-    background: url('/img/logo.png') center/contain no-repeat;
-    border-radius: 8px;
-    position: relative;
-    overflow: hidden;
+  width: 40px;
+  height: 40px;
+  background: url("/img/logo.png") center/contain no-repeat;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
 }
 
-    /* Giữ lại hiệu ứng shine nếu muốn */
-    .shared-footer-brand-logo::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        animation: shine 2s infinite;
-    }
+/* Giữ lại hiệu ứng shine nếu muốn */
+.shared-footer-brand-logo::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: shine 2s infinite;
+}
 
 .shared-footer-brand-subtitle {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 15px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 15px;
 }
 
 .shared-footer-description {
-    font-size: 14px;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-
 .shared-footer-links {
-    display: flex;
-    flex-wrap: wrap;
-    flex: 1;
-    justify-content: space-around;
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: space-around;
 }
 
 .shared-footer-column {
-    flex: 0 0 auto;
-    margin-bottom: 30px;
-    min-width: 160px;
+  flex: 0 0 auto;
+  margin-bottom: 30px;
+  min-width: 160px;
 }
 
-    .shared-footer-column h4 {
-        font-size: 16px;
-        font-weight: 600;
-        color: #8b5cf6;
-        margin-bottom: 20px;
-        position: relative;
-        padding-bottom: 10px;
-    }
+.shared-footer-column h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #8b5cf6;
+  margin-bottom: 20px;
+  position: relative;
+  padding-bottom: 10px;
+}
 
-        .shared-footer-column h4::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 30px;
-            height: 2px;
-            background: linear-gradient(90deg, #8b5cf6, transparent);
-        }
+.shared-footer-column h4::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, #8b5cf6, transparent);
+}
 
-    .shared-footer-column ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+.shared-footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
-        .shared-footer-column ul li {
-            margin-bottom: 12px;
-        }
+.shared-footer-column ul li {
+  margin-bottom: 12px;
+}
 
-            .shared-footer-column ul li a {
-                color: rgba(255, 255, 255, 0.7);
-                text-decoration: none;
-                font-size: 14px;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-            }
+.shared-footer-column ul li a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
 
-                .shared-footer-column ul li a:hover {
-                    color: #8b5cf6;
-                    transform: translateX(5px);
-                }
+.shared-footer-column ul li a:hover {
+  color: #8b5cf6;
+  transform: translateX(5px);
+}
 
-                .shared-footer-column ul li a i {
-                    margin-right: 8px;
-                    font-size: 14px;
-                    color: rgba(139, 92, 246, 0.8);
-                }
-
+.shared-footer-column ul li a i {
+  margin-right: 8px;
+  font-size: 14px;
+  color: rgba(139, 92, 246, 0.8);
+}
 
 .shared-footer-middle {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 30px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 30px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.shared-contact-info, .shared-app-download {
-    flex: 0 0 100%;
-    max-width: 100%;
-    margin-bottom: 30px;
+.shared-contact-info,
+.shared-app-download {
+  flex: 0 0 100%;
+  max-width: 100%;
+  margin-bottom: 30px;
 }
 
-    .shared-contact-info h4, .shared-app-download h4 {
-        font-size: 16px;
-        font-weight: 600;
-        color: #8b5cf6;
-        margin-bottom: 20px;
-    }
+.shared-contact-info h4,
+.shared-app-download h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #8b5cf6;
+  margin-bottom: 20px;
+}
 
 .shared-social-icons {
-    display: flex;
-    gap: 15px;
+  display: flex;
+  gap: 15px;
 }
 
 .shared-social-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(139, 92, 246, 0.3);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
-    .shared-social-icon:hover {
-        background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
-        color: #ffffff;
-    }
+.shared-social-icon:hover {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+  color: #ffffff;
+}
 
 .shared-app-buttons {
-    display: flex;
-    gap: 15px;
+  display: flex;
+  gap: 15px;
 }
 
 .shared-app-button {
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    color: #ffffff;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(139, 92, 246, 0.3);
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
-    .shared-app-button:hover {
-        background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
-    }
+.shared-app-button:hover {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+}
 
-    .shared-app-button i {
-        font-size: 20px;
-        margin-right: 8px;
-    }
-
+.shared-app-button i {
+  font-size: 20px;
+  margin-right: 8px;
+}
 
 .shared-footer-bottom {
-    padding-top: 30px;
-    text-align: center;
+  padding-top: 30px;
+  text-align: center;
 }
 
 .shared-footer-company-info {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
-    .shared-footer-company-info p {
-        margin-bottom: 5px;
-        font-size: 14px;
-        color: rgba(255, 255, 255, 0.6);
-    }
+.shared-footer-company-info p {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
 
 .shared-copyright {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
 }
-
 
 @media (min-width: 768px) {
-    .shared-contact-info, .shared-app-download {
-        flex: 0 0 48%;
-        max-width: 48%;
-    }
+  .shared-contact-info,
+  .shared-app-download {
+    flex: 0 0 48%;
+    max-width: 48%;
+  }
 
-    .shared-footer-logo {
-        flex: 0 0 30%;
-        max-width: 30%;
-    }
+  .shared-footer-logo {
+    flex: 0 0 30%;
+    max-width: 30%;
+  }
 
-    .shared-footer-links {
-        flex: 0 0 65%;
-        max-width: 65%;
-    }
+  .shared-footer-links {
+    flex: 0 0 65%;
+    max-width: 65%;
+  }
 }
-
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.shared-footer-top, .shared-footer-middle, .shared-footer-bottom {
-    animation: fadeIn 0.8s ease-out forwards;
+.shared-footer-top,
+.shared-footer-middle,
+.shared-footer-bottom {
+  animation: fadeIn 0.8s ease-out forwards;
 }
-
 
 @media (prefers-color-scheme: dark) {
-    .shared-social-icon, .shared-app-button {
-        border-color: rgba(139, 92, 246, 0.5);
-    }
+  .shared-social-icon,
+  .shared-app-button {
+    border-color: rgba(139, 92, 246, 0.5);
+  }
 
-    .shared-footer-company-info {
-        border-color: rgba(139, 92, 246, 0.2);
-    }
+  .shared-footer-company-info {
+    border-color: rgba(139, 92, 246, 0.2);
+  }
 }
-
 
 @media (forced-colors: active) {
-    .shared-footer-divider, .shared-footer-column h4::after {
-        background: CanvasText;
-    }
+  .shared-footer-divider,
+  .shared-footer-column h4::after {
+    background: CanvasText;
+  }
 
-    .shared-social-icon, .shared-app-button {
-        border: 1px solid CanvasText;
-    }
+  .shared-social-icon,
+  .shared-app-button {
+    border: 1px solid CanvasText;
+  }
 }
 
-
 .shared-footer ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+  width: 8px;
+  height: 8px;
 }
 
 .shared-footer ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .shared-footer ::-webkit-scrollbar-thumb {
-    background: rgba(139, 92, 246, 0.5);
-    border-radius: 4px;
+  background: rgba(139, 92, 246, 0.5);
+  border-radius: 4px;
 }
 
-    .shared-footer ::-webkit-scrollbar-thumb:hover {
-        background: rgba(139, 92, 246, 0.7);
-    }
+.shared-footer ::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.7);
+}
