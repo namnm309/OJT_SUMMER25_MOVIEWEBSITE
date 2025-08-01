@@ -39,7 +39,7 @@ namespace ControllerLayer.Controllers
 
             // Create session ID
             var sessionId = Guid.NewGuid().ToString();
-
+    
             // Create claims for cookie
             var claims = new List<Claim>
             {
