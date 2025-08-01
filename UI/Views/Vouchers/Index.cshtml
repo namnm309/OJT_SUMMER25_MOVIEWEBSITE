@@ -26,6 +26,16 @@
             color: white;
             font-family: 'Inter', sans-serif;
         }
+        
+        /* Ensure header offset works */
+        .voucher-container.modern.with-header-offset {
+            padding-top: 110px !important;
+        }
+        @@media (max-width: 992px) {
+            .voucher-container.modern.with-header-offset {
+                padding-top: 130px !important;
+            }
+        }
         .cinema-vouchers-page {
             min-height: 100vh;
             color: white;
@@ -43,6 +53,7 @@
             margin-bottom: 40px;
             position: relative;
             overflow: hidden;
+            padding-top: 20px;
         }
         .hero-section-voucher::before {
             content: '';
@@ -391,7 +402,7 @@
     </style>
 }
 
-<div class="voucher-container modern">
+<div class="voucher-container modern with-header-offset">
     <div class="hero-section-voucher">
         <div class="hero-content-voucher">
             <div class="hero-title-voucher"><i class="fas fa-gift"></i> Voucher của bạn</div>

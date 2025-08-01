@@ -1,4 +1,8 @@
-.with-header-offset { padding-top: 110px; }
+.with-header-offset { 
+    padding-top: 110px !important; 
+}
 @media (max-width: 992px) {
-  .with-header-offset { padding-top: 130px; }
+  .with-header-offset { 
+      padding-top: 130px !important; 
+  }
 } 
