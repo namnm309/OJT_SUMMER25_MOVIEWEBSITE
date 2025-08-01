@@ -13,8 +13,8 @@ namespace ApplicationLayer.DTO.JWT
 
     public class VerifyOTPChangePassword
     {
-        public string Email { get; set; } = null!;
-        public string OTP { get; set; } = null!;
-        public string NewPassword { get; set; } = null!;
+        public string email { get; set; } = null!;
+        public string otp { get; set; } = null!;
+        public string newPassword { get; set; } = null!;
     }
 }
