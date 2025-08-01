@@ -20,6 +20,7 @@ class BookTicketDashboard {
     this.bindEvents();
     this.loadMovies();
     this.loadPromotions();
+    this.updateStepDisplay(); // Đảm bảo hiển thị đúng bước ban đầu
   }
 
   // gán click, keypress, change events cho các nút và input
@@ -116,10 +117,15 @@ class BookTicketDashboard {
         this.selectMovie(movie);
         this.displaySelectedMovieInfo(movie);
       } else {
+        // Reset trạng thái khi không chọn phim
+        this.selectedMovie = null;
+        this.selectedShowtime = null;
+        this.selectedSeats = [];
         selectedMovieInfo.hide();
         $("#showtimeSelection").html(
           '<p class="text-muted">Vui lòng chọn phim trước</p>'
         );
+        this.updateStepDisplay(); // Cập nhật thanh tiến trình
       }
     });
   }
@@ -153,8 +159,11 @@ class BookTicketDashboard {
   // lưu phim đã chọn và tải lịch chiếu
   async selectMovie(movie) {
     this.selectedMovie = movie;
+    this.selectedShowtime = null; // Reset suất chiếu khi chọn phim mới
+    this.selectedSeats = []; // Reset ghế đã chọn
 
     await this.loadShowtimes(movie.id);
+    this.updateStepDisplay(); // Cập nhật thanh tiến trình
   }
 
   //lấy ngày chiếu và giờ chiếu của phim
@@ -295,9 +304,12 @@ class BookTicketDashboard {
   // lưu suất chiếu và => step 2 chọn ghế
   selectShowtime(showtime) {
     this.selectedShowtime = showtime;
+    this.selectedSeats = []; // Reset ghế đã chọn khi chọn suất chiếu mới
 
     $(".showtime-btn").removeClass("active");
     $(`.showtime-btn[data-showtime-id="${showtime.id}"]`).addClass("active");
+
+    this.updateStepDisplay(); // Cập nhật thanh tiến trình ngay lập tức
 
     setTimeout(() => {
       this.currentStep = 2;
@@ -409,9 +421,19 @@ class BookTicketDashboard {
     } else {
       this.selectedSeats.push(seat);
       seatElement.addClass("selected");
+
+      // Tự động chuyển sang bước 2 ngay khi chọn ghế đầu tiên
+      if (this.currentStep === 1 && this.selectedSeats.length === 1) {
+        console.log(
+          "Chuyển từ bước 1 sang bước 2 khi chọn ghế:",
+          seat.seatCode
+        );
+        this.currentStep = 2;
+      }
     }
 
     this.updateSelectedSeats();
+    this.updateStepDisplay(); // Cập nhật thanh tiến trình khi thay đổi ghế
   }
 
   // hiển thị danh sách ghế đã chọn và tính tổng tiền
@@ -734,6 +756,13 @@ class BookTicketDashboard {
   //Validate và chuyển sang bước tiếp theo (1→2→3)
   nextStep() {
     if (this.currentStep < 3) {
+      // Nếu đang ở bước 1 và đã chọn ghế, tự động chuyển sang bước 2
+      if (this.currentStep === 1 && this.selectedSeats.length > 0) {
+        this.currentStep = 2;
+        this.updateStepDisplay();
+        return;
+      }
+
       if (!this.validateStep(this.currentStep)) {
         return;
       }
@@ -757,13 +786,32 @@ class BookTicketDashboard {
   }
 
   updateStepDisplay() {
+    console.log("updateStepDisplay được gọi, currentStep:", this.currentStep);
+    console.log("selectedSeats.length:", this.selectedSeats.length);
+    console.log("selectedSeats:", this.selectedSeats);
+
     $(".step").removeClass("active completed");
-    for (let i = 1; i <= 3; i++) {
-      if (i < this.currentStep) {
-        $(`.step[data-step="${i}"]`).addClass("completed");
-      } else if (i === this.currentStep) {
-        $(`.step[data-step="${i}"]`).addClass("active");
-      }
+
+    // Step 1: Chuyển sang màu xanh khi đã chọn phim VÀ suất chiếu
+    if (this.selectedMovie && this.selectedShowtime) {
+      $(`.step[data-step="1"]`).addClass("completed");
+    } else if (this.currentStep === 1) {
+      $(`.step[data-step="1"]`).addClass("active");
+    }
+
+    // Step 2: Chỉ chuyển sang màu xanh khi đã chọn ít nhất một ghế
+    // Không có else if để tránh chuyển xanh khi chưa chọn ghế
+    if (this.selectedSeats.length > 0) {
+      console.log("Thêm class completed cho Step 2 vì đã chọn ghế");
+      $(`.step[data-step="2"]`).addClass("completed");
+    } else {
+      console.log("Step 2 không có class nào vì chưa chọn ghế");
+    }
+
+    // Step 3: Chuyển sang màu xanh lá khi đã hoàn thành bước 2 và chuyển sang bước 3
+    if (this.currentStep === 3) {
+      console.log("Thêm class completed cho Step 3 vì đã chuyển sang bước 3");
+      $(`.step[data-step="3"]`).addClass("completed");
     }
 
     $(".step-panel").removeClass("active");
@@ -772,11 +820,18 @@ class BookTicketDashboard {
     $("#prevBtn").toggle(this.currentStep > 1);
     $("#nextBtn").toggle(this.currentStep < 3);
     $("#confirmBtn").toggle(this.currentStep === 3);
+
+    console.log("Đã cập nhật step display, bước hiện tại:", this.currentStep);
   }
 
   validateStep(step) {
     switch (step) {
       case 1:
+        // Nếu đã chọn ghế, cho phép chuyển sang bước 2
+        if (this.selectedSeats.length > 0) {
+          return true;
+        }
+        // Nếu chưa chọn ghế, kiểm tra phim và showtime
         if (!this.selectedMovie || !this.selectedShowtime) {
           this.showError("Vui lòng chọn phim và suất chiếu");
           return false;
@@ -1286,6 +1341,10 @@ class BookTicketDashboard {
     this.updateOrderSummary();
 
     $(".alert").hide();
+
+    // Reset về bước 1 và cập nhật thanh tiến trình
+    this.currentStep = 1;
+    this.updateStepDisplay();
   }
 
   searchMovies(searchTerm) {
