@@ -141,14 +141,27 @@
                     </div>
 
 
-                    <div class="d-flex justify-content-between align-items-center p-3">
+                    <div class="booking-pagination d-flex justify-content-between align-items-center py-2">
                         <div class="pagination-info">
-                            Hiển thị <span id="showingFrom">0</span> - <span id="showingTo">0</span> trong tổng số <span id="totalRecords">0</span> bản ghi
+                            <span id="paginationInfo">Trang 1/1 (Hiển thị 0-0 của 0)</span>
                         </div>
-                        <nav>
-                            <ul class="pagination mb-0" id="pagination">
-                            </ul>
-                        </nav>
+                        <div class="pagination-controls d-flex align-items-center gap-1">
+                            <button id="prevPageBtn" class="btn-pagination btn btn-sm btn-outline-secondary" disabled>
+                                ❮ Trước
+                            </button>
+                            <div id="pageNumbers" class="page-numbers d-flex gap-1"></div>
+                            <button id="nextPageBtn" class="btn-pagination btn btn-sm btn-outline-secondary" disabled>
+                                Sau ❯
+                            </button>
+                        </div>
+                        <div class="pagination-size">
+                            <select id="pageSizeSelect" class="form-select form-select-sm" style="width:auto;">
+                                <option value="5">5/trang</option>
+                                <option value="10" selected>10/trang</option>
+                                <option value="25">25/trang</option>
+                                <option value="50">50/trang</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -230,5 +243,45 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/BookingManagement/BookingTicket/booking-list.js"></script>
+    <script>
+        // Khởi tạo BookingListManager instance
+        let bookingListManager;
+        
+        $(document).ready(function() {
+            bookingListManager = new BookingListManager();
+            
+            // Cập nhật onclick handlers
+            $('#prevPageBtn').off('click').on('click', function() {
+                bookingListManager.loadPage(bookingListManager.currentPage - 1);
+            });
+            
+            $('#nextPageBtn').off('click').on('click', function() {
+                bookingListManager.loadPage(bookingListManager.currentPage + 1);
+            });
+            
+            $('#pageSizeSelect').off('change').on('change', function() {
+                bookingListManager.changePageSize();
+            });
+        });
+        
+        // Global functions for modal actions
+        function confirmCancelBooking() {
+            if (bookingListManager) {
+                bookingListManager.confirmCancelBooking();
+            }
+        }
+        
+        function confirmUpdateStatus() {
+            if (bookingListManager) {
+                bookingListManager.confirmUpdateStatus();
+            }
+        }
+        
+        function applyFilters() {
+            if (bookingListManager) {
+                bookingListManager.applyFilters();
+            }
+        }
+    </script>
 </body>
 </html> 
