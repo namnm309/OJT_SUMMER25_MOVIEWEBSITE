@@ -8,6 +8,11 @@ html, body {
 }
 
 /* Header */
+.search-page-header {
+    padding: 30px 0 50px 0;
+    margin-bottom: 30px;
+}
+
 .search-page-title {
     font-size: 2.5rem;
     font-weight: 700;
@@ -167,6 +172,9 @@ html, body {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .search-page-header {
+        padding: 20px 0 30px 0;
+    }
     .search-page-title {
         font-size: 2rem;
     }
