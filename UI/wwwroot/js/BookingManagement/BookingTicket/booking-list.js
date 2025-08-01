@@ -1,7 +1,9 @@
 class BookingListManager {
   constructor() {
     this.currentPage = 1;
-    this.pageSize = 5;
+    this.pageSize = 10;
+    this.totalPages = 1;
+    this.totalRecords = 0;
     this.currentBookingId = null;
     this.filters = {
       fromDate: null,
@@ -91,18 +93,12 @@ class BookingListManager {
           pageSize: this.pageSize,
           totalPages: Math.ceil(this.allBookings.length / this.pageSize),
         });
-        this.updatePaginationInfo({
-          totalRecords: this.allBookings.length,
-          currentPage: this.currentPage,
-          pageSize: this.pageSize,
-          totalPages: Math.ceil(this.allBookings.length / this.pageSize),
-        });
       } else {
-        this.showError(result.message || "Không thể tải danh sách đặt vé");
+        this.showError("Không thể tải danh sách đặt vé");
       }
     } catch (error) {
       console.error("Error loading booking list:", error);
-      this.showError("Có lỗi xảy ra khi tải danh sách đặt vé");
+      this.showError("Lỗi khi tải danh sách đặt vé");
     } finally {
       this.hideLoading();
     }
@@ -214,7 +210,7 @@ class BookingListManager {
 
   getStatusClass(status) {
     switch (status) {
-        case "Completed":
+      case "Completed":
         return "status-confirmed";
       case "Pending":
         return "status-pending";
@@ -227,7 +223,7 @@ class BookingListManager {
 
   getStatusText(status) {
     switch (status) {
-        case "Completed":
+      case "Completed":
         return "Đã xác nhận";
       case "Pending":
         return "Chờ xác nhận";
@@ -249,104 +245,211 @@ class BookingListManager {
 
   applyFilters() {
     this.updateFilters();
-    let filtered = this.allBookings;
 
-    // Lọc theo từng trường
-    if (this.filters.fromDate) {
-      filtered = filtered.filter(
-        (b) => new Date(b.bookingDate) >= new Date(this.filters.fromDate)
-      );
-    }
-    if (this.filters.toDate) {
-      filtered = filtered.filter(
-        (b) => new Date(b.bookingDate) <= new Date(this.filters.toDate)
-      );
-    }
-    if (this.filters.bookingStatus) {
-      filtered = filtered.filter(
-        (b) => b.bookingStatus === this.filters.bookingStatus
-      );
-    }
-    if (this.filters.customerSearch) {
-      const search = this.filters.customerSearch.toLowerCase();
-      filtered = filtered.filter(
-        (b) =>
-          b.customerName.toLowerCase().includes(search) ||
-          b.customerPhone.includes(search) ||
-          b.customerEmail.toLowerCase().includes(search)
-      );
-    }
-    if (this.filters.bookingCode) {
-      const code = this.filters.bookingCode.toLowerCase();
-      filtered = filtered.filter((b) =>
-        b.bookingCode.toLowerCase().includes(code)
-      );
+    // Lọc dữ liệu dựa trên filters
+    let filteredBookings = this.allBookings.filter((booking) => {
+      // Lọc theo ngày
+      if (this.filters.fromDate) {
+        const bookingDate = new Date(booking.bookingDate);
+        const fromDate = new Date(this.filters.fromDate);
+        if (bookingDate < fromDate) return false;
+      }
+
+      if (this.filters.toDate) {
+        const bookingDate = new Date(booking.bookingDate);
+        const toDate = new Date(this.filters.toDate);
+        toDate.setHours(23, 59, 59, 999); // Đến cuối ngày
+        if (bookingDate > toDate) return false;
+      }
+
+      // Lọc theo trạng thái
+      if (
+        this.filters.bookingStatus &&
+        booking.bookingStatus !== this.filters.bookingStatus
+      ) {
+        return false;
+      }
+
+      // Lọc theo tìm kiếm khách hàng
+      if (this.filters.customerSearch) {
+        const searchTerm = this.filters.customerSearch.toLowerCase();
+        const customerName = booking.customerName?.toLowerCase() || "";
+        const customerPhone = booking.customerPhone?.toLowerCase() || "";
+        const customerEmail = booking.customerEmail?.toLowerCase() || "";
+
+        if (
+          !customerName.includes(searchTerm) &&
+          !customerPhone.includes(searchTerm) &&
+          !customerEmail.includes(searchTerm)
+        ) {
+          return false;
+        }
+      }
+
+      // Lọc theo mã đặt vé
+      if (
+        this.filters.bookingCode &&
+        !booking.bookingCode
+          ?.toLowerCase()
+          .includes(this.filters.bookingCode.toLowerCase())
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
+    // Sắp xếp
+    filteredBookings.sort((a, b) => {
+      let aValue, bValue;
+
+      switch (this.filters.sortBy) {
+        case "BookingDate":
+          aValue = new Date(a.bookingDate);
+          bValue = new Date(b.bookingDate);
+          break;
+        case "CustomerName":
+          aValue = a.customerName || "";
+          bValue = b.customerName || "";
+          break;
+        case "TotalAmount":
+          aValue = a.totalAmount || 0;
+          bValue = b.totalAmount || 0;
+          break;
+        default:
+          aValue = new Date(a.bookingDate);
+          bValue = new Date(b.bookingDate);
+      }
+
+      if (this.filters.sortDirection === "desc") {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      } else {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      }
+    });
+
+    // Phân trang
+    const totalRecords = filteredBookings.length;
+    const totalPages = Math.ceil(totalRecords / this.pageSize);
+
+    // Đảm bảo currentPage không vượt quá totalPages
+    if (this.currentPage > totalPages && totalPages > 0) {
+      this.currentPage = totalPages;
     }
 
-    // Sắp xếp nếu cần
-    if (this.filters.sortBy) {
-      const sortKey = this.filters.sortBy;
-      const direction = this.filters.sortDirection === "asc" ? 1 : -1;
-      filtered = filtered.slice().sort((a, b) => {
-        if (a[sortKey] < b[sortKey]) return -1 * direction;
-        if (a[sortKey] > b[sortKey]) return 1 * direction;
-        return 0;
-      });
-    }
-
-    // Phân trang phía client
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
-    const paged = filtered.slice(start, end);
+    const pagedBookings = filteredBookings.slice(start, end);
 
-    this.renderBookingTable(paged);
-    // Cập nhật lại phân trang nếu cần
+    // Render
+    this.renderBookingTable(pagedBookings);
     this.renderPagination({
-      totalRecords: filtered.length,
+      totalRecords: totalRecords,
       currentPage: this.currentPage,
       pageSize: this.pageSize,
-      totalPages: Math.ceil(filtered.length / this.pageSize),
-    });
-    this.updatePaginationInfo({
-      totalRecords: filtered.length,
-      currentPage: this.currentPage,
-      pageSize: this.pageSize,
-      totalPages: Math.ceil(filtered.length / this.pageSize),
+      totalPages: totalPages,
     });
   }
 
   renderPagination(data) {
-    const pagination = $("#pagination");
-    pagination.empty();
-    console.log("Phân trang:", data);
-    if (data.totalPages <= 1) return;
-    for (let i = 1; i <= data.totalPages; i++) {
-      const active = i === this.currentPage ? "active" : "";
-      pagination.append(
-        `<li class="page-item ${active}"><a class="page-link" href="#">${i}</a></li>`
+    this.totalPages = data.totalPages;
+    this.totalRecords = data.totalRecords;
+
+    // Cập nhật thông tin phân trang
+    this.updatePaginationInfo(data);
+
+    // Cập nhật nút prev/next
+    document
+      .getElementById("prevPageBtn")
+      ?.toggleAttribute("disabled", this.currentPage <= 1);
+    document
+      .getElementById("nextPageBtn")
+      ?.toggleAttribute("disabled", this.currentPage >= this.totalPages);
+
+    // Render page numbers
+    const pagesWrapper = document.getElementById("pageNumbers");
+    if (!pagesWrapper) return;
+    pagesWrapper.innerHTML = "";
+
+    const createPageBtn = (num, isActive = false) => {
+      const el = document.createElement("div");
+      el.className = "page-number" + (isActive ? " active" : "");
+      el.textContent = num;
+      el.onclick = () => this.loadPage(num);
+      return el;
+    };
+
+    const createEllipsis = () => {
+      const span = document.createElement("span");
+      span.textContent = "...";
+      span.style.padding = "8px 12px";
+      span.style.color = "var(--text-muted)";
+      return span;
+    };
+
+    if (this.totalPages <= 10) {
+      for (let i = 1; i <= this.totalPages; i++) {
+        pagesWrapper.appendChild(createPageBtn(i, i === this.currentPage));
+      }
+    } else {
+      pagesWrapper.appendChild(createPageBtn(1, this.currentPage === 1));
+
+      if (this.currentPage <= 4) {
+        for (let i = 2; i <= 5; i++) {
+          pagesWrapper.appendChild(createPageBtn(i, i === this.currentPage));
+        }
+        pagesWrapper.appendChild(createEllipsis());
+      } else if (this.currentPage >= this.totalPages - 3) {
+        pagesWrapper.appendChild(createEllipsis());
+        for (let i = this.totalPages - 4; i < this.totalPages; i++) {
+          pagesWrapper.appendChild(createPageBtn(i, i === this.currentPage));
+        }
+      } else {
+        pagesWrapper.appendChild(createEllipsis());
+        for (let i = this.currentPage - 1; i <= this.currentPage + 1; i++) {
+          pagesWrapper.appendChild(createPageBtn(i, i === this.currentPage));
+        }
+        pagesWrapper.appendChild(createEllipsis());
+      }
+
+      pagesWrapper.appendChild(
+        createPageBtn(this.totalPages, this.currentPage === this.totalPages)
       );
     }
-    // Gán lại sự kiện click
-    pagination
-      .find("a")
-      .off("click")
-      .on("click", (e) => {
-        e.preventDefault();
-        const page = parseInt($(e.target).text());
-        if (!isNaN(page)) {
-          this.currentPage = page;
-          this.applyFilters();
-        }
-      });
   }
 
   updatePaginationInfo(data) {
-    const from = (data.currentPage - 1) * data.pageSize + 1;
-    const to = Math.min(data.currentPage * data.pageSize, data.totalRecords);
+    const startItem =
+      data.totalRecords === 0 ? 0 : (data.currentPage - 1) * data.pageSize + 1;
+    const endItem = Math.min(
+      data.currentPage * data.pageSize,
+      data.totalRecords
+    );
 
-    $("#showingFrom").text(from);
-    $("#showingTo").text(to);
-    $("#totalRecords").text(data.totalRecords);
+    const infoElement = document.getElementById("paginationInfo");
+    if (infoElement) {
+      if (data.totalRecords === 0) {
+        infoElement.textContent = "Không có dữ liệu";
+      } else {
+        infoElement.textContent = `Trang ${data.currentPage}/${data.totalPages} (Hiển thị ${startItem}-${endItem} của ${data.totalRecords})`;
+      }
+    }
+  }
+
+  loadPage(page) {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.currentPage = page;
+      this.applyFilters();
+    }
+  }
+
+  changePageSize() {
+    const newPageSize = parseInt(
+      document.getElementById("pageSizeSelect").value
+    );
+    this.pageSize = newPageSize;
+    this.currentPage = 1;
+    this.applyFilters();
   }
 
   viewBookingDetail(bookingId) {
