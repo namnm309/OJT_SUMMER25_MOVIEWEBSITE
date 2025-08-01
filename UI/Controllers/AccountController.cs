@@ -8,16 +8,19 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using UI.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging; // Added for logging
 
 namespace UI.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IApiService _apiService;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(IApiService apiService)
+        public AccountController(IApiService apiService, ILogger<AccountController> logger)
         {
             _apiService = apiService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -363,21 +366,38 @@ namespace UI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                var errorMessage = string.Join(", ", errors);
+                
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                    return Json(new { success = false, message = string.Join(", ", errors) });
+                    return Json(new { success = false, message = errorMessage });
                 }
+                
+                ModelState.AddModelError("", errorMessage);
                 return View(model);
             }
 
             try
             {
+                // Additional validation before sending request
+                if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.OTP) || string.IsNullOrEmpty(model.NewPassword))
+                {
+                    var errorMessage = "Vui lòng điền đầy đủ thông tin bắt buộc";
+                    
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    {
+                        return Json(new { success = false, message = errorMessage });
+                    }
+                    ModelState.AddModelError("", errorMessage);
+                    return View(model);
+                }
+
                 var requestData = new
                 {
-                    Email = model.Email,
-                    OTP = model.OTP,
-                    NewPassword = model.NewPassword
+                    email = model.Email.Trim(),
+                    otp = model.OTP.Trim(),
+                    newPassword = model.NewPassword
                 };
 
                 var result = await _apiService.PostAsync<JsonElement>("api/v1/Auth/Verify-ChangePassword", requestData);
@@ -394,20 +414,25 @@ namespace UI.Controllers
                 }
                 else
                 {
+                    var errorMessage = result.Message ?? "Đã xảy ra lỗi khi đặt lại mật khẩu";
+                    
                     if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                     {
-                        return Json(new { success = false, message = result.Message });
+                        return Json(new { success = false, message = errorMessage });
                     }
-                    ModelState.AddModelError("", result.Message);
+                    ModelState.AddModelError("", errorMessage);
                 }
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error in ResetPassword action");
+                var errorMessage = "Đã xảy ra lỗi khi kết nối đến server. Vui lòng thử lại.";
+                
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    return Json(new { success = false, message = $"Đã xảy ra lỗi: {ex.Message}" });
+                    return Json(new { success = false, message = errorMessage });
                 }
-                ModelState.AddModelError("", $"Đã xảy ra lỗi: {ex.Message}");
+                ModelState.AddModelError("", errorMessage);
             }
 
             return View(model);

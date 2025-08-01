@@ -281,20 +281,20 @@ namespace ApplicationLayer.Services.JWT
 
         public async Task<IActionResult> HandleVerifyOTPChangePassword(VerifyOTPChangePassword req)
         {
-            var redisKey = $"local:otp:{req.Email}:forgot_password";
+            var redisKey = $"local:otp:{req.email}:forgot_password";
 
             var otp = await _cacheService.Get<string>(redisKey);
 
             if (otp == null)
                 return ErrorResp.BadRequest("OTP is invalid");
 
-            if (otp.Equals(req.OTP))
+            if (otp.Equals(req.otp))
             {
-                var user = await _userRepo.FirstOrDefaultAsync(u => u.Email.Equals(req.Email));
+                var user = await _userRepo.FirstOrDefaultAsync(u => u.Email.Equals(req.email));
                 if (user == null)
                     return ErrorResp.NotFound("User Not Found");
 
-                user.Password = _cryptoService.HashPassword(req.NewPassword);
+                user.Password = _cryptoService.HashPassword(req.newPassword);
 
                 await _userRepo.UpdateAsync(user);
 
