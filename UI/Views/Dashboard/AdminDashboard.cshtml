@@ -51,9 +51,9 @@
                         </div>
                         <div class="new-stat-value">@ViewBag.TotalUsers</div>
                         <div class="new-stat-label">Tổng thành viên</div>
-                        <div class="new-stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>+12% so với tháng trước</span>
+                        <div class="new-stat-change @(ViewBag.UsersGrowthPositive == true ? "positive" : "negative")">
+                            <i class="fas fa-arrow-@(ViewBag.UsersGrowthPositive == true ? "up" : "down")"></i>
+                            <span>@ViewBag.UsersGrowth so với tháng trước</span>
                         </div>
                     </div>
 
@@ -65,9 +65,9 @@
                         </div>
                         <div class="new-stat-value">@ViewBag.TotalMovies</div>
                         <div class="new-stat-label">Phim trong hệ thống</div>
-                        <div class="new-stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>+5 phim mới</span>
+                        <div class="new-stat-change @(ViewBag.MoviesGrowthPositive == true ? "positive" : "negative")">
+                            <i class="fas fa-arrow-@(ViewBag.MoviesGrowthPositive == true ? "up" : "down")"></i>
+                            <span>@ViewBag.MoviesGrowth so với tháng trước</span>
                         </div>
                     </div>
 
@@ -79,9 +79,9 @@
                         </div>
                         <div class="new-stat-value">@ViewBag.TotalBookings</div>
                         <div class="new-stat-label">Vé đã đặt hôm nay</div>
-                        <div class="new-stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>+8% so với hôm qua</span>
+                        <div class="new-stat-change @(ViewBag.BookingsGrowthPositive == true ? "positive" : "negative")">
+                            <i class="fas fa-arrow-@(ViewBag.BookingsGrowthPositive == true ? "up" : "down")"></i>
+                            <span>@ViewBag.BookingsGrowth so với hôm qua</span>
                         </div>
                     </div>
 
@@ -93,9 +93,9 @@
                         </div>
                         <div class="new-stat-value">@ViewBag.TodayRevenue</div>
                         <div class="new-stat-label">Doanh thu hôm nay</div>
-                        <div class="new-stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>+15% so với hôm qua</span>
+                        <div class="new-stat-change @(ViewBag.RevenueGrowthPositive == true ? "positive" : "negative")">
+                            <i class="fas fa-arrow-@(ViewBag.RevenueGrowthPositive == true ? "up" : "down")"></i>
+                            <span>@ViewBag.RevenueGrowth so với hôm qua</span>
                         </div>
                     </div>
                 </div>

@@ -56,9 +56,9 @@ namespace InfrastructureLayer.Repository
 
             if (showTime == null) return false;
 
+            // Kiểm tra ghế có thuộc cùng phòng không (không kiểm tra Status nữa)
             var validSeatsCount = await _context.Seats
                 .CountAsync(s => s.RoomId == showTime.RoomId &&
-                                 s.Status == SeatStatus.Available && // Đảm bảo ghế còn active
                                  seatIds.Contains(s.Id));
 
             return validSeatsCount == seatIds.Count;
@@ -99,6 +99,17 @@ namespace InfrastructureLayer.Repository
             return await _context.BookingDetails
                 .Where(bd => bd.Booking.ShowTimeId == showTimeId)
                 .Select(bd => bd.SeatId)
+                .ToListAsync();
+        }
+
+        // THÊM PHƯƠNG THỨC NÀY: Lấy danh sách ghế đang pending từ SeatLog
+        public async Task<List<Guid>> GetPendingSeatIdsForShowTimeAsync(Guid showTimeId)
+        {
+            return await _context.SeatLog
+                .Where(sl => sl.ShowTimeId == showTimeId && 
+                             sl.ExpiredAt > DateTime.UtcNow && 
+                             sl.Status == DomainLayer.Enum.SeatStatus.Pending)
+                .Select(sl => sl.SeatId)
                 .ToListAsync();
         }
 

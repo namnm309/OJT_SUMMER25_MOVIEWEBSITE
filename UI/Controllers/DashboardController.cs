@@ -33,7 +33,7 @@ namespace UI.Controllers
         }
 
         [Authorize(Roles = "Admin,2")]
-        public IActionResult AdminDashboard()
+        public async Task<IActionResult> AdminDashboard()
         {
             // Lấy thông tin user từ claims
             var userId = User.FindFirst("UserId")?.Value;
@@ -43,7 +43,6 @@ namespace UI.Controllers
             var email = User.FindFirst("Email")?.Value;
             var isActive = User.FindFirst("IsActive")?.Value;
             var createdAt = User.FindFirst("CreatedAt")?.Value;
-
 
             ViewBag.UserId = userId;
             ViewBag.UserName = userName;
@@ -62,12 +61,139 @@ namespace UI.Controllers
                 ViewBag.CreatedAt = "N/A";
             }
 
+            try
+            {
+                // 1. Tổng số thành viên và growth
+                var usersResp = await _apiService.GetAsync<JsonElement>("/api/User/count");
+                var usersGrowthResp = await _apiService.GetAsync<JsonElement>("/api/User/growth");
+                
+                if (usersResp.Success)
+                {
+                    ViewBag.TotalUsers = usersResp.Data.GetProperty("count").GetInt32().ToString("N0");
+                }
+                else
+                {
+                    ViewBag.TotalUsers = "N/A";
+                }
 
-            ViewBag.TotalUsers = "N/A";
-            ViewBag.TotalMovies = "N/A"; 
-            ViewBag.TotalBookings = "N/A";
-            ViewBag.TodayRevenue = "N/A";
-            ViewBag.PendingTasks = "N/A";
+                if (usersGrowthResp.Success)
+                {
+                    var growth = usersGrowthResp.Data.GetProperty("growth").GetDouble();
+                    ViewBag.UsersGrowth = growth >= 0 ? $"+{growth:F1}%" : $"{growth:F1}%";
+                    ViewBag.UsersGrowthPositive = growth >= 0;
+                }
+                else
+                {
+                    ViewBag.UsersGrowth = "N/A";
+                    ViewBag.UsersGrowthPositive = true;
+                }
+
+                // 2. Tổng số phim và growth
+                var moviesResp = await _apiService.GetAsync<JsonElement>("/api/movie/count");
+                var moviesGrowthResp = await _apiService.GetAsync<JsonElement>("/api/movie/growth");
+                
+                if (moviesResp.Success)
+                {
+                    ViewBag.TotalMovies = moviesResp.Data.GetProperty("count").GetInt32().ToString("N0");
+                }
+                else
+                {
+                    ViewBag.TotalMovies = "N/A";
+                }
+
+                if (moviesGrowthResp.Success)
+                {
+                    var growth = moviesGrowthResp.Data.GetProperty("growth").GetDouble();
+                    ViewBag.MoviesGrowth = growth >= 0 ? $"+{growth:F1}%" : $"{growth:F1}%";
+                    ViewBag.MoviesGrowthPositive = growth >= 0;
+                }
+                else
+                {
+                    ViewBag.MoviesGrowth = "N/A";
+                    ViewBag.MoviesGrowthPositive = true;
+                }
+
+                // 3. Số vé đã đặt hôm nay và growth
+                var todayBookingsResp = await _apiService.GetAsync<JsonElement>("/api/booking-ticket/today-count");
+                var bookingsGrowthResp = await _apiService.GetAsync<JsonElement>("/api/booking-ticket/booking-growth");
+                
+                if (todayBookingsResp.Success)
+                {
+                    ViewBag.TotalBookings = todayBookingsResp.Data.GetProperty("count").GetInt32().ToString("N0");
+                }
+                else
+                {
+                    ViewBag.TotalBookings = "N/A";
+                }
+
+                if (bookingsGrowthResp.Success)
+                {
+                    var growth = bookingsGrowthResp.Data.GetProperty("growth").GetDouble();
+                    ViewBag.BookingsGrowth = growth >= 0 ? $"+{growth:F1}%" : $"{growth:F1}%";
+                    ViewBag.BookingsGrowthPositive = growth >= 0;
+                }
+                else
+                {
+                    ViewBag.BookingsGrowth = "N/A";
+                    ViewBag.BookingsGrowthPositive = true;
+                }
+
+                // 4. Doanh thu hôm nay và growth
+                var todayRevenueResp = await _apiService.GetAsync<JsonElement>("/api/booking-ticket/today-revenue");
+                var revenueGrowthResp = await _apiService.GetAsync<JsonElement>("/api/booking-ticket/revenue-growth");
+                
+                if (todayRevenueResp.Success)
+                {
+                    var revenue = todayRevenueResp.Data.GetProperty("revenue").GetDecimal();
+                    ViewBag.TodayRevenue = revenue.ToString("N0") + " VNĐ";
+                }
+                else
+                {
+                    ViewBag.TodayRevenue = "N/A";
+                }
+
+                if (revenueGrowthResp.Success)
+                {
+                    var growth = revenueGrowthResp.Data.GetProperty("growth").GetDouble();
+                    ViewBag.RevenueGrowth = growth >= 0 ? $"+{growth:F1}%" : $"{growth:F1}%";
+                    ViewBag.RevenueGrowthPositive = growth >= 0;
+                }
+                else
+                {
+                    ViewBag.RevenueGrowth = "N/A";
+                    ViewBag.RevenueGrowthPositive = true;
+                }
+
+                // 5. Số nhiệm vụ cần xử lý (pending bookings)
+                var pendingTasksResp = await _apiService.GetAsync<JsonElement>("/api/booking-ticket/pending-count");
+                if (pendingTasksResp.Success)
+                {
+                    ViewBag.PendingTasks = pendingTasksResp.Data.GetProperty("count").GetInt32().ToString("N0");
+                }
+                else
+                {
+                    ViewBag.PendingTasks = "N/A";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log error but don't crash the page
+                ViewBag.TotalUsers = "N/A";
+                ViewBag.TotalMovies = "N/A";
+                ViewBag.TotalBookings = "N/A";
+                ViewBag.TodayRevenue = "N/A";
+                ViewBag.PendingTasks = "N/A";
+                
+                // Set default growth values
+                ViewBag.UsersGrowth = "N/A";
+                ViewBag.UsersGrowthPositive = true;
+                ViewBag.MoviesGrowth = "N/A";
+                ViewBag.MoviesGrowthPositive = true;
+                ViewBag.BookingsGrowth = "N/A";
+                ViewBag.BookingsGrowthPositive = true;
+                ViewBag.RevenueGrowth = "N/A";
+                ViewBag.RevenueGrowthPositive = true;
+            }
             
             return View("AdminDashboard");
         }

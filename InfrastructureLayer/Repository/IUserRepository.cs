@@ -19,5 +19,9 @@ namespace InfrastructureLayer.Repository
         Task<Users?> SearchCustomerAsync(string searchTerm);
         Task<int> GetTotalBookingsAsync(Guid userId);
         Task<DateTime?> GetLastBookingDateAsync(Guid userId);
+        
+        // Dashboard statistics
+        Task<int> GetUserCountAsync();
+        Task<double> GetUserGrowthAsync();
     }
 } 

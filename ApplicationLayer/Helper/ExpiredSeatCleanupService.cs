@@ -50,13 +50,8 @@ namespace ApplicationLayer.Helper
                     {
                         var seatIds = group.Select(log => log.SeatId).ToList();
 
-                        // Update trạng thái ghế
-                        var seats = await seatRepo.WhereAsync(s => seatIds.Contains(s.Id));
-                        foreach (var seat in seats)
-                        {
-                            seat.Status = SeatStatus.Available;
-                        }
-                        await seatRepo.UpdateRangeAsync(seats);
+                        // Không cần cập nhật Seat.Status nữa vì chúng ta chỉ dựa vào SeatLog
+                        // seat.Status sẽ không được sử dụng để xác định trạng thái ghế
 
                         // Xoá log
                         foreach (var log in group)

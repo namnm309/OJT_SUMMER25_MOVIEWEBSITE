@@ -94,6 +94,9 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 // Lấy danh sách ghế đã đặt cho suất chiếu này
                 var bookedSeatIds = await _seatRepository.GetBookedSeatIdsForShowTimeAsync(showTimeId);
 
+                // Lấy danh sách ghế đang pending cho suất chiếu này (từ SeatLog)
+                var pendingSeatIds = await _seatRepository.GetPendingSeatIdsForShowTimeAsync(showTimeId);
+
                 // Chuyển đổi sang DTO
                 var seatDtos = seats.Select(s => new SeatDto
                 {
@@ -102,13 +105,14 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     SeatType = s.SeatType.ToString(),
                     RowIndex = s.RowIndex,
                     ColumnIndex = s.ColumnIndex,
+                    // Logic mới: Chỉ dựa vào BookingDetail và SeatLog, không dựa vào Seat.Status
                     // Nếu ghế đã book cho showtime -> Selected
-                    // Nếu ghế đang Pending trong DB -> Pending
+                    // Nếu ghế đang pending cho showtime -> Pending  
                     // Ngược lại Available
                     Status = bookedSeatIds.Contains(s.Id)
                                 ? "Selected"
-                                : (s.Status == SeatStatus.Pending ? "Pending" : "Available"),
-                    IsAvailable = !bookedSeatIds.Contains(s.Id) && s.Status != SeatStatus.Selected,
+                                : (pendingSeatIds.Contains(s.Id) ? "Pending" : "Available"),
+                    IsAvailable = !bookedSeatIds.Contains(s.Id) && !pendingSeatIds.Contains(s.Id),
                     Price = s.PriceSeat,
 
                 }).ToList();
@@ -160,16 +164,12 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                     return ErrorResp.BadRequest("Some selected seats were not found.");
                 }
 
-                // 2. Kiểm tra tất cả các ghế có thuộc cùng một phòng chiếu và đang Active không
+                // 2. Kiểm tra tất cả các ghế có thuộc cùng một phòng chiếu không
                 foreach (var seat in selectedSeatsEntities)
                 {
                     if (seat.RoomId != showTime.RoomId)
                     {
                         return ErrorResp.BadRequest($"Seat {seat.SeatCode} is not in the correct room for this showtime.");
-                    }
-                    if (seat.Status != SeatStatus.Available)
-                    {
-                        return ErrorResp.BadRequest($"Seat {seat.SeatCode} is not available.");
                     }
                 }
 
@@ -185,6 +185,20 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                                             .Select(s => s.SeatCode)
                                             .ToList();
                     return ErrorResp.BadRequest($"The following seats are already booked: {string.Join(", ", bookedSeatCodes)}.");
+                }
+
+                // 4. Kiểm tra xem các ghế đã chọn có đang pending bởi người khác cho suất chiếu này không
+                var pendingSeatIds = await _seatRepository.GetPendingSeatIdsForShowTimeAsync(showTimeId);
+                var alreadyPendingSeats = seatIds.Where(id => pendingSeatIds.Contains(id)).ToList();
+
+                if (alreadyPendingSeats.Any())
+                {
+                    // Lấy SeatCode của các ghế đang pending để hiển thị thông báo thân thiện
+                    var pendingSeatCodes = selectedSeatsEntities
+                                            .Where(s => alreadyPendingSeats.Contains(s.Id))
+                                            .Select(s => s.SeatCode)
+                                            .ToList();
+                    return ErrorResp.BadRequest($"The following seats are currently being held by other users: {string.Join(", ", pendingSeatCodes)}.");
                 }
 
                 // Nếu mọi thứ đều ổn

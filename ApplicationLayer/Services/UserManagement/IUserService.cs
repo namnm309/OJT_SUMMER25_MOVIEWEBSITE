@@ -18,5 +18,9 @@ namespace ApplicationLayer.Services.UserManagement
         Task<(bool Success, UserResponseDto? User, string Message)> UpdateUserAsync(Guid userId, UserUpdateDto updateRequest);
         Task<(bool Success, string Message)> DeleteUserAsync(Guid userId);
         Task<(bool Success, UserResponseDto? User, string Message)> ToggleUserStatusAsync(Guid userId);
+        
+        // Dashboard statistics
+        Task<int> GetUserCountAsync();
+        Task<double> GetUserGrowthAsync();
     }
 } 

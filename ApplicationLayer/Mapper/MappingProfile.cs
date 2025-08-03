@@ -127,7 +127,7 @@ namespace ApplicationLayer.Mapper
                 .ForMember(dest => dest.CinemaRoomId, opt => opt.MapFrom(src => src.RoomId))
                 .ForMember(dest => dest.CinemaRoomName, opt => opt.MapFrom(src => src.Room.RoomName))
                 .ForMember(dest => dest.TotalSeats, opt => opt.MapFrom(src => src.Room.TotalSeats))
-                .ForMember(dest => dest.BookedSeats, opt => opt.MapFrom(src => src.Bookings.Count))
+                .ForMember(dest => dest.BookedSeats, opt => opt.MapFrom(src => src.Bookings.Sum(b => b.BookingDetails.Count)))
                 // Convert stored UTC date back to local date for displaying in UI
                 .ForMember(dest => dest.ShowDate, opt => opt.MapFrom(src =>
                     src.ShowDate.HasValue
@@ -180,6 +180,20 @@ namespace ApplicationLayer.Mapper
 
             // Ticket
             CreateMap<Ticket, TicketDto>();
+            
+            // Admin Booking Detail
+            CreateMap<Booking, AdminBookingDetailDto>()
+                .ForMember(dest => dest.MovieTitle, opt => opt.MapFrom(src => src.ShowTime.Movie.Title))
+                .ForMember(dest => dest.CinemaRoom, opt => opt.MapFrom(src => src.ShowTime.Room.RoomName))
+                .ForMember(dest => dest.ShowDate, opt => opt.MapFrom(src => src.ShowTime.ShowDate))
+                .ForMember(dest => dest.ShowTime, opt => opt.MapFrom(src => src.ShowTime.ShowDate.HasValue ? src.ShowTime.ShowDate.Value.ToString("HH:mm") : ""))
+                .ForMember(dest => dest.SeatCodes, opt => opt.MapFrom(src => src.BookingDetails.Select(bd => bd.Seat.SeatCode).ToList()))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.User.FullName))
+                .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.UserPhone, opt => opt.MapFrom(src => src.User.Phone))
+                .ForMember(dest => dest.UserIdentityCard, opt => opt.MapFrom(src => src.User.IdentityCard));
         }
     }
 }

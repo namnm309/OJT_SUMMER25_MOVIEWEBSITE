@@ -21,5 +21,6 @@ namespace InfrastructureLayer.Repository
         Task<List<Seat>> GetSeatsByRoomIdAsync(Guid roomId);
         Task<List<Guid>> GetBookedSeatIdsForShowTimeAsync(Guid showTimeId);
         Task<List<Seat>> GetSeatsByIdsAsync(List<Guid> seatIds); // THÊM PHƯƠNG THỨC NÀY
+        Task<List<Guid>> GetPendingSeatIdsForShowTimeAsync(Guid showTimeId); // THÊM PHƯƠNG THỨC NÀY
     }
 }

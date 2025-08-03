@@ -369,19 +369,42 @@ namespace ApplicationLayer.Services.UserManagement
                     return (false, null, "User not found");
                 }
 
-                // Toggle status
                 user.IsActive = !user.IsActive;
-                user.UpdatedAt = DateTime.UtcNow;
+                await _userRepository.UpdateAsync(user);
 
-                var updatedUser = await _userRepository.UpdateAsync(user);
-                var userResponse = _mapper.Map<UserResponseDto>(updatedUser);
-
-                string statusText = user.IsActive ? "activated" : "deactivated";
-                return (true, userResponse, $"User {statusText} successfully");
+                var userResponse = _mapper.Map<UserResponseDto>(user);
+                return (true, userResponse, $"User {(user.IsActive ? "activated" : "deactivated")} successfully");
             }
             catch (Exception ex)
             {
                 return (false, null, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        // Dashboard statistics
+        public async Task<int> GetUserCountAsync()
+        {
+            try
+            {
+                return await _userRepository.GetUserCountAsync();
+            }
+            catch (Exception ex)
+            {
+                // Log error and return 0
+                return 0;
+            }
+        }
+
+        public async Task<double> GetUserGrowthAsync()
+        {
+            try
+            {
+                return await _userRepository.GetUserGrowthAsync();
+            }
+            catch (Exception ex)
+            {
+                // Log error and return 0
+                return 0;
             }
         }
     }

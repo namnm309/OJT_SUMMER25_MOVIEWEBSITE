@@ -14,10 +14,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using DomainLayer.Entities;
-using DomainLayer.Enum;
-using DomainLayer.Entities;
-using DomainLayer.Enum;
+using System.Linq;
 
 namespace ApplicationLayer.Services.BookingTicketManagement
 {
@@ -50,6 +47,13 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<IActionResult> GetUserBookingHistoryAsync(Guid userId);
 
         Task<IActionResult> GetAdminBookingDetailsAsync(Guid bookingId);
+        
+        // Dashboard statistics
+        Task<int> GetTodayBookingCountAsync();
+        Task<decimal> GetTodayRevenueAsync();
+        Task<int> GetPendingBookingCountAsync();
+        Task<double> GetBookingGrowthAsync();
+        Task<double> GetRevenueGrowthAsync();
     }
 
     public class BookingTicketService : IBookingTicketService
@@ -1385,39 +1389,116 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         // API cho admin lấy booking theo bookingId (không kiểm tra userId)
         public async Task<IActionResult> GetAdminBookingDetailsAsync(Guid bookingId)
         {
-            var booking = await _bookingRepo.FirstOrDefaultAsync(
-                b => b.Id == bookingId,
-                "User",
-                "ShowTime.Movie",
-                "ShowTime.Room",
-                "BookingDetails.Seat"
-            );
-
-            if (booking == null)
+            try
             {
-                return ErrorResp.NotFound("Booking not found");
+                var booking = await _bookingRepo.FindAsync(b => b.Id == bookingId, "User", "ShowTime", "ShowTime.Movie", "ShowTime.Room", "BookingDetails", "BookingDetails.Seat");
+                if (booking == null)
+                    return ErrorResp.NotFound("Booking not found");
+
+                var bookingDto = _mapper.Map<AdminBookingDetailDto>(booking);
+                return SuccessResp.Ok(bookingDto);
             }
-
-            var response = new
+            catch (Exception ex)
             {
-                bookingId = booking.Id,
-                bookingCode = booking.BookingCode,
-                status = booking.Status.ToString(),
-                movieTitle = booking.ShowTime?.Movie?.Title,
-                cinemaRoom = booking.ShowTime?.Room?.RoomName,
-                showDate = booking.ShowTime?.ShowDate?.ToString("dd/MM/yyyy"),
-                showTime = booking.ShowTime?.ShowDate?.ToString("HH:mm"),
-                seats = booking.BookingDetails?.Select(bd => bd.Seat?.SeatCode).ToList(),
-                totalPrice = booking.TotalPrice,
-                memberInfo = booking.User == null ? null : new
-                {
-                    memberId = booking.User.Id,
-                    fullName = booking.User.FullName
-                },
-                bookingDate = booking.BookingDate.ToString("dd/MM/yyyy HH:mm:ss"),
-            };
+                _logger.LogError(ex, "Error getting admin booking details for bookingId: {BookingId}", bookingId);
+                return ErrorResp.InternalServerError("Error retrieving booking details");
+            }
+        }
 
-            return SuccessResp.Ok(response);
+        // Dashboard statistics implementations
+        public async Task<int> GetTodayBookingCountAsync()
+        {
+            try
+            {
+                var today = DateTime.Today;
+                var tomorrow = today.AddDays(1);
+                
+                return await _bookingRepo.CountAsync(b => 
+                    b.CreatedAt >= today && 
+                    b.CreatedAt < tomorrow && 
+                    b.Status == BookingStatus.Completed);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting today booking count");
+                return 0;
+            }
+        }
+
+        public async Task<decimal> GetTodayRevenueAsync()
+        {
+            try
+            {
+                var today = DateTime.Today;
+                var tomorrow = today.AddDays(1);
+                
+                var todayBookings = await _bookingRepo.WhereAsync(b => 
+                    b.CreatedAt >= today && 
+                    b.CreatedAt < tomorrow && 
+                    b.Status == BookingStatus.Completed);
+
+                return todayBookings.Sum(b => b.TotalPrice);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting today revenue");
+                return 0;
+            }
+        }
+
+        public async Task<int> GetPendingBookingCountAsync()
+        {
+            try
+            {
+                return await _bookingRepo.CountAsync(b => 
+                    b.Status == BookingStatus.Pending);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting pending booking count");
+                return 0;
+            }
+        }
+
+        public async Task<double> GetBookingGrowthAsync()
+        {
+            try
+            {
+                var today = DateTime.Today;
+                var yesterday = today.AddDays(-1);
+                var bookingsToday = await _bookingRepo.CountAsync(b => b.CreatedAt >= today && b.Status == BookingStatus.Completed);
+                var bookingsYesterday = await _bookingRepo.CountAsync(b => b.CreatedAt >= yesterday && b.Status == BookingStatus.Completed);
+
+                if (bookingsYesterday == 0) return 0;
+                return ((double)bookingsToday / bookingsYesterday - 1) * 100;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting booking growth");
+                return 0;
+            }
+        }
+
+        public async Task<double> GetRevenueGrowthAsync()
+        {
+            try
+            {
+                var today = DateTime.Today;
+                var yesterday = today.AddDays(-1);
+                var todayBookings = await _bookingRepo.WhereAsync(b => b.CreatedAt >= today && b.Status == BookingStatus.Completed);
+                var yesterdayBookings = await _bookingRepo.WhereAsync(b => b.CreatedAt >= yesterday && b.Status == BookingStatus.Completed);
+
+                var revenueToday = todayBookings.Sum(b => b.TotalPrice);
+                var revenueYesterday = yesterdayBookings.Sum(b => b.TotalPrice);
+
+                if (revenueYesterday == 0) return 0;
+                return ((double)revenueToday / (double)revenueYesterday - 1) * 100;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting revenue growth");
+                return 0;
+            }
         }
     }
 }
