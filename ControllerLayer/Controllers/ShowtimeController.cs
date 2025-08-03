@@ -91,7 +91,6 @@ namespace ControllerLayer.Controllers
             [FromQuery] Guid? excludeId = null,
             [FromQuery] Guid? movieId = null)
         {
-            _logger.LogInformation("Check schedule conflict for room {RoomId} on {ShowDate} movieId={MovieId}", cinemaRoomId, showDate, movieId);
             return await _showtimeService.CheckScheduleConflict(cinemaRoomId, showDate, startTime, endTime, excludeId, movieId);
         }
 
@@ -109,33 +108,6 @@ namespace ControllerLayer.Controllers
             return await _showtimeService.GetShowtimesByRoom(roomId);
         }
 
-        [HttpGet("Debug")]
-        public async Task<IActionResult> DebugShowtimes()
-        {
-            try
-            {
-                _logger.LogInformation("Debug: Getting all showtimes");
-                var allResult = await _showtimeService.GetAllShowtimes();
-                
-                _logger.LogInformation("Debug: Getting showtimes by month");
-                var monthResult = await _showtimeService.GetShowtimesByMonth(1, 2025);
-                
-                return Json(new { 
-                    success = true,
-                    allShowtimes = allResult,
-                    monthShowtimes = monthResult,
-                    message = "Debug API worked successfully"
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in debug API");
-                return Json(new { 
-                    success = false, 
-                    error = ex.Message,
-                    stackTrace = ex.ToString()
-                });
-            }
-        }
+
     }
 }

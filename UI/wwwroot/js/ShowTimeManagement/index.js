@@ -257,10 +257,7 @@ const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azur
                         errorMessage = result;
                     }
                     
-                    // Thêm thông tin HTTP status nếu có
-                    if (resp.status !== 200) {
-                        errorMessage += ` (HTTP ${resp.status})`;
-                    }
+
                     
                     showNotification(errorMessage, 'danger');
                 }
@@ -729,7 +726,8 @@ const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azur
 
                    const startDate = new Date();
                    startDate.setHours(h, m, 0, 0);
-                   const endDate = new Date(startDate.getTime() + duration * 60000);
+                   // Tính thời lượng phim + 15 phút dọn dẹp
+                   const endDate = new Date(startDate.getTime() + (duration + 15) * 60000);
 
                    const endHours = String(endDate.getHours()).padStart(2, '0');
                    const endMinutes = String(endDate.getMinutes()).padStart(2, '0');

@@ -15,6 +15,6 @@ namespace UI.Areas.ShowtimeManagement.Services
         Task<object> CreateShowtimeAsync(CreateShowtimeViewModel model);
         Task<object> UpdateShowtimeAsync(EditShowtimeViewModel model);
         Task<object> DeleteShowtimeAsync(Guid id);
-        Task<bool> CheckScheduleConflictAsync(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, int duration, Guid? excludeId = null);
+        Task<object> CheckScheduleConflictAsync(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, int duration, Guid? excludeId = null, Guid? movieId = null);
     }
 } 

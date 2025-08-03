@@ -176,10 +176,10 @@ namespace UI.Areas.ShowtimeManagement.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> CheckConflict(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, int duration, Guid? excludeId = null)
+        public async Task<IActionResult> CheckConflict(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, int duration, Guid? excludeId = null, Guid? movieId = null)
         {
-            var hasConflict = await _showtimeService.CheckScheduleConflictAsync(cinemaRoomId, showDate, startTime, duration, excludeId);
-            return Json(new { hasConflict });
+            var result = await _showtimeService.CheckScheduleConflictAsync(cinemaRoomId, showDate, startTime, duration, excludeId, movieId);
+            return Json(result);
         }
 
 
@@ -638,7 +638,26 @@ namespace UI.Areas.ShowtimeManagement.Controllers
                     return Json(new { success = false, message = "Thời gian không hợp lệ" });
                 }
                 var duration = (int)(endTs - startTs).TotalMinutes;
-                var hasConflict = await _showtimeService.CheckScheduleConflictAsync(cinemaRoomId, showDate, startTs, duration);
+                var result = await _showtimeService.CheckScheduleConflictAsync(cinemaRoomId, showDate, startTs, duration);
+                
+                // Extract hasConflict from the result object
+                bool hasConflict = false;
+                try
+                {
+                    // Use reflection to get the hasConflict property
+                    var hasConflictProperty = result.GetType().GetProperty("hasConflict");
+                    if (hasConflictProperty != null)
+                    {
+                        var value = hasConflictProperty.GetValue(result);
+                        hasConflict = value is bool boolValue ? boolValue : false;
+                    }
+                }
+                catch
+                {
+                    // If reflection fails, assume no conflict
+                    hasConflict = false;
+                }
+                
                 // Trả về data = false nếu CÓ xung đột để giữ logic cũ của FE
                 return Json(new { success = true, data = !hasConflict });
             }
