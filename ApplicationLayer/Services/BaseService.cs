@@ -12,6 +12,7 @@ namespace ApplicationLayer.Services
 {
     public abstract class BaseService
     {
+
         protected readonly IMapper _mapper;
         protected readonly IHttpContextAccessor _httpCtx;
 

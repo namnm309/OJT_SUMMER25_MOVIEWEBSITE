@@ -29,7 +29,7 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                                                     TimeSpan endTime,
                                                     Guid? excludeId = null,
                                                     Guid? movieId = null);
-        Task<bool> HasScheduleConflict(     Guid cinemaRoomId,
+        Task<ShowtimeConflictDto> HasScheduleConflict(     Guid cinemaRoomId,
                                             DateTime showDate,
                                             TimeSpan startTime,
                                             TimeSpan endTime,
@@ -155,17 +155,17 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             if (room == null)
                 return ErrorResp.NotFound("Cinema room not found");
 
-            // Calculate end time based on movie duration
-            var endTime = dto.StartTime.Add(TimeSpan.FromMinutes(movie.RunningTime));
+            // Calculate end time based on movie duration + 15 minutes for cleaning
+            var endTime = dto.StartTime.Add(TimeSpan.FromMinutes(movie.RunningTime + 15));
 
             // Normalize show date (store as UTC midnight)
             var normalizedShowDate = DateTime.SpecifyKind(dto.ShowDate.Date, DateTimeKind.Utc);
 
             // Check for schedule conflicts (BACKEND CHẶN TRÙNG)
-            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime, null, dto.MovieId);
-            if (hasConflict)
+            var conflictResult = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime, null, dto.MovieId);
+            if (conflictResult.HasConflict)
             {
-                return ErrorResp.BadRequest("Lịch chiếu bị trùng! Không thể tạo mới.");
+                return ErrorResp.BadRequest(conflictResult.ConflictMessage);
             }
 
             var showtime = _mapper.Map<ShowTime>(dto);
@@ -203,8 +203,8 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             if (dto.ShowDate.Date < DateTime.Today)
                 return ErrorResp.BadRequest("Ngày chiếu không thể là ngày trong quá khứ");
 
-            // Calculate end time based on movie duration
-            var endTime = dto.StartTime.Add(TimeSpan.FromMinutes(movie.RunningTime));
+            // Calculate end time based on movie duration + 15 minutes for cleaning
+            var endTime = dto.StartTime.Add(TimeSpan.FromMinutes(movie.RunningTime + 15));
 
             //// Validate start time is before end time
             //if (dto.StartTime >= endTime)
@@ -214,10 +214,10 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             var normalizedShowDate = DateTime.SpecifyKind(dto.ShowDate.Date, DateTimeKind.Utc);
 
             // Check for schedule conflicts (exclude current showtime)
-            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime, id);
-            if (hasConflict)
+            var conflictResult = await HasScheduleConflict(dto.CinemaRoomId, normalizedShowDate, dto.StartTime, endTime, id);
+            if (conflictResult.HasConflict)
             {
-                return ErrorResp.BadRequest("Đã có lịch chiếu khác trong khoảng thời gian này tại phòng chiếu này.");
+                return ErrorResp.BadRequest(conflictResult.ConflictMessage);
             }
 
             // Update showtime
@@ -262,67 +262,101 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             Guid? excludeId = null,
             Guid? movieId = null)
 {
-    var hasConflict = await HasScheduleConflict(cinemaRoomId, showDate, startTime, endTime, excludeId, movieId);
-    return SuccessResp.Ok(!hasConflict);
+    var conflictResult = await HasScheduleConflict(cinemaRoomId, showDate, startTime, endTime, excludeId, movieId);
+    return SuccessResp.Ok(new { 
+        hasConflict = conflictResult.HasConflict,
+        conflictMessage = conflictResult.ConflictMessage,
+        conflictingShowtimes = conflictResult.ConflictingShowtimes
+    });
 }
 
-        public async Task<bool> HasScheduleConflict(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, TimeSpan endTime, Guid? excludeId = null, Guid? movieId = null)
+        public async Task<ShowtimeConflictDto> HasScheduleConflict(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, TimeSpan endTime, Guid? excludeId = null, Guid? movieId = null)
         {
+            var result = new ShowtimeConflictDto { HasConflict = false };
+            
             try
             {
-                _logger.LogInformation($"[CONFLICT CHECK] INPUT: showDate={showDate:yyyy-MM-dd}, startTime={startTime}, endTime={endTime}, movieId={movieId}, roomId={cinemaRoomId}");
                 var existingShowtimes = await _showtimeRepo.WhereAsync(s => 
-                    s.RoomId == cinemaRoomId && s.IsActive);
+                    s.RoomId == cinemaRoomId && s.IsActive, "Movie");
 
                 var inputDateStr = showDate.ToString("yyyy-MM-dd");
                 foreach (var existing in existingShowtimes)
                 {
+                    // Skip if this is the showtime being updated (excludeId)
+                    if (excludeId.HasValue && existing.Id == excludeId.Value) continue;
+                    
                     if (!existing.ShowDate.HasValue) continue;
                     var dbDateStr = existing.ShowDate.Value.ToString("yyyy-MM-dd");
-                    _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] " +
-                        $"DB: showDate={dbDateStr}, " +
-                        $"startTime={existing.StartTime}, " +
-                        $"endTime={existing.EndTime}, " +
-                        $"movieId={existing.MovieId}, " +
-                        $"roomId={existing.RoomId}, existingId={existing.Id}");
                     if (dbDateStr != inputDateStr) continue;
 
-                    _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] So sánh: input (movieId={movieId}, " +
-                        $"startTime={startTime}) với DB (movieId={existing.MovieId}, " +
-                        $"startTime={existing.StartTime}, endTime={existing.EndTime})");
+                    var conflictingInfo = new ConflictingShowtimeInfo
+                    {
+                        Id = existing.Id,
+                        MovieTitle = existing.Movie?.Title ?? "Phim không xác định",
+                        StartTime = existing.StartTime,
+                        EndTime = existing.EndTime
+                    };
+                    
                     // 1. Không cho phép giờ bắt đầu trùng với giờ bắt đầu của cùng 1 bộ phim, cùng phòng, cùng ngày
                     if (movieId.HasValue && existing.MovieId == movieId.Value && existing.StartTime == startTime)
                     {
-                        _logger.LogWarning($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Trùng giờ bắt đầu cùng phim: movieId={movieId}, " +
-                            $"startTime={startTime}");
-                        return true;
+                        conflictingInfo.ConflictType = "start_time";
+                        result.ConflictingShowtimes.Add(conflictingInfo);
+                        result.HasConflict = true;
+                        continue;
                     }
+                    
                     // 2. Không cho phép giờ bắt đầu trùng với giờ kết thúc của bất kỳ lịch chiếu nào khác cùng phòng, cùng ngày
                     if (existing.EndTime == startTime)
                     {
-                        _logger.LogWarning($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Trùng giờ bắt đầu với giờ kết thúc phim khác: startTime={startTime}, " +
-                            $"endTime={existing.EndTime}");
-                        return true;
+                        conflictingInfo.ConflictType = "end_time";
+                        result.ConflictingShowtimes.Add(conflictingInfo);
+                        result.HasConflict = true;
+                        continue;
                     }
 
-                    // 3.Không cho phép giờ bắt đầu nằm trong khoảng thời gian của 1 phim khác 
-                    //1 phòng chiếu chỉ có 1 bộ phim và 1 thơi gian chiếu cố định cho phòng đó 
-                    if (existing.StartTime <= startTime && startTime <= existing.EndTime)
+                    // 3. Không cho phép giờ bắt đầu nằm trong khoảng thời gian của 1 phim khác 
+                    if (existing.StartTime <= startTime && startTime < existing.EndTime)
                     {
-                        _logger.LogWarning($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Giờ khởi tạo nằm trong 1 khoảng thời gian của phim khác : startTime={startTime}, " +
-                            $"endTime={existing.EndTime}");
-                        return true;
+                        conflictingInfo.ConflictType = "overlap";
+                        result.ConflictingShowtimes.Add(conflictingInfo);
+                        result.HasConflict = true;
+                        continue;
+                    }
+                    
+                    // 4. Không cho phép giờ kết thúc nằm trong khoảng thời gian của 1 phim khác
+                    if (existing.StartTime < endTime && endTime <= existing.EndTime)
+                    {
+                        conflictingInfo.ConflictType = "overlap";
+                        result.ConflictingShowtimes.Add(conflictingInfo);
+                        result.HasConflict = true;
+                        continue;
+                    }
+                    
+                    // 5. Không cho phép khoảng thời gian mới bao trùm hoàn toàn khoảng thời gian cũ
+                    if (startTime <= existing.StartTime && endTime >= existing.EndTime)
+                    {
+                        conflictingInfo.ConflictType = "encompass";
+                        result.ConflictingShowtimes.Add(conflictingInfo);
+                        result.HasConflict = true;
+                        continue;
                     }
                 }
-                _logger.LogInformation($"[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Không phát hiện conflict cho movieId={movieId}, startTime={startTime}, endTime={endTime}");
-                return false;
 
+                if (result.HasConflict)
+                {
+                    var conflictDetails = result.ConflictingShowtimes.Select(c => 
+                        $"{c.MovieTitle} ({c.StartTime:hh\\:mm} - {c.EndTime:hh\\:mm})");
+                    result.ConflictMessage = $"Lịch chiếu bị trùng với: {string.Join(", ", conflictDetails)}";
+                }
 
+                return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "[CHECKTRUNGLICHHHHHHHHHHHHHHHHHHHHHHH] Lỗi khi kiểm tra conflict");
-                return false;
+                result.HasConflict = false;
+                result.ConflictMessage = "Có lỗi xảy ra khi kiểm tra trùng lịch";
+                return result;
             }
         }
 
@@ -365,16 +399,24 @@ namespace ApplicationLayer.Services.ShowtimeManagement
                 return ErrorResp.BadRequest("Ngày chiếu không thể là ngày trong quá khứ");
 
             // Validate start time is before end time
-            //if (dto.StartTime >= dto.EndTime)
-            //    return ErrorResp.BadRequest("Giờ bắt đầu phải nhỏ hơn giờ kết thúc");
+            if (dto.StartTime >= dto.EndTime)
+                return ErrorResp.BadRequest("Giờ bắt đầu phải nhỏ hơn giờ kết thúc");
+
+            // Validate end time is reasonable (should be at least movie duration + 15 minutes)
+            var expectedEndTime = dto.StartTime.Add(TimeSpan.FromMinutes(movie.RunningTime + 15));
+            var timeDifference = Math.Abs((dto.EndTime - expectedEndTime).TotalMinutes);
+            if (timeDifference > 5) // Allow 5 minutes tolerance
+            {
+                return ErrorResp.BadRequest($"Giờ kết thúc không hợp lệ. Dự kiến: {expectedEndTime:hh\\:mm}, Nhận được: {dto.EndTime:hh\\:mm}");
+            }
 
             var showDateUtc = DateTime.SpecifyKind(dto.ShowDate.Date, DateTimeKind.Utc);
 
             // Check for schedule conflicts (BACKEND CHẶN TRÙNG)
-            var hasConflict = await HasScheduleConflict(dto.CinemaRoomId, showDateUtc, dto.StartTime, dto.EndTime, null, dto.MovieId);
-            if (hasConflict)
+            var conflictResult = await HasScheduleConflict(dto.CinemaRoomId, showDateUtc, dto.StartTime, dto.EndTime, null, dto.MovieId);
+            if (conflictResult.HasConflict)
             {
-                return ErrorResp.BadRequest("Lịch chiếu bị trùng! Không thể tạo mới.");
+                return ErrorResp.BadRequest(conflictResult.ConflictMessage);
             }
 
             var showtime = new ShowTime

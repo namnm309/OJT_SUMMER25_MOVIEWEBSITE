@@ -125,16 +125,17 @@
             const selectedOption = $('#MovieId').find('option:selected');
             const duration = parseInt(selectedOption.data('duration') || 0);
             
-            if (roomId && showDate && startTime && duration) {
+            if (roomId && showDate && startTime && duration && movieId) {
                 $.get('@Url.Action("CheckConflict", "Showtimes")', {
                     cinemaRoomId: roomId,
                     showDate: showDate,
                     startTime: startTime,
-                    duration: duration
+                    duration: duration,
+                    movieId: movieId
                 }, function(response) {
                     if (response.hasConflict) {
                         $('#conflictWarning').removeClass('d-none');
-                        $('#conflictMessage').text('Lịch chiếu bị trùng với suất chiếu khác trong phòng này!');
+                        $('#conflictMessage').text(response.conflictMessage || 'Lịch chiếu bị trùng với suất chiếu khác trong phòng này!');
                     } else {
                         $('#conflictWarning').addClass('d-none');
                     }

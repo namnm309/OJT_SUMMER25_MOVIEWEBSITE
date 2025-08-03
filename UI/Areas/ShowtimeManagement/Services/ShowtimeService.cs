@@ -211,12 +211,14 @@ namespace UI.Areas.ShowtimeManagement.Services
             }
         }
 
-        public async Task<bool> CheckScheduleConflictAsync(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, int duration, Guid? excludeId = null)
+        public async Task<object> CheckScheduleConflictAsync(Guid cinemaRoomId, DateTime showDate, TimeSpan startTime, int duration, Guid? excludeId = null, Guid? movieId = null)
         {
             try
             {
-                var endTime = startTime.Add(TimeSpan.FromMinutes(duration));
-                var url = $"/api/v1/showtime/CheckConflict?cinemaRoomId={cinemaRoomId}&showDate={showDate:yyyy-MM-dd}&startTime={startTime:hh\\:mm}&endTime={endTime:hh\\:mm}";
+                // Calculate end time based on movie duration + 15 minutes for cleaning
+                var endTime = startTime.Add(TimeSpan.FromMinutes(duration + 15));
+                var movieIdParam = movieId.HasValue ? movieId.Value.ToString() : Guid.Empty.ToString();
+                var url = $"/api/v1/showtime/CheckConflict?cinemaRoomId={cinemaRoomId}&showDate={showDate:yyyy-MM-dd}&startTime={startTime:hh\\:mm}&endTime={endTime:hh\\:mm}&movieId={movieIdParam}";
                 
                 if (excludeId.HasValue)
                 {
@@ -225,17 +227,22 @@ namespace UI.Areas.ShowtimeManagement.Services
 
                 var result = await _apiService.GetAsync<JsonElement>(url);
                 
-                if (result.Success && result.Data.TryGetProperty("hasConflict", out var hasConflictElement))
+                if (result.Success && result.Data.TryGetProperty("data", out var dataElement))
                 {
-                    return hasConflictElement.GetBoolean();
+                    return new
+                    {
+                        hasConflict = dataElement.TryGetProperty("hasConflict", out var hasConflictElement) ? hasConflictElement.GetBoolean() : false,
+                        conflictMessage = dataElement.TryGetProperty("conflictMessage", out var messageElement) ? messageElement.GetString() : string.Empty,
+                        conflictingShowtimes = dataElement.TryGetProperty("conflictingShowtimes", out var showtimesElement) ? showtimesElement.ToString() : string.Empty
+                    };
                 }
             }
             catch (Exception ex)
             {
-
+                // Silent error handling
             }
             
-            return false;
+            return new { hasConflict = false, conflictMessage = string.Empty, conflictingShowtimes = string.Empty };
         }
     }
 }
