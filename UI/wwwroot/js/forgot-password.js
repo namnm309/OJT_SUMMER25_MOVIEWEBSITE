@@ -99,10 +99,50 @@ $(document).ready(function () {
             return;
         }
         
-        // Validate password length
-        if (!newPassword || newPassword.length < 6) {
+        // Validate password length and complexity
+        if (!newPassword) {
             messageContainer.removeClass('alert-success').addClass('alert-danger');
-            messageContainer.html('<i class="fas fa-exclamation-circle me-2"></i>Mật khẩu phải có ít nhất 6 ký tự');
+            messageContainer.html('<i class="fas fa-exclamation-circle me-2"></i>Mật khẩu không được để trống');
+            messageContainer.show();
+            return;
+        }
+        
+        // Kiểm tra độ dài
+        if (newPassword.length < 8) {
+            messageContainer.removeClass('alert-success').addClass('alert-danger');
+            messageContainer.html('<i class="fas fa-exclamation-circle me-2"></i>Mật khẩu phải có ít nhất 8 ký tự');
+            messageContainer.show();
+            return;
+        }
+        
+        // Kiểm tra chữ hoa
+        if (!/[A-Z]/.test(newPassword)) {
+            messageContainer.removeClass('alert-success').addClass('alert-danger');
+            messageContainer.html('<i class="fas fa-exclamation-circle me-2"></i>Mật khẩu phải có ít nhất 1 chữ hoa');
+            messageContainer.show();
+            return;
+        }
+        
+        // Kiểm tra chữ thường
+        if (!/[a-z]/.test(newPassword)) {
+            messageContainer.removeClass('alert-success').addClass('alert-danger');
+            messageContainer.html('<i class="fas fa-exclamation-circle me-2"></i>Mật khẩu phải có ít nhất 1 chữ thường');
+            messageContainer.show();
+            return;
+        }
+        
+        // Kiểm tra số
+        if (!/[0-9]/.test(newPassword)) {
+            messageContainer.removeClass('alert-success').addClass('alert-danger');
+            messageContainer.html('<i class="fas fa-exclamation-circle me-2"></i>Mật khẩu phải có ít nhất 1 số');
+            messageContainer.show();
+            return;
+        }
+        
+        // Kiểm tra ký tự đặc biệt
+        if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?~`]/.test(newPassword)) {
+            messageContainer.removeClass('alert-success').addClass('alert-danger');
+            messageContainer.html('<i class="fas fa-exclamation-circle me-2"></i>Mật khẩu phải có ít nhất 1 ký tự đặc biệt');
             messageContainer.show();
             return;
         }
@@ -207,6 +247,88 @@ $(document).ready(function () {
         $(this).val(value);
     });
 
+    // Kiểm tra độ mạnh mật khẩu
+    function checkPasswordStrength(password) {
+        // Hiển thị container đánh giá độ mạnh mật khẩu
+        $('#passwordStrengthContainer').show();
+        
+        // Kiểm tra các yêu cầu
+        const hasLength = password.length >= 8;
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?~`]/.test(password);
+        
+        // Cập nhật trạng thái các yêu cầu
+        updateRequirement('length', hasLength);
+        updateRequirement('uppercase', hasUpperCase);
+        updateRequirement('lowercase', hasLowerCase);
+        updateRequirement('number', hasNumber);
+        updateRequirement('special', hasSpecial);
+        
+        // Tính điểm độ mạnh
+        let strength = 0;
+        if (hasLength) strength += 1;
+        if (hasUpperCase) strength += 1;
+        if (hasLowerCase) strength += 1;
+        if (hasNumber) strength += 1;
+        if (hasSpecial) strength += 1;
+        
+        // Cập nhật thanh độ mạnh và văn bản
+        const strengthBar = $('#passwordStrengthBar');
+        const strengthText = $('#passwordStrengthText');
+        
+        strengthBar.removeClass('strength-weak strength-fair strength-good strength-strong strength-very-strong');
+        strengthText.removeClass('text-weak text-fair text-good text-strong text-very-strong');
+        
+        if (password.length === 0) {
+            strengthBar.css('width', '0');
+            strengthText.text('');
+        } else if (strength === 1) {
+            strengthBar.addClass('strength-weak');
+            strengthText.addClass('text-weak');
+            strengthText.text('Rất yếu');
+        } else if (strength === 2) {
+            strengthBar.addClass('strength-fair');
+            strengthText.addClass('text-fair');
+            strengthText.text('Yếu');
+        } else if (strength === 3) {
+            strengthBar.addClass('strength-good');
+            strengthText.addClass('text-good');
+            strengthText.text('Khá');
+        } else if (strength === 4) {
+            strengthBar.addClass('strength-strong');
+            strengthText.addClass('text-strong');
+            strengthText.text('Mạnh');
+        } else {
+            strengthBar.addClass('strength-very-strong');
+            strengthText.addClass('text-very-strong');
+            strengthText.text('Rất mạnh');
+        }
+        
+        return strength;
+    }
+    
+    // Cập nhật trạng thái của từng yêu cầu
+    function updateRequirement(requirementId, isMet) {
+        const requirement = $(`#${requirementId}-requirement`);
+        const icon = requirement.find('.requirement-icon');
+        
+        if (isMet) {
+            requirement.addClass('requirement-met');
+            icon.removeClass('fa-circle').addClass('fa-check-circle');
+        } else {
+            requirement.removeClass('requirement-met');
+            icon.removeClass('fa-check-circle').addClass('fa-circle');
+        }
+    }
+    
+    // Kiểm tra độ mạnh mật khẩu khi nhập
+    $('#NewPassword').on('input', function() {
+        const password = $(this).val();
+        checkPasswordStrength(password);
+    });
+    
     // Real-time password confirmation validation
     $('#NewPassword, #ConfirmPassword').on('input', function() {
         var newPassword = $('#NewPassword').val();
@@ -237,4 +359,4 @@ $(document).ready(function () {
         messageContainer.html('<i class="fas fa-check-circle me-2"></i>' + tempDataMessage);
         messageContainer.show();
     }
-}); 
+});

@@ -9,6 +9,77 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        .password-strength-meter {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            border-radius: 4px;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .password-strength-text {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .password-requirements {
+            list-style: none;
+            padding-left: 0;
+            font-size: 0.85rem;
+        }
+        
+        .password-requirements li {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .password-requirements li i {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .text-success {
+            color: #28a745;
+        }
+        
+        .text-danger {
+            color: #dc3545;
+        }
+        
+        .strength-weak {
+            background-color: #dc3545;
+            width: 20%;
+        }
+        
+        .strength-fair {
+            background-color: #ffc107;
+            width: 40%;
+        }
+        
+        .strength-good {
+            background-color: #17a2b8;
+            width: 60%;
+        }
+        
+        .strength-strong {
+            background-color: #28a745;
+            width: 80%;
+        }
+        
+        .strength-very-strong {
+            background-color: #28a745;
+            width: 100%;
+        }
+    </style>
 }
 
 <div class="main-container">
@@ -84,6 +155,19 @@
                                     <button type="button" class="btn toggle-password" id="togglePassword">
                                         <i class="fas fa-eye-slash"></i>
                                     </button>
+                                </div>
+                                <div id="passwordStrengthContainer" class="mt-2" style="display: none;">
+                                    <div class="password-strength-meter">
+                                        <div id="passwordStrengthBar" class="password-strength-bar"></div>
+                                    </div>
+                                    <div id="passwordStrengthText" class="password-strength-text mt-1">Độ mạnh mật khẩu</div>
+                                    <ul class="password-requirements mt-2">
+                                        <li id="length-check"><i class="fas fa-times-circle text-danger"></i> Ít nhất 8 ký tự</li>
+                                        <li id="uppercase-check"><i class="fas fa-times-circle text-danger"></i> Ít nhất 1 chữ hoa</li>
+                                        <li id="lowercase-check"><i class="fas fa-times-circle text-danger"></i> Ít nhất 1 chữ thường</li>
+                                        <li id="number-check"><i class="fas fa-times-circle text-danger"></i> Ít nhất 1 số</li>
+                                        <li id="special-check"><i class="fas fa-times-circle text-danger"></i> Ít nhất 1 ký tự đặc biệt</li>
+                                    </ul>
                                 </div>
                                 <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
@@ -238,6 +322,104 @@
             }
         });
 
+        // Xác thực mật khẩu mạnh
+        const passwordField = document.getElementById('Password');
+        const passwordStrengthContainer = document.getElementById('passwordStrengthContainer');
+        const passwordStrengthBar = document.getElementById('passwordStrengthBar');
+        const passwordStrengthText = document.getElementById('passwordStrengthText');
+        
+        // Các yêu cầu mật khẩu
+        const lengthCheck = document.getElementById('length-check');
+        const uppercaseCheck = document.getElementById('uppercase-check');
+        const lowercaseCheck = document.getElementById('lowercase-check');
+        const numberCheck = document.getElementById('number-check');
+        const specialCheck = document.getElementById('special-check');
+        
+        passwordField.addEventListener('input', function() {
+            const password = this.value;
+            
+            // Hiển thị container khi bắt đầu nhập
+            if (password.length > 0) {
+                passwordStrengthContainer.style.display = 'block';
+            } else {
+                passwordStrengthContainer.style.display = 'none';
+                return;
+            }
+            
+            // Kiểm tra các yêu cầu
+            const hasLength = password.length >= 8;
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasLowercase = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[!@@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password);
+            
+            // Cập nhật trạng thái các yêu cầu
+            updateRequirement(lengthCheck, hasLength);
+            updateRequirement(uppercaseCheck, hasUppercase);
+            updateRequirement(lowercaseCheck, hasLowercase);
+            updateRequirement(numberCheck, hasNumber);
+            updateRequirement(specialCheck, hasSpecial);
+            
+            // Tính điểm mật khẩu
+            let score = 0;
+            if (hasLength) score++;
+            if (hasUppercase) score++;
+            if (hasLowercase) score++;
+            if (hasNumber) score++;
+            if (hasSpecial) score++;
+            
+            // Cập nhật thanh độ mạnh
+            updatePasswordStrength(score);
+        });
+        
+        function updateRequirement(element, isValid) {
+            const icon = element.querySelector('i');
+            if (isValid) {
+                icon.classList.remove('fa-times-circle', 'text-danger');
+                icon.classList.add('fa-check-circle', 'text-success');
+            } else {
+                icon.classList.remove('fa-check-circle', 'text-success');
+                icon.classList.add('fa-times-circle', 'text-danger');
+            }
+        }
+        
+        function updatePasswordStrength(score) {
+            // Xóa tất cả các class hiện tại
+            passwordStrengthBar.className = 'password-strength-bar';
+            
+            // Thêm class mới dựa trên điểm
+            let strengthClass = '';
+            let strengthText = '';
+            
+            switch(score) {
+                case 1:
+                    strengthClass = 'strength-weak';
+                    strengthText = 'Yếu';
+                    break;
+                case 2:
+                    strengthClass = 'strength-fair';
+                    strengthText = 'Trung bình';
+                    break;
+                case 3:
+                    strengthClass = 'strength-good';
+                    strengthText = 'Khá';
+                    break;
+                case 4:
+                    strengthClass = 'strength-strong';
+                    strengthText = 'Mạnh';
+                    break;
+                case 5:
+                    strengthClass = 'strength-very-strong';
+                    strengthText = 'Rất mạnh';
+                    break;
+                default:
+                    strengthText = 'Độ mạnh mật khẩu';
+            }
+            
+            passwordStrengthBar.classList.add(strengthClass);
+            passwordStrengthText.textContent = strengthText;
+        }
+
         // Focus vào username khi trang load
         document.addEventListener('DOMContentLoaded', function () {
             const usernameField = document.getElementById('Username');
@@ -251,19 +433,31 @@
             e.preventDefault();
 
             const formData = new FormData(this);
-
-
             document.getElementById('registerError').textContent = '';
 
-
+            // Kiểm tra thông tin bắt buộc
             if (!formData.get('username') || !formData.get('email') || !formData.get('password') ||
                 !formData.get('confirmPassword') || !formData.get('fullName')) {
                 document.getElementById('registerError').textContent = 'Vui lòng nhập đầy đủ thông tin bắt buộc';
                 return;
             }
 
+            // Kiểm tra mật khẩu xác nhận
             if (formData.get('password') !== formData.get('confirmPassword')) {
                 document.getElementById('registerError').textContent = 'Mật khẩu xác nhận không khớp';
+                return;
+            }
+            
+            // Kiểm tra độ mạnh mật khẩu
+            const password = formData.get('password');
+            const hasLength = password.length >= 8;
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasLowercase = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[!@@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password);
+            
+            if (!hasLength || !hasUppercase || !hasLowercase || !hasNumber || !hasSpecial) {
+                document.getElementById('registerError').textContent = 'Mật khẩu không đáp ứng yêu cầu bảo mật. Vui lòng kiểm tra lại.';
                 return;
             }
 

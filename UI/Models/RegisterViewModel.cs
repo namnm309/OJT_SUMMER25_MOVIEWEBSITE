@@ -10,9 +10,11 @@ namespace UI.Models
     public string Username { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
-    [StringLength(255, MinimumLength = 6, ErrorMessage = "Mật khẩu phải từ 6 đến 255 ký tự")]
+    [StringLength(255, MinimumLength = 8, ErrorMessage = "Mật khẩu phải từ 8 đến 255 ký tự")]
     [DataType(DataType.Password)]
     [Display(Name = "Mật khẩu")]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?~`]).{8,}$", 
+        ErrorMessage = "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt")]
     public string Password { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Xác nhận mật khẩu là bắt buộc")]
@@ -55,4 +57,4 @@ namespace UI.Models
     [Display(Name = "Giới tính")]
     public string Gender { get; set; } = "Nam"; // Mặc định là Nam (tương ứng với Male=1)
     }
-} 
+}
