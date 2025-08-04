@@ -171,13 +171,14 @@ namespace UI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Nếu là AJAX request, trả về JSON
-                if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                // Kiểm tra nếu là AJAX request (từ JavaScript)
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
+                    Request.Headers["Content-Type"].ToString().Contains("application/x-www-form-urlencoded"))
                 {
                     var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
                     return Json(new { success = false, message = string.Join(", ", errors) });
                 }
-                return Json(new { success = false, message = "Invalid model state" });
+                return View(model);
             }
 
             try
@@ -211,33 +212,43 @@ namespace UI.Controllers
                 if (result.Success)
                 {
                     // Nếu là AJAX request
-                    if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
+                        Request.Headers["Content-Type"].ToString().Contains("application/x-www-form-urlencoded"))
                     {
                         return Json(new { success = true, message = "Registration successful! Please login to continue." });
                     }
 
                     TempData["SuccessMessage"] = "Registration successful! Please login to continue.";
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Account");
                 }
                 else
                 {
-                    if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
+                        Request.Headers["Content-Type"].ToString().Contains("application/x-www-form-urlencoded"))
                     {
                         return Json(new { success = false, message = result.Message });
                     }
                     ModelState.AddModelError("", result.Message);
+                    return View(model);
                 }
             }
             catch (Exception ex)
             {
-                if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
+                    Request.Headers["Content-Type"].ToString().Contains("application/x-www-form-urlencoded"))
                 {
                     return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
                 }
                 ModelState.AddModelError("", $"An error occurred: {ex.Message}");
             }
 
-            return Json(new { success = false, message = "Registration failed" });
+            // Nếu không phải AJAX request, trả về view với model
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
+                Request.Headers["Content-Type"].ToString().Contains("application/x-www-form-urlencoded"))
+            {
+                return Json(new { success = false, message = "Registration failed" });
+            }
+            return View(model);
         }
 
         [HttpPost]
@@ -436,6 +447,79 @@ namespace UI.Controllers
             }
 
             return View(model);
+        }
+
+        // Remote validation methods
+        [HttpGet]
+        public async Task<IActionResult> CheckPhoneUnique(string phone)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(phone))
+                    return Json(true);
+
+                var response = await _apiService.GetAsync<JsonElement>($"/api/user/check-phone-exists?phone={phone}");
+                
+                if (response.Success)
+                {
+                    var exists = response.Data.GetProperty("exists").GetBoolean();
+                    return Json(!exists); // Return false if phone exists (validation fails)
+                }
+                
+                return Json(true); // Default to valid if can't check
+            }
+            catch
+            {
+                return Json(true); // Default to valid on error
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckEmailUnique(string email)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(email))
+                    return Json(true);
+
+                var response = await _apiService.GetAsync<JsonElement>($"/api/user/check-email-exists?email={email}");
+                
+                if (response.Success)
+                {
+                    var exists = response.Data.GetProperty("exists").GetBoolean();
+                    return Json(!exists); // Return false if email exists (validation fails)
+                }
+                
+                return Json(true); // Default to valid if can't check
+            }
+            catch
+            {
+                return Json(true); // Default to valid on error
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckIdentityCardUnique(string identityCard)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(identityCard))
+                    return Json(true);
+
+                var response = await _apiService.GetAsync<JsonElement>($"/api/user/check-identity-card-exists?identityCard={identityCard}");
+                
+                if (response.Success)
+                {
+                    var exists = response.Data.GetProperty("exists").GetBoolean();
+                    return Json(!exists); // Return false if identity card exists (validation fails)
+                }
+                
+                return Json(true); // Default to valid if can't check
+            }
+            catch
+            {
+                return Json(true); // Default to valid on error
+            }
         }
     }
 }

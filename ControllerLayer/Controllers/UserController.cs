@@ -16,10 +16,12 @@ namespace ControllerLayer.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
 
         [HttpPost("login")]
@@ -283,6 +285,61 @@ namespace ControllerLayer.Controllers
                 UserRole.Member => "/Dashboard/MemberDashboard",
                 _ => "/Home/Index"
             };
+        }
+
+        // API endpoints for uniqueness validation
+        [HttpGet("check-phone-exists")]
+        public async Task<IActionResult> CheckPhoneExists([FromQuery] string phone)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(phone))
+                    return Ok(new { exists = false });
+
+                var exists = await _userService.IsPhoneExistsAsync(phone);
+                return Ok(new { exists });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking phone existence");
+                return StatusCode(500, new { error = "Internal server error" });
+            }
+        }
+
+        [HttpGet("check-email-exists")]
+        public async Task<IActionResult> CheckEmailExists([FromQuery] string email)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(email))
+                    return Ok(new { exists = false });
+
+                var exists = await _userService.IsEmailExistsAsync(email);
+                return Ok(new { exists });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking email existence");
+                return StatusCode(500, new { error = "Internal server error" });
+            }
+        }
+
+        [HttpGet("check-identity-card-exists")]
+        public async Task<IActionResult> CheckIdentityCardExists([FromQuery] string identityCard)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(identityCard))
+                    return Ok(new { exists = false });
+
+                var exists = await _userService.IsIdentityCardExistsAsync(identityCard);
+                return Ok(new { exists });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking identity card existence");
+                return StatusCode(500, new { error = "Internal server error" });
+            }
         }
     }
 }

@@ -60,6 +60,18 @@ namespace ApplicationLayer.Services.UserManagement
                     return (false, "Email already exists");
                 }
 
+                // Check if phone exists
+                if (!string.IsNullOrEmpty(registerRequest.Phone) && await _userRepository.IsPhoneExistsAsync(registerRequest.Phone))
+                {
+                    return (false, "Phone number already exists");
+                }
+
+                // Check if identity card exists
+                if (!string.IsNullOrEmpty(registerRequest.IdentityCard) && await _userRepository.IsIdentityCardExistsAsync(registerRequest.IdentityCard))
+                {
+                    return (false, "Identity card already exists");
+                }
+
                 // Dùng AutoMapper để convert từ RegisterRequestDto sang Users entity
                 var user = _mapper.Map<Users>(registerRequest);
                 
@@ -384,5 +396,22 @@ namespace ApplicationLayer.Services.UserManagement
                 return (false, null, $"An error occurred: {ex.Message}");
             }
         }
+
+        // ============ VALIDATION METHODS ============
+        
+        public async Task<bool> IsPhoneExistsAsync(string phone)
+        {
+            return await _userRepository.IsPhoneExistsAsync(phone);
+        }
+
+        public async Task<bool> IsEmailExistsAsync(string email)
+        {
+            return await _userRepository.IsEmailExistsAsync(email);
+        }
+
+        public async Task<bool> IsIdentityCardExistsAsync(string identityCard)
+        {
+            return await _userRepository.IsIdentityCardExistsAsync(identityCard);
+        }
     }
-} 
+}
