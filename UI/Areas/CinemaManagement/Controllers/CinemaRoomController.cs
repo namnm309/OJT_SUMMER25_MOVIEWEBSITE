@@ -59,17 +59,39 @@ namespace UI.Areas.CinemaManagement.Controllers
                         _logger.LogInformation("Found 'data' property with {Count} items", 
                             dataProperty.ValueKind == JsonValueKind.Array ? dataProperty.GetArrayLength() : 0);
                         
+                        // Kiểm tra nếu dataProperty có chứa data nested
+                        JsonElement finalDataProperty = dataProperty;
+                        if (dataProperty.ValueKind == JsonValueKind.Object && dataProperty.TryGetProperty("data", out var nestedData))
+                        {
+                            finalDataProperty = nestedData;
+                            _logger.LogInformation("Found nested 'data' property with {Count} items", 
+                                finalDataProperty.ValueKind == JsonValueKind.Array ? finalDataProperty.GetArrayLength() : 0);
+                        }
 
-                        ViewBag.Total = response.Data.TryGetProperty("total", out var totalProp) ? totalProp.GetInt32() : 
-                                       (dataProperty.ValueKind == JsonValueKind.Array ? dataProperty.GetArrayLength() : 0);
+                        // Lấy total từ response hoặc tính từ số lượng items
+                        int total = 0;
+                        if (response.Data.TryGetProperty("total", out var totalProp))
+                        {
+                            total = totalProp.GetInt32();
+                        }
+                        else if (response.Data.TryGetProperty("Total", out var TotalProp))
+                        {
+                            total = TotalProp.GetInt32();
+                        }
+                        else
+                        {
+                            // Nếu không có total, tính từ số lượng items hiện tại
+                            total = finalDataProperty.ValueKind == JsonValueKind.Array ? finalDataProperty.GetArrayLength() : 0;
+                        }
+                        ViewBag.Total = total;
                         ViewBag.CurrentPage = response.Data.TryGetProperty("page", out var pageProp) ? pageProp.GetInt32() : page;
                         ViewBag.PageSize = response.Data.TryGetProperty("pageSize", out var sizeProp) ? sizeProp.GetInt32() : pageSize;
                         
 
-                        ViewBag.HasData = dataProperty.ValueKind == JsonValueKind.Array && dataProperty.GetArrayLength() > 0;
-                        ViewBag.DataCount = dataProperty.ValueKind == JsonValueKind.Array ? dataProperty.GetArrayLength() : 0;
+                        ViewBag.HasData = finalDataProperty.ValueKind == JsonValueKind.Array && finalDataProperty.GetArrayLength() > 0;
+                        ViewBag.DataCount = finalDataProperty.ValueKind == JsonValueKind.Array ? finalDataProperty.GetArrayLength() : 0;
                         
-                        return View(dataProperty);
+                        return View(finalDataProperty);
                     }
                     else if (response.Data.TryGetProperty("Data", out var DataProperty))
                     {

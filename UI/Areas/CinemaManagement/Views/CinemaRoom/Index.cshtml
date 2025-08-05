@@ -220,6 +220,14 @@
                                                             @(status ? "Hoạt động" : "Ngừng hoạt động")
                                                         </span>
                                                     }
+                                                    else if (item.room.TryGetProperty("isActive", out var isActiveElement))
+                                                    {
+                                                        var isActive = isActiveElement.GetBoolean();
+                                                        <span class="badge @(isActive ? "badge-success" : "badge-danger")">
+                                                            <i class="fas fa-circle"></i>
+                                                            @(isActive ? "Hoạt động" : "Ngừng hoạt động")
+                                                        </span>
+                                                    }
                                                     else
                                                     {
                                                         <span class="badge badge-success">
@@ -234,6 +242,17 @@
                                                         if (DateTime.TryParse(createdDateElement.GetString(), out var createdDate))
                                                         {
                                                             @createdDate.ToString("dd/MM/yyyy")
+                                                        }
+                                                        else
+                                                        {
+                                                            <span style="color: var(--gray-400)">N/A</span>
+                                                        }
+                                                    }
+                                                    else if (item.room.TryGetProperty("createdAt", out var createdAtElement))
+                                                    {
+                                                        if (DateTime.TryParse(createdAtElement.GetString(), out var createdAt))
+                                                        {
+                                                            @createdAt.ToString("dd/MM/yyyy")
                                                         }
                                                         else
                                                         {

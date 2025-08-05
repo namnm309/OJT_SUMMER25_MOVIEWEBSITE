@@ -1,5 +1,41 @@
 ﻿
 
+        // Helper function để lấy JWT token
+        function getAuthToken() {
+            try {
+                // Thử lấy từ session storage trước
+                let token = sessionStorage.getItem('JWToken') || '';
+                if (!token) {
+                    // Nếu không có, thử lấy từ cookie
+                    const cookies = document.cookie.split(';');
+                    const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('JWToken='));
+                    if (tokenCookie) {
+                        token = tokenCookie.split('=')[1];
+                    }
+                }
+                return token;
+            } catch (e) {
+                console.warn('Could not get auth token:', e);
+                return '';
+            }
+        }
+
+        // Helper function để tạo headers với auth
+        function createAuthHeaders() {
+            const headers = {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            };
+
+            const authToken = getAuthToken();
+            if (authToken) {
+                headers['Authorization'] = `Bearer ${authToken}`;
+            }
+
+            return headers;
+        }
+
         let searchTimeout;
         const searchInput = document.getElementById('cinemaSearch');
         
@@ -32,9 +68,7 @@
             try {
                 const response = await fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/cinemaroom/Delete/${roomId}`, {
                     method: 'DELETE',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                    headers: createAuthHeaders()
                 });
                 
                 const responseText = await response.text();
@@ -994,13 +1028,12 @@
             
             try {
                 // Sử dụng API service giống như modal chi tiết phòng
-                const detailsUrl = `https://localhost:7049/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
+                const detailsUrl = `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
                 
                 const response = await fetch(detailsUrl, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
-                    }
+                    method: 'GET',
+                    headers: createAuthHeaders(),
+                    mode: 'cors'
                 });
                 
                 if (!response.ok) {
@@ -1030,9 +1063,21 @@
                 content.style.display = 'block';
             } catch (error) {
                 console.error('Error loading seats:', error);
+                let errorMessage = 'Failed to fetch';
+                
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    errorMessage = 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                
                 loading.innerHTML = `
                     <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
-                    <span>${error.message}</span>
+                    <span>${errorMessage}</span>
+                    <br><br>
+                    <button onclick="openManageSeatsModal('${roomId}')" class="btn btn-primary btn-sm">
+                        <i class="fas fa-redo"></i> Thử lại
+                    </button>
                 `;
             }
         }
