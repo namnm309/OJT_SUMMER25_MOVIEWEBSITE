@@ -8,7 +8,7 @@
 @section Styles {
 			<link rel="stylesheet" href="~/css/HomePage/base.css" />
 			<link rel="stylesheet" href="~/css/HomePage/header.css" /> 
-			<link rel="stylesheet" href="~/css/Shared/_header.css" />
+			    <link rel="stylesheet" href="~/css/Shared/_header_new.css" />
  			<link rel="stylesheet" href="~/css/HomePage/hero.css" />
  			<link rel="stylesheet" href="~/css/HomePage/moviecard.css" />
 			<link rel="stylesheet" href="~/css/HomePage/layout.css" />
@@ -461,115 +461,14 @@
 				}
 				else
 				{
-							<!-- Dữ liệu mẫu khi không có khuyến mãi -->
-							<div class="recommended-item">
-								<div class="recommended-poster">
-									<img src="https://via.placeholder.com/300x450/df2144/ffffff?text=2+1" alt="Mua 2 tặng 1">
-									<div class="recommended-overlay">
-										<a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
-											<i class="fas fa-tag"></i>
-											Xem Chi Tiết
-										</a>
-									</div>
-									<div class="recommended-promotion-badge">
-										<i class="fas fa-gift"></i> Mua 2 Tặng 1
-									</div>
-								</div>
-								<div class="recommended-info">
-									<span class="recommended-genre">
-										<i class="fas fa-calendar-alt"></i>
-										01/06 - 30/06/2024
-									</span>
-									<h3 class="recommended-title">Mua 2 tặng 1 vé xem phim</h3>
-									<div class="recommended-meta">
-										<div class="recommended-description">
-											<i class="fas fa-info-circle"></i>
-											<span>Mua 2 vé được tặng 1 vé miễn phí cùng ngày...</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="recommended-item">
-								<div class="recommended-poster">
-									<img src="https://via.placeholder.com/300x450/df2144/ffffff?text=50%" alt="Giảm giá">
-									<div class="recommended-overlay">
-										<a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
-											<i class="fas fa-tag"></i>
-											Xem Chi Tiết
-										</a>
-									</div>
-									<div class="recommended-promotion-badge">
-										<i class="fas fa-percentage"></i> Giảm 50%
-									</div>
-								</div>
-								<div class="recommended-info">
-									<span class="recommended-genre">
-										<i class="fas fa-calendar-alt"></i>
-										15/06 - 15/07/2024
-									</span>
-									<h3 class="recommended-title">Giảm 50% combo bắp nước</h3>
-									<div class="recommended-meta">
-										<div class="recommended-description">
-											<i class="fas fa-info-circle"></i>
-											<span>Giảm giá 50% combo vào thứ 3 và thứ 4...</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="recommended-item">
-								<div class="recommended-poster">
-									<img src="https://via.placeholder.com/300x450/df2144/ffffff?text=VIP" alt="Thành viên">
-									<div class="recommended-overlay">
-										<a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
-											<i class="fas fa-tag"></i>
-											Xem Chi Tiết
-										</a>
-									</div>
-									<div class="recommended-promotion-badge">
-										<i class="fas fa-crown"></i> VIP
-									</div>
-								</div>
-								<div class="recommended-info">
-									<span class="recommended-genre">
-										<i class="fas fa-calendar-alt"></i>
-										01/06 - 31/12/2024
-									</span>
-									<h3 class="recommended-title">Ưu đãi thành viên mới</h3>
-									<div class="recommended-meta">
-										<div class="recommended-description">
-											<i class="fas fa-info-circle"></i>
-											<span>Đăng ký mới nhận 2 vé và combo miễn phí...</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="recommended-item">
-								<div class="recommended-poster">
-									<img src="https://via.placeholder.com/300x450/df2144/ffffff?text=BDAY" alt="Sinh nhật">
-									<div class="recommended-overlay">
-										<a href="@Url.Action("Index", "Promotions")" class="recommended-view-btn">
-											<i class="fas fa-tag"></i>
-											Xem Chi Tiết
-										</a>
-									</div>
-									<div class="recommended-promotion-badge">
-										<i class="fas fa-birthday-cake"></i> Sinh Nhật
-									</div>
-								</div>
-								<div class="recommended-info">
-									<span class="recommended-genre">
-										<i class="fas fa-calendar-alt"></i>
-										Quanh năm
-									</span>
-									<h3 class="recommended-title">Ưu đãi sinh nhật</h3>
-									<div class="recommended-meta">
-										<div class="recommended-description">
-											<i class="fas fa-info-circle"></i>
-											<span>Miễn phí 1 vé trong tháng sinh nhật...</span>
-										</div>
-									</div>
-								</div>
-							</div>
+					<!-- Không có khuyến mãi -->
+					<div class="no-promotions-message">
+						<div class="no-promotions-content">
+							<i class="fas fa-tags no-promotions-icon"></i>
+							<h3>Không có ưu đãi</h3>
+							<p>Hiện tại chưa có khuyến mãi nào đang diễn ra. Hãy quay lại sau nhé!</p>
+						</div>
+					</div>
 				}
 			</div>
 		</div>

@@ -117,3 +117,11 @@
     border-color: #667eea;
     transform: translateY(-2px);
 }
+
+.btn-load-more i {
+    transition: transform 0.3s ease;
+}
+
+.btn-load-more.expanded i {
+    transform: rotate(180deg);
+}
