@@ -27,10 +27,6 @@ namespace UI.Areas.MovieManagement.Controllers
         public async Task<IActionResult> Index(string? searchTerm, Guid? genreId, string? status)
         {
             ViewData["Title"] = "Quản lý phim";
-            
-            // Set current page info for sidebar
-            ViewBag.CurrentController = "Movies";
-            ViewBag.CurrentAction = "Index";
 
             try
             {

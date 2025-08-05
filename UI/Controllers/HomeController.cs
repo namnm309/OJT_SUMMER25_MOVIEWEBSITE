@@ -22,10 +22,6 @@ namespace UI.Controllers
         public async Task<IActionResult> Index()
         {
             var viewModel = new HomeViewModel();
-            
-            // Set current page info for sidebar
-            ViewBag.CurrentController = "Home";
-            ViewBag.CurrentAction = "Index";
 
             try
             {
