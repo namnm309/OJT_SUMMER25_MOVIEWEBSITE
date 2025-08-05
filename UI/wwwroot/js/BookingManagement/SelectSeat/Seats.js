@@ -408,6 +408,19 @@
             seatCountInHeader.textContent = `${selectedSeats.length}/${allSeats.length} Seats Selected`;
         }
         
+        // Cập nhật hiển thị ghế đã chọn trong header nếu có
+        const selectedSeatsHeader = document.getElementById('selectedSeatsHeader');
+        if (selectedSeatsHeader) {
+            if (selectedSeats.length === 0) {
+                selectedSeatsHeader.style.display = 'none';
+            } else {
+                selectedSeatsHeader.style.display = 'block';
+                selectedSeatsHeader.innerHTML = selectedSeats.map(seat => 
+                    `<span class="selected-seat-badge">${seat.code}</span>`
+                ).join('');
+            }
+        }
+        
         continueBtn.disabled = selectedSeats.length === 0;
     }
 

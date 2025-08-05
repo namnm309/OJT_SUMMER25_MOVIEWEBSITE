@@ -260,6 +260,11 @@
                                                                title="Chỉnh sửa">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
+                                                            <button onclick="openManageSeatsModal('@roomId')" 
+                                                                    class="btn-icon btn-manage" 
+                                                                    title="Quản lý ghế">
+                                                                <i class="fas fa-chair"></i>
+                                                            </button>
                                                             <button onclick="confirmDelete('@roomId', '@(item.room.TryGetProperty("roomName", out var nameEl) ? nameEl.GetString() : "phòng này")')" 
                                                                     class="btn-icon btn-delete" 
                                                                     title="Xóa">
@@ -311,45 +316,54 @@
                         var currentPage = ViewBag.CurrentPage ?? 1;
                         var currentPageSize = ViewBag.PageSize ?? 10;
                     }
-                    @if (ViewBag.Total != null && ViewBag.PageSize != null && (int)ViewBag.Total > (int)ViewBag.PageSize)
-                    {
-                        <div class="pagination-wrapper">
-                            <div class="pagination-info">
-                                Hiển thị @((currentPage - 1) * currentPageSize + 1) - @Math.Min(currentPage * currentPageSize, (int)ViewBag.Total) 
-                                trong tổng số @ViewBag.Total phòng chiếu
-                            </div>
-                            <div class="pagination-controls">
-                                <a href="@Url.Action("Index", new { page = currentPage - 1, pageSize = currentPageSize, search = ViewBag.Search })" 
-                                   class="page-btn @(currentPage <= 1 ? "disabled" : "")"
-                                   @(currentPage <= 1 ? "onclick=\"return false;\"" : "")>
-                                    <i class="fas fa-chevron-left"></i>
-                                </a>
-                                
-                                @for (int i = Math.Max(1, currentPage - 2); i <= Math.Min(totalPages, currentPage + 2); i++)
+                    <div class="movie-pagination">
+                        <div class="pagination-info">
+                            <span id="paginationInfo">
+                                @if (ViewBag.Total != null && ViewBag.PageSize != null)
                                 {
-                                    <a href="@Url.Action("Index", new { page = i, pageSize = currentPageSize, search = ViewBag.Search })" 
-                                       class="page-btn @(i == currentPage ? "active" : "")">
-                                        @i
-                                    </a>
+                                    var start = (currentPage - 1) * currentPageSize + 1;
+                                    var end = Math.Min(currentPage * currentPageSize, (int)ViewBag.Total);
+                                    <text>Hiển thị @start - @end trong tổng số @ViewBag.Total phòng chiếu</text>
                                 }
-                                
-                                <a href="@Url.Action("Index", new { page = currentPage + 1, pageSize = currentPageSize, search = ViewBag.Search })" 
-                                   class="page-btn @(currentPage >= totalPages ? "disabled" : "")"
-                                   @(currentPage >= totalPages ? "onclick=\"return false;\"" : "")>
-                                    <i class="fas fa-chevron-right"></i>
-                                </a>
-                                
-                                <form method="get" onchange="this.submit()" style="display: inline-block; margin-left: 1rem;">
-                                    <input type="hidden" name="search" value="@ViewBag.Search" />
-                                    <select name="pageSize" class="page-btn" style="width: auto; padding: 0 1rem;">
-                                        <option value="5" selected="@(currentPageSize == 5 ? "selected" : null)">5/trang</option>
-                                        <option value="10" selected="@(currentPageSize == 10 ? "selected" : null)">10/trang</option>
-                                        <option value="20" selected="@(currentPageSize == 20 ? "selected" : null)">20/trang</option>
-                                    </select>
-                                </form>
-                            </div>
+                                else
+                                {
+                                    <text>Đang tải...</text>
+                                }
+                            </span>
                         </div>
-                    }
+                        <div class="pagination-controls">
+                            <button id="prevPageBtn" class="btn-pagination" 
+                                    @(currentPage <= 1 ? "disabled" : "") 
+                                    onclick="goToPage(@(currentPage - 1))">
+                                ❮ Trước
+                            </button>
+                            <div id="pageNumbers" class="page-numbers">
+                                @if (ViewBag.Total != null && ViewBag.PageSize != null && (int)ViewBag.Total > (int)ViewBag.PageSize)
+                                {
+                                    for (int i = Math.Max(1, currentPage - 2); i <= Math.Min(totalPages, currentPage + 2); i++)
+                                    {
+                                        <button class="page-number @(i == currentPage ? "active" : "")" 
+                                                onclick="goToPage(@i)">
+                                            @i
+                                        </button>
+                                    }
+                                }
+                            </div>
+                            <button id="nextPageBtn" class="btn-pagination" 
+                                    @(currentPage >= totalPages ? "disabled" : "") 
+                                    onclick="goToPage(@(currentPage + 1))">
+                                Sau ❯
+                            </button>
+                        </div>
+                        <div class="pagination-size">
+                            <select id="pageSizeSelect" class="form-select" onchange="changePageSize(this.value)">
+                                <option value="5" selected="@(currentPageSize == 5 ? "selected" : null)">5/trang</option>
+                                <option value="10" selected="@(currentPageSize == 10 ? "selected" : null)">10/trang</option>
+                                <option value="15" selected="@(currentPageSize == 15 ? "selected" : null)">15/trang</option>
+                                <option value="20" selected="@(currentPageSize == 20 ? "selected" : null)">20/trang</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -527,12 +541,243 @@
         </div>
     </div>
 
+    <!-- Modal chỉnh sửa ghế -->
+    <div id="editSeatModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-chair" style="color: var(--primary);"></i>
+                    Chỉnh sửa thông tin ghế
+                </h3>
+                <button class="modal-close" onclick="closeEditSeatModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editSeatForm" onsubmit="submitEditSeatForm(event)">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="editSeatCode" class="form-label">
+                                <i class="fas fa-tag me-1"></i>Mã ghế
+                            </label>
+                            <input type="text" id="editSeatCode" name="SeatCode" class="form-control-modal" readonly style="background: var(--gray-100);">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="editSeatType" class="form-label">
+                                <i class="fas fa-star me-1"></i>Loại ghế <span style="color: var(--danger);">*</span>
+                            </label>
+                            <select id="editSeatType" name="SeatType" class="form-control-modal" required>
+                                <option value="Normal">Ghế thường</option>
+                                <option value="VIP">Ghế VIP</option>
+                                <option value="Couple">Ghế đôi</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="editSeatPrice" class="form-label">
+                                <i class="fas fa-money-bill-wave me-1"></i>Giá ghế (VNĐ) <span style="color: var(--danger);">*</span>
+                            </label>
+                            <div class="input-group">
+                                <input type="number" id="editSeatPrice" name="PriceSeat" class="form-control-modal" 
+                                       placeholder="50000" min="0" max="1000000" step="1000" required>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDefaultPrice()" 
+                                        style="border-left: 1px solid var(--gray-300);">
+                                    <i class="fas fa-magic me-1"></i>Mặc định
+                                </button>
+                            </div>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Giá từ 0 đến 1,000,000 VNĐ. Nhấn "Mặc định" để đặt giá theo loại ghế.
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="seat-info-display">
+                                <div class="seat-info-item">
+                                    <span class="info-label">Vị trí:</span>
+                                    <span id="editSeatPosition" class="info-value"></span>
+                                </div>
+                                <div class="seat-info-item">
+                                    <span class="info-label">Trạng thái:</span>
+                                    <span id="editSeatStatus" class="info-value"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeEditSeatModal()" class="btn btn-secondary">
+                        <i class="fas fa-times me-2"></i>Hủy
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitEditSeatBtn">
+                        <i class="fas fa-save me-2"></i>Cập nhật ghế
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal quản lý ghế -->
+    <div id="manageSeatsModal" class="modal-overlay">
+        <div class="modal-content-wide">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-chair" style="color: var(--primary);"></i>
+                    Quản lý ghế - <span id="manageSeatsRoomName"></span>
+                </h3>
+                <button class="modal-close" onclick="closeManageSeatsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="loading-spinner" id="manageSeatsLoading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Đang tải danh sách ghế...</span>
+                </div>
+                <div id="manageSeatsContent" style="display: none;">
+                    <div class="seats-management-container">
+                        <div class="seats-grid-container">
+                            <div class="screen-indicator">
+                                <i class="fas fa-desktop me-2"></i>MÀN HÌNH CHIẾU
+                            </div>
+                            <div id="seatsGrid" class="seats-grid"></div>
+                        </div>
+                        <div class="seats-info-panel">
+                            <div class="info-section">
+                                <h6><i class="fas fa-info-circle me-2"></i>Thông tin ghế</h6>
+                                <div id="selectedSeatInfo" class="selected-seat-info">
+                                    <p class="text-muted">Chọn một ghế để xem thông tin</p>
+                                </div>
+                            </div>
+                                                            <div class="legend-section">
+                                    <h6><i class="fas fa-legend me-2"></i>Chú thích</h6>
+                                    <div class="seat-legend">
+                                        <div class="legend-item">
+                                            <div class="legend-seat normal"></div>
+                                            <span>Ghế thường</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <div class="legend-seat vip"></div>
+                                            <span>Ghế VIP</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <div class="legend-seat couple"></div>
+                                            <span>Ghế đôi</span>
+                                        </div>
+                                        <div class="legend-item">
+                                            <div class="legend-seat selected"></div>
+                                            <span>Đang chọn</span>
+                                        </div>
+                                    </div>
+                                    
+
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal chỉnh sửa hàng loạt -->
+    <div id="bulkEditSeatModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-edit" style="color: var(--warning);"></i>
+                    Chỉnh sửa hàng loạt - <span id="bulkEditSeatCount"></span> ghế
+                </h3>
+                <button class="modal-close" onclick="closeBulkEditSeatModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="bulkEditSeatForm" onsubmit="submitBulkEditSeatForm(event)">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="bulkEditSeatType" class="form-label">
+                                <i class="fas fa-star me-1"></i>Loại ghế <span style="color: var(--danger);">*</span>
+                            </label>
+                            <select id="bulkEditSeatType" name="SeatType" class="form-control-modal" required>
+                                <option value="">Giữ nguyên</option>
+                                <option value="Normal">Ghế thường</option>
+                                <option value="VIP">Ghế VIP</option>
+                                <option value="Couple">Ghế đôi</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="bulkEditSeatPrice" class="form-label">
+                                <i class="fas fa-money-bill-wave me-1"></i>Giá ghế (VNĐ)
+                            </label>
+                            <div class="input-group">
+                                <input type="number" id="bulkEditSeatPrice" name="PriceSeat" class="form-control-modal" 
+                                       placeholder="50000" min="0" max="1000000" step="1000">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setBulkDefaultPrice()" 
+                                        style="border-left: 1px solid var(--gray-300);">
+                                    <i class="fas fa-magic me-1"></i>Mặc định
+                                </button>
+                            </div>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Để trống để giữ nguyên giá hiện tại. Nhấn "Mặc định" để đặt giá theo loại ghế.
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Lưu ý:</strong> Chỉ những trường được điền sẽ được cập nhật. Các trường để trống sẽ giữ nguyên giá trị hiện tại.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeBulkEditSeatModal()" class="btn btn-secondary">
+                        <i class="fas fa-times me-2"></i>Hủy
+                    </button>
+                    <button type="submit" class="btn btn-warning" id="submitBulkEditSeatBtn">
+                        <i class="fas fa-save me-2"></i>Cập nhật hàng loạt
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     
     <script src="~/js/CinemaManagement/index.js?v=@DateTime.Now.Ticks"></script>
 
+    <script>
+        // Pagination functions
+        function goToPage(page) {
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('page', page);
+            window.location.href = currentUrl.toString();
+        }
+
+        function changePageSize(pageSize) {
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('pageSize', pageSize);
+            currentUrl.searchParams.set('page', 1); // Reset to first page
+            window.location.href = currentUrl.toString();
+        }
+
+        // Update pagination info on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const paginationInfo = document.getElementById('paginationInfo');
+            if (paginationInfo) {
+                // Info is already set by server-side rendering
+                console.log('Pagination info loaded');
+            }
+        });
+    </script>
+
     
 </body>
-</html
+</html>

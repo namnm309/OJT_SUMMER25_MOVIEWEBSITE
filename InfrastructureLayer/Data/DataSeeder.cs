@@ -92,70 +92,153 @@ namespace InfrastructureLayer.Data
                 if (!await context.CinemaRooms.AnyAsync())
                 {
                     Console.WriteLine("  Tạo phòng chiếu...");
-                    var room1 = new CinemaRoom
+                    var rooms = new List<CinemaRoom>
                     {
-                        Id = Guid.NewGuid(),
-                        RoomName = "Phòng A1",
-                        TotalSeats = 50,
-                        IsActive = true,
-                        CreatedAt = DateTime.UtcNow
+                        new CinemaRoom
+                        {
+                            Id = Guid.NewGuid(),
+                            RoomName = "Phòng A1",
+                            TotalSeats = 50,
+                            IsActive = true,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        new CinemaRoom
+                        {
+                            Id = Guid.NewGuid(),
+                            RoomName = "Phòng A2",
+                            TotalSeats = 50,
+                            IsActive = true,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        new CinemaRoom
+                        {
+                            Id = Guid.NewGuid(),
+                            RoomName = "Phòng A3",
+                            TotalSeats = 50,
+                            IsActive = true,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        new CinemaRoom
+                        {
+                            Id = Guid.NewGuid(),
+                            RoomName = "Phòng B1",
+                            TotalSeats = 60,
+                            IsActive = true,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        new CinemaRoom
+                        {
+                            Id = Guid.NewGuid(),
+                            RoomName = "Phòng B2",
+                            TotalSeats = 60,
+                            IsActive = true,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        new CinemaRoom
+                        {
+                            Id = Guid.NewGuid(),
+                            RoomName = "Phòng VIP1",
+                            TotalSeats = 30,
+                            IsActive = true,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        new CinemaRoom
+                        {
+                            Id = Guid.NewGuid(),
+                            RoomName = "Phòng VIP2",
+                            TotalSeats = 30,
+                            IsActive = true,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        new CinemaRoom
+                        {
+                            Id = Guid.NewGuid(),
+                            RoomName = "Phòng IMAX1",
+                            TotalSeats = 80,
+                            IsActive = true,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        new CinemaRoom
+                        {
+                            Id = Guid.NewGuid(),
+                            RoomName = "Phòng IMAX2",
+                            TotalSeats = 80,
+                            IsActive = true,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        new CinemaRoom
+                        {
+                            Id = Guid.NewGuid(),
+                            RoomName = "Phòng 4DX1",
+                            TotalSeats = 40,
+                            IsActive = true,
+                            CreatedAt = DateTime.UtcNow
+                        }
                     };
 
-                    var room2 = new CinemaRoom
-                    {
-                        Id = Guid.NewGuid(),
-                        RoomName = "Phòng B1",
-                        TotalSeats = 60,
-                        IsActive = true,
-                        CreatedAt = DateTime.UtcNow
-                    };
-
-                    await context.CinemaRooms.AddRangeAsync(room1, room2);
+                    await context.CinemaRooms.AddRangeAsync(rooms);
                     await context.SaveChangesAsync();
 
                     // 3. Tạo Seats cho từng phòng
                     Console.WriteLine("  Tạo ghế...");
                     var seats = new List<Seat>();
 
-                    // Phòng A1: 5 hàng x 10 ghế
-                    for (int row = 1; row <= 5; row++)
-                    {
-                        string rowLetter = ((char)('A' + row - 1)).ToString();
-                        for (int col = 1; col <= 10; col++)
-                        {
-                            seats.Add(new Seat
-                            {
-                                Id = Guid.NewGuid(),
-                                SeatCode = $"{rowLetter}{col}",
-                                RoomId = room1.Id,
-                                SeatType = col >= 8 ? SeatType.VIP : SeatType.Normal,
-                                RowIndex = row,
-                                ColumnIndex = col,
-                                PriceSeat = col >= 8 ? 80000 : 50000,
-                                Status = SeatStatus.Available,
-                                CreatedAt = DateTime.UtcNow
-                            });
-                        }
-                    }
+                    // Lấy tất cả phòng chiếu vừa tạo
+                    var allRooms = await context.CinemaRooms.ToListAsync();
 
-                    // Phòng B1: 6 hàng x 10 ghế
-                    for (int row = 1; row <= 6; row++)
+                    foreach (var room in allRooms)
                     {
-                        string rowLetter = ((char)('A' + row - 1)).ToString();
-                        for (int col = 1; col <= 10; col++)
+                        int rows, cols;
+                        decimal normalPrice, vipPrice;
+
+                        // Xác định layout và giá cho từng loại phòng
+                        switch (room.RoomName)
                         {
-                            seats.Add(new Seat
+                            case "Phòng A1":
+                            case "Phòng A2":
+                            case "Phòng A3":
+                                rows = 5; cols = 10; normalPrice = 50000; vipPrice = 80000;
+                                break;
+                            case "Phòng B1":
+                            case "Phòng B2":
+                                rows = 6; cols = 10; normalPrice = 60000; vipPrice = 90000;
+                                break;
+                            case "Phòng VIP1":
+                            case "Phòng VIP2":
+                                rows = 5; cols = 6; normalPrice = 80000; vipPrice = 120000;
+                                break;
+                            case "Phòng IMAX1":
+                            case "Phòng IMAX2":
+                                rows = 8; cols = 10; normalPrice = 70000; vipPrice = 100000;
+                                break;
+                            case "Phòng 4DX1":
+                                rows = 5; cols = 8; normalPrice = 90000; vipPrice = 150000;
+                                break;
+                            default:
+                                rows = 5; cols = 10; normalPrice = 50000; vipPrice = 80000;
+                                break;
+                        }
+
+                        // Tạo ghế cho phòng
+                        for (int row = 1; row <= rows; row++)
+                        {
+                            string rowLetter = ((char)('A' + row - 1)).ToString();
+                            for (int col = 1; col <= cols; col++)
                             {
-                                Id = Guid.NewGuid(),
-                                SeatCode = $"{rowLetter}{col}",
-                                RoomId = room2.Id,
-                                SeatType = col >= 8 ? SeatType.VIP : SeatType.Normal,
-                                RowIndex = row,
-                                ColumnIndex = col,
-                                PriceSeat = col >= 8 ? 90000 : 60000,
-                                Status = SeatStatus.Available,
-                                CreatedAt = DateTime.UtcNow
-                            });
+                                bool isVip = col >= cols - 2; // 2 ghế cuối là VIP
+                                seats.Add(new Seat
+                                {
+                                    Id = Guid.NewGuid(),
+                                    SeatCode = $"{rowLetter}{col}",
+                                    RoomId = room.Id,
+                                    SeatType = isVip ? SeatType.VIP : SeatType.Normal,
+                                    RowIndex = row,
+                                    ColumnIndex = col,
+                                    PriceSeat = isVip ? vipPrice : normalPrice,
+                                    Status = SeatStatus.Available,
+                                    CreatedAt = DateTime.UtcNow
+                                });
+                            }
                         }
                     }
 
@@ -206,8 +289,7 @@ namespace InfrastructureLayer.Data
 
                     // 5. Tạo ShowTimes
                     Console.WriteLine("  Tạo lịch chiếu...");
-                    var room1Id = await context.CinemaRooms.Where(r => r.RoomName == "Phòng A1").Select(r => r.Id).FirstOrDefaultAsync();
-                    var room2Id = await context.CinemaRooms.Where(r => r.RoomName == "Phòng B1").Select(r => r.Id).FirstOrDefaultAsync();
+                    var roomIds = await context.CinemaRooms.Select(r => r.Id).ToListAsync();
 
                     var showTimes = new List<ShowTime>();
                     
@@ -226,15 +308,19 @@ namespace InfrastructureLayer.Data
                         
                         foreach (var showDateTime in times)
                         {
-                            showTimes.Add(new ShowTime
+                            // Tạo showtime cho tất cả các phòng
+                            foreach (var roomId in roomIds)
                             {
-                                Id = Guid.NewGuid(),
-                                MovieId = movie1.Id,
-                                RoomId = day % 2 == 0 ? room1Id : room2Id, // Xen kẽ giữa 2 phòng
-                                ShowDate = showDateTime, // ShowDate bây giờ bao gồm cả ngày và giờ
-                                CreatedAt = DateTime.UtcNow,
-                                UpdatedAt = DateTime.UtcNow
-                            });
+                                showTimes.Add(new ShowTime
+                                {
+                                    Id = Guid.NewGuid(),
+                                    MovieId = movie1.Id,
+                                    RoomId = roomId,
+                                    ShowDate = showDateTime,
+                                    CreatedAt = DateTime.UtcNow,
+                                    UpdatedAt = DateTime.UtcNow
+                                });
+                            }
                         }
                     }
 
@@ -243,9 +329,9 @@ namespace InfrastructureLayer.Data
                 }
 
                 Console.WriteLine("✅ Dữ liệu mẫu đã được tạo thành công!");
-                Console.WriteLine("   - Phòng chiếu: A1 (50 ghế), B1 (60 ghế)");
+                Console.WriteLine("   - Phòng chiếu: 10 phòng (A1-A3, B1-B2, VIP1-VIP2, IMAX1-IMAX2, 4DX1)");
                 Console.WriteLine("   - Phim: Tenet");
-                Console.WriteLine("   - Lịch chiếu: 3 ngày x 4 suất/ngày");
+                Console.WriteLine("   - Lịch chiếu: 3 ngày x 4 suất/ngày x 10 phòng");
             }
             catch (Exception ex)
             {

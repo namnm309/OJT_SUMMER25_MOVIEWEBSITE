@@ -3,6 +3,7 @@ using ApplicationLayer.DTO;
 using ApplicationLayer.DTO.CinemaRoomManagement;
 using AutoMapper;
 using DomainLayer.Entities;
+using DomainLayer.Enum;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -25,6 +26,9 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
         public Task<IActionResult> ViewSeatTrue(Guid roomId);
         public Task<IActionResult> ViewSeatFalse(Guid roomId);
         public Task<IActionResult> UpdateSeatTypes(UpdateSeatTypesRequest request);
+        public Task<IActionResult> GetRoomSeats(Guid roomId);
+        public Task<IActionResult> UpdateSeat(Guid roomId, Guid seatId, SeatUpdateDto seatDto);
+        public Task<IActionResult> UpdateAllSeatPrices(Guid roomId);
 
     }
     
@@ -305,12 +309,133 @@ namespace ApplicationLayer.Services.CinemaRoomManagement
                     continue;
 
                 seat.SeatType = update.NewSeatType;
+                
+                // Cập nhật giá ghế - ưu tiên giá tùy chỉnh, nếu không thì dùng giá mặc định
+                if (update.NewPrice.HasValue)
+                {
+                    seat.PriceSeat = update.NewPrice.Value;
+                }
+                else
+                {
+                    // Cập nhật giá ghế theo loại ghế mới
+                    switch (update.NewSeatType)
+                    {
+                        case SeatType.VIP:
+                            seat.PriceSeat = 80000; // 80,000 VNĐ cho ghế VIP
+                            break;
+                        case SeatType.Couple:
+                            seat.PriceSeat = 120000; // 120,000 VNĐ cho ghế đôi
+                            break;
+                        default:
+                            seat.PriceSeat = 50000; // 50,000 VNĐ cho ghế thường
+                            break;
+                    }
+                }
+                
                 seat.UpdatedAt = DateTime.UtcNow;
 
                 await _seatRepo.UpdateAsync(seat);
             }
 
-            return SuccessResp.Ok("Seat types updated successfully");
+            return SuccessResp.Ok("Seat types and prices updated successfully");
+        }
+
+        public async Task<IActionResult> GetRoomSeats(Guid roomId)
+        {
+            var room = await _cinemaRoomRepo.FindByIdAsync(roomId);
+            if (room == null)
+                return ErrorResp.NotFound("Cinema room not found");
+
+            var seats = await _seatRepo.WhereAsync(s => s.RoomId == roomId);
+            var seatDtos = _mapper.Map<List<SeatDto>>(seats);
+
+            return SuccessResp.Ok(new
+            {
+                RoomId = room.Id,
+                RoomName = room.RoomName,
+                TotalSeats = room.TotalSeats,
+                Seats = seatDtos
+            });
+        }
+
+        public async Task<IActionResult> UpdateSeat(Guid roomId, Guid seatId, SeatUpdateDto seatDto)
+        {
+            // Validate room exists
+            var room = await _cinemaRoomRepo.FindByIdAsync(roomId);
+            if (room == null)
+                return ErrorResp.NotFound("Cinema room not found");
+
+            // Validate seat exists and belongs to the room
+            var seat = await _seatRepo.FindByIdAsync(seatId);
+            if (seat == null || seat.RoomId != roomId)
+                return ErrorResp.NotFound("Seat not found in this room");
+
+            // Check if seat code is unique within the room (excluding current seat)
+            var existingSeatWithSameCode = await _seatRepo.FirstOrDefaultAsync(s => 
+                s.RoomId == roomId && 
+                s.SeatCode == seatDto.SeatCode && 
+                s.Id != seatId);
+            
+            if (existingSeatWithSameCode != null)
+                return ErrorResp.BadRequest($"Seat code '{seatDto.SeatCode}' already exists in this room");
+
+            // Update seat properties
+            seat.SeatCode = seatDto.SeatCode;
+            seat.SeatType = seatDto.SeatType;
+            seat.PriceSeat = seatDto.PriceSeat;
+            seat.UpdatedAt = DateTime.UtcNow;
+
+            await _seatRepo.UpdateAsync(seat);
+
+            var updatedSeatDto = _mapper.Map<SeatDto>(seat);
+
+            return SuccessResp.Ok(new
+            {
+                Message = "Seat updated successfully",
+                Seat = updatedSeatDto
+            });
+        }
+
+        public async Task<IActionResult> UpdateAllSeatPrices(Guid roomId)
+        {
+            var room = await _cinemaRoomRepo.FindByIdAsync(roomId);
+            if (room == null)
+                return ErrorResp.NotFound("Cinema room not found");
+
+            var seats = await _seatRepo.WhereAsync(s => s.RoomId == roomId);
+            int updatedCount = 0;
+
+            foreach (var seat in seats)
+            {
+                decimal newPrice;
+                switch (seat.SeatType)
+                {
+                    case SeatType.VIP:
+                        newPrice = 80000; // 80,000 VNĐ cho ghế VIP
+                        break;
+                    case SeatType.Couple:
+                        newPrice = 120000; // 120,000 VNĐ cho ghế đôi
+                        break;
+                    default:
+                        newPrice = 50000; // 50,000 VNĐ cho ghế thường
+                        break;
+                }
+
+                if (seat.PriceSeat != newPrice)
+                {
+                    seat.PriceSeat = newPrice;
+                    seat.UpdatedAt = DateTime.UtcNow;
+                    await _seatRepo.UpdateAsync(seat);
+                    updatedCount++;
+                }
+            }
+
+            return SuccessResp.Ok(new
+            {
+                Message = $"Updated prices for {updatedCount} seats",
+                UpdatedCount = updatedCount,
+                TotalSeats = seats.Count
+            });
         }
     }
 }

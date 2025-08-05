@@ -47,13 +47,17 @@ namespace UI.Areas.CinemaManagement.Models
         public string SeatCode { get; set; } = string.Empty;
         
         [Required]
-        public string SeatType { get; set; } = "Normal"; // Normal, VIP
+        public string SeatType { get; set; } = "Normal"; // Normal, VIP, Couple
         
         [Required]
         public int RowIndex { get; set; }
         
         [Required]
         public int ColumnIndex { get; set; }
+        
+        [Required]
+        [Range(0, 1000000, ErrorMessage = "Giá ghế phải từ 0 đến 1,000,000 VNĐ")]
+        public decimal PriceSeat { get; set; }
         
         public bool IsActive { get; set; } = true;
     }

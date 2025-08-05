@@ -68,7 +68,14 @@
                                 <li>
                                     <a class="cinema_dropdown_menu_item_fx8" href="@Url.Action("Index", "Dashboard", new { area = "" })">
                                         <i class="fas fa-tachometer-alt"></i>
-                                        Thông tin cá nhân
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <span>Dashboard</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Thông tin cá nhân</span>
+                                        }
                                     </a>
                                 </li>
                                 <li><hr class="cinema_dropdown_divider_line_vt4"></li>

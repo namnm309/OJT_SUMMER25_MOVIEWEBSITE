@@ -11,5 +11,6 @@ namespace ApplicationLayer.DTO.CinemaRoomManagement
     {
         public Guid SeatId { get; set; }
         public SeatType NewSeatType { get; set; }
+        public decimal? NewPrice { get; set; } // Thêm option để cập nhật giá tùy chỉnh
     }
 }

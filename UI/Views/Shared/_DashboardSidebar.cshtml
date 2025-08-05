@@ -19,19 +19,21 @@
             <div class="new-nav-section-title">TỔNG QUAN</div>
             
             <div class="new-nav-item">
-                <a href="@Url.Action("AdminDashboard", "Dashboard")" 
-                   class="new-nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "AdminDashboard" ? "active" : "")">
+                <a href="@Url.Action("Index", "Dashboard")" 
+                   class="new-nav-link @(ViewBag.CurrentController?.ToString() == "Dashboard" ? "active" : "")">
                     <i class="fas fa-chart-line"></i>
                     <span>Dashboard</span>
                 </a>
             </div>
             
             <div class="new-nav-item">
-                <a href="/" class="new-nav-link">
+                <a href="@Url.Action("Index", "Home")" class="new-nav-link @(ViewBag.CurrentController?.ToString() == "Home" ? "active" : "")">
                     <i class="fas fa-home"></i>
                     <span>Trang chủ</span>
                 </a>
             </div>
+            
+
         </div>
 
         <!-- Quản lý Section -->
@@ -40,7 +42,7 @@
             
             <div class="new-nav-item">
                 <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" 
-                   class="new-nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Movies" ? "active" : "")">
+                   class="new-nav-link @(ViewBag.CurrentController?.ToString() == "Movies" ? "active" : "")">
                     <i class="fas fa-film"></i>
                     <span>Quản lý phim</span>
                 </a>
@@ -49,18 +51,18 @@
             <!-- Dropdown cho Quản lý đặt vé -->
             <div class="new-nav-item has-dropdown">
                 <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-nav-link 
-                   @(ViewContext.RouteData.Values["Area"]?.ToString() == "BookingManagement" ? "active" : "")">
+                   @(ViewBag.CurrentController?.ToString() == "BookingTicket" ? "active" : "")">
                     <i class="fas fa-ticket-alt"></i>
                     <span>Quản lý đặt vé</span>
                 </a>
-                <div class="new-nav-dropdown @(ViewContext.RouteData.Values["Area"]?.ToString() == "BookingManagement" ? "show" : "")">
+                <div class="new-nav-dropdown @(ViewBag.CurrentController?.ToString() == "BookingTicket" ? "show" : "")">
                     <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" 
-                       class="new-nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Area"]?.ToString() == "BookingManagement" ? "active" : "")">
+                       class="new-nav-link @(ViewBag.CurrentAction?.ToString() == "Index" && ViewBag.CurrentController?.ToString() == "BookingTicket" ? "active" : "")">
                         <i class="fas fa-plus"></i>
                         <span>Đặt vé mới</span>
                     </a>
                     <a href="@Url.Action("BookingList", "BookingTicket", new { area = "BookingManagement" })" 
-                       class="new-nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "BookingList" ? "active" : "")">
+                       class="new-nav-link @(ViewBag.CurrentAction?.ToString() == "BookingList" ? "active" : "")">
                         <i class="fas fa-list"></i>
                         <span>Danh sách đặt vé</span>
                     </a>
@@ -69,7 +71,7 @@
 
             <div class="new-nav-item">
                 <a href="@Url.Action("Index", "Showtimes", new { area = "ShowtimeManagement" })" 
-                   class="new-nav-link @(ViewContext.RouteData.Values["Area"]?.ToString() == "ShowtimeManagement" ? "active" : "")">
+                   class="new-nav-link @(ViewBag.CurrentController?.ToString() == "Showtimes" ? "active" : "")">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Quản lý lịch chiếu</span>
                 </a>
@@ -77,7 +79,7 @@
 
             <div class="new-nav-item">
                 <a href="@Url.Action("Index", "CinemaRoom", new { area = "CinemaManagement" })" 
-                   class="new-nav-link @(ViewContext.RouteData.Values["Area"]?.ToString() == "CinemaManagement" ? "active" : "")">
+                   class="new-nav-link @(ViewBag.CurrentController?.ToString() == "CinemaRoom" ? "active" : "")">
                     <i class="fas fa-building"></i>
                     <span>Quản lý phòng chiếu</span>
                 </a>
@@ -85,7 +87,7 @@
 
             <div class="new-nav-item">
                 <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" 
-                   class="new-nav-link @(ViewContext.RouteData.Values["Area"]?.ToString() == "PromotionManagement" ? "active" : "")">
+                   class="new-nav-link @(ViewBag.CurrentController?.ToString() == "Promotions" ? "active" : "")">
                     <i class="fas fa-gift"></i>
                     <span>Quản lý khuyến mãi</span>
                 </a>
@@ -93,18 +95,18 @@
 
             <div class="new-nav-item">
                 <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" 
-                   class="new-nav-link @(ViewContext.RouteData.Values["Area"]?.ToString() == "UserManagement" ? "active" : "")">
+                   class="new-nav-link @(ViewBag.CurrentController?.ToString() == "Members" ? "active" : "")">
                     <i class="fas fa-users"></i>
                     <span>Quản lý người dùng</span>
                 </a>
-                <div class="new-nav-dropdown @(ViewContext.RouteData.Values["Area"]?.ToString() == "UserManagement" ? "show" : "")">
+                <div class="new-nav-dropdown @(ViewBag.CurrentController?.ToString() == "Members" ? "show" : "")">
                     <a href="@Url.Action("Index", "Members", new { area = "UserManagement", type = "staff" })" 
-                       class="new-nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Members" && ViewContext.HttpContext.Request.Query["type"].ToString() == "staff" ? "active" : "")">
+                       class="new-nav-link @(ViewBag.CurrentController?.ToString() == "Members" && ViewBag.CurrentAction?.ToString() == "Index" ? "active" : "")">
                         <i class="fas fa-user-tie"></i>
                         <span>Quản lý nhân viên</span>
                     </a>
                     <a href="@Url.Action("Index", "Members", new { area = "UserManagement", type = "customer" })" 
-                       class="new-nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Members" && ViewContext.HttpContext.Request.Query["type"].ToString() == "customer" ? "active" : "")">
+                       class="new-nav-link @(ViewBag.CurrentController?.ToString() == "Members" && ViewBag.CurrentAction?.ToString() == "Index" ? "active" : "")">
                         <i class="fas fa-user"></i>
                         <span>Quản lý khách hàng</span>
                     </a>

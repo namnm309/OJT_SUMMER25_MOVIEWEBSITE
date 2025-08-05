@@ -17,6 +17,10 @@ namespace UI.Areas.CinemaManagement.Services
 
         Task<ApiResponse<JsonElement>> GetCinemaRoomDetailAsync(Guid roomId);
         Task<ApiResponse<JsonElement>> UpdateRoomSeatsAsync(Guid roomId, List<SeatUpdateViewModel> seats);
+        Task<ApiResponse<JsonElement>> GetRoomSeatsAsync(Guid roomId);
+        Task<ApiResponse<JsonElement>> UpdateSeatAsync(Guid roomId, SeatUpdateViewModel seat);
+        Task<ApiResponse<JsonElement>> UpdateSeatsBulkAsync(Guid roomId, List<BulkSeatUpdate> updates);
+        Task<ApiResponse<JsonElement>> UpdateAllSeatPricesAsync(Guid roomId);
     }
 
     public class CinemaManagementUIService : ICinemaManagementUIService
@@ -290,6 +294,107 @@ namespace UI.Areas.CinemaManagement.Services
                 {
                     Success = false,
                     Message = $"Không thể cập nhật ghế ngồi: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<ApiResponse<JsonElement>> GetRoomSeatsAsync(Guid roomId)
+        {
+            try
+            {
+                _logger.LogInformation("Getting seats for room: {RoomId}", roomId);
+                // Sử dụng endpoint ViewSeat đã hoạt động thay vì endpoint mới
+                return await _apiService.GetAsync<JsonElement>($"api/v1/cinemaroom/ViewSeat?Id={roomId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting room seats for room ID: {RoomId}", roomId);
+                return new ApiResponse<JsonElement>
+                {
+                    Success = false,
+                    Message = $"Không thể tải danh sách ghế: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<ApiResponse<JsonElement>> UpdateSeatAsync(Guid roomId, SeatUpdateViewModel seat)
+        {
+            try
+            {
+                _logger.LogInformation("Updating seat for room: {RoomId}, Seat: {SeatCode}", roomId, seat.SeatCode);
+                
+                // Sử dụng endpoint UpdateSeats đã hoạt động
+                var updateData = new
+                {
+                    RoomId = roomId,
+                    Updates = new[]
+                    {
+                        new
+                        {
+                            SeatId = seat.SeatId,
+                            NewSeatType = seat.SeatType,
+                            NewPrice = seat.PriceSeat
+                        }
+                    }
+                };
+                
+                _logger.LogInformation("Sending seat update data: {@UpdateData}", updateData);
+                
+                return await _apiService.PutAsync<JsonElement>($"api/v1/cinemaroom/rooms/seats/update", updateData);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating seat for room {RoomId}, seat {SeatId}", roomId, seat.SeatId);
+                return new ApiResponse<JsonElement>
+                {
+                    Success = false,
+                    Message = $"Không thể cập nhật ghế: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<ApiResponse<JsonElement>> UpdateSeatsBulkAsync(Guid roomId, List<BulkSeatUpdate> updates)
+        {
+            try
+            {
+                _logger.LogInformation("Updating {Count} seats for room: {RoomId}", updates.Count, roomId);
+                
+                var updateData = new
+                {
+                    RoomId = roomId,
+                    Updates = updates
+                };
+                
+                _logger.LogInformation("Sending bulk seat update data: {@UpdateData}", updateData);
+                
+                return await _apiService.PutAsync<JsonElement>($"api/v1/cinemaroom/rooms/seats/update", updateData);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating seats for room {RoomId}", roomId);
+                return new ApiResponse<JsonElement>
+                {
+                    Success = false,
+                    Message = $"Không thể cập nhật ghế: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<ApiResponse<JsonElement>> UpdateAllSeatPricesAsync(Guid roomId)
+        {
+            try
+            {
+                _logger.LogInformation("Updating all seat prices for room: {RoomId}", roomId);
+                
+                return await _apiService.PostAsync<JsonElement>($"api/v1/cinemaroom/{roomId}/update-all-prices", null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating all seat prices for room {RoomId}", roomId);
+                return new ApiResponse<JsonElement>
+                {
+                    Success = false,
+                    Message = $"Không thể cập nhật giá ghế: {ex.Message}"
                 };
             }
         }

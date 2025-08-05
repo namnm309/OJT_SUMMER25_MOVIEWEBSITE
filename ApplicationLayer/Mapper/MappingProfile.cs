@@ -107,6 +107,10 @@ namespace ApplicationLayer.Mapper
             //Seat
             CreateMap<Seat, SeatViewDto>();
             CreateMap<Seat, SeatDetailDto>();
+            CreateMap<Seat, SeatDto>()
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.PriceSeat))
+                .ForMember(dest => dest.SeatType, opt => opt.MapFrom(src => src.SeatType.ToString()));
+            CreateMap<SeatUpdateDto, Seat>();
 
             //Showtime
             CreateMap<ShowtimeCreateDto, ShowTime>()

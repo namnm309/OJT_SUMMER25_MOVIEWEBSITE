@@ -51,6 +51,10 @@ namespace UI.Controllers
             ViewBag.Role = userRole;
             ViewBag.IsActive = isActive == "True";
             
+            // Set current page info for sidebar
+            ViewBag.CurrentController = "Dashboard";
+            ViewBag.CurrentAction = "AdminDashboard";
+            
             // Format ngày tạo
             if (DateTime.TryParse(createdAt, out DateTime created))
             {
