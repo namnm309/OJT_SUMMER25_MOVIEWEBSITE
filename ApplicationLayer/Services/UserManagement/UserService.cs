@@ -413,5 +413,50 @@ namespace ApplicationLayer.Services.UserManagement
         {
             return await _userRepository.IsIdentityCardExistsAsync(identityCard);
         }
+
+        // ============ DASHBOARD STATISTICS ============
+        
+        public async Task<int> GetUserCountAsync()
+        {
+            try
+            {
+                var allUsers = await _userRepository.GetAllMembersAsync();
+                return allUsers.Count;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        public async Task<double> GetUserGrowthAsync()
+        {
+            try
+            {
+                var allUsers = await _userRepository.GetAllMembersAsync();
+                
+                // Tính số user trong tháng hiện tại
+                var currentMonth = DateTime.UtcNow.Month;
+                var currentYear = DateTime.UtcNow.Year;
+                var usersThisMonth = allUsers.Count(u => u.CreatedAt.Month == currentMonth && u.CreatedAt.Year == currentYear);
+                
+                // Tính số user trong tháng trước
+                var previousMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+                var previousYear = currentMonth == 1 ? currentYear - 1 : currentYear;
+                var usersLastMonth = allUsers.Count(u => u.CreatedAt.Month == previousMonth && u.CreatedAt.Year == previousYear);
+                
+                // Tính tỷ lệ tăng trưởng
+                if (usersLastMonth == 0)
+                {
+                    return usersThisMonth > 0 ? 100.0 : 0.0;
+                }
+                
+                return ((double)(usersThisMonth - usersLastMonth) / usersLastMonth) * 100;
+            }
+            catch (Exception)
+            {
+                return 0.0;
+            }
+        }
     }
 }
