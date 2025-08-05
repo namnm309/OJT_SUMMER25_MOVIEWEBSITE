@@ -100,5 +100,50 @@ namespace InfrastructureLayer.Repository
                 .Select(b => b.CreatedAt)
                 .FirstOrDefaultAsync();
         }
+
+        // Dashboard statistics
+        public async Task<int> GetUserCountAsync()
+        {
+            return await _context.Users
+                .Where(u => u.IsActive)
+                .CountAsync();
+        }
+
+        public async Task<double> GetUserGrowthAsync()
+        {
+            try
+            {
+                var currentMonth = DateTime.Now.Month;
+                var currentYear = DateTime.Now.Year;
+                var lastMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+                var lastMonthYear = currentMonth == 1 ? currentYear - 1 : currentYear;
+
+                // Đếm users tạo trong tháng hiện tại
+                var currentMonthUsers = await _context.Users
+                    .Where(u => u.IsActive && 
+                               u.CreatedAt.Month == currentMonth && 
+                               u.CreatedAt.Year == currentYear)
+                    .CountAsync();
+
+                // Đếm users tạo trong tháng trước
+                var lastMonthUsers = await _context.Users
+                    .Where(u => u.IsActive && 
+                               u.CreatedAt.Month == lastMonth && 
+                               u.CreatedAt.Year == lastMonthYear)
+                    .CountAsync();
+
+                // Tính phần trăm tăng trưởng
+                if (lastMonthUsers == 0)
+                {
+                    return currentMonthUsers > 0 ? 100.0 : 0.0;
+                }
+
+                return Math.Round(((double)(currentMonthUsers - lastMonthUsers) / lastMonthUsers) * 100, 1);
+            }
+            catch (Exception)
+            {
+                return 0.0;
+            }
+        }
     }
 } 

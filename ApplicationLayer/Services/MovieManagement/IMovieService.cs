@@ -30,5 +30,9 @@ namespace ApplicationLayer.Services.MovieManagement
         Task<IActionResult> GetRecommended();
         Task<IActionResult> GetComingSoon();
         Task<IActionResult> GetNowShowing();
+        
+        // Dashboard statistics
+        Task<int> GetMovieCountAsync();
+        Task<double> GetMovieGrowthAsync();
     }
 }

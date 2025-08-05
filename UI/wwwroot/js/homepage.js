@@ -1510,6 +1510,12 @@ class HomepagePagination {
             recommended: 1,
             comingSoon: 1
         };
+        
+        // Trạng thái toggle cho nút "Xem thêm"
+        this.expandedState = {
+            recommended: false,
+            comingSoon: false
+        };
 
         this.init();
     }
@@ -1528,6 +1534,8 @@ class HomepagePagination {
         document.getElementById('recommendedSort')?.addEventListener('change', (e) => {
             console.log('🔄 Recommended sort changed to:', e.target.value);
             this.currentPages.recommended = 1;
+            this.expandedState.recommended = false; // Reset trạng thái toggle
+            this.resetLoadMoreButton('loadMoreRecommended'); // Reset button text/icon
             this.loadRecommendedMovies(false); // false = replace, not append
         });
 
@@ -1535,6 +1543,8 @@ class HomepagePagination {
         document.getElementById('recommendedGenre')?.addEventListener('change', (e) => {
             console.log('🎭 Recommended genre changed to:', e.target.value);
             this.currentPages.recommended = 1;
+            this.expandedState.recommended = false; // Reset trạng thái toggle
+            this.resetLoadMoreButton('loadMoreRecommended'); // Reset button text/icon
             this.loadRecommendedMovies(false); // false = replace, not append
         });
 
@@ -1544,6 +1554,8 @@ class HomepagePagination {
             recommendedPageSize.addEventListener('change', (e) => {
                 console.log('📏 Recommended page size changed to:', e.target.value);
                 this.currentPages.recommended = 1;
+                this.expandedState.recommended = false; // Reset trạng thái toggle
+                this.resetLoadMoreButton('loadMoreRecommended'); // Reset button text/icon
                 this.loadRecommendedMovies(false); // false = replace, not append
             });
         } else {
@@ -1552,8 +1564,12 @@ class HomepagePagination {
 
 
         document.getElementById('loadMoreRecommended')?.addEventListener('click', (e) => {
-            this.currentPages.recommended++;
-            this.loadRecommendedMovies(true);
+            console.log('🖱️ Recommended load more button clicked');
+            console.log('🎯 Button element:', e.target);
+            console.log('🎯 Current button:', e.currentTarget);
+            
+            // Sử dụng currentTarget thay vì target để đảm bảo lấy đúng button
+            this.toggleRecommendedMovies(e.currentTarget);
         });
     }
 
@@ -1562,6 +1578,8 @@ class HomepagePagination {
         document.getElementById('comingSoonSort')?.addEventListener('change', (e) => {
             console.log('🔄 Coming soon sort changed to:', e.target.value);
             this.currentPages.comingSoon = 1;
+            this.expandedState.comingSoon = false; // Reset trạng thái toggle
+            this.resetLoadMoreButton('loadMoreComingSoon'); // Reset button text/icon
             this.loadComingSoonMovies(false); // false = replace, not append
         });
 
@@ -1569,6 +1587,8 @@ class HomepagePagination {
         document.getElementById('comingSoonGenre')?.addEventListener('change', (e) => {
             console.log('🎭 Coming soon genre changed to:', e.target.value);
             this.currentPages.comingSoon = 1;
+            this.expandedState.comingSoon = false; // Reset trạng thái toggle
+            this.resetLoadMoreButton('loadMoreComingSoon'); // Reset button text/icon
             this.loadComingSoonMovies(false); // false = replace, not append
         });
 
@@ -1578,6 +1598,8 @@ class HomepagePagination {
             comingSoonPageSize.addEventListener('change', (e) => {
                 console.log('📏 Coming soon page size changed to:', e.target.value);
                 this.currentPages.comingSoon = 1;
+                this.expandedState.comingSoon = false; // Reset trạng thái toggle
+                this.resetLoadMoreButton('loadMoreComingSoon'); // Reset button text/icon
                 this.loadComingSoonMovies(false); // false = replace, not append
             });
         } else {
@@ -1586,8 +1608,12 @@ class HomepagePagination {
 
 
         document.getElementById('loadMoreComingSoon')?.addEventListener('click', (e) => {
-            this.currentPages.comingSoon++;
-            this.loadComingSoonMovies(true);
+            console.log('🖱️ Coming soon load more button clicked');
+            console.log('🎯 Button element:', e.target);
+            console.log('🎯 Current button:', e.currentTarget);
+            
+            // Sử dụng currentTarget thay vì target để đảm bảo lấy đúng button
+            this.toggleComingSoonMovies(e.currentTarget);
         });
     }
 
@@ -1724,14 +1750,12 @@ class HomepagePagination {
         console.log(`📝 Updating recommended grid: ${append ? 'append' : 'replace'} with ${movies.length} movies`);
 
         if (!append) {
-
-            console.log('🧹 Clearing all recommended movies for filter/sort change');
-            grid.innerHTML = '';
-        } else {
-
+            // 🔧 FIX: Chỉ xóa dynamic items khi filter/sort, giữ lại static movies từ HTML
+            console.log('🧹 Clearing dynamic recommended movies for filter/sort change');
             const existingDynamic = grid.querySelectorAll('.dynamic-item');
             existingDynamic.forEach(item => item.remove());
         }
+        // 🔧 FIX: Khi append = true, KHÔNG xóa gì cả để thực sự append thêm movies
 
         movies.forEach(movie => {
             const movieElement = this.createRecommendedMovieElement(movie);
@@ -1740,6 +1764,9 @@ class HomepagePagination {
         });
 
         console.log(`✅ Grid updated with ${grid.children.length} total items`);
+        
+        // Re-bind event listener để đảm bảo button vẫn hoạt động sau khi update
+        this.rebindLoadMoreButton('loadMoreRecommended');
     }
 
     updateComingSoonGrid(movies, append = false) {
@@ -1756,14 +1783,12 @@ class HomepagePagination {
         console.log(`📝 Updating coming soon grid: ${append ? 'append' : 'replace'} with ${movies.length} movies`);
 
         if (!append) {
-
-            console.log('🧹 Clearing all coming soon movies for filter/sort change');
-            grid.innerHTML = '';
-        } else {
-
+            // 🔧 FIX: Chỉ xóa dynamic items khi filter/sort, giữ lại static movies từ HTML  
+            console.log('🧹 Clearing dynamic coming soon movies for filter/sort change');
             const existingDynamic = grid.querySelectorAll('.dynamic-item');
             existingDynamic.forEach(item => item.remove());
         }
+        // 🔧 FIX: Khi append = true, KHÔNG xóa gì cả để thực sự append thêm movies
 
         movies.forEach(movie => {
             const movieElement = this.createComingSoonMovieElement(movie);
@@ -1772,6 +1797,9 @@ class HomepagePagination {
         });
 
         console.log(`✅ Coming soon grid updated with ${grid.children.length} total items`);
+        
+        // Re-bind event listener để đảm bảo button vẫn hoạt động sau khi update
+        this.rebindLoadMoreButton('loadMoreComingSoon');
     }
 
     createRecommendedMovieElement(movie) {
@@ -1868,6 +1896,201 @@ class HomepagePagination {
                 loadMoreBtn.style.display = pagination.hasNextPage ? 'flex' : 'none';
             }
         }
+    }
+
+    // Toggle method cho Recommended Movies
+    toggleRecommendedMovies(button) {
+        console.log('🔄 Toggle recommended movies - Current state:', this.expandedState.recommended);
+        
+        if (this.expandedState.recommended) {
+            // Đang mở rộng → Thu gọn
+            console.log('🔼 Collapsing recommended movies...');
+            this.collapseRecommendedMovies(button);
+        } else {
+            // Đang thu gọn → Mở rộng
+            console.log('🔽 Expanding recommended movies...');
+            this.expandRecommendedMovies(button);
+        }
+        
+        console.log('🔄 New state after toggle:', this.expandedState.recommended);
+    }
+
+    // Toggle method cho Coming Soon Movies  
+    toggleComingSoonMovies(button) {
+        console.log('🔄 Toggle coming soon movies - Current state:', this.expandedState.comingSoon);
+        
+        if (this.expandedState.comingSoon) {
+            // Đang mở rộng → Thu gọn
+            console.log('🔼 Collapsing coming soon movies...');
+            this.collapseComingSoonMovies(button);
+        } else {
+            // Đang thu gọn → Mở rộng
+            console.log('🔽 Expanding coming soon movies...');
+            this.expandComingSoonMovies(button);
+        }
+        
+        console.log('🔄 New state after toggle:', this.expandedState.comingSoon);
+    }
+
+    // Mở rộng Recommended Movies
+    async expandRecommendedMovies(button) {
+        console.log('🔍 Expanding recommended movies...');
+        console.log('🎯 Button passed to expand:', button);
+        
+        // Đổi text và icon của button
+        const span = button.querySelector('span');
+        const icon = button.querySelector('i');
+        console.log('📝 Found span:', span, 'Found icon:', icon);
+        
+        if (span) span.textContent = 'Thu gọn';
+        if (icon) {
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+        }
+        button.classList.add('expanded');
+        
+        // Load thêm movies
+        this.currentPages.recommended++;
+        await this.loadRecommendedMovies(true); // append = true
+        
+        // Cập nhật trạng thái
+        this.expandedState.recommended = true;
+        console.log('✅ Set expandedState.recommended to:', this.expandedState.recommended);
+    }
+
+    // Thu gọn Recommended Movies
+    collapseRecommendedMovies(button) {
+        console.log('🔼 Collapsing recommended movies...');
+        console.log('🎯 Button passed to collapse:', button);
+        
+        // Đổi text và icon của button
+        const span = button.querySelector('span');
+        const icon = button.querySelector('i');
+        console.log('📝 Found span:', span, 'Found icon:', icon);
+        
+        if (span) span.textContent = 'Xem thêm';
+        if (icon) {
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+        }
+        button.classList.remove('expanded');
+        
+        // Xóa các dynamic items (phim đã load thêm)
+        const grid = document.querySelector('.recommended-grid');
+        if (grid) {
+            const dynamicItems = grid.querySelectorAll('.dynamic-item');
+            dynamicItems.forEach(item => item.remove());
+            console.log(`🗑️ Removed ${dynamicItems.length} dynamic recommended movies`);
+        }
+        
+        // Reset về trạng thái ban đầu
+        this.currentPages.recommended = 1;
+        this.expandedState.recommended = false;
+        console.log('✅ Set expandedState.recommended to:', this.expandedState.recommended);
+    }
+
+    // Mở rộng Coming Soon Movies
+    async expandComingSoonMovies(button) {
+        console.log('🔮 Expanding coming soon movies...');
+        
+        // Đổi text và icon của button
+        const span = button.querySelector('span');
+        const icon = button.querySelector('i');
+        if (span) span.textContent = 'Thu gọn';
+        if (icon) {
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+        }
+        button.classList.add('expanded');
+        
+        // Load thêm movies
+        this.currentPages.comingSoon++;
+        await this.loadComingSoonMovies(true); // append = true
+        
+        // Cập nhật trạng thái
+        this.expandedState.comingSoon = true;
+    }
+
+    // Thu gọn Coming Soon Movies
+    collapseComingSoonMovies(button) {
+        console.log('🔼 Collapsing coming soon movies...');
+        
+        // Đổi text và icon của button
+        const span = button.querySelector('span');
+        const icon = button.querySelector('i');
+        if (span) span.textContent = 'Xem thêm';
+        if (icon) {
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+        }
+        button.classList.remove('expanded');
+        
+        // Xóa các dynamic items (phim đã load thêm)
+        const sections = document.querySelectorAll('.recommended-section-new');
+        const comingSoonSection = sections[1]; // Second section is coming soon
+        const grid = comingSoonSection?.querySelector('.recommended-grid');
+        
+        if (grid) {
+            const dynamicItems = grid.querySelectorAll('.dynamic-item');
+            dynamicItems.forEach(item => item.remove());
+            console.log(`🗑️ Removed ${dynamicItems.length} dynamic coming soon movies`);
+        }
+        
+        // Reset về trạng thái ban đầu
+        this.currentPages.comingSoon = 1;
+        this.expandedState.comingSoon = false;
+    }
+
+    // Reset button về trạng thái ban đầu
+    resetLoadMoreButton(buttonId) {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            const span = button.querySelector('span');
+            const icon = button.querySelector('i');
+            
+            if (span) span.textContent = 'Xem thêm';
+            if (icon) {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+            button.classList.remove('expanded');
+            
+            console.log(`🔄 Reset button ${buttonId} to initial state`);
+        }
+    }
+
+    // Re-bind event listener cho load more button
+    rebindLoadMoreButton(buttonId) {
+        const button = document.getElementById(buttonId);
+        if (!button) {
+            console.warn(`⚠️ Button ${buttonId} not found for rebinding`);
+            return;
+        }
+
+        // Remove existing event listeners bằng cách clone và replace node
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+
+        // Bind lại event listener
+        if (buttonId === 'loadMoreRecommended') {
+            newButton.addEventListener('click', (e) => {
+                console.log('🖱️ [REBOUND] Recommended load more button clicked');
+                console.log('🎯 [REBOUND] Button element:', e.target);
+                console.log('🎯 [REBOUND] Current button:', e.currentTarget);
+                
+                this.toggleRecommendedMovies(e.currentTarget);
+            });
+        } else if (buttonId === 'loadMoreComingSoon') {
+            newButton.addEventListener('click', (e) => {
+                console.log('🖱️ [REBOUND] Coming soon load more button clicked');
+                console.log('🎯 [REBOUND] Button element:', e.target);
+                console.log('🎯 [REBOUND] Current button:', e.currentTarget);
+                
+                this.toggleComingSoonMovies(e.currentTarget);
+            });
+        }
+
+        console.log(`🔄 Rebound event listener for ${buttonId}`);
     }
 }
 

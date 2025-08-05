@@ -19,7 +19,7 @@ namespace UI.Areas.CinemaManagement.Controllers
         }
 
 
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string? search = "")
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5, string? search = "")
         {
             try
             {
@@ -492,6 +492,107 @@ namespace UI.Areas.CinemaManagement.Controllers
                 2 => "Couple",
                 _ => "Normal"
             };
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRoomSeats(Guid roomId)
+        {
+            try
+            {
+                var response = await _cinemaService.GetRoomSeatsAsync(roomId);
+                
+                if (!response.Success)
+                {
+                    return Json(new { success = false, message = response.Message });
+                }
+
+                return Json(new { success = true, data = response.Data });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting room seats for room ID: {RoomId}", roomId);
+                return Json(new { success = false, message = "Có lỗi xảy ra khi tải danh sách ghế." });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateSeat(Guid roomId, [FromBody] SeatUpdateViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+                    );
+                    return Json(new { success = false, message = "Dữ liệu không hợp lệ", errors = errors });
+                }
+
+                var response = await _cinemaService.UpdateSeatAsync(roomId, model);
+                
+                if (!response.Success)
+                {
+                    return Json(new { success = false, message = response.Message });
+                }
+
+                return Json(new { success = true, message = "Cập nhật ghế thành công!", data = response.Data });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating seat for room ID: {RoomId}, Seat ID: {SeatId}", roomId, model.SeatId);
+                return Json(new { success = false, message = "Có lỗi xảy ra khi cập nhật ghế." });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateSeats([FromBody] BulkUpdateSeatsRequest request)
+        {
+            try
+            {
+                if (request?.Updates == null || request.Updates.Count == 0)
+                {
+                    return Json(new { success = false, message = "Không có ghế nào để cập nhật" });
+                }
+
+                var response = await _cinemaService.UpdateSeatsBulkAsync(request.RoomId, request.Updates);
+                
+                if (!response.Success)
+                {
+                    return Json(new { success = false, message = response.Message });
+                }
+
+                return Json(new { success = true, message = $"Cập nhật thành công {request.Updates.Count} ghế!", data = response.Data });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating seats for room ID: {RoomId}", request?.RoomId);
+                return Json(new { success = false, message = "Có lỗi xảy ra khi cập nhật ghế." });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateAllSeatPrices(Guid roomId)
+        {
+            try
+            {
+                var response = await _cinemaService.UpdateAllSeatPricesAsync(roomId);
+                
+                if (!response.Success)
+                {
+                    return Json(new { success = false, message = response.Message });
+                }
+
+                return Json(new { success = true, message = "Cập nhật giá tất cả ghế thành công!", data = response.Data });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating all seat prices for room ID: {RoomId}", roomId);
+                return Json(new { success = false, message = "Có lỗi xảy ra khi cập nhật giá ghế." });
+            }
         }
     }
 } 

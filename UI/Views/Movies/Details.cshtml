@@ -78,7 +78,8 @@
         .hero-section {
             position: relative;
             overflow: hidden;
-            min-height: 120vh; /* Tăng chiều cao hero section */
+            min-height: 100vh; /* Full viewport height */
+            height: 100vh; /* Đảm bảo full screen */
         }
 
         .hero-content {
@@ -202,22 +203,17 @@
             pointer-events: none;
         }
 
-        /* Trailer Hero Styles - Tăng kích thước */
+        /* Trailer Hero Styles - Fixed positioning */
         .trailer-hero-container {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px; /* Tăng border radius */
-            padding: 30px; /* Tăng padding */
+            border-radius: 20px;
+            padding: 30px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            /* Áp dụng style mới theo yêu cầu */
-            height: 499.227px;
-            width: 650.5px;
             position: relative;
-            left: 50px;
-            top: 90px;
-            cursor: move;
-            transition: none;
-            transform: translate(0px, -50.5px);
+            z-index: 10; /* Đảm bảo trailer hiển thị trên cùng */
+            max-width: 100%;
+            margin: 20px 0;
         }
 
         .trailer-video-hero {
@@ -264,17 +260,18 @@
             transform: translate(-50%, -50%);
             background: rgba(255, 255, 255, 0.9);
             border: none;
-            border-radius: 60px; /* Tăng border radius */
-            padding: 20px 35px; /* Tăng padding */
+            border-radius: 60px;
+            padding: 20px 35px;
             display: flex;
             align-items: center;
-            gap: 15px; /* Tăng gap */
+            gap: 15px;
             font-weight: 600;
-            font-size: 1.2rem; /* Tăng font size */
+            font-size: 1.2rem;
             color: #333;
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            z-index: 15; /* Đảm bảo button hiển thị trên trailer */
         }
 
             .play-trailer-hero:hover {
@@ -287,29 +284,36 @@
             }
 
         .trailer-info-hero {
-            margin-top: 25px; /* Tăng margin */
+            margin-top: 25px;
             text-align: center;
+            position: relative;
+            z-index: 12; /* Đảm bảo text hiển thị trên cùng */
         }
 
         .trailer-label-hero {
             color: #4fc3f7;
-            font-size: 1.1rem; /* Tăng font size */
+            font-size: 1.1rem;
             font-weight: 500;
             margin: 0 0 8px 0;
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Thêm shadow để text nổi bật */
         }
 
         .trailer-title {
             color: white;
-            font-size: 1.4rem; /* Tăng font size */
+            font-size: 1.4rem;
             font-weight: 600;
             margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Thêm shadow để text nổi bật */
         }
 
-        /* Main Content - Tăng kích thước */
+        /* Main Content - Tăng kích thước và fix background */
         .main-content {
-            padding: 80px 0; /* Tăng padding */
+            padding: 80px 0;
+            background: #1a1a1a; /* Đảm bảo content có background riêng */
+            position: relative;
+            z-index: 5; /* Hiển thị trên fixed background */
         }
 
         .showtimes-header h2 {
@@ -585,14 +589,14 @@
 <div class="details-page with-header-offset">
     <!-- Hero Section -->
     <section class="hero-section" style="margin-top: 0; padding-top: 120px;">
-        <div class="hero-background" style="top: 0; height: 100vh;">
+        <div class="hero-background" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;">
             <img src="@(backgroundImage ?? "https://via.placeholder.com/1920x1080/333/fff?text=Movie+Background")"
                  alt="@(movieData?.Title ?? "Movie Background")"
                  class="hero-bg"
                  style="object-fit: cover; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"
                  onerror="this.src='https://via.placeholder.com/1920x1080/333/fff?text=Movie+Background'">
         </div>
-        <div class="hero-overlay"></div>
+        <div class="hero-overlay" style="background: linear-gradient(180deg, rgba(26,26,26,0.3) 0%, rgba(26,26,26,0.6) 70%, rgba(26,26,26,0.9) 100%); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"></div>
         <div class="hero-content" style="padding-top: 0;">
             <div class="container">
                 <div class="row">

@@ -79,7 +79,7 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             if (page < 1) page = 1;
             if (pageSize < 1) pageSize = 20;
 
-            var query = await _showtimeRepo.ListAsync("Movie", "Movie.MovieImages", "Room");
+            var query = await _showtimeRepo.ListAsync("Movie", "Movie.MovieImages", "Room", "Bookings", "Bookings.BookingDetails");
             // Order by ShowDate desc, StartTime
             var ordered = query.OrderByDescending(s => s.ShowDate).ThenBy(s => s.StartTime).ToList();
 
@@ -112,10 +112,10 @@ namespace ApplicationLayer.Services.ShowtimeManagement
             try
             {
                 // Get all active showtimes and filter in memory to avoid PostgreSQL datetime issues
-                // Include Movie.MovieImages to get poster images
+                // Include Movie.MovieImages to get poster images and Bookings to count booked seats
                 var allShowtimes = await _showtimeRepo.WhereAsync(
                     s => s.ShowDate.HasValue && s.IsActive,
-                    "Movie", "Movie.MovieImages", "Room");
+                    "Movie", "Movie.MovieImages", "Room", "Bookings", "Bookings.BookingDetails");
 
                 // Filter by month and year in memory
                 var filteredShowtimes = allShowtimes.Where(s => 
@@ -135,7 +135,7 @@ namespace ApplicationLayer.Services.ShowtimeManagement
 
         public async Task<IActionResult> GetShowtimeById(Guid id)
         {
-            var showtime = await _showtimeRepo.FindByIdAsync(id, "Movie", "Movie.MovieImages", "Room");
+            var showtime = await _showtimeRepo.FindByIdAsync(id, "Movie", "Movie.MovieImages", "Room", "Bookings", "Bookings.BookingDetails");
             if (showtime == null)
                 return ErrorResp.NotFound("Showtime not found");
 

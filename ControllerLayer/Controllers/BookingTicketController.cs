@@ -284,6 +284,82 @@ namespace ControllerLayer.Controllers
             return await _bookingTicketService.CancelBookingAsync(bookingId, request.Reason);
         }
 
+        // Dashboard statistics APIs
+        [HttpGet("today-count")]
+        public async Task<IActionResult> GetTodayBookingCount()
+        {
+            try
+            {
+                var count = await _bookingTicketService.GetTodayBookingCountAsync();
+                return Ok(new { success = true, count = count });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting today booking count");
+                return StatusCode(500, new { success = false, message = "Internal server error" });
+            }
+        }
+
+        [HttpGet("today-revenue")]
+        public async Task<IActionResult> GetTodayRevenue()
+        {
+            try
+            {
+                var revenue = await _bookingTicketService.GetTodayRevenueAsync();
+                return Ok(new { success = true, revenue = revenue });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting today revenue");
+                return StatusCode(500, new { success = false, message = "Internal server error" });
+            }
+        }
+
+        [HttpGet("pending-count")]
+        public async Task<IActionResult> GetPendingBookingCount()
+        {
+            try
+            {
+                var count = await _bookingTicketService.GetPendingBookingCountAsync();
+                return Ok(new { success = true, count = count });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting pending booking count");
+                return StatusCode(500, new { success = false, message = "Internal server error" });
+            }
+        }
+
+        [HttpGet("booking-growth")]
+        public async Task<IActionResult> GetBookingGrowth()
+        {
+            try
+            {
+                var growth = await _bookingTicketService.GetBookingGrowthAsync();
+                return Ok(new { success = true, growth = growth });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting booking growth");
+                return StatusCode(500, new { success = false, message = "Internal server error" });
+            }
+        }
+
+        [HttpGet("revenue-growth")]
+        public async Task<IActionResult> GetRevenueGrowth()
+        {
+            try
+            {
+                var growth = await _bookingTicketService.GetRevenueGrowthAsync();
+                return Ok(new { success = true, growth = growth });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting revenue growth");
+                return StatusCode(500, new { success = false, message = "Internal server error" });
+            }
+        }
+
         [Protected]
         [HttpPost("confirm")]
         public async Task<IActionResult> ConfirmBooking([FromBody] ConfirmBookingRequest req)

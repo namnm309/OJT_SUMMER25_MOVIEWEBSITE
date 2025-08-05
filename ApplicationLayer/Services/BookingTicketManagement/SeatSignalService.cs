@@ -86,13 +86,22 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 if (seat == null)
                     return ErrorResp.NotFound("Seat not found");
 
-                // Check nếu ghế đang Pending hoặc Selected thì không giữ được nữa
-                if (seat.Status != SeatStatus.Available)
-                    return ErrorResp.BadRequest("Seat is already held or booked");
+                // Kiểm tra xem ghế có đang được giữ hoặc đã đặt cho suất chiếu này không
+                var existingSeatLog = await _seatLogRepo.WhereAsync(sl => 
+                    sl.ShowTimeId == dto.ShowTimeId && 
+                    sl.SeatId == dto.SeatId && 
+                    sl.ExpiredAt > now);
 
-                // Cập nhật trạng thái ghế
-                seat.Status = SeatStatus.Pending;
-                await _seatRepo.UpdateAsync(seat);
+                if (existingSeatLog.Any())
+                    return ErrorResp.BadRequest("Seat is already being held by another user");
+
+                // Kiểm tra xem ghế có đã được đặt cho suất chiếu này không
+                var existingBooking = await _bookingDetailRepo.WhereAsync(bd => 
+                    bd.Booking.ShowTimeId == dto.ShowTimeId && 
+                    bd.SeatId == dto.SeatId);
+
+                if (existingBooking.Any())
+                    return ErrorResp.BadRequest("Seat is already booked for this showtime");
 
                 // Tạo SeatLog mới cho 1 ghế
                 var seatLog = new SeatLog
@@ -246,18 +255,15 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 if (seatLog.UserId != payload.UserId)
                     return ErrorResp.Forbidden("You are not allowed to release this seat");
 
-                var seat = seatLog.Seat;
-                seat.Status = SeatStatus.Available;
-
-                /// Cập nhật trạng thái ghế
-                await _seatRepo.UpdateAsync(seat);
+                // Không cần cập nhật Seat.Status nữa vì chúng ta chỉ dựa vào SeatLog
+                // seat.Status sẽ không được sử dụng để xác định trạng thái ghế
 
                 // Xóa seat log sau khi release
                 await _seatLogRepo.DeleteAsync(seatLog);
 
                 // Gửi thông báo tới tất cả client đang xem showtime đó
                 await _hubContext.Clients.Group(seatLog.ShowTimeId.ToString())
-                    .SendAsync("SeatsReleased", new List<Guid> { seat.Id });
+                    .SendAsync("SeatsReleased", new List<Guid> { seatLog.SeatId });
 
                 return SuccessResp.Ok("Seats released successfully");
             }

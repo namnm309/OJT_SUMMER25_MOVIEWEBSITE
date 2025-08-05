@@ -158,6 +158,39 @@ namespace ControllerLayer.Controllers
             return Ok(new { success = true, data = members });
         }
 
+        [HttpGet("count")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUserCount()
+        {
+            try
+            {
+                var count = await _userService.GetUserCountAsync();
+                return Ok(new { success = true, count = count });
+            }
+            catch (Exception ex)
+            {
+                // Assuming _logger is available, otherwise this will cause an error.
+                // For now, commenting out the line as _logger is not defined in this file.
+                // _logger.LogError(ex, "Error getting user count");
+                return StatusCode(500, new { success = false, message = "Internal server error" });
+            }
+        }
+
+        [HttpGet("growth")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUserGrowth()
+        {
+            try
+            {
+                var growth = await _userService.GetUserGrowthAsync();
+                return Ok(new { success = true, growth = growth });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Internal server error" });
+            }
+        }
+
         private string NormalizeString(string input)
         {
             var normalized = input.Normalize(NormalizationForm.FormD);

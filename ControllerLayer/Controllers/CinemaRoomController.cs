@@ -92,6 +92,29 @@ namespace ControllerLayer.Controllers
             return await _cinemaRoomService.UpdateSeatTypes(request);
         }
 
+        // Lấy tất cả ghế của một phòng
+        [HttpGet("{roomId}/seats")]
+        public async Task<IActionResult> GetRoomSeats(Guid roomId)
+        {
+            _logger.LogInformation("Get all seats for room: {RoomId}", roomId);
+            return await _cinemaRoomService.GetRoomSeats(roomId);
+        }
+
+        // Cập nhật một ghế cụ thể
+        [HttpPut("{roomId}/seats/{seatId}")]
+        public async Task<IActionResult> UpdateSeat(Guid roomId, Guid seatId, [FromBody] SeatUpdateDto seatDto)
+        {
+            _logger.LogInformation("Update seat {SeatId} in room {RoomId}", seatId, roomId);
+            return await _cinemaRoomService.UpdateSeat(roomId, seatId, seatDto);
+        }
+
+        [HttpPost("{roomId}/update-all-prices")]
+        public async Task<IActionResult> UpdateAllSeatPrices(Guid roomId)
+        {
+            _logger.LogInformation("Update all seat prices for room {RoomId}", roomId);
+            return await _cinemaRoomService.UpdateAllSeatPrices(roomId);
+        }
+
         [HttpPost("migration/add-layout-columns")]
         public async Task<IActionResult> AddLayoutColumns()
         {

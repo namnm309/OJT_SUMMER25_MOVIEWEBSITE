@@ -139,6 +139,8 @@ body {
     border-radius: 20px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 1;
 }
 
 .selection-header {
@@ -148,6 +150,33 @@ body {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+.selected-seats-header {
+    position: absolute;
+    top: -60px;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    z-index: 5;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.selected-seat-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .section-title {
@@ -214,6 +243,8 @@ body {
     justify-content: center;
     margin: 2rem 0 3rem 0;
     perspective: 1000px;
+    position: relative;
+    z-index: 10;
 }
 
 .screen {
@@ -244,6 +275,7 @@ body {
     align-items: center;
     gap: 0.8rem;
     margin-bottom: 2rem;
+    margin-top: 2rem;
     padding: 2rem;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 15px;
@@ -251,6 +283,8 @@ body {
     min-height: 300px;
     width: 100%;
     overflow-x: auto;
+    position: relative;
+    z-index: 1;
 }
 
 .seat-row {
@@ -643,6 +677,8 @@ button.seat {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     min-height: 60px;
+    position: relative;
+    z-index: 1;
 }
 
 .seats-grid {
@@ -650,6 +686,19 @@ button.seat {
     gap: 0.5rem;
     flex-wrap: wrap;
     justify-content: center;
+    position: relative;
+    z-index: 1;
+}
+
+.selected-seat-item {
+    background: rgba(255, 255, 255, 0.2) !important;
+    padding: 0.3rem 0.6rem !important;
+    border-radius: 5px !important;
+    font-size: 0.8rem !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    margin: 2px !important;
+    display: inline-block !important;
 }
 
 .ticket-summary {
@@ -718,6 +767,16 @@ button.seat {
 
     .seat-legend {
         gap: 1rem;
+    }
+    
+    .selected-seats-header {
+        position: relative;
+        top: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .screen-container {
+        margin: 1rem 0 2rem 0;
     }
 }
 
@@ -976,5 +1035,15 @@ button.seat {
     .booking-section {
         position: relative;
         top: 0;
+    }
+    
+    .selected-seats-header {
+        position: relative;
+        top: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .screen-container {
+        margin: 1rem 0 2rem 0;
     }
 } 

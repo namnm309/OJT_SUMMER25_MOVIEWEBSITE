@@ -4,46 +4,46 @@
 <link href="~/css/user-dropdown-sync.css" rel="stylesheet" />
 
 
-<header class="hero-nav-wrapper shared-header-wrapper">
-    <nav class="hero-nav shared-header-nav">
-        <div class="nav-content">
+<header class="cinema_hero_nav_wrapper_zx9 cinema_shared_header_wrapper_mk7">
+    <nav class="cinema_hero_nav_js4 cinema_shared_header_nav_lm2">
+        <div class="cinema_nav_content_container_bg5">
             <!-- Brand Section -->
-            <div class="nav-left">
-                <div class="brand">
-                    <div class="brand-content">
-                        <div class="brand-header">
-                            <div class="brand-logo">CC</div>
-                            <span class="brand-name">Cinema City</span>
+            <div class="cinema_nav_left_section_kd8">
+                <div class="cinema_brand_logo_container_qw3">
+                    <div class="cinema_brand_content_wrapper_nt7">
+                        <div class="cinema_brand_header_display_xc6">
+                            <div class="cinema_brand_logo_icon_jh8">CC</div>
+                            <span class="cinema_brand_name_text_vb2">Cinema City</span>
                         </div>
-                        <div class="brand-subtitle">Rạp chiếu phim hiện đại</div>
+                        <div class="cinema_brand_subtitle_info_yt9">Rạp chiếu phim hiện đại</div>
                     </div>
                 </div>
             </div>
 
             <!-- Search Section -->
-            <div class="nav-center">
-                <div class="search-box">
-                    <input type="text" class="search-input" id="movieSearchInput" placeholder="Tìm kiếm phim...">
-                    <i class="fas fa-search search-icon" id="searchButton"></i>
+            <div class="cinema_nav_center_section_wp1">
+                <div class="cinema_search_container_fx5">
+                    <input type="text" class="cinema_search_input_field_rt6" id="movieSearchInput" placeholder="Tìm kiếm phim...">
+                    <i class="fas fa-search cinema_search_icon_btn_gh3" id="searchButton"></i>
                 </div>
             </div>
 
             <!-- Navigation Links -->
-            <div class="nav-right">
-                <div class="nav-links">
-                    <a href="@Url.Action("Index","Home",  new { area = "" })"  class="nav-link">Trang chủ</a>
-                    <a href="@Url.Action("Index","Movies", new { area = "" })" class="nav-link">Phim</a>
-                    <a href="@Url.Action("Index","Events", new { area = "" })" class="nav-link">Sự Kiện</a>
-                    <a href="@Url.Action("Index","Products",new { area = "" })" class="nav-link">Sản Phẩm</a>
-                    <a href="@Url.Action("Index","Vouchers",new { area = "" })" class="nav-link">Vouchers</a>
+            <div class="cinema_nav_right_section_mx0">
+                <div class="cinema_nav_links_container_dh7">
+                    <a href="@Url.Action("Index","Home",  new { area = "" })"  class="cinema_nav_menu_link_pd4">Trang chủ</a>
+                    <a href="@Url.Action("Index","Movies", new { area = "" })" class="cinema_nav_menu_link_pd4">Phim</a>
+                    <a href="@Url.Action("Index","Events", new { area = "" })" class="cinema_nav_menu_link_pd4">Sự Kiện</a>
+                    <a href="@Url.Action("Index","Products",new { area = "" })" class="cinema_nav_menu_link_pd4">Sản Phẩm</a>
+                    <a href="@Url.Action("Index","Vouchers",new { area = "" })" class="cinema_nav_menu_link_pd4">Vouchers</a>
                 </div>
 
                 <!-- User Profile -->
-                <div class="user-profile">
+                <div class="cinema_user_profile_section_tb5">
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        <div class="dropdown">
-                            <button class="btn-profile dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="cinema_dropdown_container_sr8">
+                            <button class="cinema_user_profile_btn_nz1 cinema_dropdown_toggle_xu4" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-user-circle"></i>
                                 @if (ViewContext.HttpContext.User.Identity?.Name?.Length > 10)
                                 {
@@ -55,27 +55,34 @@
                                 }
                                 <i class="fas fa-chevron-down ms-2"></i>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li class="dropdown-header">
-                                    <div class="user-info">
+                            <ul class="cinema_dropdown_menu_lg6 cinema_dropdown_menu_end_pm9" aria-labelledby="userDropdown">
+                                <li class="cinema_dropdown_header_info_qr2">
+                                    <div class="cinema_user_info_display_hk1">
                                         <i class="fas fa-user-circle fa-2x mb-2"></i>
-                                        <div class="user-name">@ViewContext.HttpContext.User.Identity?.Name</div>
-                                        <div class="user-email">@ViewContext.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value</div>
+                                        <div class="cinema_user_name_text_wm7">@ViewContext.HttpContext.User.Identity?.Name</div>
+                                        <div class="cinema_user_email_text_zo3">@ViewContext.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value</div>
                                     </div>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li><hr class="cinema_dropdown_divider_line_vt4"></li>
                                 
                                 <li>
-                                    <a class="dropdown-item" href="@Url.Action("Index", "Dashboard", new { area = "" })">
+                                    <a class="cinema_dropdown_menu_item_fx8" href="@Url.Action("Index", "Dashboard", new { area = "" })">
                                         <i class="fas fa-tachometer-alt"></i>
-                                        Thông tin cá nhân
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <span>Dashboard</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Thông tin cá nhân</span>
+                                        }
                                     </a>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li><hr class="cinema_dropdown_divider_line_vt4"></li>
                                 <li>
                                     <form asp-action="Logout" asp-controller="Account" method="post" class="m-0" id="logoutForm">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="dropdown-item text-danger">
+                                        <button type="submit" class="cinema_dropdown_menu_item_fx8 cinema_text_danger_red_ky2">
                                             <i class="fas fa-sign-out-alt"></i>
                                             Đăng xuất
                                         </button>
@@ -86,9 +93,9 @@
                     }
                     else
                     {
-                        <div class="auth-buttons">
-                            <a href="@Url.Action("Register", "Account")" class="btn-register">Đăng ký</a>
-                            <a href="@Url.Action("Login", "Account")" class="btn-login">Đăng nhập</a>
+                        <div class="cinema_auth_buttons_container_rj6">
+                            <a href="@Url.Action("Register", "Account")" class="cinema_btn_register_signup_bw1">Đăng ký</a>
+                            <a href="@Url.Action("Login", "Account")" class="cinema_btn_login_signin_ql9">Đăng nhập</a>
                         </div>
                     }
                 </div>

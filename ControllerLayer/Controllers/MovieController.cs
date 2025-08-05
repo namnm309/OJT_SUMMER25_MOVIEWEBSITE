@@ -98,6 +98,36 @@ namespace ControllerLayer.Controllers
             return await _movieService.SearchMovie(keyword);
         }
 
+        [HttpGet("count")]
+        public async Task<IActionResult> GetMovieCount()
+        {
+            try
+            {
+                var count = await _movieService.GetMovieCountAsync();
+                return Ok(new { success = true, count = count });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting movie count");
+                return StatusCode(500, new { success = false, message = "Internal server error" });
+            }
+        }
+
+        [HttpGet("growth")]
+        public async Task<IActionResult> GetMovieGrowth()
+        {
+            try
+            {
+                var growth = await _movieService.GetMovieGrowthAsync();
+                return Ok(new { success = true, growth = growth });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting movie growth");
+                return StatusCode(500, new { success = false, message = "Internal server error" });
+            }
+        }
+
         [Protected]
         [HttpGet("ViewGenre")]
         public async Task<IActionResult> ViewGenre()

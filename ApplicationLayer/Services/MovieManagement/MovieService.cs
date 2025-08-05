@@ -658,23 +658,65 @@ namespace ApplicationLayer.Services.MovieManagement
 
         public async Task<IActionResult> GetNowShowing()
         {
-            //var payload = ExtractPayload();
-            //if (payload == null)
-            //{
-            //    return ErrorResp.Unauthorized("Invalid token");
-            //}
+            try
+            {
+                var movies = await _movieRepo.WhereAsync(m => m.Status == MovieStatus.NowShowing);
+                var movieDtos = _mapper.Map<List<MovieResponseDto>>(movies);
+                return SuccessResp.Ok(movieDtos);
+            }
+            catch (Exception ex)
+            {
+                return ErrorResp.InternalServerError($"Error getting now showing movies: {ex.Message}");
+            }
+        }
 
-            var movies = await _movieRepo.WhereAsync(
-                filter: m => m.Status == MovieStatus.NowShowing,
-                orderBy: q => q.OrderByDescending(m => m.ReleaseDate),
-                navigationProperties: new[]
+        // Dashboard statistics
+        public async Task<int> GetMovieCountAsync()
+        {
+            try
+            {
+                return await _movieRepo.CountAsync(m => m.Status == MovieStatus.NowShowing || m.Status == MovieStatus.ComingSoon);
+            }
+            catch (Exception ex)
+            {
+                // Log error and return 0
+                return 0;
+            }
+        }
+
+        public async Task<double> GetMovieGrowthAsync()
+        {
+            try
+            {
+                var currentMonth = DateTime.Now.Month;
+                var currentYear = DateTime.Now.Year;
+                var lastMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+                var lastMonthYear = currentMonth == 1 ? currentYear - 1 : currentYear;
+
+                // Đếm movies tạo trong tháng hiện tại
+                var currentMonthMovies = await _movieRepo.CountAsync(m => 
+                    (m.Status == MovieStatus.NowShowing || m.Status == MovieStatus.ComingSoon) &&
+                    m.CreatedAt.Month == currentMonth && 
+                    m.CreatedAt.Year == currentYear);
+
+                // Đếm movies tạo trong tháng trước
+                var lastMonthMovies = await _movieRepo.CountAsync(m => 
+                    (m.Status == MovieStatus.NowShowing || m.Status == MovieStatus.ComingSoon) &&
+                    m.CreatedAt.Month == lastMonth && 
+                    m.CreatedAt.Year == lastMonthYear);
+
+                // Tính phần trăm tăng trưởng
+                if (lastMonthMovies == 0)
                 {
-                    nameof(Movie.MovieImages),
-                    nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
-                });
+                    return currentMonthMovies > 0 ? 100.0 : 0.0;
+                }
 
-            var result = _mapper.Map<List<MovieResponseDto>>(movies);
-            return SuccessResp.Ok(result);
+                return Math.Round(((double)(currentMonthMovies - lastMonthMovies) / lastMonthMovies) * 100, 1);
+            }
+            catch (Exception ex)
+            {
+                return 0.0;
+            }
         }
     }
 }

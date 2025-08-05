@@ -468,9 +468,27 @@
             }
             
 
-            const normalSeats = seats.filter(s => (s.seatType || s.SeatType) === 0).length;
-            const vipSeats = seats.filter(s => (s.seatType || s.SeatType) === 1).length;
-            const coupleSeats = seats.filter(s => (s.seatType || s.SeatType) === 2).length;
+            // Tính toán số lượng ghế theo loại với debug log
+            console.log('Calculating seat counts...');
+            console.log('Sample seat data:', seats.slice(0, 3)); // Log 3 ghế đầu tiên để debug
+            
+            const normalSeats = seats.filter(s => {
+                const seatType = s.seatType || s.SeatType;
+                console.log(`Seat ${s.seatCode || s.SeatCode}: seatType = ${seatType} (type: ${typeof seatType})`);
+                return seatType === 0 || seatType === 'Normal' || seatType === 'normal';
+            }).length;
+            
+            const vipSeats = seats.filter(s => {
+                const seatType = s.seatType || s.SeatType;
+                return seatType === 1 || seatType === 'VIP' || seatType === 'vip';
+            }).length;
+            
+            const coupleSeats = seats.filter(s => {
+                const seatType = s.seatType || s.SeatType;
+                return seatType === 2 || seatType === 'Couple' || seatType === 'couple';
+            }).length;
+            
+            console.log(`Seat counts - Normal: ${normalSeats}, VIP: ${vipSeats}, Couple: ${coupleSeats}, Total: ${seats.length}`);
             
 
             const seatsByRow = seats.reduce((acc, seat) => {
@@ -495,8 +513,19 @@
                         ${rowSeats.map(seat => {
                             const seatType = seat.seatType || seat.SeatType;
                             const seatCode = seat.seatCode || seat.SeatCode;
-                            const seatClass = seatType === 1 ? 'vip' : seatType === 2 ? 'couple' : 'normal';
-                            const seatTypeName = seatType === 1 ? 'VIP' : seatType === 2 ? 'Ghế đôi' : 'Thường';
+                            
+                            // Xác định loại ghế và class CSS
+                            let seatClass = 'normal';
+                            let seatTypeName = 'Thường';
+                            
+                            if (seatType === 1 || seatType === 'VIP' || seatType === 'vip') {
+                                seatClass = 'vip';
+                                seatTypeName = 'VIP';
+                            } else if (seatType === 2 || seatType === 'Couple' || seatType === 'couple') {
+                                seatClass = 'couple';
+                                seatTypeName = 'Ghế đôi';
+                            }
+                            
                             return `
                                 <div class="seat ${seatClass}" 
                                      style="width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;"
@@ -557,22 +586,43 @@
                         
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
                             <div style="text-align: center; padding: 1rem; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
-                                <div style="font-size: 1.5rem; font-weight: 700; color: #6366f1;">${normalSeats}</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">${normalSeats}</div>
                                 <div style="font-size: 0.875rem; color: #6b7280;">Ghế thường</div>
+                                <div style="font-size: 0.75rem; color: #9ca3af; margin-top: 0.25rem;">
+                                    ${normalSeats > 0 ? '50,000 VNĐ' : 'Chưa có'}
+                                </div>
                             </div>
                             <div style="text-align: center; padding: 1rem; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
-                                <div style="font-size: 1.5rem; font-weight: 700; color: #6366f1;">${vipSeats}</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #f59e0b;">${vipSeats}</div>
                                 <div style="font-size: 0.875rem; color: #6b7280;">Ghế VIP</div>
+                                <div style="font-size: 0.75rem; color: #9ca3af; margin-top: 0.25rem;">
+                                    ${vipSeats > 0 ? '80,000 VNĐ' : 'Chưa có'}
+                                </div>
                             </div>
                             <div style="text-align: center; padding: 1rem; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
-                                <div style="font-size: 1.5rem; font-weight: 700; color: #6366f1;">${coupleSeats}</div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #ef4444;">${coupleSeats}</div>
                                 <div style="font-size: 0.875rem; color: #6b7280;">Ghế đôi</div>
+                                <div style="font-size: 0.75rem; color: #9ca3af; margin-top: 0.25rem;">
+                                    ${coupleSeats > 0 ? '120,000 VNĐ' : 'Chưa có'}
+                                </div>
                             </div>
                             <div style="text-align: center; padding: 1rem; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
                                 <div style="font-size: 1.5rem; font-weight: 700; color: #6366f1;">${seats.length}</div>
                                 <div style="font-size: 0.875rem; color: #6b7280;">Tổng cộng</div>
+                                <div style="font-size: 0.75rem; color: #9ca3af; margin-top: 0.25rem;">
+                                    ${seats.length > 0 ? 'Đã cấu hình' : 'Chưa có ghế'}
+                                </div>
                             </div>
                         </div>
+                        
+                        ${normalSeats === 0 && vipSeats === 0 && coupleSeats === 0 && seats.length > 0 ? `
+                            <div style="margin-top: 1rem; padding: 1rem; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; color: #92400e;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <strong>Lưu ý:</strong> Tất cả ghế đều chưa được phân loại. Vui lòng sử dụng chức năng "Quản lý ghế" để cấu hình loại ghế.
+                                </div>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
                 
@@ -925,4 +975,694 @@
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
         }
- 
+
+        // Quản lý ghế functions
+        let currentRoomId = null;
+        let currentSeats = [];
+        let selectedSeats = []; // Thay đổi từ selectedSeat thành selectedSeats array
+
+        async function openManageSeatsModal(roomId) {
+            console.log('Opening manage seats modal for room ID:', roomId);
+            currentRoomId = roomId;
+            const modal = document.getElementById('manageSeatsModal');
+            const loading = document.getElementById('manageSeatsLoading');
+            const content = document.getElementById('manageSeatsContent');
+            
+            modal.style.display = 'block';
+            loading.style.display = 'flex';
+            content.style.display = 'none';
+            
+            try {
+                // Sử dụng API service giống như modal chi tiết phòng
+                const detailsUrl = `https://localhost:7049/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
+                
+                const response = await fetch(detailsUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                // Xử lý response format giống như modal chi tiết
+                let roomData;
+                if (data.Code !== undefined && data.Data) {
+                    roomData = data.Data;
+                } else if (data.code !== undefined && data.data) {
+                    roomData = data.data;
+                } else {
+                    roomData = data;
+                }
+                
+                window.lastSeatsResponse = { data: roomData };
+                currentSeats = roomData.seats || roomData.Seats || [];
+                console.log('Current seats:', currentSeats);
+                console.log('Seats length:', currentSeats.length);
+                
+                renderSeatsGrid();
+                updateRoomName();
+                loading.style.display = 'none';
+                content.style.display = 'block';
+            } catch (error) {
+                console.error('Error loading seats:', error);
+                loading.innerHTML = `
+                    <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                    <span>${error.message}</span>
+                `;
+            }
+        }
+
+        function renderSeatsGrid() {
+            const grid = document.getElementById('seatsGrid');
+            grid.innerHTML = '';
+            
+            if (!currentSeats || currentSeats.length === 0) {
+                grid.innerHTML = '<p class="text-muted">Không có ghế nào trong phòng này</p>';
+                return;
+            }
+            
+            // Tìm số hàng và cột lớn nhất
+            const maxRow = Math.max(...currentSeats.map(seat => seat.rowIndex || seat.RowIndex));
+            const maxCol = Math.max(...currentSeats.map(seat => seat.columnIndex || seat.ColumnIndex));
+            
+            grid.style.gridTemplateColumns = `repeat(${maxCol}, 35px)`;
+            
+            // Tạo grid ghế
+            for (let row = 1; row <= maxRow; row++) {
+                for (let col = 1; col <= maxCol; col++) {
+                    const seat = currentSeats.find(s => 
+                        (s.rowIndex || s.RowIndex) === row && 
+                        (s.columnIndex || s.ColumnIndex) === col
+                    );
+                    
+                    if (seat) {
+                        const seatElement = createSeatElement(seat);
+                        grid.appendChild(seatElement);
+                    } else {
+                        // Tạo placeholder cho vị trí trống
+                        const placeholder = document.createElement('div');
+                        placeholder.className = 'seat-item disabled';
+                        placeholder.textContent = '';
+                        grid.appendChild(placeholder);
+                    }
+                }
+            }
+        }
+
+        function createSeatElement(seat) {
+            const seatElement = document.createElement('div');
+            // Xử lý SeatType từ enum (0=Normal, 1=VIP, 2=Couple)
+            const seatType = seat.seatType || seat.SeatType;
+            const seatTypeClass = typeof seatType === 'number' 
+                ? (seatType === 1 ? 'vip' : seatType === 2 ? 'couple' : 'normal')
+                : getSeatTypeClass(seatType);
+            
+            seatElement.className = `seat-item ${seatTypeClass}`;
+            seatElement.textContent = seat.seatCode || seat.SeatCode;
+            seatElement.setAttribute('data-seat-id', seat.id || seat.Id);
+            seatElement.setAttribute('data-seat-code', seat.seatCode || seat.SeatCode);
+            seatElement.setAttribute('data-seat-type', seatType);
+            seatElement.setAttribute('data-seat-price', seat.priceSeat || seat.PriceSeat || 0);
+            seatElement.setAttribute('data-row', seat.rowIndex || seat.RowIndex);
+            seatElement.setAttribute('data-column', seat.columnIndex || seat.ColumnIndex);
+            
+            seatElement.addEventListener('click', () => selectSeat(seatElement, seat));
+            
+            return seatElement;
+        }
+
+        function getSeatTypeClass(seatType) {
+            switch (seatType?.toLowerCase()) {
+                case 'vip': return 'vip';
+                case 'couple': return 'couple';
+                default: return 'normal';
+            }
+        }
+
+        function selectSeat(seatElement, seatData) {
+            const seatId = seatData.id || seatData.Id;
+            const isSelected = selectedSeats.some(seat => (seat.id || seat.Id) === seatId);
+            
+            if (isSelected) {
+                // Bỏ chọn ghế
+                seatElement.classList.remove('selected');
+                selectedSeats = selectedSeats.filter(seat => (seat.id || seat.Id) !== seatId);
+            } else {
+                // Chọn ghế mới
+                seatElement.classList.add('selected');
+                selectedSeats.push(seatData);
+            }
+            
+            // Cập nhật thông tin ghế
+            updateSeatsInfo();
+        }
+
+        function updateSeatsInfo() {
+            const infoContainer = document.getElementById('selectedSeatInfo');
+            
+            if (selectedSeats.length === 0) {
+                infoContainer.innerHTML = `
+                    <p class="text-muted">Chọn một hoặc nhiều ghế để xem thông tin</p>
+                    <div class="mt-3">
+                        <button onclick="selectAllSeats()" class="btn btn-outline-primary btn-sm me-2">
+                            <i class="fas fa-check-square me-1"></i>Chọn tất cả
+                        </button>
+                        <button onclick="deselectAllSeats()" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-square me-1"></i>Bỏ chọn tất cả
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (selectedSeats.length === 1) {
+                // Hiển thị thông tin chi tiết cho 1 ghế
+                const seatData = selectedSeats[0];
+                const seatType = seatData.seatType || seatData.SeatType;
+                const seatTypeText = getSeatTypeText(seatType);
+                const price = (seatData.priceSeat || seatData.PriceSeat || 0).toLocaleString();
+                
+                infoContainer.innerHTML = `
+                    <div class="seat-info-item">
+                        <span class="info-label">Mã ghế:</span>
+                        <span class="info-value">${seatData.seatCode || seatData.SeatCode}</span>
+                    </div>
+                    <div class="seat-info-item">
+                        <span class="info-label">Loại ghế:</span>
+                        <span class="info-value">${seatTypeText}</span>
+                    </div>
+                    <div class="seat-info-item">
+                        <span class="info-label">Giá:</span>
+                        <span class="info-value">${price} VNĐ</span>
+                    </div>
+                    <div class="seat-info-item">
+                        <span class="info-label">Vị trí:</span>
+                        <span class="info-value">Hàng ${seatData.rowIndex || seatData.RowIndex}, Cột ${seatData.columnIndex || seatData.ColumnIndex}</span>
+                    </div>
+                    <div class="seat-info-item">
+                        <span class="info-label">Trạng thái:</span>
+                        <span class="info-value">${seatData.status || seatData.Status || 'Hoạt động'}</span>
+                    </div>
+                    <div class="mt-3">
+                        <button onclick="openEditSeatModal()" class="btn btn-primary btn-sm me-2">
+                            <i class="fas fa-edit me-1"></i>Chỉnh sửa
+                        </button>
+                        <button onclick="openBulkEditModal()" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit me-1"></i>Chỉnh sửa hàng loạt
+                        </button>
+                    </div>
+                `;
+            } else {
+                // Hiển thị thông tin tổng hợp cho nhiều ghế
+                const seatCodes = selectedSeats.map(seat => seat.seatCode || seat.SeatCode).join(', ');
+                const totalPrice = selectedSeats.reduce((sum, seat) => sum + (seat.priceSeat || seat.PriceSeat || 0), 0);
+                
+                infoContainer.innerHTML = `
+                    <div class="seat-info-item">
+                        <span class="info-label">Số ghế đã chọn:</span>
+                        <span class="info-value">${selectedSeats.length} ghế</span>
+                    </div>
+                    <div class="seat-info-item">
+                        <span class="info-label">Mã ghế:</span>
+                        <span class="info-value">${seatCodes}</span>
+                    </div>
+                    <div class="seat-info-item">
+                        <span class="info-label">Tổng giá:</span>
+                        <span class="info-value">${totalPrice.toLocaleString()} VNĐ</span>
+                    </div>
+                    <div class="mt-3">
+                        <button onclick="openBulkEditModal()" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit me-1"></i>Chỉnh sửa hàng loạt (${selectedSeats.length} ghế)
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function getSeatTypeText(seatType) {
+            // Xử lý cả enum number và string
+            if (typeof seatType === 'number') {
+                switch (seatType) {
+                    case 1: return 'Ghế VIP';
+                    case 2: return 'Ghế đôi';
+                    default: return 'Ghế thường';
+                }
+            } else {
+                switch (seatType?.toLowerCase()) {
+                    case 'vip': return 'Ghế VIP';
+                    case 'couple': return 'Ghế đôi';
+                    default: return 'Ghế thường';
+                }
+            }
+        }
+
+        function updateRoomName() {
+            const roomNameElement = document.getElementById('manageSeatsRoomName');
+            if (roomNameElement && currentSeats.length > 0) {
+                // Lấy tên phòng từ response data
+                const response = window.lastSeatsResponse;
+                if (response && response.data) {
+                    const roomName = response.data.roomName || response.data.RoomName || 'Phòng chiếu';
+                    roomNameElement.textContent = roomName;
+                } else {
+                    roomNameElement.textContent = 'Phòng chiếu';
+                }
+            }
+        }
+
+        function selectAllSeats() {
+            selectedSeats = [...currentSeats];
+            document.querySelectorAll('.seat-item').forEach(seatElement => {
+                seatElement.classList.add('selected');
+            });
+            updateSeatsInfo();
+        }
+
+        function deselectAllSeats() {
+            selectedSeats = [];
+            document.querySelectorAll('.seat-item.selected').forEach(seatElement => {
+                seatElement.classList.remove('selected');
+            });
+            updateSeatsInfo();
+        }
+
+        function closeManageSeatsModal() {
+            document.getElementById('manageSeatsModal').style.display = 'none';
+            currentRoomId = null;
+            currentSeats = [];
+            selectedSeats = [];
+        }
+
+        // Modal chỉnh sửa ghế đơn lẻ
+        function openEditSeatModal() {
+            if (selectedSeats.length !== 1) {
+                alert('Vui lòng chọn đúng một ghế để chỉnh sửa');
+                return;
+            }
+            
+            const selectedSeat = selectedSeats[0];
+            
+            const modal = document.getElementById('editSeatModal');
+            const seatCode = document.getElementById('editSeatCode');
+            const seatType = document.getElementById('editSeatType');
+            const seatPrice = document.getElementById('editSeatPrice');
+            const seatPosition = document.getElementById('editSeatPosition');
+            const seatStatus = document.getElementById('editSeatStatus');
+            
+            // Điền thông tin ghế
+            seatCode.value = selectedSeat.seatCode || selectedSeat.SeatCode;
+            // Xử lý SeatType từ enum sang string cho select
+            const seatTypeValue = selectedSeat.seatType || selectedSeat.SeatType;
+            if (typeof seatTypeValue === 'number') {
+                seatType.value = seatTypeValue === 1 ? 'VIP' : seatTypeValue === 2 ? 'Couple' : 'Normal';
+            } else {
+                seatType.value = seatTypeValue;
+            }
+            seatPrice.value = selectedSeat.priceSeat || selectedSeat.PriceSeat || 0;
+            seatPosition.textContent = `Hàng ${selectedSeat.rowIndex || selectedSeat.RowIndex}, Cột ${selectedSeat.columnIndex || selectedSeat.ColumnIndex}`;
+            seatStatus.textContent = selectedSeat.status || selectedSeat.Status || 'Hoạt động';
+            
+            modal.style.display = 'block';
+        }
+
+        function closeEditSeatModal() {
+            document.getElementById('editSeatModal').style.display = 'none';
+        }
+
+        function updatePriceByType() {
+            const seatType = document.getElementById('editSeatType').value;
+            const seatPrice = document.getElementById('editSeatPrice');
+            
+            // Đặt giá mặc định theo loại ghế
+            switch (seatType) {
+                case 'VIP':
+                    seatPrice.value = 80000;
+                    break;
+                case 'Couple':
+                    seatPrice.value = 120000;
+                    break;
+                default:
+                    seatPrice.value = 50000;
+                    break;
+            }
+        }
+
+        function setDefaultPrice() {
+            const seatType = document.getElementById('editSeatType').value;
+            const seatPrice = document.getElementById('editSeatPrice');
+            
+            // Đặt giá mặc định theo loại ghế
+            switch (seatType) {
+                case 'VIP':
+                    seatPrice.value = 80000;
+                    break;
+                case 'Couple':
+                    seatPrice.value = 120000;
+                    break;
+                default:
+                    seatPrice.value = 50000;
+                    break;
+            }
+            
+            // Hiển thị thông báo nhỏ
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-info alert-sm';
+            notification.innerHTML = `
+                <i class="fas fa-info-circle me-1"></i>
+                Đã đặt giá mặc định cho ${seatType === 'VIP' ? 'ghế VIP' : seatType === 'Couple' ? 'ghế đôi' : 'ghế thường'}
+            `;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '9999';
+            notification.style.maxWidth = '300px';
+            notification.style.fontSize = '0.875rem';
+            notification.style.padding = '0.5rem 1rem';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        async function submitEditSeatForm(event) {
+            event.preventDefault();
+            
+            if (selectedSeats.length !== 1) {
+                alert('Vui lòng chọn đúng một ghế để chỉnh sửa');
+                return;
+            }
+            
+            const selectedSeat = selectedSeats[0];
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const submitBtn = document.getElementById('submitEditSeatBtn');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang cập nhật...';
+            
+            try {
+                const seatType = formData.get('SeatType');
+                const seatTypeEnum = seatType === 'VIP' ? 1 : seatType === 'Couple' ? 2 : 0;
+                
+                const seatData = {
+                    SeatId: selectedSeat.id || selectedSeat.Id,
+                    SeatCode: formData.get('SeatCode'),
+                    SeatType: seatTypeEnum,
+                    RowIndex: selectedSeat.rowIndex || selectedSeat.RowIndex,
+                    ColumnIndex: selectedSeat.columnIndex || selectedSeat.ColumnIndex,
+                    PriceSeat: parseFloat(formData.get('PriceSeat')),
+                    IsActive: true
+                };
+                
+                const response = await fetch(`/CinemaManagement/CinemaRoom/UpdateSeat/${currentRoomId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(seatData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    closeEditSeatModal();
+                    
+                    // Cập nhật dữ liệu ghế
+                    const seatIndex = currentSeats.findIndex(s => (s.id || s.Id) === selectedSeat.id || selectedSeat.Id);
+                    if (seatIndex !== -1) {
+                        currentSeats[seatIndex] = { ...currentSeats[seatIndex], ...seatData };
+                    }
+                    
+                    // Cập nhật giao diện
+                    renderSeatsGrid();
+                    updateSeatInfo(currentSeats[seatIndex]);
+                    
+                    // Hiển thị thông báo thành công
+                    const successAlert = document.createElement('div');
+                    successAlert.className = 'alert alert-success';
+                    successAlert.innerHTML = `
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span>${result.message}</span>
+                        <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    document.querySelector('.page-header').after(successAlert);
+                    
+                    setTimeout(() => successAlert.remove(), 3000);
+                } else {
+                    throw new Error(result.message || 'Có lỗi xảy ra khi cập nhật ghế');
+                }
+            } catch (error) {
+                console.error('Error updating seat:', error);
+                
+                const errorAlert = document.createElement('div');
+                errorAlert.className = 'alert alert-danger';
+                errorAlert.innerHTML = `
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <span>${error.message}</span>
+                    <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                document.querySelector('.page-header').after(errorAlert);
+                
+                setTimeout(() => errorAlert.remove(), 5000);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
+
+        // Modal chỉnh sửa hàng loạt
+        function openBulkEditModal() {
+            if (selectedSeats.length === 0) {
+                alert('Vui lòng chọn ít nhất một ghế để chỉnh sửa');
+                return;
+            }
+            
+            const modal = document.getElementById('bulkEditSeatModal');
+            const seatCount = document.getElementById('bulkEditSeatCount');
+            
+            seatCount.textContent = selectedSeats.length;
+            modal.style.display = 'block';
+        }
+
+        function closeBulkEditSeatModal() {
+            document.getElementById('bulkEditSeatModal').style.display = 'none';
+        }
+
+        function updateBulkPriceByType() {
+            const seatType = document.getElementById('bulkEditSeatType').value;
+            const seatPrice = document.getElementById('bulkEditSeatPrice');
+            
+            if (seatType) {
+                // Đặt giá mặc định theo loại ghế
+                switch (seatType) {
+                    case 'VIP':
+                        seatPrice.value = 80000;
+                        break;
+                    case 'Couple':
+                        seatPrice.value = 120000;
+                        break;
+                    default:
+                        seatPrice.value = 50000;
+                        break;
+                }
+            }
+        }
+
+        function setBulkDefaultPrice() {
+            const seatType = document.getElementById('bulkEditSeatType').value;
+            const seatPrice = document.getElementById('bulkEditSeatPrice');
+            
+            if (!seatType) {
+                alert('Vui lòng chọn loại ghế trước khi đặt giá mặc định');
+                return;
+            }
+            
+            // Đặt giá mặc định theo loại ghế
+            switch (seatType) {
+                case 'VIP':
+                    seatPrice.value = 80000;
+                    break;
+                case 'Couple':
+                    seatPrice.value = 120000;
+                    break;
+                default:
+                    seatPrice.value = 50000;
+                    break;
+            }
+            
+            // Hiển thị thông báo nhỏ
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-info alert-sm';
+            notification.innerHTML = `
+                <i class="fas fa-info-circle me-1"></i>
+                Đã đặt giá mặc định cho ${seatType === 'VIP' ? 'ghế VIP' : seatType === 'Couple' ? 'ghế đôi' : 'ghế thường'}
+            `;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '9999';
+            notification.style.maxWidth = '300px';
+            notification.style.fontSize = '0.875rem';
+            notification.style.padding = '0.5rem 1rem';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        async function submitBulkEditSeatForm(event) {
+            event.preventDefault();
+            
+            if (selectedSeats.length === 0) {
+                alert('Không có ghế nào được chọn');
+                return;
+            }
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const submitBtn = document.getElementById('submitBulkEditSeatBtn');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang cập nhật...';
+            
+            try {
+                const seatType = formData.get('SeatType');
+                const seatPrice = formData.get('PriceSeat');
+                
+                // Kiểm tra xem có thay đổi gì không
+                if (!seatType && !seatPrice) {
+                    alert('Vui lòng chọn ít nhất một trường để cập nhật');
+                    return;
+                }
+                
+                // Chuẩn bị dữ liệu cập nhật
+                const updates = selectedSeats.map(seat => {
+                    const update = {
+                        SeatId: seat.id || seat.Id
+                    };
+                    
+                    if (seatType) {
+                        const seatTypeEnum = seatType === 'VIP' ? 1 : seatType === 'Couple' ? 2 : 0;
+                        update.NewSeatType = seatTypeEnum;
+                    }
+                    
+                    if (seatPrice) {
+                        update.NewPrice = parseFloat(seatPrice);
+                    }
+                    
+                    return update;
+                });
+                
+                const updateData = {
+                    RoomId: currentRoomId,
+                    Updates: updates
+                };
+                
+                // Gọi API cập nhật hàng loạt
+                const response = await fetch(`/CinemaManagement/CinemaRoom/UpdateSeats`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    closeBulkEditSeatModal();
+                    
+                    // Cập nhật dữ liệu ghế
+                    selectedSeats.forEach(selectedSeat => {
+                        const seatIndex = currentSeats.findIndex(s => (s.id || s.Id) === (selectedSeat.id || selectedSeat.Id));
+                        if (seatIndex !== -1) {
+                            if (seatType) {
+                                const seatTypeEnum = seatType === 'VIP' ? 1 : seatType === 'Couple' ? 2 : 0;
+                                currentSeats[seatIndex].seatType = seatTypeEnum;
+                                currentSeats[seatIndex].SeatType = seatTypeEnum;
+                            }
+                            if (seatPrice) {
+                                currentSeats[seatIndex].priceSeat = parseFloat(seatPrice);
+                                currentSeats[seatIndex].PriceSeat = parseFloat(seatPrice);
+                            }
+                        }
+                    });
+                    
+                    // Cập nhật giao diện
+                    renderSeatsGrid();
+                    updateSeatsInfo();
+                    
+                    // Hiển thị thông báo thành công
+                    const successAlert = document.createElement('div');
+                    successAlert.className = 'alert alert-success';
+                    successAlert.innerHTML = `
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span>Cập nhật thành công ${selectedSeats.length} ghế!</span>
+                        <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    document.querySelector('.page-header').after(successAlert);
+                    
+                    setTimeout(() => successAlert.remove(), 3000);
+                } else {
+                    throw new Error(result.message || 'Có lỗi xảy ra khi cập nhật ghế');
+                }
+            } catch (error) {
+                console.error('Error updating seats:', error);
+                
+                const errorAlert = document.createElement('div');
+                errorAlert.className = 'alert alert-danger';
+                errorAlert.innerHTML = `
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <span>${error.message}</span>
+                    <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                document.querySelector('.page-header').after(errorAlert);
+                
+                setTimeout(() => errorAlert.remove(), 5000);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
+
+        // Event listeners cho modal quản lý ghế
+        document.getElementById('manageSeatsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeManageSeatsModal();
+            }
+        });
+
+        document.getElementById('editSeatModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditSeatModal();
+            }
+        });
+
+        document.getElementById('bulkEditSeatModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeBulkEditSeatModal();
+            }
+        });
+
