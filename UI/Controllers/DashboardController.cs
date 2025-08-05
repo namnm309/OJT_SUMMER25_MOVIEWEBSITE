@@ -64,8 +64,8 @@ namespace UI.Controllers
             try
             {
                 // 1. Tổng số thành viên và growth
-                var usersResp = await _apiService.GetAsync<JsonElement>("/api/User/count");
-                var usersGrowthResp = await _apiService.GetAsync<JsonElement>("/api/User/growth");
+                var usersResp = await _apiService.GetAsync<JsonElement>("/api/user/count");
+                var usersGrowthResp = await _apiService.GetAsync<JsonElement>("/api/user/growth");
                 
                 if (usersResp.Success)
                 {
@@ -89,8 +89,8 @@ namespace UI.Controllers
                 }
 
                 // 2. Tổng số phim và growth
-                var moviesResp = await _apiService.GetAsync<JsonElement>("/api/movie/count");
-                var moviesGrowthResp = await _apiService.GetAsync<JsonElement>("/api/movie/growth");
+                var moviesResp = await _apiService.GetAsync<JsonElement>("/api/v1/movie/count");
+                var moviesGrowthResp = await _apiService.GetAsync<JsonElement>("/api/v1/movie/growth");
                 
                 if (moviesResp.Success)
                 {
@@ -114,8 +114,8 @@ namespace UI.Controllers
                 }
 
                 // 3. Số vé đã đặt hôm nay và growth
-                var todayBookingsResp = await _apiService.GetAsync<JsonElement>("/api/booking-ticket/today-count");
-                var bookingsGrowthResp = await _apiService.GetAsync<JsonElement>("/api/booking-ticket/booking-growth");
+                var todayBookingsResp = await _apiService.GetAsync<JsonElement>("/api/v1/booking-ticket/today-count");
+                var bookingsGrowthResp = await _apiService.GetAsync<JsonElement>("/api/v1/booking-ticket/booking-growth");
                 
                 if (todayBookingsResp.Success)
                 {
@@ -139,8 +139,8 @@ namespace UI.Controllers
                 }
 
                 // 4. Doanh thu hôm nay và growth
-                var todayRevenueResp = await _apiService.GetAsync<JsonElement>("/api/booking-ticket/today-revenue");
-                var revenueGrowthResp = await _apiService.GetAsync<JsonElement>("/api/booking-ticket/revenue-growth");
+                var todayRevenueResp = await _apiService.GetAsync<JsonElement>("/api/v1/booking-ticket/today-revenue");
+                var revenueGrowthResp = await _apiService.GetAsync<JsonElement>("/api/v1/booking-ticket/revenue-growth");
                 
                 if (todayRevenueResp.Success)
                 {
@@ -165,7 +165,7 @@ namespace UI.Controllers
                 }
 
                 // 5. Số nhiệm vụ cần xử lý (pending bookings)
-                var pendingTasksResp = await _apiService.GetAsync<JsonElement>("/api/booking-ticket/pending-count");
+                var pendingTasksResp = await _apiService.GetAsync<JsonElement>("/api/v1/booking-ticket/pending-count");
                 if (pendingTasksResp.Success)
                 {
                     ViewBag.PendingTasks = pendingTasksResp.Data.GetProperty("count").GetInt32().ToString("N0");
