@@ -2530,9 +2530,14 @@
                     </div>
                     <div class="showtime-field">
                         <label>Phòng chiếu</label>
-                        <select class="showtime-room">
-                            ${roomOptions}
-                        </select>
+                        <div class="room-selection">
+                            <select class="showtime-room">
+                                ${roomOptions}
+                            </select>
+                            <button type="button" class="btn-create-room" onclick="openCreateRoomModal(this)">
+                                ➕ Tạo phòng mới
+                            </button>
+                        </div>
                     </div>
                     <div class="showtime-actions">
                         <button type="button" class="btn-remove-showtime" onclick="removeShowTimeEntry(this)">
@@ -3364,7 +3369,7 @@
 
         function updateAllRoomDropdowns(newRoomName) {
             // Tìm tất cả các dropdown phòng chiếu trong form thêm phim
-            const roomDropdowns = document.querySelectorAll('#addMovieModal .showtime-room');
+            const roomDropdowns = document.querySelectorAll('#addMovieModal .showtime-room, #editMovieModal .showtime-room');
             
             roomDropdowns.forEach(dropdown => {
                 // Lưu giá trị hiện tại
