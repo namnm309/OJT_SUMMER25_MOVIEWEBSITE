@@ -156,6 +156,7 @@ namespace ApplicationLayer.Services.MovieManagement
             }
 
             var movie = _mapper.Map<Movie>(Dto);
+            movie.ShowTimes = new List<ShowTime>(); // Ngăn AutoMapper map lịch chiếu gây trùng
             movie.Status = MovieStatus.NotAvailable;
 
             await _movieRepo.CreateAsync(movie);
@@ -192,16 +193,32 @@ namespace ApplicationLayer.Services.MovieManagement
             await _imageRepo.CreateRangeAsync(movieImages);
             
             // Chỉ tạo lịch chiếu khi có dữ liệu
-            if (Dto.ShowTimes != null && Dto.ShowTimes.Any())
-            {
-                var movieShowtimes = Dto.ShowTimes.Select(show => new ShowTime
+                            if (Dto.ShowTimes != null && Dto.ShowTimes.Any())
                 {
-                    MovieId = movie.Id,
-                    RoomId = show.RoomId,
-                    ShowDate = show.ShowDate
-                }).ToList();
-                await _showtimeRepo.CreateRangeAsync(movieShowtimes);
-            }
+                    // Loại bỏ lịch chiếu trùng (cùng phòng & cùng thời gian)
+                    var distinctShowtimes = Dto.ShowTimes
+                        .GroupBy(s => new { s.RoomId, s.ShowDate })
+                        .Select(g => g.First())
+                        .ToList();
+
+                    var movieShowtimes = distinctShowtimes.Select(show =>
+                    {
+                        var startTime = show.ShowDate.TimeOfDay;
+                        var endTime = startTime.Add(TimeSpan.FromMinutes(movie.RunningTime));
+
+                        return new ShowTime
+                        {
+                            MovieId = movie.Id,
+                            RoomId = show.RoomId,
+                            ShowDate = show.ShowDate.Date, // Chỉ lấy phần ngày
+                            StartTime = startTime,
+                            EndTime = endTime,
+                            Price = 0 // Có thể cập nhật giá sau
+                        };
+                    }).ToList();
+
+                    await _showtimeRepo.CreateRangeAsync(movieShowtimes);
+                }
 
             await _movieActorRepo.CreateRangeAsync(movieActors);
             await _movieDirectorRepo.CreateRangeAsync(movieDirectors);
@@ -388,11 +405,20 @@ namespace ApplicationLayer.Services.MovieManagement
 
             if (Dto.ShowTimes != null && Dto.ShowTimes.Any())
             {
-                var movieShowtimes = Dto.ShowTimes.Select(st => new ShowTime
+                // Loại bỏ trùng
+                var distinctShowtimes = Dto.ShowTimes
+                    .GroupBy(s => new { s.RoomId, s.ShowDate })
+                    .Select(g => g.First())
+                    .ToList();
+
+                var movieShowtimes = distinctShowtimes.Select(st => new ShowTime
                 {
                     RoomId = st.RoomId,
-                    ShowDate = st.ShowDate,
-                    MovieId = movie.Id
+                    ShowDate = st.ShowDate.Date,
+                    StartTime = st.ShowDate.TimeOfDay,
+                    EndTime = st.ShowDate.TimeOfDay.Add(TimeSpan.FromMinutes(movie.RunningTime)),
+                    MovieId = movie.Id,
+                    Price = 0
                 }).ToList();
                 await _showtimeRepo.CreateRangeAsync(movieShowtimes);
                 movie.ShowTimes = movieShowtimes;
