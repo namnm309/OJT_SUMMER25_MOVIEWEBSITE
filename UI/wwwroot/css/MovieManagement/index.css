@@ -2197,3 +2197,125 @@
     transform:rotate(90deg);
 }
 
+/* Room Selection Styles */
+.room-selection {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.room-selection select {
+    flex: 1;
+}
+
+.btn-create-room {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-create-room:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* Create Room Modal Styles */
+#createRoomModal .modal-content {
+    max-width: 500px;
+}
+
+#createRoomModal .modal-header {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+#createRoomModal .form-group {
+    margin-bottom: 1rem;
+}
+
+#createRoomModal .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+#createRoomModal .form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+#createRoomModal label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+#createRoomModal input,
+#createRoomModal select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--content-border);
+    border-radius: 6px;
+    background: var(--content-secondary);
+    color: var(--text-dark);
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+#createRoomModal input:focus,
+#createRoomModal select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+    outline: none;
+}
+
+#createRoomModal .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--content-border);
+}
+
+#createRoomModal .btn-cancel {
+    background: var(--content-secondary);
+    border: 1px solid var(--content-border);
+    color: var(--text-dark);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#createRoomModal .btn-cancel:hover {
+    background: var(--content-border);
+}
+
+#createRoomModal .btn-create {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#createRoomModal .btn-create:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
