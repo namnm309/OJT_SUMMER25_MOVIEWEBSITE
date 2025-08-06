@@ -44,13 +44,15 @@ namespace ControllerLayer.Controllers
                     if (response.Success)
                     {
                         // Redirect to UI success page dựa trên booking source
-                        var uiBase = "https://cinemacity-frontend-dcayhqe2h3f7djhq.eastasia-01.azurewebsites.net"; // Production URL
+                        //var uiBase = "https://cinemacity-frontend-dcayhqe2h3f7djhq.eastasia-01.azurewebsites.net"; // Production URL
+                        var uiBase = "https://www.cinemacity.app";
                         var redirectUrl = GetRedirectUrlByBookingSource(response.BookingSource, response.BookingCode, true);
                         return Redirect($"{uiBase}{redirectUrl}");
                     }
 
                     // Redirect to UI fail page dựa trên booking source
-                    var uiBaseFail = "https://cinemacity-frontend-dcayhqe2h3f7djhq.eastasia-01.azurewebsites.net"; // Production URL
+                    //var uiBaseFail = "https://cinemacity-frontend-dcayhqe2h3f7djhq.eastasia-01.azurewebsites.net"; // Production URL
+                    var uiBaseFail = "https://www.cinemacity.app";
                     var failRedirectUrl = GetRedirectUrlByBookingSource(response.BookingSource, response.BookingCode, false);
                     return Redirect($"{uiBaseFail}{failRedirectUrl}");
                 }

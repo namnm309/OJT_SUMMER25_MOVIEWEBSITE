@@ -60,7 +60,9 @@ namespace ControllerLayer
                         "http://localhost:5274",
                         "https://localhost:5274",
                         "https://cinemacity-frontend-dcayhqe2h3f7djhq.eastasia-01.azurewebsites.net",
-                        "https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net")
+                        "https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net",
+                        "https://www.cinemacity.app",
+                        "https://cinemacity.app")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials(); // Cho phép chia sẻ cookie giữa UI và API
