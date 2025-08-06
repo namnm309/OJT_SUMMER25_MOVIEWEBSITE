@@ -2530,9 +2530,14 @@
                     </div>
                     <div class="showtime-field">
                         <label>Phòng chiếu</label>
-                        <select class="showtime-room">
-                            ${roomOptions}
-                        </select>
+                        <div class="room-selection">
+                            <select class="showtime-room">
+                                ${roomOptions}
+                            </select>
+                            <button type="button" class="btn-create-room" onclick="openCreateRoomModal(this)">
+                                ➕ Tạo phòng mới
+                            </button>
+                        </div>
                     </div>
                     <div class="showtime-actions">
                         <button type="button" class="btn-remove-showtime" onclick="removeShowTimeEntry(this)">
@@ -2854,7 +2859,15 @@
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                
+                // Nếu là modal tạo phòng, xóa callback button
+                if (modalId === 'createRoomModal') {
+                    delete modal.dataset.callbackButton;
+                }
+            }
         }
 
 
@@ -3180,9 +3193,14 @@
                     </div>
                     <div class="showtime-field">
                         <label>Phòng chiếu</label>
-                        <select class="showtime-room" style="background-color: #2a2a2a; color: white; border: 1px solid rgba(255,255,255,0.2);">
-                            ${roomOptions}
-                        </select>
+                        <div class="room-selection">
+                            <select class="showtime-room" style="background-color: #2a2a2a; color: white; border: 1px solid rgba(255,255,255,0.2);">
+                                ${roomOptions}
+                            </select>
+                            <button type="button" class="btn-create-room" onclick="openCreateRoomModal(this)">
+                                ➕ Tạo phòng mới
+                            </button>
+                        </div>
                     </div>
                     <div class="showtime-actions">
                         <button type="button" class="btn-remove-showtime" onclick="removeNewShowTimeEntry(this)">
@@ -3206,6 +3224,185 @@
             }
         }
 
+        function openCreateRoomModal(button) {
+            const modal = document.getElementById('createRoomModal');
+            if (!modal) {
+                console.error('Không tìm thấy modal #createRoomModal');
+                showNotification('Lỗi: Không thể mở form tạo phòng chiếu mới', 'error');
+                return;
+            }
+            
+            // Lưu ID của button để cập nhật select sau khi tạo phòng
+            let buttonId = button.id || button.getAttribute('id');
+            if (!buttonId) {
+                // Tạo ID duy nhất nếu button không có ID
+                buttonId = 'create-room-btn-' + Date.now();
+                button.id = buttonId;
+            }
+            modal.dataset.callbackButton = buttonId;
+            
+            // Reset form
+            const form = modal.querySelector('#createRoomForm');
+            if (form) {
+                form.reset();
+                // Set default values
+                form.querySelector('#roomName').value = '';
+                form.querySelector('#totalSeats').value = '100';
+                form.querySelector('#numberOfRows').value = '10';
+                form.querySelector('#numberOfColumns').value = '10';
+                form.querySelector('#defaultSeatPrice').value = '100000';
+                
+                // Thêm event listeners để tự động tính toán tổng số ghế
+                const rowsInput = form.querySelector('#numberOfRows');
+                const colsInput = form.querySelector('#numberOfColumns');
+                const totalSeatsInput = form.querySelector('#totalSeats');
+                
+                const calculateTotalSeats = () => {
+                    const rows = parseInt(rowsInput.value) || 0;
+                    const cols = parseInt(colsInput.value) || 0;
+                    totalSeatsInput.value = rows * cols;
+                };
+                
+                rowsInput.addEventListener('input', calculateTotalSeats);
+                colsInput.addEventListener('input', calculateTotalSeats);
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        async function createNewRoom(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            // Validate form
+            const roomName = formData.get('roomName');
+            const totalSeats = parseInt(formData.get('totalSeats'));
+            const numberOfRows = parseInt(formData.get('numberOfRows'));
+            const numberOfColumns = parseInt(formData.get('numberOfColumns'));
+            const defaultSeatPrice = parseFloat(formData.get('defaultSeatPrice'));
+            
+            if (!roomName || roomName.trim() === '') {
+                showNotification('Tên phòng chiếu không được để trống', 'error');
+                return;
+            }
+            
+            if (totalSeats !== numberOfRows * numberOfColumns) {
+                showNotification(`Số ghế không khớp: ${numberOfRows} hàng x ${numberOfColumns} cột = ${numberOfRows * numberOfColumns}, nhưng TotalSeats = ${totalSeats}`, 'error');
+                return;
+            }
+            
+            const roomData = {
+                RoomName: roomName.trim(),
+                TotalSeats: totalSeats,
+                NumberOfRows: numberOfRows,
+                NumberOfColumns: numberOfColumns,
+                DefaultSeatPrice: defaultSeatPrice
+            };
+            
+            try {
+                // Lấy CSRF token
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                
+                console.log('Gửi request tạo phòng chiếu:', {
+                    url: '/MovieManagement/Movies/CreateCinemaRoom',
+                    data: roomData,
+                    token: token ? 'Có token' : 'Không có token'
+                });
+                
+                const result = await fetch('/MovieManagement/Movies/CreateCinemaRoom', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'RequestVerificationToken': token || ''
+                    },
+                    body: JSON.stringify(roomData)
+                });
+                
+                console.log('Response status:', result.status);
+                
+                if (!result.ok) {
+                    // Thử đọc response body để xem lỗi chi tiết
+                    let errorMessage = `HTTP ${result.status}: ${result.statusText}`;
+                    try {
+                        const errorResponse = await result.text();
+                        console.log('Error response body:', errorResponse);
+                        if (errorResponse) {
+                            errorMessage += ` - ${errorResponse}`;
+                        }
+                    } catch (e) {
+                        console.log('Could not read error response body');
+                    }
+                    throw new Error(errorMessage);
+                }
+                
+                const response = await result.json();
+                console.log('Response data:', response);
+                
+                if (response.success) {
+                    showNotification('Tạo phòng chiếu mới thành công!', 'success');
+                    
+                    // Đóng modal
+                    const modal = document.getElementById('createRoomModal');
+                    modal.style.display = 'none';
+                    
+                    // Reload danh sách phòng chiếu
+                    await loadAddGenresAndRooms();
+                    
+                    // Cập nhật tất cả các dropdown phòng chiếu trong form thêm phim
+                    updateAllRoomDropdowns(roomName);
+                } else {
+                    showNotification(response.message || 'Lỗi khi tạo phòng chiếu mới', 'error');
+                }
+            } catch (error) {
+                console.error('Lỗi khi tạo phòng chiếu:', error);
+                console.error('Error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    name: error.name
+                });
+                showNotification(`Đã xảy ra lỗi khi tạo phòng chiếu mới: ${error.message}`, 'error');
+            }
+        }
+
+        function updateAllRoomDropdowns(newRoomName) {
+            // Tìm tất cả các dropdown phòng chiếu trong form thêm phim
+            const roomDropdowns = document.querySelectorAll('#addMovieModal .showtime-room, #editMovieModal .showtime-room');
+            
+            roomDropdowns.forEach(dropdown => {
+                // Lưu giá trị hiện tại
+                const currentValue = dropdown.value;
+                
+                // Xóa tất cả options cũ
+                dropdown.innerHTML = '<option value="">Chọn phòng chiếu</option>';
+                
+                // Thêm lại tất cả phòng chiếu từ window.availableRooms
+                if (window.availableRooms && Array.isArray(window.availableRooms)) {
+                    window.availableRooms.forEach(room => {
+                        const id = room.id || room.Id;
+                        const name = room.name || room.Name || room.roomName || room.RoomName;
+                        const option = document.createElement('option');
+                        option.value = id;
+                        option.textContent = name;
+                        dropdown.appendChild(option);
+                        
+                        // Nếu đây là phòng mới tạo, tự động chọn
+                        if (name === newRoomName) {
+                            option.selected = true;
+                        }
+                    });
+                }
+                
+                // Nếu không tìm thấy phòng mới, giữ lại giá trị cũ
+                if (dropdown.value === '' && currentValue) {
+                    dropdown.value = currentValue;
+                }
+            });
+            
+            console.log(`Đã cập nhật ${roomDropdowns.length} dropdown phòng chiếu với phòng mới: ${newRoomName}`);
+        }
 
         async function loadAddGenresAndRooms() {
             try {
