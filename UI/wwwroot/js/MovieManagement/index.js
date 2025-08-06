@@ -3344,25 +3344,10 @@
                     modal.style.display = 'none';
                     
                     // Reload danh sách phòng chiếu
-                    await loadAddMovieData();
+                    await loadAddGenresAndRooms();
                     
-                    // Cập nhật select box với phòng mới
-                    const callbackButtonId = modal.dataset.callbackButton;
-                    if (callbackButtonId) {
-                        const callbackButton = document.getElementById(callbackButtonId);
-                        if (callbackButton) {
-                            const roomSelect = callbackButton.closest('.room-selection').querySelector('.showtime-room');
-                            if (roomSelect && window.availableRooms) {
-                                // Tìm phòng mới tạo (có thể cần reload lại data)
-                                const newRoom = window.availableRooms.find(room => 
-                                    (room.name || room.Name || room.roomName || room.RoomName) === roomName
-                                );
-                                if (newRoom) {
-                                    roomSelect.value = newRoom.id || newRoom.Id;
-                                }
-                            }
-                        }
-                    }
+                    // Cập nhật tất cả các dropdown phòng chiếu trong form thêm phim
+                    updateAllRoomDropdowns(roomName);
                 } else {
                     showNotification(response.message || 'Lỗi khi tạo phòng chiếu mới', 'error');
                 }
@@ -3377,6 +3362,42 @@
             }
         }
 
+        function updateAllRoomDropdowns(newRoomName) {
+            // Tìm tất cả các dropdown phòng chiếu trong form thêm phim
+            const roomDropdowns = document.querySelectorAll('#addMovieModal .showtime-room');
+            
+            roomDropdowns.forEach(dropdown => {
+                // Lưu giá trị hiện tại
+                const currentValue = dropdown.value;
+                
+                // Xóa tất cả options cũ
+                dropdown.innerHTML = '<option value="">Chọn phòng chiếu</option>';
+                
+                // Thêm lại tất cả phòng chiếu từ window.availableRooms
+                if (window.availableRooms && Array.isArray(window.availableRooms)) {
+                    window.availableRooms.forEach(room => {
+                        const id = room.id || room.Id;
+                        const name = room.name || room.Name || room.roomName || room.RoomName;
+                        const option = document.createElement('option');
+                        option.value = id;
+                        option.textContent = name;
+                        dropdown.appendChild(option);
+                        
+                        // Nếu đây là phòng mới tạo, tự động chọn
+                        if (name === newRoomName) {
+                            option.selected = true;
+                        }
+                    });
+                }
+                
+                // Nếu không tìm thấy phòng mới, giữ lại giá trị cũ
+                if (dropdown.value === '' && currentValue) {
+                    dropdown.value = currentValue;
+                }
+            });
+            
+            console.log(`Đã cập nhật ${roomDropdowns.length} dropdown phòng chiếu với phòng mới: ${newRoomName}`);
+        }
 
         async function loadAddGenresAndRooms() {
             try {
