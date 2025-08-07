@@ -75,7 +75,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
                 var userId = payload.UserId;
                 var now = DateTime.UtcNow;
-                var expiredAt = now.AddMinutes(15);
+                var expiredAt = now.AddMinutes(2);
 
                 var exitsShowTime = await _showTimeRepo.FindByIdAsync(dto.ShowTimeId);
                 if (exitsShowTime == null)
@@ -86,13 +86,13 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 if (seat == null)
                     return ErrorResp.NotFound("Seat not found");
 
-                // Check nếu ghế đang Pending hoặc Selected thì không giữ được nữa
-                if (seat.Status != SeatStatus.Available)
-                    return ErrorResp.BadRequest("Seat is already held or booked");
+                var existingHold = await _seatLogRepo.FirstOrDefaultAsync(x =>
+                            x.SeatId == dto.SeatId &&
+                            x.ShowTimeId == dto.ShowTimeId &&
+                            x.ExpiredAt > now);
 
-                // Cập nhật trạng thái ghế
-                seat.Status = SeatStatus.Pending;
-                await _seatRepo.UpdateAsync(seat);
+                if (existingHold != null)
+                    return ErrorResp.BadRequest("Seat is already held");
 
                 // Tạo SeatLog mới cho 1 ghế
                 var seatLog = new SeatLog

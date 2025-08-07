@@ -22,7 +22,7 @@ namespace DomainLayer.Entities
         public DateTime ExpiredAt { get; set; }
 
         [Required]
-        public SeatStatus Status { get; set; } = SeatStatus.Pending;
+        public SeatStatus Status { get; set; }
 
         // Navigation
         [ForeignKey("ShowTimeId")]

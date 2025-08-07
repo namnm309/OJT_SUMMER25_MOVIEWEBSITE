@@ -251,18 +251,36 @@ namespace ApplicationLayer.Services.Payment
             var user = await _userRepo.FindByIdAsync(userId);
             if(user == null) return;
 
-            int earned = 100; // 100 điểm mỗi booking
-            user.Score += earned;
-            await _userRepo.UpdateAsync(user);
+            // Nếu seatsBooked là 0 hoặc không truyền đúng thì truy vấn lại từ BookingDetail
+            if (seatsBooked <= 0)
+            {
+                seatsBooked = await _bookingDetailRepo.CountAsync(bd => bd.BookingId == bookingId);
+            }
 
-            await _pointHistoryRepo.CreateAsync(new PointHistory{
-                UserId = user.Id,
-                Points = earned,
-                Type = PointType.Earned,
-                Description = $"Earned {earned} pts for booking {bookingCode}",
-                BookingId = bookingId,
-                IsUsed = false
-            });
+            // Tính điểm dựa trên số lượng ghế
+            int earned = seatsBooked switch
+            {
+                >= 10 => 130,
+                >= 5 => 60,
+                >= 2 => 10,
+                _ => 0     // _ là placeholder đại diện cho mọi trường hợp còn lại mà không khớp với các điều kiện ở trên
+            };
+
+            if (earned > 0)
+            {
+                user.Score += earned;
+                await _userRepo.UpdateAsync(user);
+
+                await _pointHistoryRepo.CreateAsync(new PointHistory
+                {
+                    UserId = user.Id,
+                    Points = earned,
+                    Type = PointType.Earned,
+                    Description = $"Earned {earned} pts for booking {bookingCode} ({seatsBooked} seats)",
+                    BookingId = bookingId,
+                    IsUsed = false
+                });
+            }
 
             var silver = await _promotionRepo.FirstOrDefaultAsync(p=>p.Title.ToLower().Contains("silver"));
             var gold = await _promotionRepo.FirstOrDefaultAsync(p=>p.Title.ToLower().Contains("gold"));
