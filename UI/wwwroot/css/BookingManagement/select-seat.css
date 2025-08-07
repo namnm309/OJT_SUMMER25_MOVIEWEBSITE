@@ -332,6 +332,25 @@ body {
     outline: none !important;
     box-shadow: none !important;
     border-radius: 0 !important;
+    /* Tắt hoàn toàn tooltip */
+    pointer-events: auto;
+}
+
+/* Tắt tooltip cho tất cả element ghế */
+.seat[title]:hover::after,
+.seat[title]:hover::before,
+.seat::after,
+.seat::before:not([class*="fa"]) {
+    display: none !important;
+    content: none !important;
+}
+
+/* Tắt tooltip mặc định của trình duyệt */
+.seat {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .seat:focus,
@@ -358,16 +377,42 @@ body {
 }
 
 .seat.regular.available,
-.seat.vip.available,
 .seat.seat-available {
     color: #ffffff;
 }
 
+/* Ghế VIP - màu vàng */
+.seat.vip.available,
+.seat[data-seat-type="VIP"].seat-available {
+    color: #FFD700 !important; /* Vàng */
+}
+
+/* Ghế đôi - màu xanh */
+.seat[data-seat-type="Couple"].seat-available,
+.seat.couple.available {
+    color: #00CED1 !important; /* Xanh dương */
+}
+
 .seat.regular.available:hover,
-.seat.vip.available:hover,
 .seat.seat-available:hover {
     color: #e3417a;
     opacity: 0.4;
+    transform: scale(1.1);
+}
+
+/* Hover effect cho ghế VIP */
+.seat.vip.available:hover,
+.seat[data-seat-type="VIP"].seat-available:hover {
+    color: #FFA500 !important; /* Cam khi hover */
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+/* Hover effect cho ghế đôi */
+.seat[data-seat-type="Couple"].seat-available:hover,
+.seat.couple.available:hover {
+    color: #20B2AA !important; /* Xanh đậm khi hover */
+    opacity: 0.8;
     transform: scale(1.1);
 }
 
@@ -389,13 +434,54 @@ body {
     color: #e3417a !important;
 }
 
+/* Ghế VIP khi được chọn vẫn giữ màu tím */
+.seat.vip.selected,
+.seat.vip.seat-selected,
+.seat.vip.pending-mine,
+.seat[data-seat-type="VIP"].selected,
+.seat[data-seat-type="VIP"].seat-selected,
+.seat[data-seat-type="VIP"].pending-mine {
+    color: #e3417a !important;
+}
+
+.seat.vip.selected::before,
+.seat.vip.seat-selected::before,
+.seat.vip.pending-mine::before,
+.seat[data-seat-type="VIP"].selected::before,
+.seat[data-seat-type="VIP"].seat-selected::before,
+.seat[data-seat-type="VIP"].pending-mine::before {
+    color: #e3417a !important;
+}
+
+/* Ghế đôi khi được chọn vẫn giữ màu tím */
+.seat.couple.selected,
+.seat.couple.seat-selected,
+.seat.couple.pending-mine,
+.seat[data-seat-type="Couple"].selected,
+.seat[data-seat-type="Couple"].seat-selected,
+.seat[data-seat-type="Couple"].pending-mine {
+    color: #e3417a !important;
+}
+
+.seat.couple.selected::before,
+.seat.couple.seat-selected::before,
+.seat.couple.pending-mine::before,
+.seat[data-seat-type="Couple"].selected::before,
+.seat[data-seat-type="Couple"].seat-selected::before,
+.seat[data-seat-type="Couple"].pending-mine::before {
+    color: #e3417a !important;
+}
+
 .seat.occupied,
 .seat.seat-unavailable {
     color: #5a899d !important;
     cursor: not-allowed;
 }
 
-.seat.pending-others {
+/* Ghế đang được giữ bởi người khác - màu xám */
+.seat.pending-others,
+.seat.seat-pending,
+.seat[data-status="pending"] {
     color: #5a899d !important;
     background: none !important;
     background-color: transparent !important;
@@ -403,10 +489,37 @@ body {
     border: none !important;
     box-shadow: none !important;
     outline: none !important;
+    cursor: not-allowed;
 }
 
-.seat.pending-others::before {
-    color: #b10b0b !important;
+.seat.pending-others::before,
+.seat.seat-pending::before,
+.seat[data-status="pending"]::before {
+    color: #5a899d !important;
+}
+
+/* Đảm bảo ghế VIP/couple khi pending vẫn màu xám */
+.seat.vip.pending-others,
+.seat.vip.seat-pending,
+.seat[data-seat-type="VIP"].pending-others,
+.seat[data-seat-type="VIP"].seat-pending,
+.seat.couple.pending-others,
+.seat.couple.seat-pending,
+.seat[data-seat-type="Couple"].pending-others,
+.seat[data-seat-type="Couple"].seat-pending {
+    color: #5a899d !important;
+    cursor: not-allowed;
+}
+
+.seat.vip.pending-others::before,
+.seat.vip.seat-pending::before,
+.seat[data-seat-type="VIP"].pending-others::before,
+.seat[data-seat-type="VIP"].seat-pending::before,
+.seat.couple.pending-others::before,
+.seat.couple.seat-pending::before,
+.seat[data-seat-type="Couple"].pending-others::before,
+.seat[data-seat-type="Couple"].seat-pending::before {
+    color: #5a899d !important;
 }
 
 /* Loại bỏ hoàn toàn background cho pending-others */
@@ -529,35 +642,36 @@ button.seat {
     font-weight: 900;
 }
 
-    .legend-seat.normal {
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-    .legend-seat.comfort {
-        background: rgba(255, 255, 255, 0.2);
-    }
-
-    .legend-seat.double-comfort {
-        background: linear-gradient(45deg, #f5c518, #ffd700);
-    }
-
+    /* Ghế trống - màu trắng */
+    .legend-seat.normal,
     .legend-seat.available {
         background: transparent;
-        color: #5a899d;
+        color: #ffffff;
     }
 
-    .legend-seat.for-disabilities {
-        background: rgba(0, 150, 255, 0.6);
+    /* Ghế VIP - màu vàng */
+    .legend-seat.vip {
+        background: transparent;
+        color: #FFD700;
     }
 
+    /* Ghế đôi - màu xanh */
+    .legend-seat.couple {
+        background: transparent;
+        color: #00CED1;
+    }
+
+    /* Ghế đã chọn - màu tím */
     .legend-seat.selected {
         background: transparent;
         color: #e3417a;
     }
 
-    .legend-seat.taken {
+    /* Ghế đã đặt/đang chờ - màu xám */
+    .legend-seat.taken,
+    .legend-seat.pending {
         background: transparent;
-        color: #ced9e2;
+        color: #5a899d;
     }
 
 /* Thêm CSS cho ghế đang chờ của người khác */

@@ -1740,8 +1740,9 @@ class HomepagePagination {
     }
 
     updateRecommendedGrid(movies, append = false) {
-
-        const grid = document.querySelector('.recommended-grid');
+        const grid = document.getElementById('recommendedGrid');
+        const emptyState = document.getElementById('recommendedEmptyState');
+        
         if (!grid) {
             console.error('Recommended grid not found');
             return;
@@ -1749,13 +1750,17 @@ class HomepagePagination {
 
         console.log(`📝 Updating recommended grid: ${append ? 'append' : 'replace'} with ${movies.length} movies`);
 
+        // Hide empty state if we have movies
+        if (movies.length > 0 && emptyState) {
+            emptyState.style.display = 'none';
+        }
+
         if (!append) {
-            // 🔧 FIX: Chỉ xóa dynamic items khi filter/sort, giữ lại static movies từ HTML
+            // Clear all dynamic items when filter/sort changes
             console.log('🧹 Clearing dynamic recommended movies for filter/sort change');
             const existingDynamic = grid.querySelectorAll('.dynamic-item');
             existingDynamic.forEach(item => item.remove());
         }
-        // 🔧 FIX: Khi append = true, KHÔNG xóa gì cả để thực sự append thêm movies
 
         movies.forEach(movie => {
             const movieElement = this.createRecommendedMovieElement(movie);
@@ -1765,15 +1770,18 @@ class HomepagePagination {
 
         console.log(`✅ Grid updated with ${grid.children.length} total items`);
         
+        // Show empty state if no movies after update
+        if (grid.children.length === 0 && emptyState) {
+            emptyState.style.display = 'block';
+        }
+        
         // Re-bind event listener để đảm bảo button vẫn hoạt động sau khi update
         this.rebindLoadMoreButton('loadMoreRecommended');
     }
 
     updateComingSoonGrid(movies, append = false) {
-
-        const sections = document.querySelectorAll('.recommended-section-new');
-        const comingSoonSection = sections[1]; // Second section (0-indexed) is coming soon
-        const grid = comingSoonSection?.querySelector('.recommended-grid');
+        const grid = document.getElementById('comingSoonGrid');
+        const emptyState = document.getElementById('comingSoonEmptyState');
         
         if (!grid) {
             console.error('Coming soon grid not found');
@@ -1782,13 +1790,17 @@ class HomepagePagination {
 
         console.log(`📝 Updating coming soon grid: ${append ? 'append' : 'replace'} with ${movies.length} movies`);
 
+        // Hide empty state if we have movies
+        if (movies.length > 0 && emptyState) {
+            emptyState.style.display = 'none';
+        }
+
         if (!append) {
-            // 🔧 FIX: Chỉ xóa dynamic items khi filter/sort, giữ lại static movies từ HTML  
+            // Clear all dynamic items when filter/sort changes
             console.log('🧹 Clearing dynamic coming soon movies for filter/sort change');
             const existingDynamic = grid.querySelectorAll('.dynamic-item');
             existingDynamic.forEach(item => item.remove());
         }
-        // 🔧 FIX: Khi append = true, KHÔNG xóa gì cả để thực sự append thêm movies
 
         movies.forEach(movie => {
             const movieElement = this.createComingSoonMovieElement(movie);
@@ -1797,6 +1809,11 @@ class HomepagePagination {
         });
 
         console.log(`✅ Coming soon grid updated with ${grid.children.length} total items`);
+        
+        // Show empty state if no movies after update
+        if (grid.children.length === 0 && emptyState) {
+            emptyState.style.display = 'block';
+        }
         
         // Re-bind event listener để đảm bảo button vẫn hoạt động sau khi update
         this.rebindLoadMoreButton('loadMoreComingSoon');
@@ -2144,6 +2161,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (recommendedInfo && comingSoonInfo) {
             window.homepagePagination = new HomepagePagination();
             console.log('✅ Homepage Pagination initialized successfully');
+            
+            // Tự động load phim khi trang được tải
+            window.homepagePagination.loadRecommendedMovies();
+            window.homepagePagination.loadComingSoonMovies();
         } else {
             console.warn('⚠️ Pagination elements missing:', {
                 recommendedInfo: !!recommendedInfo,
@@ -2154,6 +2175,14 @@ document.addEventListener('DOMContentLoaded', function () {
             if (recommendedInfo || comingSoonInfo) {
                 window.homepagePagination = new HomepagePagination();
                 console.log('⚠️ Partial pagination initialized');
+                
+                // Tự động load phim khi trang được tải (partial)
+                if (recommendedInfo) {
+                    window.homepagePagination.loadRecommendedMovies();
+                }
+                if (comingSoonInfo) {
+                    window.homepagePagination.loadComingSoonMovies();
+                }
             }
         }
     }, 500);

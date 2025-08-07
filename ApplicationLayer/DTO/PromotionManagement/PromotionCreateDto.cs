@@ -34,6 +34,10 @@ namespace ApplicationLayer.DTO.PromotionManagement
         [Range(0, 100)]
         public int DiscountPercent { get; set; }
 
+        // New: points required to redeem. 0 => public promotion
+        [Range(0, int.MaxValue)]
+        public double RequiredPoints { get; set; } = 0;
+
         [Required]
         public string Description { get; set; }
 

@@ -24,7 +24,8 @@ namespace ApplicationLayer.Mapper
             //Movie
             CreateMap<MovieCreateDto, Movie>()
                 .ForMember(dest => dest.MovieActors, opt => opt.Ignore())
-                .ForMember(dest => dest.MovieDirectors, opt => opt.Ignore());
+                .ForMember(dest => dest.MovieDirectors, opt => opt.Ignore())
+                .ForMember(dest => dest.ShowTimes, opt => opt.Ignore());
             
             //Movie Update - include new properties
             CreateMap<MovieUpdateDto, Movie>()

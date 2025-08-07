@@ -562,8 +562,7 @@
                             
                             return `
                                 <div class="seat ${seatClass}" 
-                                     style="width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;"
-                                     title="${seatCode} - ${seatTypeName}">
+                                     style="width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;">
                                     ${seatCode ? seatCode.substring(1) : ''}
                                 </div>
                             `;

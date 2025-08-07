@@ -164,6 +164,7 @@ namespace UI.Areas.PromotionManagement.Controllers
                     startDate = model.StartDate,
                     endDate = model.EndDate,
                     discountPercent = model.DiscountPercent,
+                    requiredPoints = model.RequiredPoints,
                     description = model.Description,
                     imageUrl = model.ImageUrl,
                 };
@@ -246,6 +247,7 @@ namespace UI.Areas.PromotionManagement.Controllers
                     startDate = model.StartDate,
                     endDate = model.EndDate,
                     discountPercent = model.DiscountPercent,
+                    requiredPoints = model.RequiredPoints,
                     description = model.Description,
                     imageUrl = model.ImageUrl,
                 };
@@ -339,6 +341,7 @@ namespace UI.Areas.PromotionManagement.Controllers
                     startDate = model.StartDate,
                     endDate = model.EndDate,
                     discountPercent = model.DiscountPercent,
+                    requiredPoints = model.RequiredPoints,
                     description = model.Description,
                     imageUrl = model.ImageUrl,
                 };
@@ -381,6 +384,7 @@ namespace UI.Areas.PromotionManagement.Controllers
                     startDate = model.StartDate,
                     endDate = model.EndDate,
                     discountPercent = model.DiscountPercent,
+                    requiredPoints = model.RequiredPoints,
                     description = model.Description,
                     imageUrl = model.ImageUrl,
                 };

@@ -453,8 +453,8 @@ class BookTicketDashboard {
 
     this.selectedSeats.forEach((seat) => {
       html += `
-                <div class="selected-seat-item">
-                    <span class="seat-name">${seat.seatCode}</span>
+                <div class="seat-row-item">
+                    <span class="seat-code">${seat.seatCode}</span>
                     <span class="seat-price">${this.formatCurrency(
                       seat.price
                     )}</span>
@@ -464,7 +464,7 @@ class BookTicketDashboard {
     });
 
     html += `
-            <div class="selected-seats-total">
+            <div class="seats-total">
                 <strong>Tổng: ${this.formatCurrency(totalPrice)}</strong>
             </div>
         </div>`;

@@ -26,6 +26,36 @@
                     });
                     window.SeatModule.loadSeats();
                     window.SeatModule.updateDisplay();
+                    
+                    // Tắt hoàn toàn tooltip bằng cách remove thuộc tính title
+                    function disableAllTooltips() {
+                        // Remove title từ tất cả element ghế
+                        const seatElements = document.querySelectorAll('.seat, [data-seat-id], .seat-item');
+                        seatElements.forEach(seat => {
+                            seat.removeAttribute('title');
+                            // Ngăn trình duyệt tự động tạo tooltip
+                            seat.addEventListener('mouseenter', function(e) {
+                                this.removeAttribute('title');
+                            });
+                        });
+                    }
+                    
+                    // Chạy disable tooltips sau khi load
+                    setTimeout(disableAllTooltips, 100);
+                    
+                    // Chạy lại mỗi khi có thay đổi DOM
+                    const observer = new MutationObserver(function(mutations) {
+                        mutations.forEach(function(mutation) {
+                            if (mutation.type === 'childList') {
+                                setTimeout(disableAllTooltips, 50);
+                            }
+                        });
+                    });
+                    
+                    observer.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                    });
                 }
                 const movieIdParam = typeof movieId === 'string' ? movieId : movieId.toString();
                 const movieResponse = await fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/movie/GetById?movieId=${movieIdParam}`, {

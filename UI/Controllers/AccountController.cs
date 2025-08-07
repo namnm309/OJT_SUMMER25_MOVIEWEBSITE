@@ -41,13 +41,11 @@ namespace UI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Nếu là AJAX request, trả về JSON
-                if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
-                {
-                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                    return Json(new { success = false, message = string.Join(", ", errors) });
-                }
-                return Json(new { success = false, message = "Invalid model state" });
+                // Lấy tất cả lỗi validation
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                var errorMessage = errors.Any() ? string.Join(", ", errors) : "Vui lòng nhập đầy đủ thông tin";
+                
+                return Json(new { success = false, message = errorMessage });
             }
 
             try
@@ -138,17 +136,16 @@ namespace UI.Controllers
                 }
                 else
                 {
-                    var message = string.IsNullOrEmpty(result.Message) ? "Đăng nhập không thành công." : result.Message;
-                    return new JsonResult(new { success = false, message = message });
+                    return new JsonResult(new { success = false, message = "Sai tên tài khoản hoặc mật khẩu" });
                 }
             }
             catch (Exception ex)
             {
                 if (Request.Headers["Content-Type"].ToString().Contains("application/json"))
                 {
-                    return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
+                    return Json(new { success = false, message = "Sai tên tài khoản hoặc mật khẩu" });
                 }
-                ModelState.AddModelError("", $"An error occurred: {ex.Message}");
+                ModelState.AddModelError("", "Sai tên tài khoản hoặc mật khẩu");
             }
 
             return View(model);

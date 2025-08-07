@@ -370,6 +370,13 @@ border-radius: 20px;
     color: var(--text-muted);
 }
 
+/* Promotion Details */
+.promotion-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
 /* Discount Badge */
 .discount-badge {
     background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
@@ -378,6 +385,32 @@ border-radius: 20px;
     border-radius: 16px;
     font-weight: 600;
     font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Points Badge */
+.points-badge {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #333;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Free Badge */
+.free-badge {
+    background: linear-gradient(135deg, #4caf50, #66bb6a);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 12px;
     display: inline-flex;
     align-items: center;
     gap: 4px;

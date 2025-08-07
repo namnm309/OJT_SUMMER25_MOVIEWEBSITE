@@ -532,12 +532,7 @@
                         </button>
                     </div>
 
-                    <div class="search-container">
-                        <div class="search-box-movies">
-                            <i class="fas fa-search search-icon" id="searchBtn"></i>
-                            <input type="text" placeholder="Tìm kiếm phim theo tên, thể loại, đạo diễn..." id="movieSearch">
-                        </div>
-                    </div>
+
                 </div>
 
                 <!-- Movies Grid -->
@@ -598,8 +593,7 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         const filterTabs = document.querySelectorAll('.filter-tab');
-        const searchInput = document.getElementById('movieSearch');
-        const searchBtn = document.getElementById('searchBtn');
+
         const moviesGrid = document.getElementById('moviesGrid');
 
         // Load initial data
@@ -623,13 +617,7 @@
             });
         });
 
-        // Search functionality
-        searchInput.addEventListener('input', function () {
-            const searchTerm = this.value.trim();
-            if (searchTerm.length >= 2 || searchTerm.length === 0) {
-                loadMovies(currentFilter, searchTerm);
-            }
-        });
+
 
         async function loadMovies(filter, searchTerm = '') {
             if (isLoading) return;
@@ -638,12 +626,9 @@
                 isLoading = true;
                 showLoading();
 
-                console.log(`🔄 [API CALL] Loading movies: filter=${filter}, search=${searchTerm}`);
+                console.log(`🔄 [API CALL] Loading movies: filter=${filter}`);
 
                 let url = `@Url.Action("GetMoviesByFilter", "Movies")?filter=${filter}&page=1&pageSize=20`;
-                if (searchTerm) {
-                    url += `&search=${encodeURIComponent(searchTerm)}`;
-                }
 
                 const response = await fetch(url);
                 const result = await response.json();

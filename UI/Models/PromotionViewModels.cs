@@ -19,6 +19,9 @@ namespace UI.Models
         [Range(1, 100, ErrorMessage = "Phần trăm giảm giá phải từ 1 đến 100")]
         public int DiscountPercent { get; set; }
 
+        [Range(0, int.MaxValue, ErrorMessage = "Điểm yêu cầu phải >= 0")]
+        public double RequiredPoints { get; set; } = 0;
+
         public string Description { get; set; }
 
         public string ImageUrl { get; set; }
