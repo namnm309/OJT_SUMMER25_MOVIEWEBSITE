@@ -181,7 +181,10 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Chi tiết đặt vé</h5>
+                    <h5 class="modal-title">
+                        <i class="fas fa-ticket-alt me-2"></i>
+                        Chi tiết vé
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="bookingDetailContent">
@@ -214,26 +217,47 @@
 
 
     <div class="modal fade" id="updateStatusModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Cập nhật trạng thái</h5>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content status-update-modal">
+                <div class="modal-header status-update-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-edit me-2"></i>
+                        Cập nhật trạng thái
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="newStatus" class="form-label">Trạng thái mới</label>
-                        <select class="form-select" id="newStatus">
-                            <option value="Pending">Chờ xác nhận</option>
-                            <option value="Confirmed">Đã xác nhận</option>
-                            <option value="Canceled">Đã hủy</option>
-                            <option value="Completed">Đã hoàn thành</option>
-                        </select>
+                <div class="modal-body status-update-body">
+                    <div class="status-selection-container">
+                        <label for="newStatus" class="status-label">
+                            <i class="fas fa-flag me-2"></i>
+                            Trạng thái mới
+                        </label>
+                        <div class="status-select-wrapper">
+                            <select class="form-select status-select" id="newStatus">
+                                <option value="Pending">Chờ xác nhận</option>
+                                <option value="Confirmed">Đã xác nhận</option>
+                                <option value="Canceled">Đã hủy</option>
+                                <option value="Completed">Đã hoàn thành</option>
+                            </select>
+                        </div>
+                        <div class="status-preview mt-3">
+                            <div class="preview-label">Xem trước:</div>
+                            <div class="status-badge-preview" id="statusPreview">
+                                <i class="fas fa-clock me-2"></i>
+                                Chờ xác nhận
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmUpdateStatus()">Cập nhật</button>
+                <div class="modal-footer status-update-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>
+                        Đóng
+                    </button>
+                    <button type="button" class="btn btn-primary status-update-btn" onclick="confirmUpdateStatus()">
+                        <i class="fas fa-save me-2"></i>
+                        Cập nhật
+                    </button>
                 </div>
             </div>
         </div>
