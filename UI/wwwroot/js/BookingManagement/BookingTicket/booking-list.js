@@ -184,8 +184,8 @@ class BookingListManager {
                 </td>
                 <td>${bookingDate}</td>
                 <td>
-                    <div class="d-flex">
-                        <button class="action-btn btn-view" onclick="bookingManager.viewBookingDetail('${
+                    <div class="action-buttons">
+                        <button class="btn-action btn-view" onclick="bookingListManager.viewBookingDetail('${
                           booking.id
                         }')" title="Xem chi tiết">
                             <i class="fas fa-eye"></i>
@@ -193,10 +193,10 @@ class BookingListManager {
                         ${
                           booking.bookingStatus !== "Cancelled"
                             ? `
-                            <button class="action-btn btn-update" onclick="bookingManager.showUpdateStatusModal('${booking.id}', '${booking.bookingStatus}')" title="Cập nhật trạng thái">
+                            <button class="btn-action btn-edit" onclick="bookingListManager.showUpdateStatusModal('${booking.id}', '${booking.bookingStatus}')" title="Cập nhật trạng thái">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="action-btn btn-cancel" onclick="bookingManager.showCancelModal('${booking.id}')" title="Hủy đặt vé">
+                            <button class="btn-action btn-delete" onclick="bookingListManager.showCancelModal('${booking.id}')" title="Hủy đặt vé">
                                 <i class="fas fa-times"></i>
                             </button>
                         `

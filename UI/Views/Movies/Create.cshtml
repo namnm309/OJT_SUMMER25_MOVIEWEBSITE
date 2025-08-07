@@ -399,21 +399,7 @@
                             </h5>
 
                             <div id="showtimesList">
-                                <div class="showtime-item" data-index="0">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Phòng chiếu</label>
-                                            <select name="ShowTimes[0].RoomId" class="form-select room-select" required>
-                                                <option value="">-- Chọn phòng --</option>
-                                                
-                                            </select>
-                                    </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Ngày giờ chiếu</label>
-                                            <input type="datetime-local" name="ShowTimes[0].ShowDate" class="form-control" required />
-                                </div>
-                                    </div>
-                                </div>
+
                             </div>
 
                             <button type="button" class="btn btn-add-showtime" id="addShowtime">
@@ -481,7 +467,7 @@
 
     <script>
         $(document).ready(function () {
-            let showtimeIndex = 1;
+            let showtimeIndex = 0;
             let genres = [];
             let cinemaRooms = [];
 
@@ -644,6 +630,13 @@
 
             // Add showtime KHÔNG có giá trị mặc định
             $('#addShowtime').click(function () {
+                // Kiểm tra số lượng lịch chiếu hiện tại
+                var currentShowtimes = $('.showtime-item').length;
+                if (currentShowtimes >= 10) {
+                    alert('Không thể thêm quá 10 lịch chiếu!');
+                    return;
+                }
+                
                 var newShowtime = `
                     <div class="showtime-item" data-index="${showtimeIndex}">
                         <div class="row">
@@ -656,7 +649,11 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Ngày giờ chiếu</label>
                                 <div class="input-group">
-                                    <input type="datetime-local" name="ShowTimes[${showtimeIndex}].ShowDate" class="form-control" required />
+                                    <input type="datetime-local" 
+                                           name="ShowTimes[${showtimeIndex}].ShowDate" 
+                                           class="form-control" 
+                                           required 
+                                           min="${new Date().toISOString().slice(0, 16)}" />
                                     <button type="button" class="btn btn-remove" onclick="removeShowtime(${showtimeIndex})">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -667,6 +664,12 @@
                 `;
                 $('#showtimesList').append(newShowtime);
                 updateRoomSelects();
+                
+                // Set giá trị mặc định cho datetime-local là thời gian hiện tại + 1 giờ
+                var defaultTime = new Date();
+                defaultTime.setHours(defaultTime.getHours() + 1);
+                $(`input[name="ShowTimes[${showtimeIndex}].ShowDate"]`).val(defaultTime.toISOString().slice(0, 16));
+                
                 showtimeIndex++;
             });
 
@@ -704,30 +707,111 @@
             };
 
             // Validation cho datetime chỉ để kiểm tra không được để trống và phải là thời gian tương lai
+            // Hàm kiểm tra xung đột lịch chiếu
+            function checkShowtimeConflict(roomId, showTime, currentIndex) {
+                var hasConflict = false;
+                $('.showtime-item').each(function() {
+                    var index = $(this).data('index');
+                    if (index !== currentIndex) { // Không kiểm tra với chính nó
+                        var existingTime = new Date($(this).find('input[type="datetime-local"]').val());
+                        var existingRoomId = $(this).find('.room-select').val();
+                        
+                        if (existingRoomId === roomId) {
+                            // Kiểm tra xung đột trong khoảng 2 tiếng
+                            var timeDiff = Math.abs(existingTime - showTime) / (1000 * 60 * 60);
+                            if (timeDiff < 2) {
+                                hasConflict = true;
+                                return false;
+                            }
+                        }
+                    }
+                });
+                return hasConflict;
+            }
+
+            // Sự kiện khi thay đổi thời gian
             $(document).on('change', 'input[type="datetime-local"]', function () {
                 var selectedTime = new Date($(this).val());
                 var now = new Date();
+                var showtimeItem = $(this).closest('.showtime-item');
+                var roomId = showtimeItem.find('.room-select').val();
+                var currentIndex = showtimeItem.data('index');
 
                 if (selectedTime < now) {
                     alert('Thời gian chiếu không thể là thời gian trong quá khứ!');
-                    $(this).focus(); // Focus lại để user chọn lại
+                    $(this).val('');
+                    return;
+                }
+
+                if (roomId && checkShowtimeConflict(roomId, selectedTime, currentIndex)) {
+                    alert('Lịch chiếu bị trùng! Vui lòng chọn thời gian cách ít nhất 2 tiếng.');
+                    $(this).val('');
+                }
+            });
+
+            // Sự kiện khi thay đổi phòng chiếu
+            $(document).on('change', '.room-select', function() {
+                var roomId = $(this).val();
+                var showtimeItem = $(this).closest('.showtime-item');
+                var showTime = new Date(showtimeItem.find('input[type="datetime-local"]').val());
+                var currentIndex = showtimeItem.data('index');
+
+                if (roomId && !isNaN(showTime.getTime()) && checkShowtimeConflict(roomId, showTime, currentIndex)) {
+                    alert('Lịch chiếu bị trùng! Vui lòng chọn phòng khác hoặc thay đổi thời gian.');
+                    $(this).val('');
                 }
             });
 
 
             $('#createMovieForm').on('submit', function (e) {
-
                 var hasValidShowtime = false;
                 var hasInvalidTime = false;
+                var hasInvalidRoom = false;
                 var now = new Date();
+                var showtimes = new Map(); // Để kiểm tra trùng lặp
 
                 $('input[name^="ShowTimes"][name$=".ShowDate"]').each(function () {
+                    var showtimeItem = $(this).closest('.showtime-item');
+                    var roomId = showtimeItem.find('.room-select').val();
+                    
                     if ($(this).val()) {
-                        hasValidShowtime = true;
                         var showTime = new Date($(this).val());
+                        
+                        // Kiểm tra phòng đã được chọn
+                        if (!roomId) {
+                            hasInvalidRoom = true;
+                            return false;
+                        }
+
+                        // Kiểm tra thời gian hợp lệ
                         if (showTime < now) {
                             hasInvalidTime = true;
+                            return false;
                         }
+
+                        // Kiểm tra trùng lặp
+                        var showtimeKey = `${roomId}_${showTime.getTime()}`;
+                        if (showtimes.has(showtimeKey)) {
+                            e.preventDefault();
+                            alert('Có lịch chiếu bị trùng lặp! Vui lòng kiểm tra lại.');
+                            return false;
+                        }
+
+                        // Kiểm tra xung đột thời gian
+                        for (let [existingKey, existingTime] of showtimes) {
+                            let existingRoomId = existingKey.split('_')[0];
+                            if (roomId === existingRoomId) {
+                                let timeDiff = Math.abs(existingTime - showTime) / (1000 * 60 * 60);
+                                if (timeDiff < 2) {
+                                    e.preventDefault();
+                                    alert('Có lịch chiếu xung đột! Thời gian giữa các suất chiếu phải cách nhau ít nhất 2 tiếng.');
+                                    return false;
+                                }
+                            }
+                        }
+                        
+                        showtimes.set(showtimeKey, showTime);
+                        hasValidShowtime = true;
                     }
                 });
 
@@ -740,6 +824,12 @@
                 if (hasInvalidTime) {
                     e.preventDefault();
                     alert('Có lịch chiếu trong quá khứ, vui lòng kiểm tra lại!');
+                    return false;
+                }
+
+                if (hasInvalidRoom) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn phòng chiếu cho tất cả các lịch chiếu!');
                     return false;
                 }
 
