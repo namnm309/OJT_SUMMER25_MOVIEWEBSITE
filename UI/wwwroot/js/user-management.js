@@ -383,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const nextPageBtn = document.getElementById('nextPageBtn');
 
         let currentPage = 1;
-        let pageSize = parseInt(pageSizeSelect ? pageSizeSelect.value : 10);
+        let pageSize = parseInt(pageSizeSelect ? pageSizeSelect.value : 5);
 
         function totalPages() {
             return Math.max(1, Math.ceil(allRows.length / pageSize));
