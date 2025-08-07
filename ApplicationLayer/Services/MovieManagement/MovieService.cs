@@ -649,13 +649,32 @@ namespace ApplicationLayer.Services.MovieManagement
             //}
 
             var movies = await _movieRepo.WhereAsync(
-                filter: m => m.IsRecommended == true,
-                orderBy: q => q.OrderByDescending(m => m.CreatedAt),
+                filter: m => m.IsRecommended == true && (m.Status == MovieStatus.NowShowing || m.Status == MovieStatus.ComingSoon),
+                orderBy: q => q.OrderByDescending(m => m.Rating).ThenByDescending(m => m.CreatedAt),
                 navigationProperties: new[]
                 {
                     nameof(Movie.MovieImages),
-                    nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
+                    nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre),
+                    nameof(Movie.MovieActors) + "." + nameof(MovieActor.Actor),
+                    nameof(Movie.MovieDirectors) + "." + nameof(MovieDirector.Director)
                 });
+
+            // Nếu không có phim nào được đánh dấu IsRecommended, lấy phim có rating cao nhất
+            if (!movies.Any())
+            {
+                movies = await _movieRepo.WhereAsync(
+                    filter: m => m.Status == MovieStatus.NowShowing || m.Status == MovieStatus.ComingSoon,
+                    orderBy: q => q.OrderByDescending(m => m.Rating).ThenByDescending(m => m.CreatedAt),
+                    page: 0,
+                    pageSize: 10, // Lấy 10 phim có rating cao nhất
+                    navigationProperties: new[]
+                    {
+                        nameof(Movie.MovieImages),
+                        nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre),
+                        nameof(Movie.MovieActors) + "." + nameof(MovieActor.Actor),
+                        nameof(Movie.MovieDirectors) + "." + nameof(MovieDirector.Director)
+                    });
+            }
 
             var result = _mapper.Map<List<MovieResponseDto>>(movies);
             return SuccessResp.Ok(result);
@@ -671,12 +690,32 @@ namespace ApplicationLayer.Services.MovieManagement
 
             var movies = await _movieRepo.WhereAsync(
                 filter: m => m.Status == MovieStatus.ComingSoon,
-                orderBy: q => q.OrderByDescending(m => m.ReleaseDate),
+                orderBy: q => q.OrderBy(m => m.ReleaseDate).ThenByDescending(m => m.CreatedAt), // Sắp xếp theo ngày chiếu gần nhất trước
                 navigationProperties: new[]
                 {
                     nameof(Movie.MovieImages),
-                    nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
+                    nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre),
+                    nameof(Movie.MovieActors) + "." + nameof(MovieActor.Actor),
+                    nameof(Movie.MovieDirectors) + "." + nameof(MovieDirector.Director)
                 });
+
+            // Nếu không có phim ComingSoon, lấy phim có ngày phát hành trong tương lai
+            if (!movies.Any())
+            {
+                var futureDate = DateTime.Now.AddDays(1);
+                movies = await _movieRepo.WhereAsync(
+                    filter: m => m.ReleaseDate >= futureDate && m.Status != MovieStatus.Stopped,
+                    orderBy: q => q.OrderBy(m => m.ReleaseDate).ThenByDescending(m => m.CreatedAt),
+                    page: 0,
+                    pageSize: 10, // Lấy 10 phim có ngày phát hành gần nhất
+                    navigationProperties: new[]
+                    {
+                        nameof(Movie.MovieImages),
+                        nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre),
+                        nameof(Movie.MovieActors) + "." + nameof(MovieActor.Actor),
+                        nameof(Movie.MovieDirectors) + "." + nameof(MovieDirector.Director)
+                    });
+            }
 
             var result = _mapper.Map<List<MovieResponseDto>>(movies);
             return SuccessResp.Ok(result);
@@ -742,6 +781,54 @@ namespace ApplicationLayer.Services.MovieManagement
             catch (Exception ex)
             {
                 return 0.0;
+            }
+        }
+
+        /// <summary>
+        /// [DEBUG] Method để kiểm tra dữ liệu phim trong database
+        /// </summary>
+        public async Task<IActionResult> DebugMoviesData()
+        {
+            try
+            {
+                var allMovies = await _movieRepo.ListAsync(
+                    nameof(Movie.MovieImages),
+                    nameof(Movie.MovieGenres) + "." + nameof(MovieGenre.Genre)
+                );
+
+                var debugInfo = new
+                {
+                    TotalMovies = allMovies.Count,
+                    MoviesByStatus = new
+                    {
+                        NotAvailable = allMovies.Count(m => m.Status == MovieStatus.NotAvailable),
+                        ComingSoon = allMovies.Count(m => m.Status == MovieStatus.ComingSoon),
+                        NowShowing = allMovies.Count(m => m.Status == MovieStatus.NowShowing),
+                        Stopped = allMovies.Count(m => m.Status == MovieStatus.Stopped)
+                    },
+                    RecommendedMovies = allMovies.Count(m => m.IsRecommended),
+                    FeaturedMovies = allMovies.Count(m => m.IsFeatured),
+                    MoviesWithImages = allMovies.Count(m => m.MovieImages.Any()),
+                    MoviesWithGenres = allMovies.Count(m => m.MovieGenres.Any()),
+                    SampleMovies = allMovies.Take(3).Select(m => new
+                    {
+                        m.Id,
+                        m.Title,
+                        m.Status,
+                        m.IsRecommended,
+                        m.IsFeatured,
+                        m.ReleaseDate,
+                        m.Rating,
+                        ImageCount = m.MovieImages.Count,
+                        GenreCount = m.MovieGenres.Count
+                    }).ToList()
+                };
+
+                return SuccessResp.Ok(debugInfo);
+            }
+            catch (Exception ex)
+            {
+                return ErrorResp.InternalServerError($"Debug error: {ex.Message}");
             }
         }
     }

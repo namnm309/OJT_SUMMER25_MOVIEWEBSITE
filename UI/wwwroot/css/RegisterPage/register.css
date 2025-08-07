@@ -32,6 +32,40 @@ body {
     padding-left: 40px;
 }
 
+/* Styling cho nút về trang chủ ở bên trái */
+.back-home-left {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 10;
+}
+
+.btn-back-home-left {
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(15px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn-back-home-left:hover {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
 /* Text overlay trên ảnh */
 .overlay-text {
     position: absolute;
@@ -177,7 +211,7 @@ body {
 .signup-btn:hover {
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.4));
     color: white;
-    transform: translateY(-2px);
+    /* transform: translateY(-2px); */ /* Bỏ để tránh xê dịch */
     box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
 }
 
@@ -223,7 +257,6 @@ body {
 }
 
 .auth-card:hover {
-    transform: translateY(-3px);
     box-shadow: 
         0 25px 70px rgba(0, 0, 0, 0.5),
         0 12px 35px rgba(0, 0, 0, 0.4),
@@ -317,12 +350,11 @@ body {
     box-shadow: 
         0 0 0 0.2rem rgba(102, 126, 234, 0.25),
         0 4px 15px rgba(102, 126, 234, 0.15);
-    transform: translateY(-1px);
 }
 
 .form-control:focus + .input-icon {
     color: #fff;
-    transform: translateY(-50%) scale(1.05);
+    transform: translateY(-50%);
 }
 
 .form-control::placeholder {
@@ -465,7 +497,7 @@ select.form-control option {
 
 .auth-link:hover {
     color: #fff;
-    transform: translateY(-1px);
+    /* transform: translateY(-1px); */ /* Bỏ để tránh xê dịch */
 }
 
 .auth-link:hover::after {

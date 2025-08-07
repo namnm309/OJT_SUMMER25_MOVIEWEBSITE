@@ -1,6 +1,12 @@
 
 
 
+/* Container chính xích sát lên trên */
+.home-new-style {
+    margin-top: -40px !important;
+    padding-top: 0 !important;
+}
+
 .hero-section {
     position: relative;
     height: 100vh;
@@ -8,12 +14,14 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    margin-top: 0; /* 🔧 FIX: Bỏ margin-top: -20px */
+    margin-top: -40px !important; /* Xích sát lên trên */
+    padding-top: 80px; /* Bù lại để content không bị che */
 }
 
     /* Sửa video-playing state */
     .hero-section.video-playing {
-        margin-top: 0; /* 🔧 FIX: Bỏ margin-top: -20px */
+        margin-top: -40px !important; /* Xích sát lên trên giống như trạng thái bình thường */
+        padding-top: 80px; /* Bù lại để content không bị che */
         position: relative;
         z-index: 1;
     }
@@ -122,7 +130,7 @@
     height: 100%;
     z-index: 1;
     overflow: hidden; /* Đảm bảo hide phần video vượt ra ngoài */
-    background: #000; /* Đen để che khi load video */
+    background: transparent; /* Bỏ background đen */
 }
 
 /* Đảm bảo background đen khi có video */
@@ -148,14 +156,29 @@
     object-fit: cover;
     pointer-events: none;
     border: none;
-    background: none;
+    background: transparent;
     opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.3s ease-in-out;
 }
 
     .hero-video.loaded {
         opacity: 1;
     }
+
+/* Đảm bảo hero-section luôn có background khi chưa có video */
+.hero-section:not(.video-playing) {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+/* Đảm bảo hero-section có background khi video đang loading */
+.hero-section.video-loading {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+/* Khi video đã loaded và đang chạy thì bỏ background */
+.hero-section.video-playing.video-loaded {
+    background: transparent;
+}
 
 /* Đặc biệt cho iframe - không thể dùng object-fit */
 iframe.hero-video {

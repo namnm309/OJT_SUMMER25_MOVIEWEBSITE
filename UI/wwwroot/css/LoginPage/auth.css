@@ -193,7 +193,7 @@ body {
 .signup-btn:hover {
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.4));
     color: white;
-    transform: translateY(-3px);
+    /* transform: translateY(-3px); */ /* Bỏ để tránh xê dịch */
     box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
 }
 
@@ -452,7 +452,7 @@ body {
 
 .auth-link:hover {
     color: #fff;
-    transform: translateY(-1px);
+    /* transform: translateY(-1px); */ /* Bỏ để tránh xê dịch */
 }
 
 .auth-link:hover::after {
