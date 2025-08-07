@@ -34,7 +34,6 @@ namespace InfrastructureLayer.Repository
         public async Task<List<Users>> GetAllMembersAsync()
         {
             return await _context.Users
-                .Where(u => u.IsActive)
                 .OrderByDescending(u => u.CreatedAt)
                 .ToListAsync();
         }
@@ -146,4 +145,4 @@ namespace InfrastructureLayer.Repository
             }
         }
     }
-} 
+}

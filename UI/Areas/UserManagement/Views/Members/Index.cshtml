@@ -822,6 +822,9 @@
                             {
                                 @foreach (var member in ViewBag.Members)
                                 {
+                                    var role = member.GetProperty("role").ToString();
+                                    JsonElement activeProperty;
+                                    var isActive = member.TryGetProperty("isActive", out activeProperty) ? activeProperty.GetBoolean() : true;
                                     <tr class="fade-in" data-user-id="@member.GetProperty("userId").ToString()">
                                         <td>
                                             <div class="user-info-text">
@@ -830,9 +833,6 @@
                                             </div>
                                         </td>
                                         <td>
-                                            @{
-                                                var role = member.GetProperty("role").ToString();
-                                            }
                                             @if(role == "Admin")
                                             {
                                                 <span class="badge role-admin">Quản trị viên</span>
@@ -847,10 +847,6 @@
                                             }
                                         </td>
                                         <td>
-                                            @{
-                                                JsonElement activeProperty;
-                                                var isActive = member.TryGetProperty("isActive", out activeProperty) ? activeProperty.GetBoolean() : true;
-                                            }
                                             @if(isActive)
                                             {
                                                 <span class="status-badge status-active">Hoạt động</span>
