@@ -17,7 +17,7 @@ class BookingListManager {
     };
     this.allBookings = []; // Thêm biến lưu toàn bộ danh sách
 
-    this.API_BASE_BE = "https://localhost:7049";
+    this.API_BASE_BE = "/api/v1";
     this.init();
   }
 
@@ -560,7 +560,7 @@ class BookingListManager {
       this.showLoading();
 
       const response = await fetch(
-        `${this.API_BASE_BE}/api/v1/booking-ticket/booking/${this.currentBookingId}/status`,
+        `${this.API_BASE_BE}/booking-ticket/booking/${this.currentBookingId}/status`,
         {
           method: "PUT",
           headers: {
@@ -600,7 +600,7 @@ class BookingListManager {
     try {
       this.showLoading();
       const response = await fetch(
-        `${this.API_BASE_BE}/api/v1/booking-ticket/booking/${this.currentBookingId}/status`,
+        `${this.API_BASE_BE}/booking-ticket/booking/${this.currentBookingId}/status`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

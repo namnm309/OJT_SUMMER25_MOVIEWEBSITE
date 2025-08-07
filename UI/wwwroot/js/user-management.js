@@ -1,7 +1,7 @@
 
 
 
-const API_BASE_URL = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net';
+const API_BASE_URL = '/api/v1';
 
 
 function extractUserDataFromRow(row) {
@@ -21,7 +21,7 @@ function extractUserDataFromRow(row) {
 
 async function viewUser(userId) {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/User/${userId}`, {
+        const response = await fetch(`${API_BASE_URL}/User/${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ function populateViewModal(user) {
 async function editUser(userId) {
     try {
 
-        const response = await fetch(`${API_BASE_URL}/api/User/${userId}`, {
+        const response = await fetch(`${API_BASE_URL}/User/${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ async function updateUser() {
     }
     
     try {
-        const response = await fetch(`${API_BASE_URL}/api/User/${userId}`, {
+        const response = await fetch(`${API_BASE_URL}/User/${userId}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ async function updateUser() {
 async function toggleUserStatus(userId, currentStatus) {
     try {
 
-        const userResponse = await fetch(`${API_BASE_URL}/api/User/${userId}`);
+        const userResponse = await fetch(`${API_BASE_URL}/User/${userId}`);
         const userResult = await userResponse.json();
         
         if (!userResult.success) {
@@ -199,7 +199,7 @@ async function confirmToggleStatus() {
     const userId = document.getElementById('toggleUserId').value;
     
     try {
-        const response = await fetch(`${API_BASE_URL}/api/User/${userId}/status`, {
+        const response = await fetch(`${API_BASE_URL}/User/${userId}/status`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -230,7 +230,7 @@ async function confirmToggleStatus() {
 async function deleteUser(userId) {
     try {
 
-        const userResponse = await fetch(`${API_BASE_URL}/api/User/${userId}`);
+        const userResponse = await fetch(`${API_BASE_URL}/User/${userId}`);
         const userResult = await userResponse.json();
         
         if (!userResult.success) {
@@ -260,7 +260,7 @@ async function confirmDeleteUser() {
     const userId = document.getElementById('deleteUserId').value;
     
     try {
-        const response = await fetch(`${API_BASE_URL}/api/User/${userId}`, {
+        const response = await fetch(`${API_BASE_URL}/User/${userId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -309,7 +309,7 @@ async function addUser() {
     
     console.log('Create user payload:', formData);
     try {
-        const response = await fetch(`${API_BASE_URL}/api/User`, {
+        const response = await fetch(`${API_BASE_URL}/User`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

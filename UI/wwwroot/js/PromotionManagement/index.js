@@ -1,6 +1,6 @@
 ﻿
         // API Base URL
-        const API_BASE = '/api/v1';
+        const API_BASE = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1';
         // const API_BASE = 'https://localhost:7049/api/v1';
 
 
@@ -16,7 +16,7 @@
         const fallbackPromotions = [
             {
                 id: 1,
-                title: "Giảm giá 50% tất cả vé cuối tuần",
+                title: "Đây là data ảo => api chưa gọi được",
                 startDate: "2024-01-01",
                 endDate: "2024-12-31",
                 discountPercent: 50,

@@ -1,4 +1,4 @@
-@ControllerLayer_HostAddress = http://localhost:5274
+@ControllerLayer_HostAddress = https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net
 
 GET {{ControllerLayer_HostAddress}}/weatherforecast/
 Accept: application/json

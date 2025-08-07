@@ -1,7 +1,7 @@
 
 
                // Sử dụng HTTPS để trùng với backend và tránh lỗi mixed-scheme/CORS
-const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net';
+const apiBaseUrl = '/api/v1';
 
                let isEditMode = false;
                let editingShowtimeId = null;
@@ -74,7 +74,7 @@ const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azur
                async function loadMoviesAndRooms() {
                    try {
 
-                       const moviesResponse = await fetch(`${apiBaseUrl}/api/v1/booking-ticket/dropdown/movies`);
+                       const moviesResponse = await fetch(`${apiBaseUrl}/booking-ticket/dropdown/movies`);
                        const moviesResult = await moviesResponse.json();
 
                        // Một số API trả về { data: [...] } hoặc { Data: [...] } hoặc trả thẳng mảng
@@ -94,7 +94,7 @@ const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azur
                        }
 
 
-                       const roomsResponse = await fetch(`${apiBaseUrl}/api/v1/cinemaroom/ViewRoom`);
+                       const roomsResponse = await fetch(`${apiBaseUrl}/cinemaroom/ViewRoom`);
                        const roomsResult = await roomsResponse.json();
 
                        const roomsData = roomsResult.data || roomsResult;
@@ -127,7 +127,7 @@ const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azur
                    }
 
                    try {
-                       const response = await fetch(`${apiBaseUrl}/api/v1/showtime/CheckConflict?movieId=${movieId}&cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
+                       const response = await fetch(`${apiBaseUrl}/showtime/CheckConflict?movieId=${movieId}&cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
                        const result = await response.json();
 
                        if (result.success) {
@@ -178,7 +178,7 @@ const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azur
                 const movieSelect = document.getElementById('movieSelect');
                 return parseInt(movieSelect.selectedOptions[0]?.dataset.duration || '0');
             })();
-            let conflictUrl = `${apiBaseUrl}/api/v1/showtime/CheckConflict?cinemaRoomId=${cinemaRoomId}&showDate=${showDateIso}&startTime=${startTime}&endTime=${endTime}&movieId=${movieId}`;
+            let conflictUrl = `${apiBaseUrl}/showtime/CheckConflict?cinemaRoomId=${cinemaRoomId}&showDate=${showDateIso}&startTime=${startTime}&endTime=${endTime}&movieId=${movieId}`;
             if (isEdit) {
                 conflictUrl += `&excludeId=${editingShowtimeId}`;
             }
@@ -211,8 +211,8 @@ const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azur
                 payload.id = editingShowtimeId; // ShowtimeUpdateDto yêu cầu Id
             }
 
-            const url    = isEdit ? `${apiBaseUrl}/api/v1/showtime/${editingShowtimeId}`
-                                   : `${apiBaseUrl}/api/v1/showtime/create-new`;
+            const url    = isEdit ? `${apiBaseUrl}/showtime/${editingShowtimeId}`
+                                   : `${apiBaseUrl}/showtime/create-new`;
             const method = isEdit ? 'PUT' : 'POST';
 
             try {
@@ -289,7 +289,7 @@ const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azur
                    // Đảm bảo dropdown phim/phòng đã có dữ liệu
                    loadMoviesAndRooms().then(async () => {
                        try {
-                           const resp = await fetch(`${apiBaseUrl}/api/v1/showtime/${id}`);
+                           const resp = await fetch(`${apiBaseUrl}/showtime/${id}`);
                            const result = await resp.json();
                            const data = result.data || result.Data || result;
                            if (!data) {
@@ -333,7 +333,7 @@ const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azur
                function deleteShowtime(id) {
                    if (confirm('Bạn có chắc chắn muốn xóa lịch chiếu này?')) {
                        // Gọi API xóa lịch chiếu
-                       fetch(`${apiBaseUrl}/api/v1/showtime/${id}`, {
+                       fetch(`${apiBaseUrl}/showtime/${id}`, {
                            method: 'DELETE',
                            headers: {
                                'Content-Type': 'application/json'
@@ -769,7 +769,7 @@ const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azur
                    container.style.display = 'block';
 
                    try {
-                       const resp = await fetch(`${apiBaseUrl}/api/v1/movie/Search?keyword=${encodeURIComponent(term)}`);
+                       const resp = await fetch(`${apiBaseUrl}/movie/Search?keyword=${encodeURIComponent(term)}`);
                        const result = await resp.json();
                        const movies = result.data || result || [];
 
@@ -808,7 +808,7 @@ const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azur
                    container.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i></div>';
 
                    try {
-                       const resp = await fetch(`${apiBaseUrl}/api/v1/movie/GetById?movieId=${movieId}`);
+                       const resp = await fetch(`${apiBaseUrl}/movie/GetById?movieId=${movieId}`);
                        const result = await resp.json();
                        const movie = result.data || result;
 
@@ -858,7 +858,7 @@ const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azur
 
                    try {
                        tablePageSize = parseInt(document.getElementById('pageSizeSelect')?.value || 10);
-                       const resp = await fetch(`${apiBaseUrl}/api/v1/showtime?page=${page}&pageSize=${tablePageSize}`);
+                       const resp = await fetch(`${apiBaseUrl}/showtime?page=${page}&pageSize=${tablePageSize}`);
                        const result = await resp.json();
                        const data = result.data || result.Data || result;
                        const items = data.items || data.Items || data;

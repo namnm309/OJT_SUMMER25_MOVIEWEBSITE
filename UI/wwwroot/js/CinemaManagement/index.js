@@ -1,6 +1,4 @@
-﻿
-
-        // Helper function để lấy JWT token
+﻿        // Helper function để lấy JWT token
         function getAuthToken() {
             try {
                 // Thử lấy từ session storage trước
@@ -66,7 +64,7 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xóa...';
             
             try {
-                const response = await fetch(`https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/cinemaroom/Delete/${roomId}`, {
+                const response = await fetch(`/api/v1/cinemaroom/Delete/${roomId}`, {
                     method: 'DELETE',
                     headers: createAuthHeaders()
                 });
@@ -279,7 +277,7 @@
                 //     console.warn('CSRF token not found');
                 // }
 
-                const response = await fetch('https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/cinemaroom/Add', {
+                const response = await fetch('/api/v1/cinemaroom/Add', {
                     method: 'POST',
                     headers: headers,
                     body: JSON.stringify(requestData)
@@ -388,7 +386,7 @@
             
             try {
 
-                const detailsUrl = `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
+                const detailsUrl = `/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
                 console.log('Fetching from URL:', detailsUrl); // Debug log
                 
                 const response = await fetch(detailsUrl, {
@@ -724,7 +722,7 @@
             
             try {
 
-                const detailsUrl = `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
+                const detailsUrl = `/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
                 console.log('Fetching details from URL:', detailsUrl); // Debug log
                 
                 const detailsResponse = await fetch(detailsUrl, {
@@ -942,7 +940,7 @@
             data.RegenerateSeats = (numberOfRows !== originalRows || numberOfColumns !== originalCols);
             
             try {
-                const updateUrl = `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/cinemaroom/Update/${roomId}`;
+                const updateUrl = `/api/v1/cinemaroom/Update/${roomId}`;
                 console.log('Updating room at URL:', updateUrl, 'with data:', data); // Debug log
                 
                 const response = await fetch(updateUrl, {
@@ -1027,7 +1025,7 @@
             
             try {
                 // Sử dụng API service giống như modal chi tiết phòng
-                const detailsUrl = `https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
+                const detailsUrl = `/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
                 
                 const response = await fetch(detailsUrl, {
                     method: 'GET',

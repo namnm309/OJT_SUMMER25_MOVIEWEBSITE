@@ -10,7 +10,7 @@ class BookTicketDashboard {
     this.promotions = [];
     this.selectedPromotion = null;
     // Base URL backend API
-      this.API_BASE_BE = "https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net";
+      this.API_BASE_BE = "/api/v1";
 
     this.init();
   }
@@ -1108,7 +1108,7 @@ class BookTicketDashboard {
       };
 
       console.log("bookingData id khuyen mai", bookingData);
-        const response = await fetch(`${this.API_BASE_BE}/api/v1/booking-ticket/confirm-booking-with-score`, {
+        const response = await fetch(`${this.API_BASE_BE}/booking-ticket/confirm-booking-with-score`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1501,7 +1501,7 @@ class BookTicketDashboard {
   async loadPromotions() {
     try {
       this.showLoading();
-        const response = await fetch("https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1/promotions", {
+        const response = await fetch("/api/v1/promotions", {
         method: "GET",
         headers: {
           Accept: "*/*",
