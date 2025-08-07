@@ -475,6 +475,30 @@ namespace UI.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> CheckUsernameUnique(string username)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(username))
+                    return Json(true);
+
+                var response = await _apiService.GetAsync<JsonElement>($"/api/user/check-username-exists?username={username}");
+                
+                if (response.Success)
+                {
+                    var exists = response.Data.GetProperty("exists").GetBoolean();
+                    return Json(!exists); // Return false if username exists (validation fails)
+                }
+                
+                return Json(true); // Default to valid if can't check
+            }
+            catch
+            {
+                return Json(true); // Default to valid on error
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> CheckEmailUnique(string email)
         {
             try

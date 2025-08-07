@@ -374,5 +374,23 @@ namespace ControllerLayer.Controllers
                 return StatusCode(500, new { error = "Internal server error" });
             }
         }
+
+        [HttpGet("check-username-exists")]
+        public async Task<IActionResult> CheckUsernameExists([FromQuery] string username)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(username))
+                    return Ok(new { exists = false });
+
+                var exists = await _userService.IsUsernameExistsAsync(username);
+                return Ok(new { exists });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking username existence");
+                return StatusCode(500, new { error = "Internal server error" });
+            }
+        }
     }
 }

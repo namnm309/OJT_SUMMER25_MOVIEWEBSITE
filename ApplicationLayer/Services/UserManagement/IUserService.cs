@@ -14,6 +14,7 @@ namespace ApplicationLayer.Services.UserManagement
         Task<CustomerSearchDto?> SearchCustomerAsync(string searchTerm);
         
         // Validation methods
+        Task<bool> IsUsernameExistsAsync(string username);
         Task<bool> IsPhoneExistsAsync(string phone);
         Task<bool> IsEmailExistsAsync(string email);
         Task<bool> IsIdentityCardExistsAsync(string identityCard);

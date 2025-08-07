@@ -399,6 +399,11 @@ namespace ApplicationLayer.Services.UserManagement
 
         // ============ VALIDATION METHODS ============
         
+        public async Task<bool> IsUsernameExistsAsync(string username)
+        {
+            return await _userRepository.IsUsernameExistsAsync(username);
+        }
+        
         public async Task<bool> IsPhoneExistsAsync(string phone)
         {
             return await _userRepository.IsPhoneExistsAsync(phone);
