@@ -28,6 +28,10 @@
                         <div class="legend-color bg-warning"></div>
                         <span>Ghế VIP</span>
                     </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%); border: 2px solid #7c3aed;"></div>
+                        <span>Ghế đôi</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -126,7 +130,7 @@ $(document).ready(function() {
             seatRows[rowName].sort((a, b) => a.seatNumber - b.seatNumber).forEach(seat => {
                 const seatElement = $(`
                     <div class="seat ${!seat.isAvailable ? 'seat-unavailable' : 'seat-available'} 
-                         ${seat.seatType === 'VIP' ? 'seat-vip' : 'seat-normal'}" 
+                         ${seat.seatType === 'VIP' ? 'seat-vip' : seat.seatType === 'Couple' ? 'seat-couple' : 'seat-normal'}" 
                          data-seat-id="${seat.id}" 
                          data-seat-name="${seat.seatCode}"
                          data-seat-price="${seat.price}">

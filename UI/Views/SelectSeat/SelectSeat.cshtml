@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/couple-seats-fix.css" asp-append-version="true" />
     <style>
         :root {
             --primary-color: #6c5ce7;
@@ -441,6 +442,10 @@
                     <div class="legend-color" style="background: transparent; border: 2px solid #adb5bd;"></div>
                     <span>Ghế thường</span>
                 </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: transparent; border: 2px solid #8b5cf6;"></div>
+                    <span>Ghế đôi</span>
+                </div>
             </div>
 
             <div class="seat-map-container">
@@ -454,7 +459,7 @@
                             {
                                 <div class="seat
                                          @(seat.IsAvailable ? "seat-available" : "seat-unavailable")
-                                         @(seat.SeatType == "VIP" ? "seat-vip" : "seat-normal")"
+                                         @(seat.SeatType == "VIP" ? "seat-vip" : seat.SeatType == "Couple" ? "seat-couple" : "seat-normal")"
                                      data-seat-id="@seat.Id"
                                      data-seat-code="@seat.SeatCode"
                                      data-seat-type="@seat.SeatType"

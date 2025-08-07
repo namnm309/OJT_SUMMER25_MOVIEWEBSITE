@@ -327,6 +327,7 @@ class BookTicketDashboard {
       const response = await fetch(url);
 
       const data = await response.json();
+      console.log("dataaa", data);
 
       if (data.success) {
         this.displaySeats(data.data);
@@ -391,7 +392,9 @@ class BookTicketDashboard {
             const seatElement = $(`
                     <div class="seat ${
                       seat.isBooked ? "occupied" : "available"
-                    } ${seat.seatType === "VIP" ? "vip" : ""}" 
+                    } ${seat.seatType === "VIP" ? "vip" : ""} ${
+              seat.seatType === "Couple" ? "couple" : ""
+            }" 
                          data-seat-id="${seat.id}" 
                          data-seat-name="${seat.seatCode}"
                          data-seat-price="${seat.price}">
@@ -424,10 +427,6 @@ class BookTicketDashboard {
 
       // Tự động chuyển sang bước 2 ngay khi chọn ghế đầu tiên
       if (this.currentStep === 1 && this.selectedSeats.length === 1) {
-        console.log(
-          "Chuyển từ bước 1 sang bước 2 khi chọn ghế:",
-          seat.seatCode
-        );
         this.currentStep = 2;
       }
     }
@@ -506,7 +505,7 @@ class BookTicketDashboard {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("thong tinh ne", result);
+
         //data:
         //email:"namnguyen@example.com"
         //fullName:"Nguyễn Văn Nammmmm"
@@ -786,10 +785,6 @@ class BookTicketDashboard {
   }
 
   updateStepDisplay() {
-    console.log("updateStepDisplay được gọi, currentStep:", this.currentStep);
-    console.log("selectedSeats.length:", this.selectedSeats.length);
-    console.log("selectedSeats:", this.selectedSeats);
-
     $(".step").removeClass("active completed");
 
     // Step 1: Chuyển sang màu xanh khi đã chọn phim VÀ suất chiếu
@@ -802,7 +797,6 @@ class BookTicketDashboard {
     // Step 2: Chỉ chuyển sang màu xanh khi đã chọn ít nhất một ghế
     // Không có else if để tránh chuyển xanh khi chưa chọn ghế
     if (this.selectedSeats.length > 0) {
-      console.log("Thêm class completed cho Step 2 vì đã chọn ghế");
       $(`.step[data-step="2"]`).addClass("completed");
     } else {
       console.log("Step 2 không có class nào vì chưa chọn ghế");
@@ -810,7 +804,6 @@ class BookTicketDashboard {
 
     // Step 3: Chuyển sang màu xanh lá khi đã hoàn thành bước 2 và chuyển sang bước 3
     if (this.currentStep === 3) {
-      console.log("Thêm class completed cho Step 3 vì đã chuyển sang bước 3");
       $(`.step[data-step="3"]`).addClass("completed");
     }
 
@@ -820,8 +813,6 @@ class BookTicketDashboard {
     $("#prevBtn").toggle(this.currentStep > 1);
     $("#nextBtn").toggle(this.currentStep < 3);
     $("#confirmBtn").toggle(this.currentStep === 3);
-
-    console.log("Đã cập nhật step display, bước hiện tại:", this.currentStep);
   }
 
   validateStep(step) {
@@ -1107,7 +1098,6 @@ class BookTicketDashboard {
         PromotionId: this.selectedPromotion ? this.selectedPromotion.id : "",
       };
 
-      console.log("bookingData id khuyen mai", bookingData);
       const response = await fetch(
         "/BookingManagement/BookingTicket/ConfirmBookingWithScore",
         {
@@ -1122,7 +1112,6 @@ class BookTicketDashboard {
 
       const result = await response.json();
       this.hideLoading();
-      console.log("result", result);
 
       if (result.success && result.data) {
         const confirmModal = bootstrap.Modal.getInstance(
@@ -1171,7 +1160,6 @@ class BookTicketDashboard {
             );
 
             const createData = await createResp.json();
-            console.log("createData:", createData);
 
             if (createData.success && createData.paymentUrl) {
               window.location.href = createData.paymentUrl;
@@ -1514,7 +1502,6 @@ class BookTicketDashboard {
         }
       );
       const data = await response.json();
-      console.log("dataaa", data);
 
       if (data.success && Array.isArray(data.data)) {
         // Lọc khuyến mãi đang diễn ra

@@ -1,339 +1,347 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-    color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+  color: white;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
 }
 
-
-
 .main-container {
-    display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: 2rem;
-    padding: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-    min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 
 .movie-section {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .movie-info-cards {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    padding: 2rem;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    gap: 2rem;
-    align-items: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
 }
 
 .movie-posters {
-    flex-shrink: 0;
-    width: 200px;
-    height: 300px;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300"><defs><radialGradient id="bg" cx="50%" cy="30%"><stop offset="0%" stop-color="%23003366"/><stop offset="100%" stop-color="%23001122"/></radialGradient></defs><rect width="100%" height="100%" fill="url(%23bg)"/><circle cx="100" cy="100" r="50" fill="rgba(255,255,255,0.1)"/><text x="100" y="120" text-anchor="middle" fill="white" font-size="16" font-family="Arial">AVATAR</text><text x="100" y="140" text-anchor="middle" fill="white" font-size="8" font-family="Arial">THE WAY OF WATER</text><text x="100" y="280" text-anchor="middle" fill="white" font-size="8" font-family="Arial">DECEMBER</text></svg>') center/cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
+  flex-shrink: 0;
+  width: 200px;
+  height: 300px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300"><defs><radialGradient id="bg" cx="50%" cy="30%"><stop offset="0%" stop-color="%23003366"/><stop offset="100%" stop-color="%23001122"/></radialGradient></defs><rect width="100%" height="100%" fill="url(%23bg)"/><circle cx="100" cy="100" r="50" fill="rgba(255,255,255,0.1)"/><text x="100" y="120" text-anchor="middle" fill="white" font-size="16" font-family="Arial">AVATAR</text><text x="100" y="140" text-anchor="middle" fill="white" font-size="8" font-family="Arial">THE WAY OF WATER</text><text x="100" y="280" text-anchor="middle" fill="white" font-size="8" font-family="Arial">DECEMBER</text></svg>')
+    center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
-    .movie-posters img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+.movie-posters img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 .movie-detailss {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .movie-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(45deg, #fff, #87ceeb);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(45deg, #fff, #87ceeb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .movie-meta {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .meta-item {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .movie-description {
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.6;
-    font-size: 1rem;
-    margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  font-size: 1rem;
+  margin-bottom: 1rem;
 }
 
 .showtime-info {
-    background: linear-gradient(45deg, #667eea, #764ba2);
-    padding: 1.5rem;
-    border-radius: 15px;
-    margin-top: 1rem;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  padding: 1.5rem;
+  border-radius: 15px;
+  margin-top: 1rem;
 }
 
 .showtime-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-    text-align: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  text-align: center;
 }
 
 .showtime-item {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 1rem;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .showtime-label {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.5rem;
 }
 
 .showtime-value {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
 }
 
 /* CSS cải tiến cho phần chọn ghế */
 .seat-selection {
-    flex: 1;
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative;
-    z-index: 1;
+  flex: 1;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1;
 }
 
 .selection-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative;
-    z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1;
 }
 
 .selected-seats-header {
-    position: absolute;
-    top: -60px;
-    left: 0;
-    right: 0;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 10px;
-    border-radius: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    z-index: 5;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+  position: absolute;
+  top: -60px;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  z-index: 5;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .selected-seat-badge {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .section-title {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: white;
-    margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
 }
 
 .seat-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.seat-count, .seat-available, .seat-occupied {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 0.3rem 0.8rem;
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+.seat-count,
+.seat-available,
+.seat-occupied {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .seat-available {
-    background: #4caf50 !important; /* Xanh lá */
-    border: 2px solid #388e3c !important;
-    color: #fff !important;
+  background: #4caf50 !important; /* Xanh lá */
+  border: 2px solid #388e3c !important;
+  color: #fff !important;
 }
 .seat-pending {
-    background: #ffc107 !important; /* Vàng */
-    border: 2px solid #ff9800 !important;
-    color: #fff !important;
+  background: #ffc107 !important; /* Vàng */
+  border: 2px solid #ff9800 !important;
+  color: #fff !important;
 }
 .seat-selected {
-    background: #f44336 !important; /* Đỏ */
-    border: 2px solid #b71c1c !important;
-    color: #fff !important;
-    opacity: 0.8;
+  background: #f44336 !important; /* Đỏ */
+  border: 2px solid #b71c1c !important;
+  color: #fff !important;
+  opacity: 0.8;
 }
 
 .seat-occupied {
-    background: rgba(255, 0, 0, 0.2);
-    border-color: rgba(255, 0, 0, 0.3);
+  background: rgba(255, 0, 0, 0.2);
+  border-color: rgba(255, 0, 0, 0.3);
 }
 
 .seat-types {
-    display: flex;
-    gap: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .seat-type {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 0.3rem 0.8rem;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    color: white;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  color: white;
 }
 
 /* Màn hình cong cải tiến */
 .screen-container {
-    display: flex;
-    justify-content: center;
-    margin: 2rem 0 3rem 0;
-    perspective: 1000px;
-    position: relative;
-    z-index: 10;
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0 3rem 0;
+  perspective: 1000px;
+  position: relative;
+  z-index: 10;
 }
 
 .screen {
-    width: 80%;
-    height: 8px;
-    background: linear-gradient(90deg, transparent 0%, rgba(135, 206, 250, 0.8) 20%, rgba(135, 206, 250, 1) 50%, rgba(135, 206, 250, 0.8) 80%, transparent 100%);
-    border-radius: 50px;
-    position: relative;
-    transform: rotateX(45deg) rotateY(0deg);
-    box-shadow: 0 0 20px rgba(135, 206, 250, 0.5), 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 80%;
+  height: 8px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(135, 206, 250, 0.8) 20%,
+    rgba(135, 206, 250, 1) 50%,
+    rgba(135, 206, 250, 0.8) 80%,
+    transparent 100%
+  );
+  border-radius: 50px;
+  position: relative;
+  transform: rotateX(45deg) rotateY(0deg);
+  box-shadow: 0 0 20px rgba(135, 206, 250, 0.5), 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .screen-text {
-    position: absolute;
-    top: -25px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    font-weight: 300;
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  font-weight: 300;
 }
 
 /* Cải tiến seat map */
 .seat-map {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 2rem;
-    margin-top: 2rem;
-    padding: 2rem;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    min-height: 300px;
-    width: 100%;
-    overflow-x: auto;
-    position: relative;
-    z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  min-height: 300px;
+  width: 100%;
+  overflow-x: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .seat-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    justify-content: center;
-    min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+  min-height: 40px;
 }
 
 .row-label {
-    color: rgba(255, 255, 255, 0.6);
-    font-weight: 600;
-    font-size: 0.9rem;
-    width: 20px;
-    text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  font-size: 0.9rem;
+  width: 20px;
+  text-align: center;
 }
 
 .seats-container {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    flex-wrap: nowrap;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
 /* Cải tiến style ghế với icon sofa */
 .seat {
-    width: 35px;
-    height: 35px;
-    border: none !important;
-    background: transparent !important;
-    background-color: transparent !important;
-    cursor: pointer;
-    transition: color 0.3s ease, transform 0.3s ease;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 25px;
-    color: #ffffff;
-    flex-shrink: 0;
-    padding: 0 !important;
-    margin: 0 !important;
-    outline: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    /* Tắt hoàn toàn tooltip */
-    pointer-events: auto;
+  width: 35px;
+  height: 35px;
+  border: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  color: #ffffff;
+  flex-shrink: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  /* Tắt hoàn toàn tooltip */
+  pointer-events: auto;
 }
 
 /* Tắt tooltip cho tất cả element ghế */
@@ -341,97 +349,104 @@ body {
 .seat[title]:hover::before,
 .seat::after,
 .seat::before:not([class*="fa"]) {
-    display: none !important;
-    content: none !important;
+  display: none !important;
+  content: none !important;
 }
 
 /* Tắt tooltip mặc định của trình duyệt */
 .seat {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .seat:focus,
 .seat:active,
 .seat:hover:not(.seat-unavailable) {
-    background: transparent !important;
-    background-color: transparent !important;
-    outline: none !important;
-    box-shadow: none !important;
-    border: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .seat::before {
-    content: '\f4b8';
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
+  content: "\f4b8";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
 }
 
 .seat-number {
-    font-size: 0.7rem;
-    font-weight: bold;
-    text-align: center;
-    line-height: 1;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1;
 }
 
 .seat.regular.available,
 .seat.seat-available {
-    color: #ffffff;
+  color: #ffffff;
 }
 
 /* Ghế VIP - màu vàng */
 .seat.vip.available,
 .seat[data-seat-type="VIP"].seat-available {
-    color: #FFD700 !important; /* Vàng */
+  color: #ffd700 !important; /* Vàng */
 }
 
-/* Ghế đôi - màu xanh */
+/* Ghế đôi - màu tím */
 .seat[data-seat-type="Couple"].seat-available,
-.seat.couple.available {
-    color: #00CED1 !important; /* Xanh dương */
+.seat.couple.available,
+.seat.seat-couple.seat-available,
+.seat.couple.seat-available,
+.seat.couple {
+  color: #8b5cf6 !important; /* Tím */
+  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%) !important;
+  border-color: #7c3aed !important;
 }
 
 .seat.regular.available:hover,
 .seat.seat-available:hover {
-    color: #e3417a;
-    opacity: 0.4;
-    transform: scale(1.1);
+  color: #e3417a;
+  opacity: 0.4;
+  transform: scale(1.1);
 }
 
 /* Hover effect cho ghế VIP */
 .seat.vip.available:hover,
 .seat[data-seat-type="VIP"].seat-available:hover {
-    color: #FFA500 !important; /* Cam khi hover */
-    opacity: 0.8;
-    transform: scale(1.1);
+  color: #ffa500 !important; /* Cam khi hover */
+  opacity: 0.8;
+  transform: scale(1.1);
 }
 
 /* Hover effect cho ghế đôi */
 .seat[data-seat-type="Couple"].seat-available:hover,
-.seat.couple.available:hover {
-    color: #20B2AA !important; /* Xanh đậm khi hover */
-    opacity: 0.8;
-    transform: scale(1.1);
+.seat.couple.available:hover,
+.seat.seat-couple.seat-available:hover,
+.seat.couple.seat-available:hover {
+  color: #a855f7 !important; /* Tím đậm khi hover */
+  opacity: 0.8;
+  transform: scale(1.1);
 }
 
 .seat.selected,
 .seat.seat-selected,
 .seat.pending-mine {
-    color: #e3417a !important;
-    background: transparent !important;
-    background-color: transparent !important;
-    background-image: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
+  color: #e3417a !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .seat.selected::before,
 .seat.seat-selected::before,
 .seat.pending-mine::before {
-    color: #e3417a !important;
+  color: #e3417a !important;
 }
 
 /* Ghế VIP khi được chọn vẫn giữ màu tím */
@@ -441,7 +456,7 @@ body {
 .seat[data-seat-type="VIP"].selected,
 .seat[data-seat-type="VIP"].seat-selected,
 .seat[data-seat-type="VIP"].pending-mine {
-    color: #e3417a !important;
+  color: #e3417a !important;
 }
 
 .seat.vip.selected::before,
@@ -450,17 +465,24 @@ body {
 .seat[data-seat-type="VIP"].selected::before,
 .seat[data-seat-type="VIP"].seat-selected::before,
 .seat[data-seat-type="VIP"].pending-mine::before {
-    color: #e3417a !important;
+  color: #e3417a !important;
 }
 
-/* Ghế đôi khi được chọn vẫn giữ màu tím */
+/* Ghế đôi khi được chọn chuyển sang màu hồng */
 .seat.couple.selected,
 .seat.couple.seat-selected,
 .seat.couple.pending-mine,
 .seat[data-seat-type="Couple"].selected,
 .seat[data-seat-type="Couple"].seat-selected,
-.seat[data-seat-type="Couple"].pending-mine {
-    color: #e3417a !important;
+.seat[data-seat-type="Couple"].pending-mine,
+.seat.seat-couple.selected,
+.seat.seat-couple.seat-selected,
+.seat.seat-couple.pending-mine,
+.seat.couple.seat-selected,
+.seat.couple.pending-mine {
+  background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%) !important;
+  border-color: #ad1457 !important;
+  color: white !important;
 }
 
 .seat.couple.selected::before,
@@ -468,34 +490,39 @@ body {
 .seat.couple.pending-mine::before,
 .seat[data-seat-type="Couple"].selected::before,
 .seat[data-seat-type="Couple"].seat-selected::before,
-.seat[data-seat-type="Couple"].pending-mine::before {
-    color: #e3417a !important;
+.seat[data-seat-type="Couple"].pending-mine::before,
+.seat.seat-couple.selected::before,
+.seat.seat-couple.seat-selected::before,
+.seat.seat-couple.pending-mine::before,
+.seat.couple.seat-selected::before,
+.seat.couple.pending-mine::before {
+  color: #ad1457 !important;
 }
 
 .seat.occupied,
 .seat.seat-unavailable {
-    color: #5a899d !important;
-    cursor: not-allowed;
+  color: #5a899d !important;
+  cursor: not-allowed;
 }
 
 /* Ghế đang được giữ bởi người khác - màu xám */
 .seat.pending-others,
 .seat.seat-pending,
 .seat[data-status="pending"] {
-    color: #5a899d !important;
-    background: none !important;
-    background-color: transparent !important;
-    background-image: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
-    cursor: not-allowed;
+  color: #5a899d !important;
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  cursor: not-allowed;
 }
 
 .seat.pending-others::before,
 .seat.seat-pending::before,
 .seat[data-status="pending"]::before {
-    color: #5a899d !important;
+  color: #5a899d !important;
 }
 
 /* Đảm bảo ghế VIP/couple khi pending vẫn màu xám */
@@ -507,8 +534,8 @@ body {
 .seat.couple.seat-pending,
 .seat[data-seat-type="Couple"].pending-others,
 .seat[data-seat-type="Couple"].seat-pending {
-    color: #5a899d !important;
-    cursor: not-allowed;
+  color: #5a899d !important;
+  cursor: not-allowed;
 }
 
 .seat.vip.pending-others::before,
@@ -519,7 +546,7 @@ body {
 .seat.couple.seat-pending::before,
 .seat[data-seat-type="Couple"].pending-others::before,
 .seat[data-seat-type="Couple"].seat-pending::before {
-    color: #5a899d !important;
+  color: #5a899d !important;
 }
 
 /* Loại bỏ hoàn toàn background cho pending-others */
@@ -528,18 +555,18 @@ body {
 .seat.pending-others:active,
 .seat.pending-others:hover,
 .seat.pending-others[style] {
-    background: none !important;
-    background-color: transparent !important;
-    background-image: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 /* Ghi đè mọi style có thể */
 button.seat.pending-others {
-    background: transparent !important;
-    background-color: transparent !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* Loại bỏ hoàn toàn mọi background có thể xuất hiện */
@@ -547,12 +574,12 @@ button.seat.pending-others {
 .seat *,
 .seat::before,
 .seat::after {
-    background: transparent !important;
-    background-color: transparent !important;
-    background-image: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 /* Loại bỏ border khi focus/active */
@@ -560,604 +587,617 @@ button.seat.pending-others {
 .seat:active,
 .seat.selected:focus,
 .seat.selected:active {
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Đảm bảo button không có style mặc định */
 button.seat {
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    appearance: none !important;
-    background: transparent !important;
-    background-color: transparent !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* Ghi đè mọi style có thể can thiệp khi ghế được chọn */
 .seat[style*="background"] {
-    background: transparent !important;
-    background-color: transparent !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 .seat.selected[style],
 .seat.pending-mine[style] {
-    background: transparent !important;
-    background-color: transparent !important;
-    background-image: none !important;
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Loại bỏ border màu vàng khi focus */
 .seat.selected,
 .seat.pending-mine {
-    border: none !important;
-    outline: none !important;
+  border: none !important;
+  outline: none !important;
 }
 
 .seat.selected:focus,
 .seat.pending-mine:focus,
 .seat.selected:active,
 .seat.pending-mine:active {
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Legend cải tiến */
 .seat-legend {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .legend-seat {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
 }
 
 .legend-seat::before {
-    content: '\f4b8';
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
+  content: "\f4b8";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
 }
 
-    /* Ghế trống - màu trắng */
-    .legend-seat.normal,
-    .legend-seat.available {
-        background: transparent;
-        color: #ffffff;
-    }
+/* Ghế trống - màu trắng */
+.legend-seat.normal,
+.legend-seat.available {
+  background: transparent;
+  color: #ffffff;
+}
 
-    /* Ghế VIP - màu vàng */
-    .legend-seat.vip {
-        background: transparent;
-        color: #FFD700;
-    }
+/* Ghế VIP - màu vàng */
+.legend-seat.vip {
+  background: transparent;
+  color: #ffd700;
+}
 
-    /* Ghế đôi - màu xanh */
-    .legend-seat.couple {
-        background: transparent;
-        color: #00CED1;
-    }
+/* Ghế đôi - màu tím */
+.legend-seat.couple {
+  background: transparent;
+  color: #8b5cf6;
+}
 
-    /* Ghế đã chọn - màu tím */
-    .legend-seat.selected {
-        background: transparent;
-        color: #e3417a;
-    }
+/* Ghế đã chọn - màu tím */
+.legend-seat.selected {
+  background: transparent;
+  color: #e3417a;
+}
 
-    /* Ghế đã đặt/đang chờ - màu xám */
-    .legend-seat.taken,
-    .legend-seat.pending {
-        background: transparent;
-        color: #5a899d;
-    }
+/* Ghế đã đặt/đang chờ - màu xám */
+.legend-seat.taken,
+.legend-seat.pending {
+  background: transparent;
+  color: #5a899d;
+}
 
 /* Thêm CSS cho ghế đang chờ của người khác */
 .seat.pending-others {
-    background: linear-gradient(45deg, #007bff, #0056b3) !important;
-    border: 1px solid #0056b3 !important;
-    color: white !important;
-    cursor: not-allowed;
-    opacity: 0.8;
-    animation: pulse-blue 2s infinite;
+  background: linear-gradient(45deg, #007bff, #0056b3) !important;
+  border: 1px solid #0056b3 !important;
+  color: white !important;
+  cursor: not-allowed;
+  opacity: 0.8;
+  animation: pulse-blue 2s infinite;
 }
 
 @keyframes pulse-blue {
-    0% {
-        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
-    }
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+  }
 }
 
 /* Cập nhật CSS cho ghế đang chờ của user hiện tại */
 .seat.pending-mine {
-    background: linear-gradient(45deg, #ffc107, #ff8f00) !important;
-    border: 1px solid #ff8f00 !important;
-    color: white !important;
-    animation: pulse-yellow 2s infinite;
+  background: linear-gradient(45deg, #ffc107, #ff8f00) !important;
+  border: 1px solid #ff8f00 !important;
+  color: white !important;
+  animation: pulse-yellow 2s infinite;
 }
 
 @keyframes pulse-yellow {
-    0% {
-        box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
-    }
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+  }
 }
 
 /* Cập nhật legend */
 .legend-seat.pending-others {
-    background: linear-gradient(45deg, #007bff, #0056b3);
+  background: linear-gradient(45deg, #007bff, #0056b3);
 }
 
 .legend-seat.pending-mine {
-    background: linear-gradient(45deg, #ffc107, #ff8f00);
+  background: linear-gradient(45deg, #ffc107, #ff8f00);
 }
 
 /* Booking section cải tiến */
 .booking-section {
-    width: 350px;
-    padding: 1rem;
+  width: 350px;
+  padding: 1rem;
 }
 
 .movie-tickets-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 20px;
-    padding: 1.5rem;
-    color: white;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  padding: 1.5rem;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-    .card-header h3 {
-        margin: 0;
-        font-size: 1rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
+.card-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
 .ticket-icon {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 
 .ticket-details {
-    margin-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .detail-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.8rem;
-    font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
 }
 
 .label {
-    color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .value {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .total-amount {
-    font-size: 1.1rem;
-    font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 700;
 }
 
 .selected-seats-display {
-    margin: 1.5rem 0;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    min-height: 60px;
-    position: relative;
-    z-index: 1;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  min-height: 60px;
+  position: relative;
+  z-index: 1;
 }
 
 .seats-grid {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
 }
 
 .selected-seat-item {
-    background: rgba(255, 255, 255, 0.2) !important;
-    padding: 0.3rem 0.6rem !important;
-    border-radius: 5px !important;
-    font-size: 0.8rem !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    margin: 2px !important;
-    display: inline-block !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  padding: 0.3rem 0.6rem !important;
+  border-radius: 5px !important;
+  font-size: 0.8rem !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  margin: 2px !important;
+  display: inline-block !important;
 }
 
 .ticket-summary {
-    margin: 1.5rem 0;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
 }
 
 .summary-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 
 .total-price-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 700;
-    font-size: 1.1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-buy {
-    width: 100%;
-    padding: 1rem;
-    background: rgba(0, 0, 0, 0.8);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  width: 100%;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-    .btn-buy:hover:not(:disabled) {
-        background: rgba(0, 0, 0, 0.9);
-        transform: translateY(-2px);
-    }
+.btn-buy:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.9);
+  transform: translateY(-2px);
+}
 
-    .btn-buy:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
+.btn-buy:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 @media (max-width: 768px) {
-    .main-container {
-        flex-direction: column;
-    }
+  .main-container {
+    flex-direction: column;
+  }
 
-    .booking-section {
-        width: 100%;
-        margin-top: 2rem;
-    }
+  .booking-section {
+    width: 100%;
+    margin-top: 2rem;
+  }
 
-    .seat {
-        width: 30px;
-        height: 30px;
-        font-size: 0.7rem;
-    }
+  .seat {
+    width: 30px;
+    height: 30px;
+    font-size: 0.7rem;
+  }
 
-    .seat-legend {
-        gap: 1rem;
-    }
-    
-    .selected-seats-header {
-        position: relative;
-        top: 0;
-        margin-bottom: 1rem;
-    }
-    
-    .screen-container {
-        margin: 1rem 0 2rem 0;
-    }
+  .seat-legend {
+    gap: 1rem;
+  }
+
+  .selected-seats-header {
+    position: relative;
+    top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .screen-container {
+    margin: 1rem 0 2rem 0;
+  }
 }
 
 .btn {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-weight: 500;
-    font-size: 1rem;
-    width: 100%;
-    margin-bottom: 1rem;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+  font-size: 1rem;
+  width: 100%;
+  margin-bottom: 1rem;
 }
 
 .btn-primary {
-    background: linear-gradient(45deg, #28a745, #20c997);
-    color: white;
-    border: 1px solid transparent;
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: white;
+  border: 1px solid transparent;
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .btn:disabled {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: rgba(255, 255, 255, 0.3) !important;
-    cursor: not-allowed;
-    transform: none !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
 .btn-primary:hover:not(:disabled) {
-    box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
 }
 
 /* Thay thế CSS cho nút thanh toán */
 .btn-continue {
-    width: 100%;
-    padding: 1.2rem;
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 50%, #ff3838 100%);
-    color: white;
-    border: none;
-    border-radius: 15px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.4s ease;
-    position: relative;
-    overflow: hidden;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+  width: 100%;
+  padding: 1.2rem;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 50%, #ff3838 100%);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
 }
 
 .btn-continue::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
 }
 
 .btn-continue:hover::before {
-    left: 100%;
+  left: 100%;
 }
 
 .btn-continue:hover:not(:disabled) {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
-    background: linear-gradient(135deg, #ff5252 0%, #d32f2f 50%, #c62828 100%);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+  background: linear-gradient(135deg, #ff5252 0%, #d32f2f 50%, #c62828 100%);
 }
 
 .btn-continue:active {
-    transform: translateY(-1px) scale(1.01);
-    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
 }
 
 .btn-continue:disabled {
-    background: rgba(255, 255, 255, 0.1);
-    cursor: not-allowed;
-    opacity: 0.6;
-    transform: none !important;
-    box-shadow: none;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none !important;
+  box-shadow: none;
 }
 
 /* Hiệu ứng loading cho nút thanh toán */
 .btn-continue.loading {
-    pointer-events: none;
-    position: relative;
+  pointer-events: none;
+  position: relative;
 }
 
 .btn-continue.loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: white;
-    animation: spin 1s linear infinite;
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
 }
 
 /* Cải thiện thêm cho nút xác nhận ghế */
 .btn-confirm-seats {
-    width: 100%;
-    padding: 1.2rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #5a67d8 100%);
-    color: white;
-    border: none;
-    border-radius: 15px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.4s ease;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-    position: relative;
-    overflow: hidden;
+  width: 100%;
+  padding: 1.2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #5a67d8 100%);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-confirm-seats::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
 }
 
 .btn-confirm-seats:hover::before {
-    left: 100%;
+  left: 100%;
 }
 
 .btn-confirm-seats:hover:not(:disabled) {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
-    background: linear-gradient(135deg, #5a67d8 0%, #667eea 50%, #4c51bf 100%);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5a67d8 0%, #667eea 50%, #4c51bf 100%);
 }
 
 .btn-confirm-seats:active {
-    transform: translateY(-1px) scale(1.01);
+  transform: translateY(-1px) scale(1.01);
 }
 
 .btn-confirm-seats:disabled {
-    background: rgba(255, 255, 255, 0.1);
-    cursor: not-allowed;
-    opacity: 0.6;
-    transform: none !important;
-    box-shadow: none;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none !important;
+  box-shadow: none;
 }
 
 /* Cải thiện container cho các nút */
 .ticket-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
 
 /* Thêm hiệu ứng pulse cho nút khi có thể nhấn */
 .btn-continue:not(:disabled),
 .btn-confirm-seats:not(:disabled) {
-    animation: subtle-pulse 2s infinite;
+  animation: subtle-pulse 2s infinite;
 }
 
 @keyframes subtle-pulse {
-    0%, 100% {
-        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
-    }
-    50% {
-        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
-    }
+  0%,
+  100% {
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+  }
 }
 
 .btn-confirm-seats:not(:disabled) {
-    animation: subtle-pulse-blue 2s infinite;
+  animation: subtle-pulse-blue 2s infinite;
 }
 
 @keyframes subtle-pulse-blue {
-    0%, 100% {
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-    }
-    50% {
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-    }
+  0%,
+  100% {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+  }
 }
 
 .seat.loading {
-    opacity: 0.6;
-    pointer-events: none;
-    position: relative;
+  opacity: 0.6;
+  pointer-events: none;
+  position: relative;
 }
 
 .seat.loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 16px;
-    height: 16px;
-    margin: -8px 0 0 -8px;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 1024px) {
-    .main-container {
-        grid-template-columns: 1fr;
-    }
+  .main-container {
+    grid-template-columns: 1fr;
+  }
 
-    .movie-info-card {
-        flex-direction: column;
-        text-align: center;
-    }
+  .movie-info-card {
+    flex-direction: column;
+    text-align: center;
+  }
 
-    .movie-poster {
-        width: 150px;
-        height: 225px;
-        margin: 0 auto;
-    }
+  .movie-poster {
+    width: 150px;
+    height: 225px;
+    margin: 0 auto;
+  }
 
-    .seat {
-        width: 25px;
-        height: 25px;
-        font-size: 0.6rem;
-    }
+  .seat {
+    width: 25px;
+    height: 25px;
+    font-size: 0.6rem;
+  }
 
-    .movie-title {
-        font-size: 1.8rem;
-    }
+  .movie-title {
+    font-size: 1.8rem;
+  }
 
-    .booking-section {
-        position: relative;
-        top: 0;
-    }
-    
-    .selected-seats-header {
-        position: relative;
-        top: 0;
-        margin-bottom: 1rem;
-    }
-    
-    .screen-container {
-        margin: 1rem 0 2rem 0;
-    }
-} 
+  .booking-section {
+    position: relative;
+    top: 0;
+  }
+
+  .selected-seats-header {
+    position: relative;
+    top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .screen-container {
+    margin: 1rem 0 2rem 0;
+  }
+}
