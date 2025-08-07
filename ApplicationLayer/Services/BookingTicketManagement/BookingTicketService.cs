@@ -554,8 +554,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 {
                     return (false, "CMND/CCCD đã tồn tại");
                 }
-                //var password = GenerateRandomPassword(8, true, true, true, true);
-                var password = "123456";
+                var password = GenerateRandomPassword(8, true, true, true, true);
+                //var password = "123456";
                 // Tạo người dùng mới
                 var  newUsers = new Users
                 {

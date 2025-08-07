@@ -78,6 +78,7 @@ class BookingListManager {
         `/BookingManagement/BookingTicket/GetBookingList?page=1&pageSize=1000`
       );
       const result = await response.json();
+      console.log("result", result);
 
       if (result.success) {
         this.allBookings = result.data.bookings; // Lưu lại toàn bộ danh sách
