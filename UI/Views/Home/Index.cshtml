@@ -188,69 +188,24 @@
 			</div>
 		</div>
 
-		<div class="recommended-content">
-			<div class="recommended-grid">
-				@if (Model?.RecommendedMovies != null && Model.RecommendedMovies.Any())
+				<div class="recommended-content">
+			<div class="recommended-grid" id="recommendedGrid">
+				@* Không hiển thị phim static ở đây nữa để tránh trùng lặp *@
+				@* JavaScript sẽ load tất cả phim qua AJAX *@
+				
+				@if (Model?.RecommendedMovies == null || !Model.RecommendedMovies.Any())
 				{
-
-
-					foreach (var movie in Model.RecommendedMovies.Take(5))
-					{
-										<div class="recommended-item movie-card">
-											<div class="recommended-poster movie-poster">
-								@{
-									string imageUrl = movie.PrimaryImageUrl ?? movie.ImageUrl;
-									if (string.IsNullOrEmpty(imageUrl) && movie.Images != null && movie.Images.Any())
-									{
-										var primaryImage = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
-										imageUrl = primaryImage?.ImageUrl ?? "";
-									}
-									imageUrl = imageUrl ?? "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
-								}
-												<img src="@imageUrl" alt="@movie.Title" loading="lazy"
-													 onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
-												<div class="recommended-overlay">
-													<a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="recommended-view-btn">
-														<i class="fas fa-info-circle"></i>
-														Xem Chi Tiết
-													</a>
-												</div>
-												<div class="recommended-rating">
-													<i class="fas fa-star"></i> @movie.Rating.ToString("F1")
-												</div>
-											</div>
-											<div class="recommended-info movie-info-home">
-												<span class="recommended-genre badge-genre-home">
-									@(movie.Genres != null && movie.Genres.Any() ? movie.Genres.First().Name : "Chưa phân loại")
-												</span>
-												<h3 class="recommended-title movie-title-home">@movie.Title</h3>
-												<div class="recommended-meta">
-													<div class="recommended-duration">
-														<i class="fas fa-clock"></i>
-														<span>@movie.RunningTime phút</span>
-													</div>
-													<span>@movie.ReleaseDate.Year</span>
-												</div>
-											</div>
-										</div>
-					}
-
-				}
-
-				else
-
-				{
-							<!-- Empty state khi không có phim đề xuất -->
-							<div class="empty-state">
-								<div class="empty-state-content">
-									<i class="fas fa-film fa-3x text-muted mb-3"></i>
-									<h4>Chưa có phim đề xuất</h4>
-									<p>Hiện tại chưa có phim nào được đánh dấu là đề xuất.</p>
-									<a href="@Url.Action("Index", "Movies")" class="btn btn-primary">
-										<i class="fas fa-search"></i> Xem tất cả phim
-									</a>
-								</div>
+						<!-- Empty state khi không có phim đề xuất -->
+						<div class="empty-state" id="recommendedEmptyState">
+							<div class="empty-state-content">
+								<i class="fas fa-film fa-3x text-muted mb-3"></i>
+								<h4>Chưa có phim đề xuất</h4>
+								<p>Hiện tại chưa có phim nào được đánh dấu là đề xuất.</p>
+								<a href="@Url.Action("Index", "Movies")" class="btn btn-primary">
+									<i class="fas fa-search"></i> Xem tất cả phim
+								</a>
 							</div>
+						</div>
 				}
 			</div>
 
@@ -328,82 +283,23 @@
 		</div>
 
 
-		<div class="recommended-grid">
-			@if (Model?.ComingSoonMovies != null && Model.ComingSoonMovies.Any())
+				<div class="recommended-grid" id="comingSoonGrid">
+			@* Không hiển thị phim static ở đây nữa để tránh trùng lặp *@
+			@* JavaScript sẽ load tất cả phim qua AJAX *@
+			
+			@if (Model?.ComingSoonMovies == null || !Model.ComingSoonMovies.Any())
 			{
-				foreach (var movie in Model.ComingSoonMovies.Take(4))
-				{
-									<div class="recommended-item">
-										<div class="recommended-poster">
-							@{
-								string imageUrl = movie.PrimaryImageUrl ?? movie.ImageUrl;
-								if (string.IsNullOrEmpty(imageUrl) && movie.Images != null && movie.Images.Any())
-								{
-									var primaryImage = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
-									imageUrl = primaryImage?.ImageUrl ?? "";
-								}
-								imageUrl = imageUrl ?? "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
-							}
-											<img src="@imageUrl" alt="@movie.Title" loading="lazy"
-												 onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
-
-
-											<div class="recommended-overlay">
-												<a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="recommended-view-btn">
-													<i class="fas fa-info-circle"></i>
-													Xem Chi Tiết
-												</a>
-											</div>
-
-											<!-- Ngày phát hành -->
-											<div class="recommended-release-date">
-												<i class="fas fa-calendar-alt"></i> @movie.ReleaseDate.ToString("dd/MM/yyyy")
-											</div>
-
-											<!-- Đánh giá sao -->
-							@if (movie.Rating > 0)
-							{
-														<div class="recommended-rating">
-															<i class="fas fa-star"></i> @movie.Rating.ToString("F1")
-														</div>
-							}
-										</div>
-
-										<!-- Thông tin phim -->
-										<div class="recommended-info">
-											<!-- Thể loại -->
-											<span class="recommended-genre">
-								@(movie.Genres != null && movie.Genres.Any() ? movie.Genres.First().Name : "Chưa phân loại")
-											</span>
-
-											<!-- Tiêu đề -->
-											<h3 class="recommended-title">@movie.Title</h3>
-
-											<!-- Thông tin thêm -->
-											<div class="recommended-meta">
-												<div class="recommended-duration">
-													<i class="fas fa-clock"></i>
-													<span>@movie.RunningTime phút</span>
-												</div>
-												<span>@movie.ReleaseDate.Year</span>
-											</div>
-										</div>
-									</div>
-				}
-			}
-			else
-			{
-						<!-- Trạng thái trống -->
-						<div class="empty-state">
-							<div class="empty-state-content">
-								<i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
-								<h4>Chưa có phim sắp chiếu</h4>
-								<p>Hiện tại chưa có phim nào trong trạng thái sắp chiếu.</p>
-								<a href="@Url.Action("Index", "Movies")" class="btn btn-primary">
-									<i class="fas fa-search"></i> Xem tất cả phim
-								</a>
-							</div>
+					<!-- Trạng thái trống -->
+					<div class="empty-state" id="comingSoonEmptyState">
+						<div class="empty-state-content">
+							<i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
+							<h4>Chưa có phim sắp chiếu</h4>
+							<p>Hiện tại chưa có phim nào trong trạng thái sắp chiếu.</p>
+							<a href="@Url.Action("Index", "Movies")" class="btn btn-primary">
+								<i class="fas fa-search"></i> Xem tất cả phim
+							</a>
 						</div>
+					</div>
 			}
 		</div>
 

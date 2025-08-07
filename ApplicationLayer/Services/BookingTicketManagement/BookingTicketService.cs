@@ -54,6 +54,9 @@ namespace ApplicationLayer.Services.BookingTicketManagement
         Task<int> GetPendingBookingCountAsync();
         Task<double> GetBookingGrowthAsync();
         Task<double> GetRevenueGrowthAsync();
+        
+        // Debug methods
+        Task<IActionResult> DebugShowtimesData(Guid? movieId = null);
     }
 
     public class BookingTicketService : IBookingTicketService
@@ -126,14 +129,21 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
         public async Task<IActionResult> GetShowDatesByMovie(Guid movieId)
         {
+            _logger.LogInformation("GetShowDatesByMovie - MovieId: {MovieId}", movieId);
+            
             // Lấy tất cả lịch chiếu còn hoạt động của phim
             var showtimes = await _showtimeRepo.WhereAsync(s => s.MovieId == movieId && s.IsActive);
+            
+            _logger.LogInformation("Found {Count} active showtimes for movie {MovieId}", showtimes?.Count() ?? 0, movieId);
+            
             if (showtimes == null || !showtimes.Any())
             {
-                return ErrorResp.NotFound("No show dates found for this movie.");
+                _logger.LogWarning("No show dates found for movie {MovieId}", movieId);
+                return SuccessResp.Ok(new List<object>()); // Trả về mảng rỗng thay vì error
             }
 
             var today = DateTime.Now.Date;
+            
             // Filter showtimes có ngày chiếu từ hôm nay trở đi
             var dates = showtimes
                 .Where(s => s.ShowDate.HasValue && s.ShowDate!.Value.ToLocalTime().Date >= today)
@@ -143,44 +153,74 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 .Select(d => new
                 {
                     Code = d.ToString("yyyy-MM-dd"),
-                    Text = d.ToString("dd/MM")
+                    Text = d.ToString("dd/MM/yyyy") // Thêm năm để rõ ràng hơn
                 })
                 .ToList();
+
+            _logger.LogInformation("Returning {Count} show dates for movie {MovieId}", dates.Count, movieId);
 
             return SuccessResp.Ok(dates);
         }
 
         public async Task<IActionResult> GetShowTimesByMovieAndDate(Guid movieId, DateTime selectedDate)
         {
+            _logger.LogInformation("GetShowTimesByMovieAndDate - MovieId: {MovieId}, SelectedDate: {SelectedDate}", movieId, selectedDate);
+            
             // Chỉ lấy lịch chiếu còn hoạt động
             var showtimes = await _showtimeRepo.WhereAsync(s =>
                 s.MovieId == movieId &&
                 s.ShowDate.HasValue &&
-                s.IsActive);
+                s.IsActive,
+                "Room"); // Include Room information
+
+            _logger.LogInformation("Found {Count} active showtimes for movie {MovieId}", showtimes?.Count() ?? 0, movieId);
+
+            if (showtimes == null || !showtimes.Any())
+            {
+                _logger.LogWarning("No active showtimes found for movie {MovieId}", movieId);
+                return SuccessResp.Ok(new List<object>());
+            }
 
             var today = DateTime.Now.Date;
             var nowTime = DateTime.Now.TimeOfDay;
-            // Convert ShowDate về LocalTime để so sánh chính xác theo ngày địa phương
-            var filteredShowtimes = showtimes
-                .Where(s =>
-                    {
-                        var localDate = s.ShowDate!.Value.ToLocalTime().Date;
-                        if (localDate < today) return false;
-                        if (localDate == today && s.StartTime <= nowTime) return false; // bỏ giờ đã qua hôm nay
-                        return true;
-                    });
+            
+            _logger.LogInformation("Current time - Today: {Today}, NowTime: {NowTime}", today, nowTime);
+
+            // Lọc lịch chiếu theo ngày được chọn
+            var showtimesForSelectedDate = showtimes
+                .Where(s => s.ShowDate!.Value.ToLocalTime().Date == selectedDate.Date)
+                .ToList();
+
+            _logger.LogInformation("Found {Count} showtimes for selected date {SelectedDate}", showtimesForSelectedDate.Count, selectedDate.Date);
+
+            // Chỉ bỏ qua lịch chiếu đã qua nếu là ngày hôm nay
+            var filteredShowtimes = showtimesForSelectedDate;
+            if (selectedDate.Date == today)
+            {
+                // Chỉ bỏ qua lịch chiếu đã qua 30 phút (để có thời gian đặt vé)
+                var cutoffTime = nowTime.Add(TimeSpan.FromMinutes(30));
+                filteredShowtimes = showtimesForSelectedDate
+                    .Where(s => s.StartTime > cutoffTime)
+                    .ToList();
+                    
+                _logger.LogInformation("Filtered for today - Cutoff time: {CutoffTime}, Remaining: {Count}", 
+                    cutoffTime, filteredShowtimes.Count);
+            }
 
             var timeList = filteredShowtimes
-                .Where(s => s.ShowDate!.Value.ToLocalTime().Date == selectedDate.Date)
-                .GroupBy(s => s.StartTime)
-                .Select(g => new
+                .Select(s => new
                 {
-                    Id = g.First().Id,
-                    Time = g.Key.ToString(@"hh\:mm"),
-                    FullDate = g.First().ShowDate!.Value
+                    Id = s.Id,
+                    Time = s.StartTime.ToString(@"hh\:mm"),
+                    FullDate = s.ShowDate!.Value,
+                    RoomName = s.Room?.RoomName ?? "Unknown Room"
                 })
                 .OrderBy(t => t.Time)
+                .ThenBy(t => t.RoomName)
                 .ToList();
+
+            _logger.LogInformation("Returning {Count} showtimes for movie {MovieId} on {SelectedDate}", 
+                timeList.Count, movieId, selectedDate.Date);
 
             return SuccessResp.Ok(timeList);
         }
@@ -1498,6 +1538,70 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             {
                 _logger.LogError(ex, "Error getting revenue growth");
                 return 0;
+            }
+        }
+
+        /// <summary>
+        /// [DEBUG] Method để kiểm tra dữ liệu ShowTime trong database
+        /// </summary>
+        public async Task<IActionResult> DebugShowtimesData(Guid? movieId = null)
+        {
+            try
+            {
+                var showtimes = await _showtimeRepo.WhereAsync(
+                    filter: movieId.HasValue ? s => s.MovieId == movieId.Value : null,
+                    navigationProperties: new[] { "Movie", "Room" });
+                var today = DateTime.Now.Date;
+                var nowTime = DateTime.Now.TimeOfDay;
+
+                var debugInfo = new
+                {
+                    TotalShowtimes = showtimes.Count,
+                    ActiveShowtimes = showtimes.Count(s => s.IsActive),
+                    InactiveShowtimes = showtimes.Count(s => !s.IsActive),
+                    TodayShowtimes = showtimes.Count(s => s.ShowDate.HasValue && s.ShowDate.Value.ToLocalTime().Date == today),
+                    FutureShowtimes = showtimes.Count(s => s.ShowDate.HasValue && s.ShowDate.Value.ToLocalTime().Date > today),
+                    PastShowtimes = showtimes.Count(s => s.ShowDate.HasValue && s.ShowDate.Value.ToLocalTime().Date < today),
+                    ShowtimesWithNullDate = showtimes.Count(s => !s.ShowDate.HasValue),
+                    CurrentTime = new
+                    {
+                        Now = DateTime.Now,
+                        Today = today,
+                        NowTime = nowTime.ToString(@"hh\:mm\:ss")
+                    },
+                    SampleShowtimes = showtimes.Take(5).Select(s => new
+                    {
+                        s.Id,
+                        MovieTitle = s.Movie?.Title ?? "Unknown",
+                        RoomName = s.Room?.RoomName ?? "Unknown",
+                        s.ShowDate,
+                        ShowDateLocal = s.ShowDate?.ToLocalTime(),
+                        StartTime = s.StartTime.ToString(@"hh\:mm"),
+                        EndTime = s.EndTime.ToString(@"hh\:mm"),
+                        s.Price,
+                        s.IsActive,
+                        IsInFuture = s.ShowDate.HasValue && s.ShowDate.Value.ToLocalTime().Date >= today,
+                        IsToday = s.ShowDate.HasValue && s.ShowDate.Value.ToLocalTime().Date == today,
+                        IsPast = s.ShowDate.HasValue && s.ShowDate.Value.ToLocalTime().Date < today,
+                        IsTimeValid = s.ShowDate.HasValue && s.ShowDate.Value.ToLocalTime().Date == today ? s.StartTime > nowTime : true
+                    }).ToList(),
+                    FilteredShowtimesForToday = showtimes
+                        .Where(s => s.IsActive && s.ShowDate.HasValue && s.ShowDate.Value.ToLocalTime().Date == today && s.StartTime > nowTime)
+                        .Select(s => new
+                        {
+                            s.Id,
+                            MovieTitle = s.Movie?.Title ?? "Unknown",
+                            StartTime = s.StartTime.ToString(@"hh\:mm"),
+                            s.ShowDate
+                        }).ToList()
+                };
+
+                return SuccessResp.Ok(debugInfo);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in DebugShowtimesData");
+                return ErrorResp.InternalServerError($"Debug error: {ex.Message}");
             }
         }
     }
