@@ -68,6 +68,7 @@ namespace ApplicationLayer.DTO.BookingTicketManagement
     /// </summary>
     public class BookingConfirmSuccessDto
     {
+        public string BookingId { get; set; } // Thêm BookingId
         public string BookingCode { get; set; }
         public string MovieTitle { get; set; }
         public string CinemaRoom { get; set; }

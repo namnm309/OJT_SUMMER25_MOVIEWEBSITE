@@ -1086,6 +1086,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 // 9. Build success response
                 var successResponse = new BookingConfirmSuccessDto
                 {
+                    BookingId = newBooking.Id.ToString(), // Thêm BookingId
                     BookingCode = newBooking.BookingCode,
                     MovieTitle = movie.Title,
                     CinemaRoom = showTime.Room?.RoomName ?? "Screen 1",

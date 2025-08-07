@@ -237,7 +237,7 @@ namespace UI.Areas.BookingManagement.Services
             try
             {
                 _logger.LogInformation("Confirming booking for user: {UserId}", model.UserId);
-                return await _apiService.PostAsync<dynamic>("booking/confirm", model);
+                return await _apiService.PostAsync<dynamic>("api/v1/booking-ticket/confirm-Admin-booking", model);
             }
             catch (Exception ex)
             {

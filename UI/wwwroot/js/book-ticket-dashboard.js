@@ -1104,11 +1104,11 @@ class BookTicketDashboard {
         StaffId: "admin", // Could be from session
         Notes: "",
         // Gửi kèm promotionId nếu có chọn
-        PromotionId: this.selectedPromotion ? this.selectedPromotion.id : "",
+        PromotionId: this.selectedPromotion ? this.selectedPromotion.id : null,
       };
 
       console.log("bookingData id khuyen mai", bookingData);
-        const response = await fetch(`${this.API_BASE_BE}/booking-ticket/confirm-booking-with-score`, {
+        const response = await fetch(`/BookingManagement/BookingTicket/ConfirmBookingWithScore`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1121,17 +1121,22 @@ class BookTicketDashboard {
       this.hideLoading();
       console.log("result", result);
 
-      if (result.code === 200 && result.data) {
+      // Kiểm tra cả success và code
+      if ((result.success || result.code === 200) && result.data) {
         const confirmModal = bootstrap.Modal.getInstance(
           document.getElementById("bookingConfirmModal")
         );
         confirmModal.hide();
 
+        console.log("Payment method:", result.data.paymentMethod);
         if (
           result.data.paymentMethod &&
           result.data.paymentMethod.toLowerCase() === "vnpay"
         ) {
           let bookingIdToPay = result.data.bookingId || result.data.id || null;
+          console.log("BookingId to pay:", bookingIdToPay);
+          console.log("BookingCode:", result.data.bookingCode);
+          console.log("Full result.data:", result.data);
           if (!bookingIdToPay && result.data.bookingCode) {
             const bookingCode = result.data.bookingCode;
             try {
@@ -1145,6 +1150,23 @@ class BookTicketDashboard {
             } catch {}
           }
 
+          if (!bookingIdToPay) {
+            console.log("Trying to get bookingId from bookingCode...");
+            // Thử lấy bookingId từ bookingCode
+            try {
+              const idResp = await fetch(
+                `/BookingManagement/BookingTicket/GetBookingIdByCode?bookingCode=${result.data.bookingCode}`
+              );
+              if (idResp.ok) {
+                const idJson = await idResp.json();
+                bookingIdToPay = idJson.bookingId;
+                console.log("Got bookingId from API:", bookingIdToPay);
+              }
+            } catch (err) {
+              console.error("Error getting bookingId:", err);
+            }
+          }
+          
           if (!bookingIdToPay) {
             this.showError("Không lấy được BookingId");
             return;

@@ -475,13 +475,27 @@ namespace UI.Areas.BookingManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> ConfirmBookingWithScore([FromBody] BookingConfirmWithScoreViewModel model)
         {
-            // Gọi API backend thực sự qua _apiService hoặc _bookingService
-            var beResp = await _apiService.PostAsync<object>(
-                "api/v1/booking-ticket/confirm-booking-with-score", model);
+            try
+            {
+                _logger.LogInformation("ConfirmBookingWithScore called with model: ShowTimeId={ShowTimeId}, SeatIds={SeatIds}, MemberId={MemberId}, PaymentMethod={PaymentMethod}", 
+                    model.ShowTimeId, string.Join(",", model.SeatIds), model.MemberId, model.PaymentMethod);
 
-            if (beResp.Success)
-                return Json(new { success = true, message = "Booking confirmed successfully!", data = beResp.Data });
-            return StatusCode(500, new { success = false, message = beResp.Message ?? "Có lỗi xảy ra", data = (object)null });
+                // Gọi API backend thực sự qua _apiService hoặc _bookingService
+                var beResp = await _apiService.PostAsync<object>(
+                    "api/v1/booking-ticket/confirm-booking-with-score", model);
+
+                _logger.LogInformation("Backend response: Success={Success}, Message={Message}", beResp.Success, beResp.Message);
+
+                if (beResp.Success)
+                    return Json(new { success = true, message = "Booking confirmed successfully!", data = beResp.Data });
+                
+                return Json(new { success = false, message = beResp.Message ?? "Có lỗi xảy ra", data = (object)null });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in ConfirmBookingWithScore");
+                return Json(new { success = false, message = "Có lỗi xảy ra khi xác nhận đặt vé: " + ex.Message, data = (object)null });
+            }
         }
 
     }

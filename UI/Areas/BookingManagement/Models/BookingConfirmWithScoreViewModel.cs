@@ -69,6 +69,8 @@ namespace UI.Areas.BookingManagement.Models
         public string StaffId { get; set; }
         
         public string Notes { get; set; }
+        
+        public Guid? PromotionId { get; set; }
     }
 
 
