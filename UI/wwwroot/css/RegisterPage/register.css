@@ -100,6 +100,15 @@ body {
     align-items: center;
     min-height: 100vh;
     overflow-y: auto;
+    /* Ẩn thanh cuộn nhưng vẫn cho phép cuộn */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE và Edge */
+}
+
+/* Ẩn thanh cuộn cho Chrome, Safari, Opera */
+.login-side::-webkit-scrollbar {
+    display: none;
+}
     padding: 20px 15px;
     background: linear-gradient(135deg, 
         #1a1a2e 0%, 
