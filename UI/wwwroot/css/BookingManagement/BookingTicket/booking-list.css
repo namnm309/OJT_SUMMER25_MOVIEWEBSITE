@@ -40,25 +40,69 @@
 }
 
 .status-badge {
-  padding: 0.25rem 0.75rem;
+  padding: 0.375rem 0.875rem;
   border-radius: 20px;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.status-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.status-badge::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.status-badge:hover::before {
+  left: 100%;
 }
 
 .status-confirmed {
-  background: #d4edda;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
   color: #155724;
+  border: 1px solid #c3e6cb;
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.1);
+}
+
+.status-completed {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #0d47a1;
+  border: 1px solid #bbdefb;
+  box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
 }
 
 .status-pending {
-  background: #fff3cd;
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
   color: #856404;
+  border: 1px solid #ffeaa7;
+  box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
 }
 
 .status-cancelled {
-  background: #f8d7da;
-  color: #721c24;
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: #ffffff;
+  border: 1px solid #c82333;
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+  font-weight: 700;
 }
 
 /* Action buttons đã được đồng bộ hóa với shared-action-buttons.css */
@@ -196,4 +240,399 @@
   margin: 0;
   color: #6c757d;
   font-weight: 500;
+}
+
+/* ===== ENHANCED MODAL STYLING ===== */
+
+.modal-content {
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px 15px 0 0;
+  border: none;
+  padding: 1.5rem;
+}
+
+.modal-header .modal-title {
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.modal-header .btn-close {
+  filter: invert(1);
+  opacity: 0.8;
+}
+
+.modal-body {
+  padding: 2rem;
+  background: #f8f9fa;
+}
+
+/* Booking Detail Container */
+.booking-detail-container {
+  background: white;
+  border-radius: 12px;
+  padding: 0;
+}
+
+/* Detail Header */
+.detail-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 1.5rem;
+  border-radius: 12px 12px 0 0;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.booking-code-section h4 {
+  font-weight: 700;
+  color: #495057;
+}
+
+.total-amount-section h3 {
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Detail Cards */
+.detail-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.detail-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.card-header-custom {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.card-header-custom h6 {
+  color: #495057;
+  font-weight: 600;
+  margin: 0;
+}
+
+.card-body-custom {
+  padding: 1.25rem;
+}
+
+/* Info Items */
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #6c757d;
+  min-width: 140px;
+}
+
+.info-value {
+  color: #495057;
+  font-weight: 500;
+  text-align: right;
+  flex: 1;
+  margin-left: 1rem;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Special handling for email fields */
+.info-item.email-field .info-value {
+  text-align: left;
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .detail-header {
+    padding: 1rem;
+  }
+
+  .info-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .info-label {
+    min-width: auto;
+  }
+
+  .info-value {
+    text-align: left;
+    margin-left: 0;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    max-width: 100%;
+  }
+
+  .total-amount-section {
+    text-align: center !important;
+    margin-top: 1rem;
+  }
+}
+
+/* ===== ENHANCED STATUS UPDATE MODAL STYLING ===== */
+
+.status-update-modal {
+  border-radius: 20px;
+  border: none;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.status-update-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 1.5rem 2rem;
+  position: relative;
+}
+
+.status-update-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  pointer-events: none;
+}
+
+.status-update-header .modal-title {
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.status-update-header .btn-close {
+  filter: invert(1);
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.status-update-header .btn-close:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.status-update-body {
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.status-selection-container {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.status-label {
+  font-weight: 700;
+  color: #495057;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.status-select-wrapper {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.status-select {
+  border-radius: 12px;
+  border: 2px solid #e9ecef;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.status-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  outline: none;
+}
+
+.status-select:hover {
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Custom dropdown styling */
+.status-select option {
+  padding: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  margin: 0.25rem 0;
+}
+
+.status-preview {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 2px dashed #dee2e6;
+}
+
+.preview-label {
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge-preview {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge-preview.preview-pending {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.status-badge-preview.preview-confirmed {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-badge-preview.preview-cancelled {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: #ffffff;
+  border: 1px solid #c82333;
+}
+
+.status-badge-preview.preview-completed {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #0d47a1;
+  border: 1px solid #bbdefb;
+}
+
+.status-update-footer {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-top: 1px solid #dee2e6;
+  padding: 1.5rem 2rem;
+  gap: 1rem;
+}
+
+.status-update-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.status-update-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.status-update-footer .btn-light {
+  border-radius: 12px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: 2px solid #dee2e6;
+  background: white;
+}
+
+.status-update-footer .btn-light:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+/* Responsive design for status update modal */
+@media (max-width: 768px) {
+  .status-update-modal {
+    margin: 1rem;
+  }
+
+  .status-update-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .status-update-body {
+    padding: 1.5rem;
+  }
+
+  .status-selection-container {
+    padding: 1.5rem;
+  }
+
+  .status-select {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .status-update-footer {
+    padding: 1rem 1.5rem;
+    flex-direction: column;
+  }
+
+  .status-update-footer .btn {
+    width: 100%;
+    margin: 0.25rem 0;
+  }
 }

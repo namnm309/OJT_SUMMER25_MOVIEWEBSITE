@@ -594,8 +594,8 @@ namespace ApplicationLayer.Services.BookingTicketManagement
                 {
                     return (false, "CMND/CCCD đã tồn tại");
                 }
-                //var password = GenerateRandomPassword(8, true, true, true, true);
-                var password = "123456";
+                var password = GenerateRandomPassword(8, true, true, true, true);
+                //var password = "123456";
                 // Tạo người dùng mới
                 var  newUsers = new Users
                 {
@@ -1388,21 +1388,31 @@ namespace ApplicationLayer.Services.BookingTicketManagement
             var user = await _userRepo.FindByIdAsync(userId);
             if(user == null) return;
 
-            // 100 điểm mỗi booking (KHÔNG phải mỗi vé)
-            var earned = 100;
-            user.Score += earned;
-            await _userRepo.UpdateAsync(user);
-
-            // Lưu point history
-            await _pointHistoryRepo.CreateAsync(new PointHistory
+            // Tính điểm dựa trên số lượng ghế
+            int earned = seatsBooked switch
             {
-                UserId = user.Id,
-                Points = earned,
-                Type = PointType.Earned,
-                Description = $"Earned {earned} pts for booking {bookingCode}",
-                BookingId = bookingId,
-                IsUsed = false
-            });
+                >= 10 => 130,
+                >= 5 => 30,
+                >= 2 => 10,
+                _ => 0     // Dưới 2 ghế thì không có điểm
+            };
+
+            if (earned > 0)
+            {
+                user.Score += earned;
+                await _userRepo.UpdateAsync(user);
+
+                // Lưu point history
+                await _pointHistoryRepo.CreateAsync(new PointHistory
+                {
+                    UserId = user.Id,
+                    Points = earned,
+                    Type = PointType.Earned,
+                    Description = $"Earned {earned} pts for booking {bookingCode} ({seatsBooked} seats)",
+                    BookingId = bookingId,
+                    IsUsed = false
+                });
+            }
 
             // Check and grant vouchers
             var silverPromo = await _promotionRepo.FirstOrDefaultAsync(p => p.Title.ToLower().Contains("silver"));

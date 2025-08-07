@@ -75,7 +75,7 @@ namespace ApplicationLayer.Services.BookingTicketManagement
 
                 var userId = payload.UserId;
                 var now = DateTime.UtcNow;
-                var expiredAt = now.AddMinutes(15);
+                var expiredAt = now.AddMinutes(2);
 
                 var exitsShowTime = await _showTimeRepo.FindByIdAsync(dto.ShowTimeId);
                 if (exitsShowTime == null)

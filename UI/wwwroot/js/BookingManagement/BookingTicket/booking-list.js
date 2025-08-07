@@ -78,6 +78,7 @@ class BookingListManager {
         `/BookingManagement/BookingTicket/GetBookingList?page=1&pageSize=1000`
       );
       const result = await response.json();
+      console.log("result", result);
 
       if (result.success) {
         this.allBookings = result.data.bookings; // Lưu lại toàn bộ danh sách
@@ -184,24 +185,22 @@ class BookingListManager {
                 </td>
                 <td>${bookingDate}</td>
                 <td>
-                    <div class="action-buttons">
-                        <button class="btn-action btn-view" onclick="bookingListManager.viewBookingDetail('${
+                    <div class="d-flex">
+                        <button class="action-btn btn-view" onclick="bookingListManager.viewBookingDetail('${
                           booking.id
                         }')" title="Xem chi tiết">
                             <i class="fas fa-eye"></i>
                         </button>
-                        ${
-                          booking.bookingStatus !== "Cancelled"
-                            ? `
-                            <button class="btn-action btn-edit" onclick="bookingListManager.showUpdateStatusModal('${booking.id}', '${booking.bookingStatus}')" title="Cập nhật trạng thái">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn-action btn-delete" onclick="bookingListManager.showCancelModal('${booking.id}')" title="Hủy đặt vé">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `
-                            : ""
-                        }
+                                                 ${
+                                                   booking.bookingStatus !==
+                                                   "Cancelled"
+                                                     ? `
+                             <button class="action-btn btn-update" onclick="bookingListManager.showUpdateStatusModal('${booking.id}', '${booking.bookingStatus}')" title="Cập nhật trạng thái">
+                                 <i class="fas fa-edit"></i>
+                             </button>
+                         `
+                                                     : ""
+                                                 }
                     </div>
                 </td>
             </tr>
@@ -211,10 +210,14 @@ class BookingListManager {
   getStatusClass(status) {
     switch (status) {
       case "Completed":
+        return "status-completed";
+      case "Confirmed":
         return "status-confirmed";
       case "Pending":
         return "status-pending";
       case "Cancelled":
+        return "status-cancelled";
+      case "Canceled":
         return "status-cancelled";
       default:
         return "status-pending";
@@ -224,10 +227,14 @@ class BookingListManager {
   getStatusText(status) {
     switch (status) {
       case "Completed":
+        return "Đã hoàn thành";
+      case "Confirmed":
         return "Đã xác nhận";
       case "Pending":
         return "Chờ xác nhận";
       case "Cancelled":
+        return "Đã hủy";
+      case "Canceled":
         return "Đã hủy";
       default:
         return status;
@@ -476,76 +483,216 @@ class BookingListManager {
     );
 
     content.html(`
-            <div class="row">
-                <div class="col-md-6">
-                    <h6>Thông tin đặt vé</h6>
-                    <table class="table table-borderless table-sm">
-                        <tr><td><strong>Mã đặt vé:</strong></td><td>${
-                          booking.bookingCode
-                        }</td></tr>
-                        <tr><td><strong>Trạng thái:</strong></td><td><span class="status-badge ${this.getStatusClass(
-                          booking.bookingStatus
-                        )}">${this.getStatusText(
-      booking.bookingStatus
-    )}</span></td></tr>
-                        <tr><td><strong>Ngày đặt:</strong></td><td>${bookingDate}</td></tr>
-                        <tr><td><strong>Phương thức thanh toán:</strong></td><td>${
-                          booking.paymentMethod
-                        }</td></tr>
-                    </table>
-                </div>
-                <div class="col-md-6">
-                    <h6>Thông tin khách hàng</h6>
-                    <table class="table table-borderless table-sm">
-                        <tr><td><strong>Họ tên:</strong></td><td>${
-                          booking.customerName
-                        }</td></tr>
-                        <tr><td><strong>Số điện thoại:</strong></td><td>${
-                          booking.customerPhone
-                        }</td></tr>
-                        <tr><td><strong>Email:</strong></td><td>${
-                          booking.customerEmail
-                        }</td></tr>
-                        ${
-                          booking.usedPoints > 0
-                            ? `<tr><td><strong>Điểm đã sử dụng:</strong></td><td>${booking.usedPoints} điểm</td></tr>`
-                            : ""
-                        }
-                    </table>
-                </div>
+      <div class="booking-detail-container">
+        <!-- Header Section -->
+        <div class="detail-header mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <div class="booking-code-section">
+                <h4 class="text-primary mb-1">
+                  <i class="fas fa-barcode me-2"></i>
+                  ${booking.bookingCode}
+                </h4>
+                <span class="status-badge ${this.getStatusClass(
+                  booking.bookingStatus
+                )}">
+                  ${this.getStatusText(booking.bookingStatus)}
+                </span>
+              </div>
             </div>
-            <hr>
-            <div class="row">
-                <div class="col-md-6">
-                    <h6>Thông tin suất chiếu</h6>
-                    <table class="table table-borderless table-sm">
-                        <tr><td><strong>Phim:</strong></td><td>${
-                          booking.movieTitle
-                        }</td></tr>
-                        <tr><td><strong>Phòng chiếu:</strong></td><td>${
-                          booking.cinemaRoom
-                        }</td></tr>
-                        <tr><td><strong>Ngày chiếu:</strong></td><td>${showDate}</td></tr>
-                        <tr><td><strong>Giờ chiếu:</strong></td><td>${showTime}</td></tr>
-                    </table>
-                </div>
-                <div class="col-md-6">
-                    <h6>Thông tin ghế và thanh toán</h6>
-                    <table class="table table-borderless table-sm">
-                        <tr><td><strong>Ghế:</strong></td><td>${
-                          booking.seatNumbers
-                        }</td></tr>
-                        <tr><td><strong>Tổng tiền:</strong></td><td><span class="fw-bold text-success">${totalAmount} ₫</span></td></tr>
-                    </table>
-                </div>
+            <div class="col-md-4 text-end">
+              <div class="total-amount-section">
+                <h3 class="text-success mb-0">
+                  <i class="fas fa-money-bill-wave me-2"></i>
+                  ${totalAmount} ₫
+                </h3>
+                ${
+                  booking.usedPoints > 0
+                    ? `<small class="text-info">Đã dùng ${booking.usedPoints} điểm</small>`
+                    : ""
+                }
+              </div>
             </div>
-        `);
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+          <!-- Customer Information -->
+          <div class="col-md-6 mb-4">
+            <div class="detail-card">
+              <div class="card-header-custom">
+                <h6 class="mb-0">
+                  <i class="fas fa-user me-2"></i>
+                  Thông tin khách hàng
+                </h6>
+              </div>
+              <div class="card-body-custom">
+                <div class="info-item">
+                  <span class="info-label">Họ tên:</span>
+                  <span class="info-value">${booking.customerName}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Số điện thoại:</span>
+                  <span class="info-value">${booking.customerPhone}</span>
+                </div>
+                <div class="info-item email-field">
+                  <span class="info-label">Email:</span>
+                  <span class="info-value">${booking.customerEmail}</span>
+                </div>
+                ${
+                  booking.usedPoints > 0
+                    ? `
+                <div class="info-item">
+                  <span class="info-label">Điểm đã sử dụng:</span>
+                  <span class="info-value text-info">${booking.usedPoints} điểm</span>
+                </div>
+                `
+                    : ""
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Showtime Information -->
+          <div class="col-md-6 mb-4">
+            <div class="detail-card">
+              <div class="card-header-custom">
+                <h6 class="mb-0">
+                  <i class="fas fa-film me-2"></i>
+                  Thông tin suất chiếu
+                </h6>
+              </div>
+              <div class="card-body-custom">
+                <div class="info-item">
+                  <span class="info-label">Phim:</span>
+                  <span class="info-value fw-semibold">${
+                    booking.movieTitle
+                  }</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Phòng chiếu:</span>
+                  <span class="info-value">${booking.cinemaRoom}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Ngày chiếu:</span>
+                  <span class="info-value">${showDate}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Giờ chiếu:</span>
+                  <span class="info-value">${showTime}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking Information -->
+          <div class="col-md-6 mb-4">
+            <div class="detail-card">
+              <div class="card-header-custom">
+                <h6 class="mb-0">
+                  <i class="fas fa-calendar-check me-2"></i>
+                  Thông tin đặt vé
+                </h6>
+              </div>
+              <div class="card-body-custom">
+                <div class="info-item">
+                  <span class="info-label">Ngày đặt:</span>
+                  <span class="info-value">${bookingDate}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Phương thức thanh toán:</span>
+                  <span class="info-value">${booking.paymentMethod}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seat Information -->
+          <div class="col-md-6 mb-4">
+            <div class="detail-card">
+              <div class="card-header-custom">
+                <h6 class="mb-0">
+                  <i class="fas fa-chair me-2"></i>
+                  Thông tin ghế
+                </h6>
+              </div>
+              <div class="card-body-custom">
+                <div class="info-item">
+                  <span class="info-label">Ghế đã chọn:</span>
+                  <span class="info-value">
+                    <span class="badge bg-primary">${booking.seatNumbers}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
   }
 
   showUpdateStatusModal(bookingId, currentStatus) {
     this.currentBookingId = bookingId;
     $("#newStatus").val(currentStatus);
+    this.updateStatusPreview(currentStatus);
     $("#updateStatusModal").modal("show");
+
+    // Add event listener for status change
+    $("#newStatus")
+      .off("change")
+      .on("change", (e) => {
+        this.updateStatusPreview(e.target.value);
+      });
+  }
+
+  updateStatusPreview(status) {
+    const preview = $("#statusPreview");
+    const statusText = this.getStatusText(status);
+    const statusClass = this.getStatusClass(status);
+
+    // Update icon based on status
+    let icon = "fas fa-clock";
+    switch (status) {
+      case "Confirmed":
+        icon = "fas fa-check-circle";
+        break;
+      case "Canceled":
+      case "Cancelled":
+        icon = "fas fa-times-circle";
+        break;
+      case "Completed":
+        icon = "fas fa-check-double";
+        break;
+      default:
+        icon = "fas fa-clock";
+    }
+
+    // Update preview content
+    preview.html(`
+      <i class="${icon} me-2"></i>
+      ${statusText}
+    `);
+
+    // Update preview styling
+    preview.removeClass(
+      "preview-pending preview-confirmed preview-cancelled preview-completed"
+    );
+
+    switch (status) {
+      case "Confirmed":
+        preview.addClass("preview-confirmed");
+        break;
+      case "Canceled":
+      case "Cancelled":
+        preview.addClass("preview-cancelled");
+        break;
+      case "Completed":
+        preview.addClass("preview-completed");
+        break;
+      default:
+        preview.addClass("preview-pending");
+    }
   }
 
   async confirmUpdateStatus() {
@@ -639,18 +786,20 @@ class BookingListManager {
 }
 
 window.applyFilters = function () {
-  bookingManager.updateFilters();
-  bookingManager.applyFilters();
+  if (window.bookingListManager) {
+    window.bookingListManager.updateFilters();
+    window.bookingListManager.applyFilters();
+  }
 };
 
 window.confirmUpdateStatus = function () {
-  bookingManager.confirmUpdateStatus();
+  if (window.bookingListManager) {
+    window.bookingListManager.confirmUpdateStatus();
+  }
 };
 
 window.confirmCancelBooking = function () {
-  bookingManager.confirmCancelBooking();
+  if (window.bookingListManager) {
+    window.bookingListManager.confirmCancelBooking();
+  }
 };
-
-$(document).ready(function () {
-  window.bookingManager = new BookingListManager();
-});
