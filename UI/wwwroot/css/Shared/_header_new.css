@@ -78,7 +78,7 @@
 .cinema_brand_logo_icon_jh8 {
     width: 50px;
     height: 50px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: transparent;
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -88,7 +88,23 @@
     color: white;
     letter-spacing: 1px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.cinema_logo_image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+/* Placeholder cho logo khi chưa có file logo.png */
+.cinema_brand_logo_icon_jh8:empty::before,
+.cinema_brand_logo_icon_jh8 img[src*="logo.png"]:not([src]):before {
+    content: "🎬";
+    font-size: 24px;
+    color: #ffffff;
 }
 
 .cinema_brand_name_text_vb2 {

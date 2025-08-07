@@ -77,8 +77,8 @@
             seatElement.disabled = true;
             seatElement.style.cursor = 'not-allowed';
             
-            // Thêm tooltip
-            seatElement.title = `Ghế đang được giữ bởi người dùng khác`;
+            // Thêm tooltip đã bị xóa để tránh hiển thị tooltip
+            // seatElement.title = `Ghế đang được giữ bởi người dùng khác`;
             
             // Cập nhật màu sắc - để CSS xử lý
             seatElement.style.backgroundColor = '';
@@ -103,10 +103,10 @@
             seatElement.style.backgroundColor = '';
             seatElement.style.color = '';
             
-            // Cập nhật tooltip
-            const seatCode = seatElement.dataset.seatCode;
-            const seatPrice = seatElement.dataset.seatPrice;
-            seatElement.title = `Ghế ${seatCode} - ${formatPrice(seatPrice)} VNĐ`;
+            // Cập nhật tooltip đã bị xóa để tránh hiển thị tooltip
+            // const seatCode = seatElement.dataset.seatCode;
+            // const seatPrice = seatElement.dataset.seatPrice;
+            // seatElement.title = `Ghế ${seatCode} - ${formatPrice(seatPrice)} VNĐ`;
         }
     }
 
@@ -224,7 +224,7 @@
                     const seatCode = seat.seatCode || seat.code || `${rowLabel}${seat.columnIndex || seat.column || '?'}`;
                     const seatPrice = seat.price || 0;
                     
-                    html += `<button type="button" class="${seatClass}" data-seat-id="${seat.id}" data-seat-code="${seatCode}" data-seat-price="${seatPrice}" data-seat-type="${seat.seatType || 'regular'}" title="Ghế ${seatCode} - ${formatPrice(seatPrice)} VNĐ" ${isDisabled ? 'disabled' : ''}></button>`;
+                    html += `<button type="button" class="${seatClass}" data-seat-id="${seat.id}" data-seat-code="${seatCode}" data-seat-price="${seatPrice}" data-seat-type="${seat.seatType || 'regular'}" ${isDisabled ? 'disabled' : ''}></button>`;
                 });
                 
                 html += `</div><span class="row-label">${rowLabel}</span></div>`;

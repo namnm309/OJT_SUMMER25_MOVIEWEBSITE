@@ -20,6 +20,10 @@ namespace DomainLayer.Entities
         [Required]
         [Range(0, 100)]
         public int DiscountPercent { get; set; }
+
+        // New: points required to redeem this promotion. 0 means public (free)
+        [Column(TypeName = "double precision")]
+        public double RequiredPoints { get; set; } = 0;
         
         [Required]
         public string Description { get; set; }

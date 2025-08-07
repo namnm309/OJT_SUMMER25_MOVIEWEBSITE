@@ -743,6 +743,32 @@ namespace UI.Areas.MovieManagement.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCinemaRoom([FromBody] JsonElement roomData)
+        {
+            try
+            {
+                _logger.LogInformation("Creating new cinema room: {RoomData}", roomData.GetRawText());
+                
+                var result = await _apiService.PostAsync<JsonElement>("api/v1/cinemaroom/Add", roomData);
+                
+                if (result.Success)
+                {
+                    return Json(new { success = true, message = "Tạo phòng chiếu mới thành công!" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = result.Message ?? "Lỗi khi tạo phòng chiếu mới" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi tạo phòng chiếu mới");
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi tạo phòng chiếu mới" });
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetStatistics()
         {

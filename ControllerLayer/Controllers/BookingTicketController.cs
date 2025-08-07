@@ -431,5 +431,43 @@ namespace ControllerLayer.Controllers
 
             return await _bookingTicketService.GetUserBookingHistoryAsync(userId);
         }
+
+        /// <summary>
+        /// [DEBUG] Endpoint để kiểm tra dữ liệu ShowTime trong database
+        /// </summary>
+        [AllowAnonymous]
+        [HttpGet("debug/showtimes")]
+        public async Task<IActionResult> DebugShowtimes([FromQuery] Guid? movieId = null)
+        {
+            return await _bookingTicketService.DebugShowtimesData(movieId);
+        }
+
+        /// <summary>
+        /// [DEBUG] Test API lấy lịch chiếu như frontend
+        /// </summary>
+        [AllowAnonymous]
+        [HttpGet("debug/test-showtimes/{movieId}")]
+        public async Task<IActionResult> TestShowtimes(Guid movieId, [FromQuery] string? date = null)
+        {
+            try
+            {
+                var testDate = string.IsNullOrEmpty(date) ? DateTime.Now.Date : DateTime.Parse(date);
+                
+                var result = new
+                {
+                    MovieId = movieId,
+                    TestDate = testDate,
+                    ShowDates = await _bookingTicketService.GetShowDatesByMovie(movieId),
+                    ShowTimes = await _bookingTicketService.GetShowTimesByMovieAndDate(movieId, testDate)
+                };
+                
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in TestShowtimes");
+                return BadRequest(new { error = ex.Message });
+            }
+        }
     }
 }

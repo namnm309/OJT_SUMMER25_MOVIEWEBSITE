@@ -36,6 +36,7 @@ namespace ApplicationLayer.Services.PromotionManagement
                 PromotionId = v.PromotionId,
                 Title = v.Promotion.Title,
                 DiscountPercent = v.Promotion.DiscountPercent,
+                RequiredPoints = v.Promotion.RequiredPoints,
                 Description = v.Promotion.Description,
                 StartDate = v.Promotion.StartDate,
                 EndDate = v.Promotion.EndDate,

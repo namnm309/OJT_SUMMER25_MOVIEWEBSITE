@@ -34,5 +34,8 @@ namespace ApplicationLayer.Services.MovieManagement
         // Dashboard statistics
         Task<int> GetMovieCountAsync();
         Task<double> GetMovieGrowthAsync();
+        
+        // Debug methods
+        Task<IActionResult> DebugMoviesData();
     }
 }

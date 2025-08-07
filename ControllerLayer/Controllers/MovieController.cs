@@ -206,5 +206,16 @@ namespace ControllerLayer.Controllers
             return await _movieService.GetNowShowing();
         }
 
+        /// <summary>
+        /// [DEBUG] Endpoint để kiểm tra dữ liệu phim trong database
+        /// </summary>
+        [AllowAnonymous]
+        [HttpGet("Debug")]
+        public async Task<IActionResult> Debug()
+        {
+            _logger.LogInformation("Debug Movies Data");
+            return await _movieService.DebugMoviesData();
+        }
+
     }
 }

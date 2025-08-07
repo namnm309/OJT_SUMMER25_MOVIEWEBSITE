@@ -66,14 +66,28 @@ body {
 .shared-brand-logo {
     width: 40px;
     height: 32px;
-    background: url('/img/logo.png') center/contain no-repeat;
     border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(223, 33, 68, 0.3);
+    box-shadow: none;
     position: relative;
     overflow: hidden;
+}
+
+.shared-logo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+/* Placeholder cho logo khi chưa có file logo.png */
+.shared-brand-logo:empty::before,
+.shared-brand-logo img[src*="logo.png"]:not([src]):before {
+    content: "🎬";
+    font-size: 20px;
+    color: #ffffff;
 }
 
 /* Xóa emoji bằng cách comment hoặc xóa phần này */
