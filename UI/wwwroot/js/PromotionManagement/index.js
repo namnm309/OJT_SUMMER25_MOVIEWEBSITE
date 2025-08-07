@@ -1,6 +1,6 @@
-﻿
-        // API Base URL
-        const API_BASE = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1';
+
+// API Base URL
+        const API_BASE = '/api/v1';
         // const API_BASE = 'https://localhost:7049/api/v1';
 
 

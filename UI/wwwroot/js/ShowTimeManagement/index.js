@@ -1,6 +1,6 @@
 
 
-               // Sử dụng HTTPS để trùng với backend và tránh lỗi mixed-scheme/CORS
+// Sử dụng HTTPS để trùng với backend và tránh lỗi mixed-scheme/CORS
 const apiBaseUrl = '/api/v1';
 
                let isEditMode = false;

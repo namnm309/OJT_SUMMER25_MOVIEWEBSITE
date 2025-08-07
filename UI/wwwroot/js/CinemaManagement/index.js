@@ -1,4 +1,4 @@
-﻿        // Helper function để lấy JWT token
+// Helper function để lấy JWT token
         function getAuthToken() {
             try {
                 // Thử lấy từ session storage trước
