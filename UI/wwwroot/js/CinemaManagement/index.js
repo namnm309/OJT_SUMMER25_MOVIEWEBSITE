@@ -18,6 +18,11 @@
             }
         }
 
+        // Helper function để lấy API base URL
+        function getApiBaseUrl() {
+            return 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net';
+        }
+
         // Helper function để tạo headers với auth
         function createAuthHeaders() {
             const headers = {
@@ -32,6 +37,26 @@
             }
 
             return headers;
+        }
+
+        // Helper function để tạo headers với auth và CORS
+        function createAuthHeadersWithCors() {
+            const headers = createAuthHeaders();
+            headers['mode'] = 'cors';
+            return headers;
+        }
+
+        // Helper function để parse JSON an toàn
+        function parseJsonSafe(text) {
+            try {
+                // Loại bỏ BOM và whitespace đầu/cuối
+                const cleaned = text.replace(/^\uFEFF/, '').trim();
+                console.log('Cleaned response text:', cleaned.substring(0, 200) + '...');
+                return JSON.parse(cleaned);
+            } catch (e) {
+                console.error('JSON parse error. Raw text:', text.substring(0, 500));
+                throw new Error(`Invalid JSON response: ${text.substring(0, 100)}...`);
+            }
         }
 
         let searchTimeout;
@@ -64,7 +89,7 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xóa...';
             
             try {
-                const response = await fetch(`/api/v1/cinemaroom/Delete/${roomId}`, {
+                const response = await fetch(`${getApiBaseUrl()}/api/v1/cinemaroom/Delete/${roomId}`, {
                     method: 'DELETE',
                     headers: createAuthHeaders()
                 });
@@ -72,9 +97,9 @@
                 const responseText = await response.text();
                 let result;
                 try {
-                    result = JSON.parse(responseText);
+                    result = parseJsonSafe(responseText);
                 } catch (e) {
-                    throw new Error(`Invalid JSON response: ${responseText}`);
+                    throw new Error(`Invalid JSON response: ${responseText.substring(0, 100)}...`);
                 }
                 
                 if (response.ok && (result.Code === 200 || result.code === 200)) {
@@ -262,12 +287,7 @@
                 console.log('JSON string:', JSON.stringify(requestData));
 
                 // Thêm CSRF token vào headers
-                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
-                const headers = {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json'
-                };
+                const headers = createAuthHeaders();
                 
                 // API call không cần CSRF token
                 // if (token) {
@@ -277,7 +297,7 @@
                 //     console.warn('CSRF token not found');
                 // }
 
-                const response = await fetch('/api/v1/cinemaroom/Add', {
+                const response = await fetch(`${getApiBaseUrl()}/api/v1/cinemaroom/Add`, {
                     method: 'POST',
                     headers: headers,
                     body: JSON.stringify(requestData)
@@ -291,10 +311,10 @@
                 
                 let result;
                 try {
-                    result = JSON.parse(responseText);
+                    result = parseJsonSafe(responseText);
                 } catch (e) {
                     console.error('Failed to parse JSON response:', e);
-                    throw new Error(`Invalid JSON response: ${responseText}`);
+                    throw new Error(`Invalid JSON response: ${responseText.substring(0, 100)}...`);
                 }
                 
                 console.log('Response data:', result);
@@ -386,14 +406,11 @@
             
             try {
 
-                const detailsUrl = `/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
+                const detailsUrl = `${getApiBaseUrl()}/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
                 console.log('Fetching from URL:', detailsUrl); // Debug log
                 
                 const response = await fetch(detailsUrl, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
-                    }
+                    headers: createAuthHeaders()
                 });
                 
                 console.log('Response status:', response.status); // Debug log
@@ -402,7 +419,9 @@
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
-                const data = await response.json();
+                const responseText = await response.text();
+                console.log('Response text:', responseText);
+                const data = parseJsonSafe(responseText);
                 console.log('API Response:', data); // Debug log
                 
 
@@ -726,17 +745,16 @@
                 console.log('Fetching details from URL:', detailsUrl); // Debug log
                 
                 const detailsResponse = await fetch(detailsUrl, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
-                    }
+                    headers: createAuthHeaders()
                 });
                 
                 if (!detailsResponse.ok) {
                     throw new Error(`HTTP ${detailsResponse.status}: ${detailsResponse.statusText}`);
                 }
                 
-                const detailsData = await detailsResponse.json();
+                const responseText = await detailsResponse.text();
+                console.log('Details response text:', responseText);
+                const detailsData = parseJsonSafe(responseText);
                 console.log('Room details:', detailsData); // Debug log
                 
 
@@ -940,25 +958,21 @@
             data.RegenerateSeats = (numberOfRows !== originalRows || numberOfColumns !== originalCols);
             
             try {
-                const updateUrl = `/api/v1/cinemaroom/Update/${roomId}`;
+                const updateUrl = `${getApiBaseUrl()}/api/v1/cinemaroom/Update/${roomId}`;
                 console.log('Updating room at URL:', updateUrl, 'with data:', data); // Debug log
                 
                 const response = await fetch(updateUrl, {
                     method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
-                    },
+                    headers: createAuthHeaders(),
                     body: JSON.stringify(data)
                 });
                 
                 const responseText = await response.text();
                 let result;
                 try {
-                    result = JSON.parse(responseText);
+                    result = parseJsonSafe(responseText);
                 } catch (e) {
-                    throw new Error(`Invalid JSON response: ${responseText}`);
+                    throw new Error(`Invalid JSON response: ${responseText.substring(0, 100)}...`);
                 }
                 
                 if (response.ok && (result.Code === 200 || result.code === 200)) {
@@ -1025,7 +1039,7 @@
             
             try {
                 // Sử dụng API service giống như modal chi tiết phòng
-                const detailsUrl = `/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
+                const detailsUrl = `${getApiBaseUrl()}/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
                 
                 const response = await fetch(detailsUrl, {
                     method: 'GET',
@@ -1037,7 +1051,9 @@
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
-                const data = await response.json();
+                const responseText = await response.text();
+                console.log('Manage seats response text:', responseText);
+                const data = parseJsonSafe(responseText);
                 
                 // Xử lý response format giống như modal chi tiết
                 let roomData;
@@ -1425,18 +1441,22 @@
                     IsActive: true
                 };
                 
-                const response = await fetch(`/CinemaManagement/CinemaRoom/UpdateSeat/${currentRoomId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    },
-                    body: JSON.stringify(seatData)
+                console.log('Updating seat with data:', seatData);
+                const response = await fetch(`${getApiBaseUrl()}/api/v1/cinemaroom/${currentRoomId}/seats/${seatData.SeatId}`, {
+                    method: 'PUT',
+                    headers: createAuthHeaders(),
+                    body: JSON.stringify(seatData),
+                    mode: 'cors'
                 });
                 
-                const result = await response.json();
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
                 
-                if (result.success) {
+                const responseText = await response.text();
+                const result = parseJsonSafe(responseText);
+                
+                const isSuccess = (result.success === true) || (result.Code === 200) || (result.code === 200);
+                if (isSuccess) {
                     closeEditSeatModal();
                     
                     // Cập nhật dữ liệu ghế
@@ -1454,7 +1474,7 @@
                     successAlert.className = 'alert alert-success';
                     successAlert.innerHTML = `
                         <i class="fas fa-check-circle me-2"></i>
-                        <span>${result.message}</span>
+                        <span>${result.Message || result.message || 'Cập nhật ghế thành công!'}</span>
                         <button type="button" class="alert-close" onclick="this.parentElement.remove()">
                             <i class="fas fa-times"></i>
                         </button>
@@ -1618,18 +1638,22 @@
                 };
                 
                 // Gọi API cập nhật hàng loạt
-                const response = await fetch(`/CinemaManagement/CinemaRoom/UpdateSeats`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    },
-                    body: JSON.stringify(updateData)
+                console.log('Bulk updating seats with data:', updateData);
+                const response = await fetch(`${getApiBaseUrl()}/api/v1/cinemaroom/rooms/seats/update`, {
+                    method: 'PUT',
+                    headers: createAuthHeaders(),
+                    body: JSON.stringify(updateData),
+                    mode: 'cors'
                 });
                 
-                const result = await response.json();
+                console.log('Bulk update response status:', response.status);
+                console.log('Bulk update response headers:', Object.fromEntries(response.headers.entries()));
                 
-                if (result.success) {
+                const responseText = await response.text();
+                const result = parseJsonSafe(responseText);
+                
+                const isSuccess = (result.success === true) || (result.Code === 200) || (result.code === 200);
+                if (isSuccess) {
                     closeBulkEditSeatModal();
                     
                     // Cập nhật dữ liệu ghế
