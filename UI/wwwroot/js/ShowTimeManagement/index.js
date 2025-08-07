@@ -1,7 +1,57 @@
 
 
 // Sử dụng HTTPS để trùng với backend và tránh lỗi mixed-scheme/CORS
-const apiBaseUrl = '/api/v1';
+const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net';
+
+// Helper function để lấy JWT token
+function getAuthToken() {
+    try {
+        // Thử lấy từ session storage trước
+        let token = sessionStorage.getItem('JWToken') || '';
+        if (!token) {
+            // Nếu không có, thử lấy từ cookie
+            const cookies = document.cookie.split(';');
+            const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('JWToken='));
+            if (tokenCookie) {
+                token = tokenCookie.split('=')[1];
+            }
+        }
+        return token;
+    } catch (e) {
+        console.warn('Could not get auth token:', e);
+        return '';
+    }
+}
+
+// Helper function để tạo headers với auth
+function createAuthHeaders() {
+    const headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    };
+
+    const authToken = getAuthToken();
+    if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+    }
+
+    return headers;
+}
+
+// Patch global fetch for this page if not already patched
+(function(){
+    if (!window.__apiPrefixPatched) {
+        const originalFetch = window.fetch.bind(window);
+        window.fetch = function(resource, init) {
+            if (typeof resource === 'string' && resource.startsWith('/api/v1')) {
+                resource = apiBaseUrl + resource.substring('/api/v1'.length);
+            }
+            return originalFetch(resource, init);
+        };
+        window.__apiPrefixPatched = true;
+    }
+})();
 
                let isEditMode = false;
                let editingShowtimeId = null;
@@ -73,12 +123,32 @@ const apiBaseUrl = '/api/v1';
 
                async function loadMoviesAndRooms() {
                    try {
-
-                       const moviesResponse = await fetch(`${apiBaseUrl}/booking-ticket/dropdown/movies`);
-                       const moviesResult = await moviesResponse.json();
+                       console.log('Loading movies and rooms...');
+                       
+                       // Load movies
+                       console.log('Fetching movies from:', `${apiBaseUrl}/booking-ticket/dropdown/movies`);
+                       const moviesResponse = await fetch(`${apiBaseUrl}/booking-ticket/dropdown/movies`, {
+                           headers: createAuthHeaders()
+                       });
+                       console.log('Movies response status:', moviesResponse.status);
+                       console.log('Movies response headers:', moviesResponse.headers);
+                       
+                       const moviesText = await moviesResponse.text();
+                       console.log('Movies response text:', moviesText);
+                       
+                       let moviesResult;
+                       try {
+                           moviesResult = JSON.parse(moviesText);
+                           console.log('Movies parsed successfully:', moviesResult);
+                       } catch (parseError) {
+                           console.error('Failed to parse movies JSON:', parseError);
+                           console.error('Raw response:', moviesText);
+                           throw new Error(`Invalid JSON response for movies: ${moviesText.substring(0, 200)}`);
+                       }
 
                        // Một số API trả về { data: [...] } hoặc { Data: [...] } hoặc trả thẳng mảng
                        const moviesData = moviesResult.data || moviesResult.Data || moviesResult;
+                       console.log('Movies data extracted:', moviesData);
 
                        if (Array.isArray(moviesData) && moviesData.length) {
                            const movieSelect = document.getElementById('movieSelect');
@@ -89,15 +159,35 @@ const apiBaseUrl = '/api/v1';
                                const movieTitle = movie.title || movie.Title;
                                movieSelect.innerHTML += `<option value="${movieId}" data-duration="${movie.duration || movie.Duration || 0}">${movieTitle}</option>`;
                            });
+                           console.log(`Loaded ${moviesData.length} movies`);
                        } else {
+                           console.warn('No movies data found:', moviesData);
                            showNotification('Không tìm thấy dữ liệu phim', 'danger');
                        }
 
-
-                       const roomsResponse = await fetch(`${apiBaseUrl}/cinemaroom/ViewRoom`);
-                       const roomsResult = await roomsResponse.json();
+                       // Load rooms
+                       console.log('Fetching rooms from:', `${apiBaseUrl}/cinemaroom/ViewRoom`);
+                       const roomsResponse = await fetch(`${apiBaseUrl}/cinemaroom/ViewRoom`, {
+                           headers: createAuthHeaders()
+                       });
+                       console.log('Rooms response status:', roomsResponse.status);
+                       console.log('Rooms response headers:', roomsResponse.headers);
+                       
+                       const roomsText = await roomsResponse.text();
+                       console.log('Rooms response text:', roomsText);
+                       
+                       let roomsResult;
+                       try {
+                           roomsResult = JSON.parse(roomsText);
+                           console.log('Rooms parsed successfully:', roomsResult);
+                       } catch (parseError) {
+                           console.error('Failed to parse rooms JSON:', parseError);
+                           console.error('Raw response:', roomsText);
+                           throw new Error(`Invalid JSON response for rooms: ${roomsText.substring(0, 200)}`);
+                       }
 
                        const roomsData = roomsResult.data || roomsResult;
+                       console.log('Rooms data extracted:', roomsData);
 
                        if (Array.isArray(roomsData)) {
                            const roomSelect = document.getElementById('cinemaRoomSelect');
@@ -105,7 +195,9 @@ const apiBaseUrl = '/api/v1';
                            roomsData.forEach(room => {
                                roomSelect.innerHTML += `<option value="${room.id}">${room.roomName}</option>`;
                            });
+                           console.log(`Loaded ${roomsData.length} rooms`);
                        } else {
+                           console.warn('No rooms data found:', roomsData);
                            showNotification('Lỗi khi tải dữ liệu phòng chiếu', 'danger');
                        }
                    } catch (error) {
@@ -127,7 +219,9 @@ const apiBaseUrl = '/api/v1';
                    }
 
                    try {
-                       const response = await fetch(`${apiBaseUrl}/showtime/CheckConflict?movieId=${movieId}&cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`);
+                       const response = await fetch(`${apiBaseUrl}/showtime/CheckConflict?movieId=${movieId}&cinemaRoomId=${cinemaRoomId}&showDate=${showDate}&startTime=${startTime}&endTime=${endTime}`, {
+                       headers: createAuthHeaders()
+                   });
                        const result = await response.json();
 
                        if (result.success) {
@@ -183,7 +277,9 @@ const apiBaseUrl = '/api/v1';
                 conflictUrl += `&excludeId=${editingShowtimeId}`;
             }
             try {
-                const conflictResp = await fetch(conflictUrl);
+                                   const conflictResp = await fetch(conflictUrl, {
+                       headers: createAuthHeaders()
+                   });
                 const conflictResult = await conflictResp.json();
                 if (conflictResult.hasConflict === true || (conflictResult.data && conflictResult.data.hasConflict)) {
                     showNotification('Lịch chiếu bị trùng với suất chiếu khác trong phòng này!', 'danger');
@@ -195,17 +291,22 @@ const apiBaseUrl = '/api/v1';
             }
 
             // 5. Chuẩn bị payload
+            const startTimeRaw = document.getElementById('startTime').value;
+            const startTimeSec = startTimeRaw && startTimeRaw.length === 5 ? `${startTimeRaw}:00` : startTimeRaw;
+            const endTimeRaw = endTime; // biến endTime đã tính trước đó dạng HH:mm
+            const endTimeSec = endTimeRaw && endTimeRaw.length === 5 ? `${endTimeRaw}:00` : endTimeRaw;
+
             const payload = {
                 movieId: movieId,
                 cinemaRoomId: cinemaRoomId,
                 showDate: showDateIso,
-                startTime: startTime,
+                startTime: startTimeSec,
                 price: parseFloat(document.getElementById('price').value) || 0,
                 isActive: document.getElementById('isActive').checked
             };
             // Chỉ thêm endTime cho create, không cho update
             if (!isEdit) {
-                payload.endTime = endTime; // Chỉ cho create-new DTO
+                payload.endTime = endTimeSec; // Chỉ cho create-new DTO
             }
             if (isEdit) {
                 payload.id = editingShowtimeId; // ShowtimeUpdateDto yêu cầu Id
@@ -218,7 +319,7 @@ const apiBaseUrl = '/api/v1';
             try {
                 const resp = await fetch(url, {
                     method: method,
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: createAuthHeaders(),
                     body: JSON.stringify(payload)
                 });
                 console.log('API Response Status:', resp.status);
@@ -289,7 +390,9 @@ const apiBaseUrl = '/api/v1';
                    // Đảm bảo dropdown phim/phòng đã có dữ liệu
                    loadMoviesAndRooms().then(async () => {
                        try {
-                           const resp = await fetch(`${apiBaseUrl}/showtime/${id}`);
+                           const resp = await fetch(`${apiBaseUrl}/showtime/${id}`, {
+                           headers: createAuthHeaders()
+                       });
                            const result = await resp.json();
                            const data = result.data || result.Data || result;
                            if (!data) {
@@ -335,9 +438,7 @@ const apiBaseUrl = '/api/v1';
                        // Gọi API xóa lịch chiếu
                        fetch(`${apiBaseUrl}/showtime/${id}`, {
                            method: 'DELETE',
-                           headers: {
-                               'Content-Type': 'application/json'
-                           }
+                           headers: createAuthHeaders()
                        })
                        .then(response => response.json())
                        .then(result => {
@@ -769,7 +870,9 @@ const apiBaseUrl = '/api/v1';
                    container.style.display = 'block';
 
                    try {
-                       const resp = await fetch(`${apiBaseUrl}/movie/Search?keyword=${encodeURIComponent(term)}`);
+                       const resp = await fetch(`${apiBaseUrl}/movie/Search?keyword=${encodeURIComponent(term)}`, {
+                   headers: createAuthHeaders()
+               });
                        const result = await resp.json();
                        const movies = result.data || result || [];
 
@@ -808,7 +911,9 @@ const apiBaseUrl = '/api/v1';
                    container.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i></div>';
 
                    try {
-                       const resp = await fetch(`${apiBaseUrl}/movie/GetById?movieId=${movieId}`);
+                       const resp = await fetch(`${apiBaseUrl}/movie/GetById?movieId=${movieId}`, {
+                   headers: createAuthHeaders()
+               });
                        const result = await resp.json();
                        const movie = result.data || result;
 
@@ -858,7 +963,9 @@ const apiBaseUrl = '/api/v1';
 
                    try {
                        tablePageSize = parseInt(document.getElementById('pageSizeSelect')?.value || 10);
-                       const resp = await fetch(`${apiBaseUrl}/showtime?page=${page}&pageSize=${tablePageSize}`);
+                       const resp = await fetch(`${apiBaseUrl}/showtime?page=${page}&pageSize=${tablePageSize}`, {
+                   headers: createAuthHeaders()
+               });
                        const result = await resp.json();
                        const data = result.data || result.Data || result;
                        const items = data.items || data.Items || data;
