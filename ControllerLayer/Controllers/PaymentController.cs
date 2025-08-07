@@ -3,6 +3,7 @@ using ApplicationLayer.DTO.Payment;
 using ApplicationLayer.Middlewares;
 using ApplicationLayer.Services.Payment;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System;
 
 namespace ControllerLayer.Controllers
@@ -29,6 +30,35 @@ namespace ControllerLayer.Controllers
             var response = await _paymentService.CreateVnPayPayment(HttpContext, Dto);
 
             return Ok(response);
+        }
+
+        [HttpGet("debug-booking/{bookingCode}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> DebugBooking(string bookingCode)
+        {
+            try
+            {
+                // Tìm booking theo bookingCode
+                var booking = await _paymentService.GetBookingByCodeAsync(bookingCode);
+                if (booking == null)
+                {
+                    return NotFound(new { message = "Booking not found" });
+                }
+
+                return Ok(new
+                {
+                    bookingId = booking.Id,
+                    bookingUserId = booking.UserId,
+                    bookingUserRole = booking.User?.Role,
+                    bookingCode = booking.BookingCode,
+                    status = booking.Status
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in DebugBooking");
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         [HttpGet("vnpay-return")]

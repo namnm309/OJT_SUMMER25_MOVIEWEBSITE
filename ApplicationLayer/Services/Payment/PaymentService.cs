@@ -21,6 +21,7 @@ namespace ApplicationLayer.Services.Payment
     {
         Task<string> CreateVnPayPayment(HttpContext context, PaymentRequestDto Dto);
         Task<PaymentResponseDto> CallBack(IQueryCollection queryParams);
+        Task<Booking?> GetBookingByCodeAsync(string bookingCode);
     }
     public class PaymentService : BaseService, IPaymentService
     {
@@ -253,15 +254,33 @@ namespace ApplicationLayer.Services.Payment
                 var bookingUser = await _userRepo.FindByIdAsync(booking.UserId);
                 if (bookingUser != null)
                 {
-                    // Sử dụng role của user trong booking để xác định booking source
-                    if (bookingUser.Role == UserRole.Admin || bookingUser.Role == UserRole.Staff)
-                    {
-                        bookingSource = "admin_dashboard";
-                    }
-                    else
-                    {
-                        bookingSource = "user";
-                    }
+                                         // Sử dụng role của user trong booking để xác định booking source
+                     _logger.LogInformation("Checking booking user role: {Role}, IsAdmin: {IsAdmin}, IsStaff: {IsStaff}", 
+                         bookingUser.Role, bookingUser.Role == UserRole.Admin, bookingUser.Role == UserRole.Staff);
+                     
+                     // Kiểm tra xem có phải admin tạo booking cho user khác không
+                     bool isAdminCreatingForOtherUser = transaction.UserId != booking.UserId;
+                     _logger.LogInformation("TransactionUserId: {TransactionUserId}, BookingUserId: {BookingUserId}, IsAdminCreatingForOtherUser: {IsAdminCreatingForOtherUser}", 
+                         transaction.UserId, booking.UserId, isAdminCreatingForOtherUser);
+                     
+                     if (isAdminCreatingForOtherUser)
+                     {
+                         // Admin tạo booking cho user khác -> admin dashboard
+                         bookingSource = "admin_dashboard";
+                         _logger.LogInformation("Setting bookingSource to admin_dashboard because admin created booking for other user");
+                     }
+                     else if (bookingUser.Role == UserRole.Admin || bookingUser.Role == UserRole.Staff)
+                     {
+                         // User có role admin/staff tự tạo booking cho chính mình -> admin dashboard
+                         bookingSource = "admin_dashboard";
+                         _logger.LogInformation("Setting bookingSource to admin_dashboard because user role is {Role}", bookingUser.Role);
+                     }
+                     else
+                     {
+                         // User thường tự tạo booking cho chính mình -> user interface
+                         bookingSource = "user";
+                         _logger.LogInformation("Setting bookingSource to user because user role is {Role} and self-booking", bookingUser.Role);
+                     }
                     
                     // Cập nhật userRole nếu không lấy được từ JWT
                     if (payload == null)
@@ -269,9 +288,9 @@ namespace ApplicationLayer.Services.Payment
                         userRole = bookingUser.Role.ToString();
                     }
                     
-                    // Log để debug
-                    _logger.LogInformation("VNPay Callback - BookingId: {BookingId}, BookingUserId: {BookingUserId}, BookingUserRole: {BookingUserRole}, BookingSource: {BookingSource}", 
-                        booking.Id, booking.UserId, bookingUser.Role, bookingSource);
+                                         // Log để debug
+                     _logger.LogInformation("VNPay Callback - BookingId: {BookingId}, BookingUserId: {BookingUserId}, BookingUserRole: {BookingUserRole}, BookingSource: {BookingSource}, TransactionUserId: {TransactionUserId}", 
+                         booking.Id, booking.UserId, bookingUser.Role, bookingSource, transaction.UserId);
                 }
             }
             else if (transaction != null)
@@ -357,6 +376,17 @@ namespace ApplicationLayer.Services.Payment
                 var exist=await _userPromotionRepo.FirstOrDefaultAsync(u=>u.UserId==user.Id && u.PromotionId==gold.Id);
                 if(exist==null) await _userPromotionRepo.CreateAsync(new UserPromotion{UserId=user.Id,PromotionId=gold.Id});
             }
+        }
+
+        public async Task<Booking?> GetBookingByCodeAsync(string bookingCode)
+        {
+            var booking = await _bookingRepo.FindAsync(b => b.BookingCode == bookingCode);
+            if (booking != null)
+            {
+                // Load user information
+                booking.User = await _userRepo.FindByIdAsync(booking.UserId);
+            }
+            return booking;
         }
     }
 }
