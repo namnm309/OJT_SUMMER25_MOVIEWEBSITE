@@ -16,7 +16,7 @@ namespace InfrastructureLayer.Repository
         public async Task<Users?> GetByUsernameAsync(string username)
         {
             return await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == username && u.IsActive);
+                .FirstOrDefaultAsync(u => u.Username == username);
         }
 
         public async Task<Users?> GetByEmailAsync(string email)

@@ -136,6 +136,12 @@ namespace ApplicationLayer.Services.JWT
                 return ErrorResp.BadRequest("Email or password is incorrect");
             }
 
+            // Kiểm tra trạng thái hoạt động của user
+            if (!user.IsActive)
+            {
+                return ErrorResp.BadRequest("Tài khoản này đã bị vô hiệu hóa");
+            }
+
             var sessionId = Guid.NewGuid();
             var accessToken = GenerateAccessTk(user.Id, user.Role, sessionId, user.Email, user.Username, user.IsActive);
 

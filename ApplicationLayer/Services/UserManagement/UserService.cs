@@ -33,6 +33,12 @@ namespace ApplicationLayer.Services.UserManagement
                     return (false, null, "Username/password is invalid. Please try again!");
                 }
 
+                // Kiểm tra trạng thái hoạt động của user
+                if (!user.IsActive)
+                {
+                    return (false, null, "Tài khoản này đã bị vô hiệu hóa");
+                }
+
                 // Dùng AutoMapper để convert từ Users entity sang UserResponseDto
                 var userResponse = _mapper.Map<UserResponseDto>(user);
                 return (true, userResponse, "Login successful");
