@@ -16,7 +16,8 @@ namespace ApplicationLayer.DTO.UserManagement
         public DateTime? BirthDate { get; set; }
         public UserGender Gender { get; set; }
         public string? Avatar { get; set; }
+        public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
-} 
+}
