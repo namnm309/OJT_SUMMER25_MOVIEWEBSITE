@@ -372,6 +372,89 @@ function editUserFromView() {
 
 
 document.addEventListener('DOMContentLoaded', function() {
+    // ---- Pagination Logic ----
+    const tableBody = document.getElementById('usersTableBody');
+    if (tableBody) {
+        const allRows = Array.from(tableBody.querySelectorAll('tr'));
+        const pageSizeSelect = document.getElementById('pageSizeSelect');
+        const pageNumbersContainer = document.getElementById('pageNumbers');
+        const paginationInfo = document.getElementById('paginationInfo');
+        const prevPageBtn = document.getElementById('prevPageBtn');
+        const nextPageBtn = document.getElementById('nextPageBtn');
+
+        let currentPage = 1;
+        let pageSize = parseInt(pageSizeSelect ? pageSizeSelect.value : 10);
+
+        function totalPages() {
+            return Math.max(1, Math.ceil(allRows.length / pageSize));
+        }
+
+        function renderPageNumbers() {
+            pageNumbersContainer.innerHTML = '';
+            const total = totalPages();
+            for (let i = 1; i <= total; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = 'page-number' + (i === currentPage ? ' active' : '');
+                btn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderTable();
+                });
+                pageNumbersContainer.appendChild(btn);
+            }
+        }
+
+        function renderTable() {
+            // Hide all rows first
+            allRows.forEach(r => r.style.display = 'none');
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+            allRows.slice(start, end).forEach(r => r.style.display = '');
+
+            // Update info
+            if (paginationInfo) {
+                paginationInfo.textContent = `Hiển thị ${start + 1} - ${Math.min(end, allRows.length)} của ${allRows.length} người dùng`;
+            }
+
+            // Update buttons
+            prevPageBtn.disabled = currentPage === 1;
+            nextPageBtn.disabled = currentPage === totalPages();
+
+            // Re-render page numbers for active state
+            renderPageNumbers();
+        }
+
+        // Initial render
+        renderTable();
+
+        // Event listeners
+        if (prevPageBtn) {
+            prevPageBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTable();
+                }
+            });
+        }
+
+        if (nextPageBtn) {
+            nextPageBtn.addEventListener('click', () => {
+                if (currentPage < totalPages()) {
+                    currentPage++;
+                    renderTable();
+                }
+            });
+        }
+
+        if (pageSizeSelect) {
+            pageSizeSelect.addEventListener('change', () => {
+                pageSize = parseInt(pageSizeSelect.value);
+                currentPage = 1;
+                renderTable();
+            });
+        }
+    }
+    // ---- End Pagination Logic ----
 
     setTimeout(function() {
         const alerts = document.querySelectorAll('.alert');

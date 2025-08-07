@@ -1290,7 +1290,9 @@
                             div.addEventListener('click', () => {
                                 searchInput.value = member.fullName;
                                 suggestionsContainer.style.display = 'none';
-                                window.location.href = `/UserManagement/Members?search=${encodeURIComponent(member.fullName)}&sortOrder=${'@ViewBag.CurrentSort'}`;
+                                const typeParam = '@ViewBag.UserType';
+                                const typeQuery = typeParam ? `&type=${typeParam}` : '';
+                                window.location.href = `/UserManagement/Members?search=${encodeURIComponent(member.fullName)}&sortOrder=${'@ViewBag.CurrentSort'}${typeQuery}`;
                             });
                             suggestionsContainer.appendChild(div);
                         });
@@ -1312,7 +1314,9 @@
                     const query = searchInput.value.trim();
                     if (query.length > 0) {
                         suggestionsContainer.style.display = 'none';
-                        window.location.href = `/UserManagement/Members?search=${encodeURIComponent(query)}&sortOrder=${'@ViewBag.CurrentSort'}`;
+                        const typeParam2 = '@ViewBag.UserType';
+                        const typeQuery2 = typeParam2 ? `&type=${typeParam2}` : '';
+                        window.location.href = `/UserManagement/Members?search=${encodeURIComponent(query)}&sortOrder=${'@ViewBag.CurrentSort'}${typeQuery2}`;
                     }
                 }
             });
@@ -1349,7 +1353,12 @@
     </style>
     <script>
         document.getElementById('sortOrder').addEventListener('change', function() {
-            window.location.href = '?sortOrder=' + this.value;
+            const currentUrl = new URL(window.location.href);
+            if ('@ViewBag.UserType' !== '') {
+                currentUrl.searchParams.set('type', '@ViewBag.UserType');
+            }
+            currentUrl.searchParams.set('sortOrder', this.value);
+            window.location.href = currentUrl.toString();
         });
     </script>
 </body>
