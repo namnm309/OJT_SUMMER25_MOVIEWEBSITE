@@ -765,6 +765,19 @@ body {
     cursor: pointer;
     transition: var(--transition);
     position: relative;
+    /* Tắt tooltip */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Tắt tooltip cho seat-item */
+.seat-item[title]:hover::after,
+.seat-item[title]:hover::before,
+.seat-item::after {
+    display: none !important;
+    content: none !important;
 }
 
 .seat-item:hover {

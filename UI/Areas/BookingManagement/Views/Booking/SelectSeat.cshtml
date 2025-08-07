@@ -69,11 +69,6 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Hiển thị ghế đã chọn -->
-            <div class="selected-seats-header" id="selectedSeatsHeader" style="display: none;">
-                <!-- Ghế đã chọn sẽ được hiển thị ở đây -->
-            </div>
 
             <!-- Màn hình cong với hiệu ứng đẹp hơn -->
             <div class="screen-container">
@@ -89,29 +84,33 @@
             <!-- Legend cải tiến -->
             <div class="seat-legend">
                 <div class="legend-item">
-                    <div class="legend-seat" style="color: #ffffff;"></div>
-                    <span>Ghế trống</span>
+                    <div class="legend-seat available"></div>
+                    <span>Ghế thường</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-seat selected"></div>
                     <span>Ghế đã chọn</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-seat" style="color: #5a899d;"></div>
+                    <div class="legend-seat taken"></div>
                     <span>Ghế đã đặt</span>
                 </div>
                 <div class="legend-item">
-                <div class="legend-seat" style="color: #ffffff;"></div>
-                <span>Ghế VIP</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-seat selected"></div>
-                <span>Đang chờ (của bạn)</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-seat" style="color: #5a899d;"></div>
-                <span>Đang chờ (người khác)</span>
-            </div>
+                    <div class="legend-seat vip"></div>
+                    <span>Ghế ULTRA</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-seat couple"></div>
+                    <span>Ghế VIP</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-seat selected"></div>
+                    <span>Đang chờ (của bạn)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-seat pending"></div>
+                    <span>Đang chờ (người khác)</span>
+                </div>
             </div>
         </div>
     </div>
