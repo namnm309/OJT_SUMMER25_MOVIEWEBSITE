@@ -8,6 +8,7 @@ using DomainLayer.Enum;
 using InfrastructureLayer.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace ApplicationLayer.Services.Payment
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpCtx;
+        private readonly ILogger<PaymentService> _logger;
 
         public PaymentService(IGenericRepository<Booking> bookingRepo,
             IGenericRepository<Transaction> transactionRepo,
@@ -49,7 +51,8 @@ namespace ApplicationLayer.Services.Payment
             ITicketService ticketService,
             IConfiguration config,
             IMapper mapper,
-            IHttpContextAccessor httpCtx) : base(mapper, httpCtx)
+            IHttpContextAccessor httpCtx,
+            ILogger<PaymentService> logger) : base(mapper, httpCtx)
         {
             _bookingRepo = bookingRepo;
             _transactionRepo = transactionRepo;
@@ -64,6 +67,7 @@ namespace ApplicationLayer.Services.Payment
             _pointHistoryRepo = pointHistoryRepo;
             _promotionRepo = promotionRepo;
             _userPromotionRepo = userPromotionRepo;
+            _logger = logger;
         }
 
         public async Task<string> CreateVnPayPayment(HttpContext context, PaymentRequestDto Dto)
@@ -232,43 +236,58 @@ namespace ApplicationLayer.Services.Payment
             await _transactionRepo.UpdateAsync(transaction);
 
             // Lấy thông tin user role để phân biệt user vs admin
-            // Sử dụng role của user hiện tại đang tạo payment, không phải role của user trong booking
+            // Sử dụng role của user trong booking, không phải role của user tạo payment
             string userRole = "Member"; // Default
             string bookingSource = "user"; // Default
             
-            // Lấy role của user hiện tại từ JWT token
+            // Lấy role của user hiện tại từ JWT token (nếu có)
             var payload = ExtractPayload();
             if (payload != null)
             {
                 userRole = payload.Role.ToString();
-                
-                // Phân biệt nguồn tạo booking dựa trên role
-                if (payload.Role == UserRole.Admin || payload.Role == UserRole.Staff)
+            }
+            
+            // Phân biệt nguồn tạo booking dựa trên role của user trong booking
+            if (booking != null)
+            {
+                var bookingUser = await _userRepo.FindByIdAsync(booking.UserId);
+                if (bookingUser != null)
                 {
-                    bookingSource = "admin_dashboard";
-                }
-                else
-                {
-                    bookingSource = "user";
+                    // Sử dụng role của user trong booking để xác định booking source
+                    if (bookingUser.Role == UserRole.Admin || bookingUser.Role == UserRole.Staff)
+                    {
+                        bookingSource = "admin_dashboard";
+                    }
+                    else
+                    {
+                        bookingSource = "user";
+                    }
+                    
+                    // Cập nhật userRole nếu không lấy được từ JWT
+                    if (payload == null)
+                    {
+                        userRole = bookingUser.Role.ToString();
+                    }
+                    
+                    // Log để debug
+                    _logger.LogInformation("VNPay Callback - BookingId: {BookingId}, BookingUserId: {BookingUserId}, BookingUserRole: {BookingUserRole}, BookingSource: {BookingSource}", 
+                        booking.Id, booking.UserId, bookingUser.Role, bookingSource);
                 }
             }
-            else
+            else if (transaction != null)
             {
-                // Nếu không lấy được payload, thử lấy từ transaction
-                if (transaction != null)
+                // Fallback: nếu không có booking, sử dụng transaction user
+                var transactionUser = await _userRepo.FindByIdAsync(transaction.UserId);
+                if (transactionUser != null)
                 {
-                    var transactionUser = await _userRepo.FindByIdAsync(transaction.UserId);
-                    if (transactionUser != null)
+                    userRole = transactionUser.Role.ToString();
+                    if (transactionUser.Role == UserRole.Admin || transactionUser.Role == UserRole.Staff)
                     {
-                        userRole = transactionUser.Role.ToString();
-                        if (transactionUser.Role == UserRole.Admin || transactionUser.Role == UserRole.Staff)
-                        {
-                            bookingSource = "admin_dashboard";
-                        }
-                        else
-                        {
-                            bookingSource = "user";
-                        }
+                        bookingSource = "admin_dashboard";
+                    }
+                    else
+                    {
+                        bookingSource = "user";
                     }
                 }
             }

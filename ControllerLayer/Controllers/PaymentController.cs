@@ -47,7 +47,12 @@ namespace ControllerLayer.Controllers
                         //var uiBase = "https://cinemacity-frontend-dcayhqe2h3f7djhq.eastasia-01.azurewebsites.net"; // Production URL
                         var uiBase = "https://www.cinemacity.app";
                         var redirectUrl = GetRedirectUrlByBookingSource(response.BookingSource, response.BookingCode, true);
-                        return Redirect($"{uiBase}{redirectUrl}");
+                        var fullRedirectUrl = $"{uiBase}{redirectUrl}";
+                        
+                        _logger.LogInformation("VNPay Success Redirect - BookingSource: {BookingSource}, BookingCode: {BookingCode}, RedirectUrl: {RedirectUrl}", 
+                            response.BookingSource, response.BookingCode, fullRedirectUrl);
+                        
+                        return Redirect(fullRedirectUrl);
                     }
 
                     // Redirect to UI fail page dựa trên booking source
