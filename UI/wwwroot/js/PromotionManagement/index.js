@@ -1,7 +1,7 @@
 ﻿
         // API Base URL
-        // const API_BASE = '/api/v1';
-        const API_BASE = 'https://localhost:7049/api/v1';
+        const API_BASE = '/api/v1';
+        // const API_BASE = 'https://localhost:7049/api/v1';
 
 
         let promotions = [];
@@ -109,29 +109,48 @@
                 // Hiển thị loading ngay lập tức, không delay
                 showTableLoading();
                 
-                // Tạm thời comment API call và dùng data demo để tránh lỗi
                 const response = await fetch(`${API_BASE}/promotions`);
-
 
                 if (response.ok) {
                     const result = await response.json();
+                    console.log('API Response:', result); // Debug log
 
-                if (result.data && Array.isArray(result.data)) {
-                    promotions = result.data;
+                    // Handle different response formats
+                    let promotionList = [];
+                    if (result.data && Array.isArray(result.data)) {
+                        promotionList = result.data;
+                    } else if (result.data && Array.isArray(result.data.items)) {
+                        promotionList = result.data.items;
+                    } else if (Array.isArray(result)) {
+                        promotionList = result;
+                    } else {
+                        console.warn('Unexpected API response format:', result);
+                        // Không throw error, chỉ log warning
+                        promotionList = [];
+                    }
+                    
+                    promotions = promotionList;
                     processPromotionData(promotions, page, size);
+                    
+                    // Clear any existing error notifications
+                    const existingNotifications = document.querySelectorAll('.toast-notification.error');
+                    existingNotifications.forEach(notification => notification.remove());
+                    
                 } else {
-                    throw new Error('API trả về sai định dạng hoặc không có dữ liệu');
+                    console.error('API response not ok:', response.status, response.statusText);
+                    throw new Error(`API không phản hồi: ${response.status}`);
                 }
-                } else {
-                    throw new Error('API không phản hồi');
-                }
-                
-                // Sử dụng data demo ngay lập tức để tránh delay gây "giật"
-                // Chỉ delay nhẹ để có cảm giác thực tế mà không bị giật
-                await new Promise(resolve => setTimeout(resolve, 100)); // Giảm từ 300ms xuống 100ms
                 
             } catch (error) {
                 console.error('Error loading promotions:', error);
+                
+                // Log more details for debugging
+                if (error.message.includes('API không phản hồi')) {
+                    console.error('API endpoint might be wrong or server not running');
+                }
+                
+                // Show error message to user
+                showNotification('Không thể tải dữ liệu khuyến mãi. Vui lòng thử lại sau.', 'error');
                 
                 // Fallback data ngay lập tức
                 promotions = fallbackPromotions;
@@ -169,10 +188,8 @@
             updatePaginationInfo();
             updatePaginationControls();
             
-            // Ẩn loading sau khi hoàn thành tất cả
-            setTimeout(() => {
-                hideTableLoading();
-            }, 50); // Delay nhẹ để đảm bảo DOM update xong
+            // Hide loading immediately after processing
+            hideTableLoading();
         }
 
         // Display promotions in table
@@ -230,12 +247,21 @@
                                 <strong>Đến:</strong> ${formatDate(endDate)}
                             </div>
                         </td>
-                        <td>
-                            <span class="discount-badge">
-                                <i class="fas fa-percentage"></i>
-                                ${promotion.discountPercent}%
-                            </span>
-                        </td>
+                                        <td>
+                    <div class="promotion-details">
+                        <span class="discount-badge">
+                            <i class="fas fa-percentage"></i>
+                            ${promotion.discountPercent}%
+                        </span>
+                        ${(promotion.requiredPoints && promotion.requiredPoints > 0) ? 
+                            `<span class="points-badge">
+                                <i class="fas fa-coins"></i>
+                                ${promotion.requiredPoints} điểm
+                            </span>` : 
+                            '<span class="free-badge">Miễn phí</span>'
+                        }
+                    </div>
+                </td>
                         <td>
                             <span class="status-badge ${statusClass}">${statusText}</span>
                         </td>
@@ -549,6 +575,10 @@
                             <input type="number" id="editDiscountPercent" name="discountPercent" 
                                    value="${promotion.discountPercent}" min="1" max="100" required>
                         </div>
+                                                 <div class="form-group">
+                             <label for="editRequiredPoints">Điểm yêu cầu (0 = miễn phí)</label>
+                             <input type="number" id="editRequiredPoints" name="requiredPoints" min="0" value="${promotion.requiredPoints || 0}">
+                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group full-width">
@@ -706,6 +736,10 @@
                             <input type="number" id="addDiscountPercent" name="discountPercent" 
                                    min="1" max="100" required>
                         </div>
+                                                 <div class="form-group">
+                             <label for="addRequiredPoints">Điểm yêu cầu (0 = miễn phí)</label>
+                             <input type="number" id="addRequiredPoints" name="requiredPoints" min="0" value="0">
+                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group full-width">
@@ -821,14 +855,15 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang thêm...';
             
             try {
-                const promotionData = {
-                    title: formData.get('title'),
-                    startDate: formData.get('startDate'),
-                    endDate: formData.get('endDate'),
-                    discountPercent: parseInt(formData.get('discountPercent')),
-                    description: formData.get('description'),
-                    imageUrl: formData.get('imageUrl')
-                };
+                                 const promotionData = {
+                     title: formData.get('title'),
+                     startDate: formData.get('startDate'),
+                     endDate: formData.get('endDate'),
+                     discountPercent: parseInt(formData.get('discountPercent')),
+                     requiredPoints: parseFloat(formData.get('requiredPoints')) || 0,
+                     description: formData.get('description'),
+                     imageUrl: formData.get('imageUrl')
+                 };
                 
                 const response = await fetch(`${API_BASE}/promotions`, {
                     method: 'POST',
@@ -868,15 +903,16 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang cập nhật...';
             
             try {
-                const promotionData = {
-                    id: promotionId,
-                    title: formData.get('title'),
-                    startDate: formData.get('startDate'),
-                    endDate: formData.get('endDate'),
-                    discountPercent: parseInt(formData.get('discountPercent')),
-                    description: formData.get('description'),
-                    imageUrl: formData.get('imageUrl')
-                };
+                                 const promotionData = {
+                     id: promotionId,
+                     title: formData.get('title'),
+                     startDate: formData.get('startDate'),
+                     endDate: formData.get('endDate'),
+                     discountPercent: parseInt(formData.get('discountPercent')),
+                     requiredPoints: parseFloat(formData.get('requiredPoints')) || 0,
+                     description: formData.get('description'),
+                     imageUrl: formData.get('imageUrl')
+                 };
                 
                 const response = await fetch(`${API_BASE}/promotions`, {
                     method: 'PUT',

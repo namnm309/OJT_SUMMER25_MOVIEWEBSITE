@@ -19,6 +19,19 @@ namespace UI.Controllers
 
         public async Task<IActionResult> Index()
         {
+            // Call the API to get user profile (including points)
+            var userProfileResp = await _apiService.GetAsync<JsonElement>("/api/user/profile");
+            if (userProfileResp.Success && userProfileResp.Data.ValueKind != JsonValueKind.Undefined)
+            {
+                var userProfile = userProfileResp.Data;
+                double userScore = userProfile.TryGetProperty("score", out var scoreProp) && scoreProp.ValueKind == JsonValueKind.Number ? scoreProp.GetDouble() : 0;
+                ViewBag.UserScore = userScore;
+            }
+            else
+            {
+                ViewBag.UserScore = 0;
+            }
+
             // Call the API to get all active vouchers (promotions)
             var allVouchersResp = await _apiService.GetAsync<List<JsonElement>>("/api/v1/promotions");
             ViewBag.AllVouchers = allVouchersResp.Success ? allVouchersResp.Data : null;
@@ -48,7 +61,7 @@ namespace UI.Controllers
 
                 if (response.Success)
                 {
-                    return Json(new { success = true, message = "Đã lưu voucher thành công!" });
+                    return Json(new { success = true, message = "Đã đổi voucher thành công!" });
                 }
                 else
                 {
@@ -57,14 +70,13 @@ namespace UI.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Có lỗi xảy ra khi lưu voucher: " + ex.Message });
+                return Json(new { success = false, message = "Có lỗi xảy ra khi đổi voucher. Vui lòng thử lại." });
             }
         }
+    }
 
-        public class SaveUserPromotionRequest
-        {
-            [JsonPropertyName("promotionId")]
-            public string? PromotionId { get; set; }
-        }
+    public class SaveUserPromotionRequest
+    {
+        public Guid? PromotionId { get; set; }
     }
 } 

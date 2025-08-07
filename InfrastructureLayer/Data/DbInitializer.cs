@@ -21,11 +21,11 @@ namespace InfrastructureLayer.Database
             if (dbContext != null)
             {
                 // Apply pending migrations
-                if (dbContext.Database.GetPendingMigrations().Any())
-                {
-                    Console.WriteLine("Applying Migrations...");
-                    dbContext.Database.Migrate();
-                }
+                //if (dbContext.Database.GetPendingMigrations().Any())
+                //{
+                //    Console.WriteLine("Applying Migrations...");
+                //    dbContext.Database.Migrate();
+                //}
 
                 // Seed data
                 try

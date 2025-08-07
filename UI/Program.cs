@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using System.IO;
 
 namespace UI
 {
@@ -174,6 +175,41 @@ namespace UI
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            // Proxy API requests to API server
+            app.Map("/api/{**catch-all}", async context =>
+            {
+                var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"];
+                var targetUrl = $"{apiBaseUrl}{context.Request.Path}{context.Request.QueryString}";
+                
+                using var httpClient = new HttpClient();
+                var request = new HttpRequestMessage(new HttpMethod(context.Request.Method), targetUrl);
+                
+                // Copy headers
+                foreach (var header in context.Request.Headers)
+                {
+                    if (!header.Key.StartsWith("Host", StringComparison.OrdinalIgnoreCase))
+                    {
+                        request.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray());
+                    }
+                }
+                
+                // Copy body for POST/PUT requests
+                if (context.Request.Method == "POST" || context.Request.Method == "PUT")
+                {
+                    context.Request.EnableBuffering();
+                    var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
+                    context.Request.Body.Position = 0;
+                    request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+                }
+                
+                var response = await httpClient.SendAsync(request);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                
+                context.Response.StatusCode = (int)response.StatusCode;
+                context.Response.ContentType = response.Content.Headers.ContentType?.ToString() ?? "application/json";
+                await context.Response.WriteAsync(responseContent);
+            });
 
             app.UseSession();
             app.UseAuthentication();

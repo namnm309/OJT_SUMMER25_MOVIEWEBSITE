@@ -8,6 +8,7 @@ namespace ApplicationLayer.DTO.PromotionManagement
         public Guid PromotionId { get; set; }
         public string Title { get; set; } = string.Empty;
         public int DiscountPercent { get; set; }
+        public double RequiredPoints { get; set; }
         public string Description { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
