@@ -26,5 +26,9 @@ namespace UI.Areas.PromotionManagement.Models
         public string Description { get; set; }
 
         public string ImageUrl { get; set; }
+
+        // Thêm các property để phù hợp với backend response
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

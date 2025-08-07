@@ -16,6 +16,16 @@ namespace UI
 
             builder.Services.AddControllersWithViews();
 
+            // Add CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
 
             builder.Services.AddHttpContextAccessor();
 
@@ -175,6 +185,9 @@ namespace UI
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            // Use CORS
+            app.UseCors("AllowAll");
 
             // Proxy API requests to API server
             app.Map("/api/{**catch-all}", async context =>

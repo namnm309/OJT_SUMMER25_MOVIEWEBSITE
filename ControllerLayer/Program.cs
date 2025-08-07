@@ -320,7 +320,7 @@ namespace ControllerLayer
             app.UseHttpsRedirection();
             
             // Enable CORS
-            app.UseCors("AllowUI");
+            app.UseCors("PublicAPI");
 
             // Map hub endpoint
             app.MapHub<SeatHub>("/seatHub");

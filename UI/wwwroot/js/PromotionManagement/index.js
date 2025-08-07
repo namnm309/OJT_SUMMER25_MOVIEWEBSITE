@@ -1,7 +1,7 @@
 
-// API Base URL
-        const API_BASE = '/api/v1';
-        // const API_BASE = 'https://localhost:7049/api/v1';
+        // API Base URL
+        // const API_BASE = '/PromotionManagement/Promotions';
+        const API_BASE = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1';
 
 
         let promotions = [];
@@ -117,10 +117,20 @@
 
                     // Handle different response formats
                     let promotionList = [];
-                    if (result.data && Array.isArray(result.data)) {
-                        promotionList = result.data;
-                    } else if (result.data && Array.isArray(result.data.items)) {
-                        promotionList = result.data.items;
+                    if (result.code === 200 && result.data) {
+                        // Backend API response format
+                        if (Array.isArray(result.data)) {
+                            promotionList = result.data;
+                        } else if (result.data.items && Array.isArray(result.data.items)) {
+                            promotionList = result.data.items;
+                        }
+                    } else if (result.success && result.data) {
+                        // Alternative response format
+                        if (Array.isArray(result.data)) {
+                            promotionList = result.data;
+                        } else if (result.data.items && Array.isArray(result.data.items)) {
+                            promotionList = result.data.items;
+                        }
                     } else if (Array.isArray(result)) {
                         promotionList = result;
                     } else {
