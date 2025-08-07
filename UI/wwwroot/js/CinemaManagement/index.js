@@ -741,7 +741,7 @@
             
             try {
 
-                const detailsUrl = `/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
+                const detailsUrl = `${getApiBaseUrl()}/api/v1/cinemaroom/ViewSeat?Id=${roomId}`;
                 console.log('Fetching details from URL:', detailsUrl); // Debug log
                 
                 const detailsResponse = await fetch(detailsUrl, {
@@ -958,20 +958,31 @@
             data.RegenerateSeats = (numberOfRows !== originalRows || numberOfColumns !== originalCols);
             
             try {
-                const updateUrl = `${getApiBaseUrl()}/api/v1/cinemaroom/Update/${roomId}`;
-                console.log('Updating room at URL:', updateUrl, 'with data:', data); // Debug log
+                const updateUrl = `${getApiBaseUrl()}/api/v1/cinemaroom/update/${roomId}`;
+                const headers = createAuthHeadersWithCors();
+                console.log('Request URL:', updateUrl);
+                console.log('Request headers:', headers);
+                console.log('Request data:', data);
                 
                 const response = await fetch(updateUrl, {
                     method: 'PATCH',
-                    headers: createAuthHeaders(),
+                    headers: createAuthHeadersWithCors(),
                     body: JSON.stringify(data)
                 });
                 
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                
                 const responseText = await response.text();
+                console.log('Raw response text:', responseText);
+                
                 let result;
                 try {
                     result = parseJsonSafe(responseText);
+                    console.log('Parsed response:', result);
                 } catch (e) {
+                    console.error('Parse error:', e);
+                    console.error('Response text:', responseText);
                     throw new Error(`Invalid JSON response: ${responseText.substring(0, 100)}...`);
                 }
                 
