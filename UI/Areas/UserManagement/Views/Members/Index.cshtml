@@ -1,3 +1,4 @@
+@using System.Text.Json
 @{
     ViewData["Title"] = "Quản lý người dùng";
     Layout = null;
@@ -846,7 +847,18 @@
                                             }
                                         </td>
                                         <td>
-                                            <span class="status-badge status-active">Hoạt động</span>
+                                            @{
+                                                JsonElement activeProperty;
+                                                var isActive = member.TryGetProperty("isActive", out activeProperty) ? activeProperty.GetBoolean() : true;
+                                            }
+                                            @if(isActive)
+                                            {
+                                                <span class="status-badge status-active">Hoạt động</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="status-badge status-inactive">Không hoạt động</span>
+                                            }
                                         </td>
                                         <td>
                                             @{
@@ -876,7 +888,7 @@
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                     <button type="button" class="action-btn btn-toggle btn-action" 
-                                                            onclick="toggleUserStatus('@member.GetProperty("userId").ToString()', false)" 
+                                                            onclick="toggleUserStatus('@member.GetProperty("userId").ToString()', @(isActive.ToString().ToLower()))" 
                                                             title="Thay đổi trạng thái">
                                                         <i class="fas fa-user-slash"></i>
                                                     </button>

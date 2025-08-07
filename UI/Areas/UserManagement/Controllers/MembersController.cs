@@ -58,7 +58,7 @@ namespace UI.Areas.UserManagement.Controllers
                     
                     // Stats
                     ViewBag.TotalMembers = membersList.Count;
-                    ViewBag.ActiveMembers = membersList.Count; // Assume all are active
+                    ViewBag.ActiveMembers = membersList.Count(m => m.TryGetProperty("isActive", out var isActive) && isActive.GetBoolean());
                     ViewBag.StaffMembers = membersList.Count(m => m.TryGetProperty("role", out var role) && (role.ToString() == "Staff" || role.ToString() == "Admin"));
                     var oneWeekAgo = DateTime.UtcNow.AddDays(-7);
                     ViewBag.NewMembers = membersList.Count(m => m.TryGetProperty("createdAt", out var createdAt) && DateTime.TryParse(createdAt.ToString(), out var date) && date >= oneWeekAgo);
