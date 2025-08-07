@@ -1,7 +1,10 @@
 
 
 // Sử dụng HTTPS để trùng với backend và tránh lỗi mixed-scheme/CORS
-const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net';
+const apiBaseUrl = 'https://cinemacity-backend-hhasbzggfafpgbgw.eastasia-01.azurewebsites.net/api/v1';
+
+// Thêm base URL cho frontend để gọi API qua proxy
+const frontendBaseUrl = window.location.origin;
 
 // Helper function để lấy JWT token
 function getAuthToken() {
