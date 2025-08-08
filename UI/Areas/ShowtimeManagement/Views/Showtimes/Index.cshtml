@@ -1,0 +1,320 @@
+@model UI.Areas.ShowtimeManagement.Models.ShowtimePageViewModel
+@{
+    ViewData["Title"] = "Quản lý lịch chiếu - Cinema City";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    
+    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="~/css/new-dashboard.css" />
+    
+    <link rel="stylesheet" href="~/css/ShowTimeManagement/index.css" />
+    <link rel="stylesheet" href="~/css/shared-action-buttons.css" />
+    
+</head>
+
+@{
+    ViewBag.PageTitle = "Quản lý lịch chiếu";
+    ViewBag.ParentTitle = "Dashboard";
+    ViewBag.ParentUrl = Url.Action("AdminDashboard", "Dashboard");
+}
+<body>
+    
+    <div class="new-dashboard-layout">
+        
+        @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
+
+        
+        <main class="new-dashboard-main">
+            <div class="showtime-management-content">
+                
+                    <div class="showtime-page-header">
+                        @await Html.PartialAsync("~/Views/Shared/_DashboardBreadcrumb.cshtml")
+                        <p class="showtime-page-subtitle">
+                            Quản lý và điều phối lịch chiếu phim tại rạp Cinema City
+                        </p>
+                </div>
+
+                    
+                    <div class="showtime-controls">
+                        <div class="showtime-controls-header">
+                            <div class="showtime-search-box">
+                                <i class="fas fa-search showtime-search-icon"></i>
+                                <input type="text" 
+                                       class="showtime-search-input" 
+                                       id="showtimeSearch"
+                                       placeholder="Tìm kiếm theo tên phim, phòng chiếu..."
+                                       onkeyup="searchShowtimes()">
+                                <!-- Kết quả phim -->
+                                <div id="movieSearchResult" class="movie-search-result"></div>
+                        </div>
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="view-toggle">
+                                    <button class="view-toggle-btn active" onclick="switchView('calendar')">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        Lịch
+                                    </button>
+                                    <button class="view-toggle-btn" onclick="switchView('table')">
+                                        <i class="fas fa-list"></i>
+                                        Bảng
+                                    </button>
+                        </div>
+                                <button class="btn-filter" onclick="openFilterModal()">
+                                    <i class="fas fa-filter"></i>
+                                Lọc
+                            </button>
+                                <button class="btn-export" onclick="exportShowtimes()">
+                                    <i class="fas fa-download"></i>
+                                    Xuất Excel
+                                </button>
+                                <button class="btn-add-showtime" onclick="openCreateShowtimeModal()">
+                                    <i class="fas fa-plus"></i>
+                                    Thêm lịch chiếu
+                                </button>
+                        </div>
+                    </div>
+                </div>
+
+                    
+                    <div class="calendar-view active" id="calendarView">
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <div class="calendar-nav">
+                                    <button class="calendar-nav-btn" onclick="changeMonth(-1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                                    <h3 class="calendar-title" id="calendarTitle">Tháng 12/2024</h3>
+                                    <button class="calendar-nav-btn" onclick="changeMonth(1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                                </div>
+                                <button class="btn-add-showtime" onclick="openCreateShowtimeModal()">
+                                    <i class="fas fa-plus"></i>
+                                    Thêm lịch chiếu
+                    </button>
+                </div>
+                            <div class="calendar-grid" id="calendarGrid">
+                                <div class="calendar-weekdays">
+                                    <div class="calendar-weekday">Thứ 2</div>
+                                    <div class="calendar-weekday">Thứ 3</div>
+                                    <div class="calendar-weekday">Thứ 4</div>
+                                    <div class="calendar-weekday">Thứ 5</div>
+                                    <div class="calendar-weekday">Thứ 6</div>
+                                    <div class="calendar-weekday">Thứ 7</div>
+                                    <div class="calendar-weekday">Chủ nhật</div>
+                            </div>
+                                
+                    </div>
+                                </div>
+                    </div>
+
+                    
+                    <div class="table-view" id="tableView">
+                        <div class="showtime-table-container" id="showtimeTableContainer">
+                        <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                            <div class="d-flex align-items-center gap-3">
+                                <h5 class="mb-0">Danh sách lịch chiếu</h5>
+                                <span class="badge bg-primary">@Model.Showtimes.Count() lịch chiếu</span>
+                                <!-- old pageSizeSelect removed, handled in movie-pagination -->
+                                            </div>
+                            <div class="bulk-actions">
+                                <button class="bulk-action-btn danger" id="bulkDeleteBtn" onclick="bulkDeleteShowtimes()" disabled>
+                                    <i class="fas fa-trash"></i>
+                                    Xóa đã chọn
+                                </button>
+                                <button class="bulk-action-btn" id="bulkUpdateBtn" onclick="bulkUpdateStatus()" disabled>
+                                    <i class="fas fa-toggle-on"></i>
+                                    Cập nhật trạng thái
+                                </button>
+                    </div>
+                </div>
+
+                        <div class="movie-pagination d-flex justify-content-between align-items-center py-2">
+                            <div class="pagination-info">
+                                <span id="paginationInfo">Trang 1/1 (Hiển thị 0-0 của 0)</span>
+                            </div>
+                            <div class="pagination-controls d-flex align-items-center gap-1">
+                                <button id="prevPageBtn" class="btn-pagination btn btn-sm btn-outline-secondary" disabled onclick="loadShowtimesTable(currentTablePage-1)">❮ Trước</button>
+                                <div id="pageNumbers" class="page-numbers d-flex gap-1"></div>
+                                <button id="nextPageBtn" class="btn-pagination btn btn-sm btn-outline-secondary" disabled onclick="loadShowtimesTable(currentTablePage+1)">Sau ❯</button>
+                            </div>
+                            <div class="pagination-size">
+                                <select id="pageSizeSelect" class="form-select form-select-sm" style="width:auto;" onchange="changePageSize()">
+                                    <option value="5">5/trang</option>
+                                    <option value="10" selected>10/trang</option>
+                                    <option value="25">25/trang</option>
+                                    <option value="50">50/trang</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="showtime-table" id="showtimeTable">
+                        <thead>
+                            <tr>
+                                        <th style="width: 40px;">
+                                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                        </th>
+                                <th>Phim</th>
+                                <th>Phòng chiếu</th>
+                                <th>Ngày chiếu</th>
+                                <th>Giờ chiếu</th>
+                                <th>Giờ kết thúc</th>
+                                <th>Giá vé</th>
+                                        <th>Trạng thái</th>
+                                        <th>Tình trạng</th>
+                                        <th style="width: 120px;">Thao tác</th>
+                            </tr>
+                        </thead>
+                                <tbody id="showtimeTableBody">
+                                    @if (Model.Showtimes != null && Model.Showtimes.Any())
+                                    {
+                            @foreach (var showtime in Model.Showtimes.OrderBy(s => s.ShowDate).ThenBy(s => s.StartTime))
+                            {
+                                            var showtimeOccupancyRate = showtime.TotalSeats > 0 ? (double)showtime.BookedSeats / showtime.TotalSeats * 100 : 0;
+                                            var occupancyStatus = showtimeOccupancyRate >= 90 ? "sold-out" : 
+                                                                showtimeOccupancyRate >= 70 ? "nearly-full" : "available";
+                                            var occupancyText = showtimeOccupancyRate >= 90 ? "Hết vé" : 
+                                                              showtimeOccupancyRate >= 70 ? "Sắp hết vé" : "Còn vé";
+                                            
+                                            var status = showtime.ShowDate.Date < DateTime.Today ? "inactive" : 
+                                                       showtime.ShowDate.Date == DateTime.Today ? "active" : "pending";
+                                            var statusText = showtime.ShowDate.Date < DateTime.Today ? "Đã qua" : 
+                                                           showtime.ShowDate.Date == DateTime.Today ? "Hôm nay" : "Sắp tới";
+                                            
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" value="@showtime.Id" onchange="updateBulkActionButtons()">
+                                                </td>
+                                    <td>
+                                        <div class="movie-info">
+                                            @if (!string.IsNullOrEmpty(showtime.MoviePoster))
+                                            {
+                                                <img src="@showtime.MoviePoster" alt="@showtime.MovieTitle" class="movie-poster">
+                                            }
+                                                        else
+                                                        {
+                                                            <div class="movie-poster bg-light d-flex align-items-center justify-content-center">
+                                                                <i class="fas fa-film text-muted"></i>
+                                                            </div>
+                                                        }
+                                                        <div class="movie-details">
+                                                            <h6>@showtime.MovieTitle</h6>
+                                                            <small>@showtime.MovieDuration phút</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                                <td>
+                                                    <strong>@showtime.CinemaRoomName</strong>
+                                                </td>
+                                                <td>
+                                                    @showtime.ShowDate.ToString("dd/MM/yyyy")
+                                                </td>
+                                                <td>
+                                                    <strong>@showtime.StartTime.ToString(@"hh\:mm")</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>@showtime.EndTime.ToString(@"hh\:mm")</strong>
+                                                </td>
+                                                <td>
+                                                    <span class="text-success fw-bold">@showtime.Price.ToString("N0") VNĐ</span>
+                                                </td>
+                                                <td>
+                                                    <span class="status-badge @status">@statusText</span>
+                                                </td>
+                                                <td>
+                                                    <span class="status-badge @occupancyStatus">@occupancyText</span>
+                                                    <div class="mt-1">
+                                                        <small class="text-muted">@showtime.BookedSeats/@showtime.TotalSeats vé</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                                        <button class="action-btn" onclick="viewShowtime('@showtime.Id')" title="Xem chi tiết">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="action-btn edit" onclick="editShowtime('@showtime.Id')" title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                                        <button class="action-btn delete" onclick="deleteShowtime('@showtime.Id')" title="Xóa">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="9">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-calendar-times"></i>
+                                                    <h5>Chưa có lịch chiếu nào</h5>
+                                                    <p>Nhấn "Thêm lịch chiếu" để tạo lịch chiếu mới</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                        </div>
+                        <!-- pagination moved to top -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    
+    <div class="modal fade showtime-detail-modal" id="showtimeDetailModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi tiết lịch chiếu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="showtimeDetailBody">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-warning" onclick="editCurrentShowtime()">
+                        <i class="fas fa-edit"></i>
+                        Chỉnh sửa
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="deleteCurrentShowtime()">
+                        <i class="fas fa-trash"></i>
+                        Xóa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @await Html.PartialAsync("_CreateNewModal")
+
+    <script>
+        window.initialShowtimesJson = @Html.Raw(Json.Serialize(Model.Showtimes ?? new List<UI.Areas.ShowtimeManagement.Models.ShowtimeDto>()));
+    </script>
+    <script src="~/js/ShowTimeManagement/index.js"></script>
+    
+    
+</body>
+</html>

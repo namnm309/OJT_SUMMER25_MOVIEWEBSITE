@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Movie Card</title>
+    <link href="~/css/HomePage/custom-sections.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: #000;
+            color: white;
+            padding: 50px;
+        }
+        .test-container {
+            max-width: 300px;
+        }
+        .debug-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #333;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Movie Card - Debug Nút "Xem Chi Tiết"</h1>
+    
+    <div class="test-container">
+        <div class="recommended-item movie-card">
+            <div class="recommended-poster movie-poster">
+                <img src="https://upload.wikimedia.org/wikipedia/vi/1/18/Tenet_poster_VN.jpeg" alt="Tenetttt" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
+                <div class="recommended-overlay">
+                    <a href="/Movies/Details/11111111-1111-1111-1111-0000000000a1" class="recommended-view-btn" onclick="alert('Link clicked!'); return true;">
+                        <i class="fas fa-info-circle"></i>
+                        Xem Chi Tiết
+                    </a>
+                </div>
+                <div class="recommended-rating">
+                    <i class="fas fa-star"></i> 8,5
+                </div>
+            </div>
+            <div class="recommended-info movie-info-home">
+                <span class="recommended-genre badge-genre-home">
+                    Hành động
+                </span>
+                <h3 class="recommended-title movie-title-home">Tenetttt</h3>
+                <div class="recommended-meta">
+                    <div class="recommended-duration">
+                        <i class="fas fa-clock"></i>
+                        <span>150 phút</span>
+                    </div>
+                    <span>2025</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="debug-info">
+        <h3>Debug Information:</h3>
+        <button onclick="testLink()">Test Link Directly</button>
+        <button onclick="debugOverlay()">Debug Overlay</button>
+        <div id="debugOutput"></div>
+    </div>
+
+    <script>
+        function testLink() {
+
+            window.location.href = '/Movies/Details/11111111-1111-1111-1111-0000000000a1';
+        }
+
+        function debugOverlay() {
+            const overlay = document.querySelector('.recommended-overlay');
+            const link = document.querySelector('.recommended-view-btn');
+            const output = document.getElementById('debugOutput');
+            
+            output.innerHTML = `
+                <p><strong>Overlay styles:</strong></p>
+                <p>Position: ${getComputedStyle(overlay).position}</p>
+                <p>Z-index: ${getComputedStyle(overlay).zIndex}</p>
+                <p>Opacity: ${getComputedStyle(overlay).opacity}</p>
+                <p>Pointer Events: ${getComputedStyle(overlay).pointerEvents}</p>
+                <p><strong>Link styles:</strong></p>
+                <p>Display: ${getComputedStyle(link).display}</p>
+                <p>Pointer Events: ${getComputedStyle(link).pointerEvents}</p>
+                <p>Z-index: ${getComputedStyle(link).zIndex}</p>
+            `;
+        }
+
+
+        document.addEventListener('click', function(e) {
+            console.log('Clicked element:', e.target);
+            console.log('Event target tagName:', e.target.tagName);
+            console.log('Event target className:', e.target.className);
+        });
+    </script>
+</body>
+</html> 

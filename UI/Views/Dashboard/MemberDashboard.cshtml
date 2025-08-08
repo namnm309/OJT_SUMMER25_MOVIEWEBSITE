@@ -1,0 +1,565 @@
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+    Layout = null;
+}
+
+@using System.Text.Json
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cinema City</title>
+    <link rel="icon" type="image/svg+xml" href="~/cinema-favicon-projector.svg" />
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Homepage CSS -->
+    <link rel="stylesheet" href="~/css/HomePage/base.css" />
+    <link rel="stylesheet" href="~/css/HomePage/header.css" />
+    <link rel="stylesheet" href="~/css/Shared/_header_new.css" />
+    <link rel="stylesheet" href="~/css/shared-footer.css" />
+    <link rel="stylesheet" href="~/css/memberdashboard.css" />
+    <link rel="stylesheet" href="~/css/Shared/fix-header-offset.css" />
+
+</head>
+<body>
+    @await Html.PartialAsync("_Header")
+    <div class="profile-page with-header-offset">
+
+            
+        <!-- Profile Hero Section -->
+        <section class="profile-hero">
+            <div class="profile-hero-content">
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            @(ViewBag.FullName?.ToString()?.Substring(0, 1).ToUpper() ?? "U")
+                        }
+                        else
+                        {
+                            <span>U</span>
+                        }
+                    </div>
+                    <div class="profile-details">
+                        <h1>@(ViewBag.FullName ?? "Người dùng")</h1>
+                        <p>@ViewBag.Email</p>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">@(ViewBag.Score ?? 0)</div>
+                                <div class="stat-label">Điểm thưởng</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">@(ViewBag.TicketCount ?? 0)</div>
+                                <div class="stat-label">Vé đã đặt</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">Bạc</div>
+                                <div class="stat-label">Hạng thành viên</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <main class="profile-content">
+            <!-- Navigation Tabs -->
+            <div class="section-tabs">
+                <button class="tab-btn active" onclick="showTab('personal-info', this)">
+                    <i class="fas fa-user"></i> Thông tin cá nhân
+                </button>
+                <button class="tab-btn" onclick="showTab('membership', this)">
+                    <i class="fas fa-id-card"></i> Thẻ thành viên
+                </button>
+                <button class="tab-btn" onclick="showTab('points', this)">
+                    <i class="fas fa-star"></i> Điểm thưởng
+                </button>
+                <button class="tab-btn" onclick="showTab('vouchers', this)">
+                    <i class="fas fa-gift"></i> Voucher
+                </button>
+                <button class="tab-btn" onclick="showTab('history', this)">
+                    <i class="fas fa-history"></i> Lịch sử giao dịch
+                        </button>
+                <button class="tab-btn" onclick="showTab('my-tickets', this)">
+                    <i class="fas fa-ticket-alt"></i> Vé đã đặt
+                </button>
+            </div>
+
+            <!-- Personal Info Tab -->
+            <div id="personal-info" class="tab-content active">
+                <div class="profile-card">
+                    <div class="card-header">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>Thông tin cá nhân</h3>
+                </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Họ và tên:</span>
+                            <span class="info-value">@(ViewBag.FullName ?? "Chưa cập nhật")</span>
+                            </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">@(ViewBag.Email ?? "Chưa cập nhật")</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tên đăng nhập:</span>
+                            <span class="info-value">@(ViewBag.UserName ?? "Chưa cập nhật")</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Vai trò:</span>
+                            <span class="info-value">
+                                <span class="badge" style="background: var(--primary-purple); color: white; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                                    @(ViewBag.Role ?? "Member")
+                                </span>
+                            </span>
+                    </div>
+                        <div class="info-item">
+                            <span class="info-label">Trạng thái:</span>
+                            <span class="info-value">
+                                @if(ViewBag.IsActive == true)
+                                {
+                                    <span class="badge" style="background: var(--success-green); color: white; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                                        <i class="fas fa-check-circle"></i> Hoạt động
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge" style="background: var(--danger-red); color: white; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                                        <i class="fas fa-times-circle"></i> Không hoạt động
+                                    </span>
+                                }
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Ngày tham gia:</span>
+                            <span class="info-value">@(ViewBag.CreatedAt ?? "Chưa cập nhật")</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 2rem; text-align: center;">
+                        <button onclick="window.openEditModal()" class="action-btn">
+                            <i class="fas fa-edit"></i> Chỉnh sửa thông tin
+                        </button>
+                    </div>
+
+                        </div>
+                    </div>
+
+            <!-- Membership Tab -->
+            <div id="membership" class="tab-content">
+                <div class="profile-card">
+                    <div class="card-header">
+                        <i class="fas fa-id-card"></i>
+                        <h3>Thẻ thành viên</h3>
+                    </div>
+                    <div class="membership-card">
+                        <div class="membership-content">
+                            <div class="membership-header">
+                                <div>
+                                    <div class="membership-level">Thành viên Bạc</div>
+                                    <div class="membership-id">ID: @(ViewBag.UserId ?? "N/A")</div>
+                                </div>
+                                <div style="font-size: 3rem;">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                            </div>
+                            <div class="membership-benefits">
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="fas fa-percentage"></i>
+                                    </div>
+                                    <div>Giảm 10% tất cả vé</div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="fas fa-calendar-plus"></i>
+                                    </div>
+                                    <div>Đặt vé ưu tiên</div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="fas fa-birthday-cake"></i>
+                                    </div>
+                                    <div>Ưu đãi sinh nhật</div>
+                                </div>
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                <i class="fas fa-star"></i>
+                                    </div>
+                                    <div>Tích điểm x2</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+<!-- Points Tab -->
+            <div id="points" class="tab-content">
+                <div class="points-overview">
+                    <div class="points-card">
+                        <div class="points-value">@ViewBag.Score</div>
+                        <div class="points-label">Điểm hiện tại</div>
+                    </div>
+                    <div class="points-card">
+                        <div class="points-value">@ViewBag.PointsNeeded</div>
+                        <div class="points-label">Điểm cần để lên hạng</div>
+                    </div>
+                    <div class="points-card">
+                        <div class="points-value">-</div>
+                        <div class="points-label">Điểm tháng này</div>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Tiến trình lên hạng</h3>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="margin-bottom: 1rem;">
+                            <span style="font-size: 1.2rem; color: var(--text-secondary);">Tiến trình đến hạng Vàng</span>
+                            </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: @ViewBag.ProgressPercent%;"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                            <span>@ViewBag.Score điểm</span>
+                            <span>@(ViewBag.Score + ViewBag.PointsNeeded) điểm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <div class="card-header">
+                        <i class="fas fa-trophy"></i>
+                        <h3>Cách thức tích điểm</h3>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Đặt vé phim (2-4 ghế):</span>
+                            <span class="info-value">+10 điểm</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Đặt vé phim (5-9 ghế):</span>
+                            <span class="info-value">+30 điểm</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Đặt vé phim (10+ ghế):</span>
+                            <span class="info-value">+130 điểm</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Sinh nhật:</span>
+                            <span class="info-value">+100 điểm/năm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vouchers Tab -->
+            <div id="vouchers" class="tab-content">
+                <div class="profile-card">
+                    <div class="card-header">
+                        <i class="fas fa-gift"></i>
+                        <h3>Voucher của bạn</h3>
+                        </div>
+                    <div class="voucher-grid">
+                        @if(ViewBag.UserVouchers != null)
+                        {
+                            foreach(var voucherEl in (IEnumerable<JsonElement>)ViewBag.UserVouchers)
+                            {
+                                var title = voucherEl.GetProperty("title").GetString();
+                                var discount = voucherEl.TryGetProperty("discountPercent", out var discProp) ? discProp.GetInt32() : 0;
+                                var description = voucherEl.GetProperty("description").GetString();
+                                var endDate = voucherEl.GetProperty("endDate").GetDateTime();
+
+                                <div class="voucher-item">
+                                    <div class="voucher-header">
+                                        <div class="voucher-discount">@discount% </div>
+                                        <div class="voucher-code">@title</div>
+                                    </div>
+                                    <div class="voucher-description">
+                                        @description
+                                    </div>
+                                    <div class="voucher-expiry">
+                                        <i class="fas fa-clock"></i> Hết hạn: @endDate.ToString("dd/MM/yyyy")
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>Không có voucher nào.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction History Tab -->
+            <div id="history" class="tab-content">
+                <div class="profile-card">
+                    <div class="card-header">
+                        <i class="fas fa-history"></i>
+                        <h3>Lịch sử giao dịch</h3>
+                    </div>
+                    <div class="transaction-list">
+                        @if(ViewBag.BookingHistory != null)
+                        {
+                            @foreach(var histEl in (IEnumerable<JsonElement>)ViewBag.BookingHistory)
+                            {
+                                var status = histEl.GetProperty("status").GetString();
+                                var amount = histEl.GetProperty("amount").GetDecimal();
+                                var isRefund = histEl.GetProperty("isRefund").GetBoolean();
+                                var movieTitle = histEl.GetProperty("movieTitle").GetString();
+                                var cinemaRoom = histEl.GetProperty("cinemaRoom").GetString();
+                                var bookingDate = histEl.GetProperty("bookingDate").GetDateTime();
+
+                                var iconClass = status == "Canceled" ? "refund" : "booking";
+                                var amountClass = isRefund ? "positive" : "negative";
+                                var amountText = (isRefund ? "+" : "-") + String.Format("{0:N0}đ", amount);
+
+                                <div class="transaction-item">
+                                    <div class="transaction-icon @iconClass">
+                                        <i class="fas fa-ticket-alt"></i>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <div class="transaction-title">Đặt vé phim "@movieTitle"</div>
+                                        <div class="transaction-subtitle">@cinemaRoom</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div class="transaction-amount @amountClass">@amountText</div>
+                                        <div class="transaction-time">@bookingDate.ToString("dd/MM/yyyy HH:mm")</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else {
+                           <p>Chưa có giao dịch.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Tickets Tab -->
+            <div id="my-tickets" class="tab-content">
+                <div style="text-align:center;margin-bottom:1rem;">
+                    <button id="loadTicketsBtn" class="action-btn" style="padding:.75rem 1.5rem;border-radius:25px;background:var(--primary-purple);color:#fff;border:none;">
+                        <i class="fas fa-sync-alt"></i> Tải danh sách vé
+                    </button>
+                </div>
+                <div id="ticketsList" class="transaction-list">
+                    <p>Nhấn nút trên để tải vé của bạn.</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer từ homepage -->
+        @await Html.PartialAsync("_SharedFooter")
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/memberdashboard.js"></script>
+    <script>
+        $(document).ready(function() {
+            window.openEditModal = function() {
+                $('#editModal').modal('show');
+            };
+
+            window.saveChanges = function() {
+                var gender = $('#gender').val() ? parseInt($('#gender').val()) : null;
+                var editData = {
+                    email: $('#email').val(),
+                    fullName: $('#fullname').val(),
+                    phone: $('#phone').val(),
+                    identityCard: $('#idcard').val(),
+                    address: $('#address').val(),
+                    birthDate: $('#dob').val(),
+                    gender: gender,
+                    avatar: null
+                };
+
+                // Validate required fields
+                if (!editData.fullName || !editData.phone) {
+                    alert('Vui lòng điền đầy đủ thông tin bắt buộc: Họ và tên, Số điện thoại');
+                    return;
+                }
+
+                // Validate phone format
+                var phoneRegex = /^[0-9]{10,11}$/;
+                if (!phoneRegex.test(editData.phone)) {
+                    alert('Số điện thoại không hợp lệ. Vui lòng nhập 10-11 chữ số.');
+                    return;
+                }
+
+                // Validate email format
+                var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+                if (!emailRegex.test(editData.email)) {
+                    alert('Email không hợp lệ.');
+                    return;
+                }
+
+                
+
+                $.ajax({
+                    url: '@Url.Action("EditProfile", "Dashboard")',
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(editData),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#editModal').modal('hide');
+                            $('#successMessage').text('Thông tin đã được cập nhật thành công!').show();
+                            setTimeout(function() { location.reload(); }, 2000);
+                        } else {
+                            alert('Lỗi: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        var errorMessage = 'Đã xảy ra lỗi khi cập nhật thông tin.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        alert(errorMessage);
+                    }
+                });
+            };
+
+            // ---- Load Tickets ----
+            let ticketsLoaded=false;
+            $(document).on('click','#loadTicketsBtn',async function(){
+                await fetchTickets();
+            });
+
+            async function fetchTickets(){
+                try{
+                    const resp = await fetch('https://localhost:7049/api/v1/ticket/User',{
+                        headers:{'Authorization':`Bearer ${sessionStorage.getItem('jwtToken')||localStorage.getItem('jwtToken')||''}`}
+                    });
+                    if(!resp.ok){
+                        $('#ticketsList').html('<p class="text-danger">Không thể tải vé!</p>');
+                        return;
+                    }
+                    const result = await resp.json();
+                    if(result && result.data && Array.isArray(result.data)){
+                        renderTickets(result.data);
+                        ticketsLoaded=true;
+                    }else{
+                        $('#ticketsList').html('<p>Không có vé nào.</p>');
+                    }
+                }catch(e){
+                    console.error('fetchTickets error',e);
+                    $('#ticketsList').html('<p class="text-danger">Lỗi tải vé!</p>');
+                }
+            }
+
+            function renderTickets(tickets){
+                if(tickets.length===0){ $('#ticketsList').html('<p>Không có vé nào.</p>'); return; }
+                const html = tickets.map(t=>{
+                    const date = (t.showDate||'').split('T')[0];
+                    const time = t.showTime||'';
+                    return `<div class="transaction-item">
+                                <div class="transaction-icon booking"><i class="fas fa-ticket-alt"></i></div>
+                                <div class="transaction-details">
+                                    <div class="transaction-title">${t.movieName||t.movieTitle}</div>
+                                    <div class="transaction-subtitle">Ghế: ${t.seatCode||t.seat}</div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div class="transaction-amount">${Number(t.price||0).toLocaleString('vi-VN')}đ</div>
+                                    <div class="transaction-time">${date} ${time}</div>
+                                </div>
+                            </div>`;
+                }).join('');
+                $('#ticketsList').html(html);
+            }
+
+            // Auto load when tab chosen first time
+            window.openTicketsTab=function(){ if(!ticketsLoaded) fetchTickets(); }
+        });
+    </script>
+    
+    <div id="successMessage" class="alert alert-success" style="display: none; position: fixed; top: 20px; right: 20px; z-index: 1050;">
+        Thông tin đã được cập nhật! (Chức năng này cần backend hỗ trợ)
+    </div>
+    
+    <!-- Edit Profile Modal -->
+    <div id="editModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa thông tin cá nhân</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#editModal').modal('hide');">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <div class="form-group">
+                            <label for="username">Tên đăng nhập</label>
+                            <input type="text" class="form-control" id="username" value="@(ViewBag.UserName ?? "")" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" value="@(ViewBag.Email ?? "")" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="fullname">Họ và tên</label>
+                            <input type="text" class="form-control" id="fullname" value="@(ViewBag.FullName ?? "")">
+                        </div>
+                        <div class="form-group">
+                            <label for="dob">Ngày sinh</label>
+                            <input type="date" class="form-control" id="dob" value="@(ViewBag.BirthDate ?? "")">
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Giới tính</label>
+                            <select class="form-control" id="gender">
+                                <option value="">Chọn giới tính</option>
+                                <option value="1" selected="@(ViewBag.Gender == "Nam")">Nam</option>
+                                <option value="2" selected="@(ViewBag.Gender == "Nữ")">Nữ</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Số điện thoại</label>
+                            <input type="tel" class="form-control" id="phone" value="@(ViewBag.Phone ?? "")">
+                        </div>
+                        <div class="form-group">
+                            <label for="idcard">Thẻ căn cước</label>
+                            <input type="text" class="form-control" id="idcard" value="@(ViewBag.IdentityCard ?? "")" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Địa chỉ</label>
+                            <input type="text" class="form-control" id="address" value="@(ViewBag.Address ?? "")">
+                        </div>
+                        
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#editModal').modal('hide');">Quay lại</button>
+                    <button type="button" class="btn btn-primary" onclick="window.saveChanges()">Lưu thông tin</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .modal-open {
+            padding-right: 0 !important;
+        }
+        body {
+            overflow-y: scroll;
+        }
+    </style>
+    
+</body>
+</html>

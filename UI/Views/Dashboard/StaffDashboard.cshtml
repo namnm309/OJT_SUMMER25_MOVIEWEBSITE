@@ -1,0 +1,296 @@
+@{
+    ViewData["Title"] = "Bảng điều khiển Nhân viên";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cinema City</title>
+    <link rel="icon" type="image/svg+xml" href="~/cinema-favicon-projector.svg" />
+    
+    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="~/css/new-dashboard.css" />
+</head>
+<body>
+    
+    <div class="new-dashboard-layout">
+        
+        @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
+
+        
+        <main class="new-dashboard-main">
+            <div class="new-dashboard-content">
+                
+                <div class="new-page-header animate-fade-in">
+                    <h1 class="new-page-title">
+                        <i class="fas fa-briefcase"></i>
+                        Staff Dashboard
+                    </h1>
+                    <p class="new-page-subtitle">Quản lý hoạt động hàng ngày của rạp chiếu phim</p>
+                </div>
+                
+                
+                <div class="new-stats-grid animate-fade-in">
+                    <div class="new-stat-card">
+                        <div class="new-stat-header">
+                            <div class="new-stat-icon tickets">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                        </div>
+                        <div class="new-stat-value">@ViewBag.TodayTickets</div>
+                        <div class="new-stat-label">Vé bán hôm nay</div>
+                        <div class="new-stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+12% so với hôm qua</span>
+                        </div>
+                    </div>
+
+                    <div class="new-stat-card">
+                        <div class="new-stat-header">
+                            <div class="new-stat-icon users">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="new-stat-value">@ViewBag.TotalCustomers</div>
+                        <div class="new-stat-label">Khách hàng phục vụ</div>
+                        <div class="new-stat-change positive">
+                            <i class="fas fa-smile"></i>
+                            <span>Dịch vụ tốt!</span>
+                        </div>
+                    </div>
+
+                    <div class="new-stat-card">
+                        <div class="new-stat-header">
+                            <div class="new-stat-icon movies">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="new-stat-value">8.5</div>
+                        <div class="new-stat-label">Giờ làm việc</div>
+                        <div class="new-stat-change positive">
+                            <i class="fas fa-check"></i>
+                            <span>Ca làm việc hiện tại</span>
+                        </div>
+                    </div>
+
+                    <div class="new-stat-card">
+                        <div class="new-stat-header">
+                            <div class="new-stat-icon revenue">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                        </div>
+                        <div class="new-stat-value">45,600K</div>
+                        <div class="new-stat-label">Doanh thu ca</div>
+                        <div class="new-stat-change positive">
+                            <i class="fas fa-trophy"></i>
+                            <span>Vượt mục tiêu!</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="new-content-grid animate-slide-in">
+                    
+                    <div class="new-content-card">
+                        <div class="new-card-header">
+                            <h3 class="new-card-title">
+                                <i class="fas fa-tasks"></i>
+                                Công việc hàng ngày
+                            </h3>
+                        </div>
+                        <div class="new-quick-actions">
+                            <a href="@Url.Action("Index", "BookingTicket", new { area = "BookingManagement" })" class="new-action-btn">
+                                <i class="fas fa-ticket-alt"></i>
+                                <span>Bán vé</span>
+                            </a>
+                            <a href="@Url.Action("Index", "Movies", new { area = "MovieManagement" })" class="new-action-btn">
+                                <i class="fas fa-film"></i>
+                                <span>Quản lý phim</span>
+                            </a>
+                            <a href="@Url.Action("Index", "Members", new { area = "UserManagement" })" class="new-action-btn">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Đăng ký thành viên</span>
+                            </a>
+                            <a href="@Url.Action("Index", "Promotions", new { area = "PromotionManagement" })" class="new-action-btn">
+                                <i class="fas fa-gift"></i>
+                                <span>Áp dụng khuyến mãi</span>
+                            </a>
+                            <a href="#" class="new-action-btn">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>Kiểm tra lịch chiếu</span>
+                            </a>
+                            <a href="#" class="new-action-btn">
+                                <i class="fas fa-headset"></i>
+                                <span>Hỗ trợ khách hàng</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    
+                    <div class="new-content-card">
+                        <div class="new-card-header">
+                            <h3 class="new-card-title">
+                                <i class="fas fa-bell"></i>
+                                Thông báo ca làm
+                            </h3>
+                        </div>
+                        <div class="new-activity-feed">
+                            <div class="new-activity-item">
+                                <div class="new-activity-icon success">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="new-activity-content">
+                                    <div class="new-activity-title">Vượt chỉ tiêu bán vé</div>
+                                    <div class="new-activity-time">15 phút trước</div>
+                                </div>
+                            </div>
+                            <div class="new-activity-item">
+                                <div class="new-activity-icon info">
+                                    <i class="fas fa-film"></i>
+                                </div>
+                                <div class="new-activity-content">
+                                    <div class="new-activity-title">Suất chiếu 19h30 gần đầy</div>
+                                    <div class="new-activity-time">30 phút trước</div>
+                                </div>
+                            </div>
+                            <div class="new-activity-item">
+                                <div class="new-activity-icon warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="new-activity-content">
+                                    <div class="new-activity-title">Thiết bị phòng 3 cần kiểm tra</div>
+                                    <div class="new-activity-time">1 giờ trước</div>
+                                </div>
+                            </div>
+                            <div class="new-activity-item">
+                                <div class="new-activity-icon success">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="new-activity-content">
+                                    <div class="new-activity-title">5 thành viên mới đăng ký</div>
+                                    <div class="new-activity-time">2 giờ trước</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="new-content-grid animate-slide-in" style="margin-top: 2rem;">
+                    
+                    <div class="new-content-card">
+                        <div class="new-card-header">
+                            <h3 class="new-card-title">
+                                <i class="fas fa-clock"></i>
+                                Thông tin ca làm việc
+                            </h3>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; gap: 1rem; padding: 1rem; background: var(--content-secondary); border-radius: 8px;">
+                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Bắt đầu ca: 08:00</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-muted);">Ca sáng - Phục vụ khách hàng</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 1rem; padding: 1rem; background: var(--content-secondary); border-radius: 8px;">
+                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #f093fb, #f5576c); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                                    <i class="fas fa-stop-circle"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Kết thúc ca: 17:00</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-muted);">Còn 3.5 giờ nữa</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 1rem; padding: 1rem; background: var(--content-secondary); border-radius: 8px;">
+                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #4facfe, #00f2fe); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                                    <i class="fas fa-coffee"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">Giờ nghỉ: 12:00 - 13:00</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-muted);">Nghỉ trưa 1 tiếng</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="new-content-card">
+                        <div class="new-card-header">
+                            <h3 class="new-card-title">
+                                <i class="fas fa-chart-line"></i>
+                                Thống kê nhanh
+                            </h3>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid var(--success);">
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <i class="fas fa-chart-line" style="color: var(--success); font-size: 1.2rem;"></i>
+                                    <span style="font-weight: 500;">Hiệu suất bán vé</span>
+                                </div>
+                                <span style="color: var(--success); font-weight: 600;">125%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border-left: 4px solid var(--primary-purple);">
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <i class="fas fa-users" style="color: var(--primary-purple); font-size: 1.2rem;"></i>
+                                    <span style="font-weight: 500;">Đánh giá khách hàng</span>
+                                </div>
+                                <span style="color: var(--primary-purple); font-weight: 600;">4.8/5</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: rgba(245, 158, 11, 0.1); border-radius: 8px; border-left: 4px solid var(--warning);">
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <i class="fas fa-tasks" style="color: var(--warning); font-size: 1.2rem;"></i>
+                                    <span style="font-weight: 500;">Công việc hoàn thành</span>
+                                </div>
+                                <span style="color: var(--warning); font-weight: 600;">18/20</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: rgba(236, 72, 153, 0.1); border-radius: 8px; border-left: 4px solid #ec4899;">
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <i class="fas fa-star" style="color: #ec4899; font-size: 1.2rem;"></i>
+                                    <span style="font-weight: 500;">Điểm thưởng nhận được</span>
+                                </div>
+                                <span style="color: #ec4899; font-weight: 600;">+85</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname.toLowerCase();
+            const navLinks = document.querySelectorAll('.new-nav-link');
+            
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href')?.toLowerCase();
+                if (href && currentPath.includes(href)) {
+
+                    navLinks.forEach(l => l.classList.remove('active'));
+
+                    link.classList.add('active');
+                }
+            });
+            
+            console.log('✅ New Staff Dashboard Loaded Successfully');
+        });
+    </script>
+</body>
+</html>

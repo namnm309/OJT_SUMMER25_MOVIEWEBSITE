@@ -1,0 +1,1041 @@
+
+.movie-details-page {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #303030;
+    color: white;
+    min-height: 100vh;
+}
+
+
+.hero-section {
+    position: relative;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(48, 48, 48, 0.9), rgba(48, 48, 48, 0.7));
+    z-index: 2;
+}
+
+.hero-bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(2px);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    padding: 60px 0;
+}
+
+
+.breadcrumb-nav {
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.breadcrumb-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-link:hover {
+    color: #df2144;
+}
+
+.breadcrumb-separator {
+    margin: 0 8px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.breadcrumb-current {
+    color: white;
+    font-weight: 500;
+}
+
+
+.movie-hero-info {
+    max-width: 600px;
+}
+
+.movie-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.genre-badge {
+    background: rgba(223, 33, 68, 0.2);
+    border: 1px solid #df2144;
+    color: #df2144;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: white;
+    margin: 0 0 8px 0;
+    line-height: 1.1;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.hero-studio {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 24px;
+    font-weight: 500;
+}
+
+
+.movie-meta {
+    background: #2f2f2f;
+    border-radius: 8px;
+    padding: 16px 24px;
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.meta-item i {
+    color: #ffd600;
+    width: 16px;
+    height: 16px;
+}
+
+
+.action-buttons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: #df2144;
+    color: white;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.20);
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 2px solid #df2144;
+    color: #df2144;
+}
+
+.btn-icon {
+    width: 48px;
+    height: 48px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #c01e3e;
+    transform: translateY(-2px);
+}
+
+.btn-secondary:hover {
+    background: #df2144;
+    color: white;
+}
+
+.btn-icon:hover {
+    border-color: #df2144;
+    color: #df2144;
+    transform: scale(1.1);
+}
+
+
+.hero-poster {
+    display: flex;
+    justify-content: center;
+}
+
+.poster-container {
+    position: relative;
+    max-width: 300px;
+}
+
+.poster-image {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.poster-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background: linear-gradient(45deg, rgba(223, 33, 68, 0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.poster-container:hover .poster-image {
+    transform: scale(1.05);
+}
+
+.poster-container:hover .poster-glow {
+    opacity: 1;
+}
+
+
+.details-section {
+    padding: 80px 0;
+    background: #303030;
+}
+
+
+.content-card {
+    background: #2f2f2f;
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-title i {
+    color: #df2144;
+    font-size: 1.2rem;
+}
+
+.synopsis-text {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+
+.cast-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.cast-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.cast-label {
+    font-weight: 600;
+    color: #df2144;
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+.cast-value {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+}
+
+
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: scale(1.05);
+}
+
+.gallery-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    transition: filter 0.3s ease;
+}
+
+.gallery-item:hover .gallery-image {
+    filter: brightness(1.1);
+}
+
+
+.info-card {
+    background: #2f2f2f;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-title i {
+    color: #df2144;
+}
+
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.info-value {
+    font-size: 1rem;
+    color: white;
+    font-weight: 500;
+}
+
+.genre-chip {
+    display: inline-block;
+    background: rgba(223, 33, 68, 0.2);
+    border: 1px solid #df2144;
+    color: #df2144;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-right: 8px;
+    margin-bottom: 4px;
+}
+
+
+.showtimes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.showtime-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 3px solid #df2144;
+}
+
+.showtime-date {
+    font-weight: 600;
+    color: #df2144;
+    font-size: 0.9rem;
+}
+
+.showtime-time {
+    font-weight: 500;
+    color: white;
+}
+
+.showtime-room {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.btn-view-all {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid #df2144;
+    color: #df2144;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.btn-view-all:hover {
+    background: #df2144;
+    color: white;
+}
+
+
+.related-movies {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.related-movie-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.related-movie-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.related-poster {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.related-info {
+    flex: 1;
+}
+
+.related-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+}
+
+.related-genre {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+}
+
+
+    /* Cast & Crew Section */
+.cast-crew-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.crew-item, .cast-item, .production-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.crew-item:hover, .cast-item:hover, .production-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+.crew-role, .cast-role, .production-role {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+    color: var(--primary-red);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.crew-role i, .cast-role i, .production-role i {
+    font-size: 1rem;
+    width: 16px;
+    text-align: center;
+}
+
+.crew-name, .production-name {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.4;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.crew-name:last-child {
+    border-bottom: none;
+}
+
+.cast-list, .crew-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.actor-name {
+    color: var(--text-primary);
+    font-weight: 400;
+    font-size: 0.95rem;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.actor-name:last-child {
+    border-bottom: none;
+}
+
+.more-actors {
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    cursor: pointer;
+}
+
+.modal-content {
+    position: relative;
+    margin: auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.modal-close:hover {
+    color: #df2144;
+}
+
+.modal-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .movie-meta {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn-primary, .btn-secondary {
+        justify-content: center;
+    }
+    
+    .cast-row {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .cast-label {
+        min-width: auto;
+    }
+    
+    .image-gallery {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    
+    .showtime-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-content {
+        padding: 40px 0;
+    }
+    
+    .content-card, .info-card {
+        padding: 20px;
+    }
+    
+    .details-section {
+        padding: 40px 0;
+    }
+}
+
+
+/* CSS cho date selector wrapper và navigation buttons */
+.date-selector-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 20px 0;
+    background: rgba(26, 26, 26, 0.6);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 20px 0;
+    position: relative;
+    width: 100%; /* Thay đổi để chiều rộng đầy đủ */
+}
+
+/* Thêm container cho date selector với gradient fade */
+.date-selector-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    flex: 1; /* Cho phép container mở rộng */
+    max-width: calc(100% - 120px); /* Trừ đi chiều rộng của 2 nút navigation */
+}
+
+/* Gradient fade ở bên trái */
+.date-selector-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 100%;
+    background: linear-gradient(to right, 
+        rgba(26, 26, 26, 0.8) 0%, 
+        rgba(26, 26, 26, 0.6) 30%, 
+        rgba(26, 26, 26, 0.3) 70%, 
+        transparent 100%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Gradient fade ở bên phải */
+.date-selector-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 100%;
+    background: linear-gradient(to left, 
+        rgba(26, 26, 26, 0.8) 0%, 
+        rgba(26, 26, 26, 0.6) 30%, 
+        rgba(26, 26, 26, 0.3) 70%, 
+        transparent 100%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.date-selector {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    padding: 0 10px;
+    /* Thay đổi để sử dụng toàn bộ chiều rộng có sẵn */
+    width: 100%;
+    max-width: none;
+    
+    /* Hide scrollbar */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    position: relative;
+    z-index: 1;
+}
+
+/* Responsive cho gradient fade */
+@media (max-width: 768px) {
+    .date-selector-container::before,
+    .date-selector-container::after {
+        width: 25px;
+    }
+}
+
+@media (max-width: 576px) {
+    .date-selector-container::before,
+    .date-selector-container::after {
+        width: 20px;
+    }
+}
+
+.date-nav-btn {
+    width: 50px;
+    height: 50px;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(40, 40, 40, 0.6)) !important;
+    color: white !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-size: 1.1rem !important;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.date-nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(223, 33, 68, 0.2), rgba(79, 195, 247, 0.2));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+}
+
+.date-nav-btn:hover:not(:disabled) {
+    transform: translateY(-3px) scale(1.05) !important;
+    border-color: rgba(223, 33, 68, 0.5) !important;
+    box-shadow: 0 8px 25px rgba(223, 33, 68, 0.3) !important;
+}
+
+.date-nav-btn:hover:not(:disabled)::before {
+    opacity: 1;
+}
+
+.date-nav-btn:active:not(:disabled) {
+    transform: translateY(-1px) scale(1.02) !important;
+}
+
+.date-nav-btn:disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    background: rgba(26, 26, 26, 0.4) !important;
+}
+
+.date-nav-btn:disabled::before {
+    opacity: 0;
+}
+
+.date-nav-btn i {
+    position: relative;
+    z-index: 1;
+    color: white !important;
+}
+
+.date-selector {
+    display: flex;
+    gap: 0.5rem; /* Giảm khoảng cách giữa các nút */
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    padding: 0 10px;
+    width: 100%;
+    max-width: none;
+    justify-content: flex-start;
+    
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    position: relative;
+    z-index: 1;
+}
+
+.date-selector::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.date-btn {
+    /* Chia đều không gian cho tất cả các nút */
+    flex: 1 1 0; /* Cho phép co giãn đều nhau */
+    min-width: 80px; /* Kích thước tối thiểu nhỏ hơn */
+    max-width: 140px; /* Giới hạn kích thước tối đa */
+    padding: 12px 8px; /* Giảm padding ngang */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap; /* Ngăn text xuống dòng */
+    overflow: hidden; /* Ẩn text tràn */
+}
+
+/* Khi có nhiều hơn 7 nút, sử dụng scroll */
+.date-selector:has(.date-btn:nth-child(8)) .date-btn {
+    flex: 0 0 auto;
+    min-width: 100px;
+    max-width: 120px;
+}
+
+.date-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(223, 33, 68, 0.5);
+    transform: translateY(-2px);
+}
+
+.date-btn.active {
+    background: linear-gradient(135deg, #df2144, #c01e3e);
+    border-color: #df2144;
+    box-shadow: 0 8px 25px rgba(223, 33, 68, 0.4);
+}
+
+.date-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.date-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .date-selector-wrapper {
+        gap: 0.5rem;
+        padding: 15px 10px;
+        width: 100%; /* Đảm bảo chiều rộng đầy đủ trên mobile */
+    }
+    
+    .date-selector-container {
+        max-width: calc(100% - 100px); /* Điều chỉnh cho mobile */
+    }
+    
+    .date-nav-btn {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 1rem !important;
+    }
+    
+    .date-selector {
+        gap: 0.3rem;
+    }
+    
+    .date-btn {
+        min-width: 70px;
+        max-width: 110px;
+        padding: 10px 6px;
+        font-size: 0.85rem;
+    }
+    
+    /* Khi có nhiều hơn 5 nút trên mobile, sử dụng scroll */
+    .date-selector:has(.date-btn:nth-child(6)) .date-btn {
+        flex: 0 0 auto;
+        min-width: 85px;
+        max-width: 100px;
+    }
+}
+
+@media (max-width: 576px) {
+    .date-selector-wrapper {
+        gap: 0.3rem;
+        padding: 12px 8px;
+        width: 100%; /* Đảm bảo chiều rộng đầy đủ trên mobile nhỏ */
+    }
+    
+    .date-selector-container {
+        max-width: calc(100% - 90px); /* Điều chỉnh cho mobile nhỏ */
+    }
+    
+    .date-nav-btn {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .date-selector {
+        gap: 0.25rem;
+    }
+    
+    .date-btn {
+        min-width: 60px;
+        max-width: 90px;
+        padding: 8px 4px;
+        font-size: 0.8rem;
+    }
+    
+    /* Khi có nhiều hơn 4 nút trên mobile nhỏ, sử dụng scroll */
+    .date-selector:has(.date-btn:nth-child(5)) .date-btn {
+        flex: 0 0 auto;
+        min-width: 75px;
+        max-width: 85px;
+    }
+}
+
+/* Pulse effect cho active button */
+.date-btn.active {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 10px 35px rgba(223, 33, 68, 0.4);
+    }
+    50% {
+        box-shadow: 0 10px 35px rgba(223, 33, 68, 0.6);
+    }
+    100% {
+        box-shadow: 0 10px 35px rgba(223, 33, 68, 0.4);
+    }
+}
+
+/* Loading animation cho showtimes */
+.loading-showtimes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.loading-showtimes i {
+    margin-right: 10px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .cast-crew-info {
+        gap: 1rem;
+    }
+    
+    .crew-item, .cast-item, .production-item {
+        padding: 1rem;
+    }
+    
+    .crew-role, .cast-role, .production-role {
+        font-size: 0.85rem;
+    }
+    
+    .crew-name, .production-name {
+        font-size: 0.9rem;
+    }
+    
+    .actor-name {
+        font-size: 0.85rem;
+    }
+}

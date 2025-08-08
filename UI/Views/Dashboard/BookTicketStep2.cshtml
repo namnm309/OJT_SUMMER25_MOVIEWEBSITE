@@ -1,0 +1,293 @@
+@{
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Sơ đồ ghế</h5>
+            </div>
+            <div class="card-body">
+                <div class="screen mb-4">
+                    SCREEN
+                </div>
+                <div id="seatMap" class="seat-map-container">
+                    <!-- Ghế sẽ được load động -->
+                </div>
+                <div class="seat-legend mt-4">
+                    <div class="legend-item">
+                        <div class="legend-color bg-success"></div>
+                        <span>Ghế trống</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color bg-danger"></div>
+                        <span>Ghế đã đặt</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color bg-warning"></div>
+                        <span>Ghế VIP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Chi tiết đặt vé</h5>
+            </div>
+            <div class="card-body">
+                <div id="selectedMovieInfo" class="mb-3">
+                    <!-- Thông tin phim được chọn -->
+                </div>
+                <div id="selectedSeats" class="selection-summary">
+                    <p class="text-muted">Chưa có ghế nào được chọn</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12 d-flex justify-content-between">
+        <button class="btn btn-secondary" onclick="prevStep(2)">
+            <i class="fas fa-arrow-left me-2"></i>Quay lại
+        </button>
+        <button class="btn btn-primary" id="nextToPayment" disabled>
+            Tiếp tục <i class="fas fa-arrow-right ms-2"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Lấy thông tin phim và suất chiếu từ localStorage
+    const selectedMovie = JSON.parse(localStorage.getItem('selectedMovie'));
+    const selectedShowtime = JSON.parse(localStorage.getItem('selectedShowtime'));
+
+    // Hiển thị thông tin phim
+    if (selectedMovie) {
+        $('#selectedMovieInfo').html(`
+            <div class="movie-details">
+                <h6>${selectedMovie.title}</h6>
+                <p>Suất chiếu: ${selectedShowtime.time}</p>
+            </div>
+        `);
+    }
+
+    // Load ghế
+    function loadSeats() {
+        $.ajax({
+            url: `/api/v1/booking-ticket/available?showTimeId=${selectedShowtime.id}`,
+            method: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    displaySeats(response.data.seats);
+                } else {
+                    console.error('Lỗi tải ghế:', response.message);
+                    $('#seatMap').html('<p class="text-muted">Không thể tải sơ đồ ghế</p>');
+                }
+            },
+            error: function(xhr) {
+                console.error('Lỗi kết nối:', xhr);
+            }
+        });
+    }
+
+    // Hiển thị ghế
+    function displaySeats(seats) {
+        const seatMap = $('#seatMap');
+        seatMap.empty();
+
+        if (!seats || seats.length === 0) {
+            seatMap.html('<p class="text-muted">Không có dữ liệu ghế</p>');
+            return;
+        }
+
+        // Nhóm ghế theo hàng
+        const seatRows = {};
+        seats.forEach(seat => {
+            const rowName = seat.seatCode.match(/[A-Z]+/)[0];
+            if (!seatRows[rowName]) {
+                seatRows[rowName] = [];
+            }
+            seatRows[rowName].push({
+                ...seat,
+                rowName: rowName,
+                seatNumber: seat.seatCode.match(/\d+/)[0]
+            });
+        });
+
+        // Hiển thị ghế
+        Object.keys(seatRows).sort().forEach(rowName => {
+            const row = $(`<div class="seat-row"><span class="row-label">${rowName}</span></div>`);
+            
+            seatRows[rowName].sort((a, b) => a.seatNumber - b.seatNumber).forEach(seat => {
+                const seatElement = $(`
+                    <div class="seat ${!seat.isAvailable ? 'seat-unavailable' : 'seat-available'} 
+                         ${seat.seatType === 'VIP' ? 'seat-vip' : 'seat-normal'}" 
+                         data-seat-id="${seat.id}" 
+                         data-seat-name="${seat.seatCode}"
+                         data-seat-price="${seat.price}">
+                        ${seat.seatNumber}
+                    </div>
+                `);
+
+                if (seat.isAvailable) {
+                    seatElement.on('click', function() {
+                        toggleSeat(seat, seatElement);
+                    });
+                }
+
+                row.append(seatElement);
+            });
+
+            seatMap.append(row);
+        });
+    }
+
+    // Chọn/bỏ chọn ghế
+    const selectedSeats = [];
+    function toggleSeat(seat, seatElement) {
+        const seatId = seat.id;
+        const seatIndex = selectedSeats.findIndex(s => s.id === seatId);
+
+        if (seatIndex > -1) {
+            // Bỏ chọn ghế
+            selectedSeats.splice(seatIndex, 1);
+            seatElement.removeClass('seat-selected');
+        } else {
+            // Chọn ghế
+            selectedSeats.push(seat);
+            seatElement.addClass('seat-selected');
+        }
+
+        updateSelectedSeats();
+    }
+
+    // Cập nhật danh sách ghế đã chọn
+    function updateSelectedSeats() {
+        const selectedSeatsContainer = $('#selectedSeats');
+        
+        if (selectedSeats.length === 0) {
+            selectedSeatsContainer.html('<p class="text-muted">Chưa có ghế nào được chọn</p>');
+            $('#nextToPayment').prop('disabled', true);
+            return;
+        }
+
+        let html = '<div class="selected-seats-list">';
+        let totalPrice = 0;
+
+        selectedSeats.forEach(seat => {
+            html += `
+                <div class="selected-seat-item">
+                    <span class="seat-name">${seat.seatCode}</span>
+                    <span class="seat-price">${formatCurrency(seat.price)}</span>
+                </div>
+            `;
+            totalPrice += seat.price;
+        });
+
+        html += `
+            <div class="selected-seats-total">
+                <strong>Tổng: ${formatCurrency(totalPrice)}</strong>
+            </div>
+        </div>`;
+
+        selectedSeatsContainer.html(html);
+        $('#nextToPayment').prop('disabled', false);
+
+        // Lưu ghế đã chọn vào localStorage
+        localStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
+    }
+
+    // Validate ghế
+    function validateSeats() {
+        if (selectedSeats.length === 0) {
+            alert('Vui lòng chọn ít nhất một ghế');
+            return false;
+        }
+
+        return true;
+    }
+
+    // Sự kiện chuyển sang bước thanh toán
+    $('#nextToPayment').on('click', function() {
+        if (validateSeats()) {
+            nextStep(2);
+        }
+    });
+
+    // Định dạng tiền tệ
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(amount);
+    }
+
+    // Khởi tạo
+    loadSeats();
+});
+</script>
+
+<style>
+.seat-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.row-label {
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.seat {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    margin: 0 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.seat-available {
+    background-color: #28a745;
+    color: white;
+}
+
+.seat-unavailable {
+    background-color: #dc3545;
+    color: white;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.seat-vip {
+    border: 2px solid #ffc107;
+}
+
+.seat-selected {
+    background-color: #007bff;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0,123,255,0.5);
+}
+
+.screen {
+    background-color: #6c757d;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+</style>

@@ -1,0 +1,239 @@
+@using System.Security.Claims
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="~/css/user-dropdown-sync.css" rel="stylesheet" />
+
+
+<header class="cinema_hero_nav_wrapper_zx9 cinema_shared_header_wrapper_mk7">
+    <nav class="cinema_hero_nav_js4 cinema_shared_header_nav_lm2">
+        <div class="cinema_nav_content_container_bg5">
+            <!-- Brand Section -->
+            <div class="cinema_nav_left_section_kd8">
+                <div class="cinema_brand_logo_container_qw3">
+                    <div class="cinema_brand_content_wrapper_nt7">
+                        <div class="cinema_brand_header_display_xc6">
+                            <div class="cinema_brand_logo_icon_jh8">
+                                <img src="/img/logo.png" alt="Logo" class="cinema_logo_image" />
+                            </div>
+                            <span class="cinema_brand_name_text_vb2">Cine Cinema</span>
+                        </div>
+                        <div class="cinema_brand_subtitle_info_yt9">Rạp chiếu phim hiện đại</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <div class="cinema_nav_center_section_wp1">
+                <div class="cinema_search_container_fx5">
+                    <input type="text" class="cinema_search_input_field_rt6" id="movieSearchInput" placeholder="Tìm kiếm phim...">
+                    <i class="fas fa-search cinema_search_icon_btn_gh3" id="searchButton"></i>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="cinema_nav_right_section_mx0">
+                <div class="cinema_nav_links_container_dh7">
+                    <a href="@Url.Action("Index","Home",  new { area = "" })"  class="cinema_nav_menu_link_pd4">Trang chủ</a>
+                    <a href="@Url.Action("Index","Movies", new { area = "" })" class="cinema_nav_menu_link_pd4">Phim</a>
+                    <a href="@Url.Action("Index","Events", new { area = "" })" class="cinema_nav_menu_link_pd4">Sự Kiện</a>
+                    <a href="@Url.Action("Index","Products",new { area = "" })" class="cinema_nav_menu_link_pd4">Sản Phẩm</a>
+                    <a href="@Url.Action("Index","Vouchers",new { area = "" })" class="cinema_nav_menu_link_pd4">Vouchers</a>
+                </div>
+
+                <!-- User Profile -->
+                <div class="cinema_user_profile_section_tb5">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="cinema_dropdown_container_sr8">
+                            <button class="cinema_user_profile_btn_nz1 cinema_dropdown_toggle_xu4" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle"></i>
+                                @if (ViewContext.HttpContext.User.Identity?.Name?.Length > 10)
+                                {
+                                    <span class="d-none d-md-inline">@ViewContext.HttpContext.User.Identity.Name.Substring(0, 10)...</span>
+                                }
+                                else
+                                {
+                                    <span class="d-none d-md-inline">@ViewContext.HttpContext.User.Identity?.Name</span>
+                                }
+                                <i class="fas fa-chevron-down ms-2"></i>
+                            </button>
+                            <ul class="cinema_dropdown_menu_lg6 cinema_dropdown_menu_end_pm9" aria-labelledby="userDropdown">
+                                <li class="cinema_dropdown_header_info_qr2">
+                                    <div class="cinema_user_info_display_hk1">
+                                        <i class="fas fa-user-circle fa-2x mb-2"></i>
+                                        <div class="cinema_user_name_text_wm7">@ViewContext.HttpContext.User.Identity?.Name</div>
+                                        <div class="cinema_user_email_text_zo3">@ViewContext.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value</div>
+                                    </div>
+                                </li>
+                                <li><hr class="cinema_dropdown_divider_line_vt4"></li>
+                                
+                                <li>
+                                    <a class="cinema_dropdown_menu_item_fx8" href="@Url.Action("Index", "Dashboard", new { area = "" })">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <span>Dashboard</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Thông tin cá nhân</span>
+                                        }
+                                    </a>
+                                </li>
+                                <li><hr class="cinema_dropdown_divider_line_vt4"></li>
+                                <li>
+                                    <form asp-action="Logout" asp-controller="Account" method="post" class="m-0" id="logoutForm">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="cinema_dropdown_menu_item_fx8 cinema_text_danger_red_ky2">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                            Đăng xuất
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="cinema_auth_buttons_container_rj6">
+                            <a href="@Url.Action("Register", "Account")" class="cinema_btn_register_signup_bw1">Đăng ký</a>
+                            <a href="@Url.Action("Login", "Account")" class="cinema_btn_login_signin_ql9">Đăng nhập</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<script>
+    // Search functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('movieSearchInput');
+        const searchButton = document.getElementById('searchButton');
+
+        // Search on button click
+        searchButton?.addEventListener('click', function () {
+            performSearch();
+        });
+
+        // Search on Enter key press
+        searchInput?.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        async function performSearch() {
+            const keyword = searchInput.value.trim();
+            if (keyword) {
+                // Redirect to search results page
+                const searchUrl = '@Url.Action("Search", "Movies")' + `?keyword=${encodeURIComponent(keyword)}`;
+                window.location.href = searchUrl;
+            }
+        }
+    });
+</script>
+
+<script>
+    // User dropdown functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const userDropdown = document.getElementById('userDropdown');
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+
+        if (userDropdown && dropdownMenu) {
+            // Handle click on entire button area
+            userDropdown.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Toggle dropdown immediately without delay
+                const isShowing = dropdownMenu.classList.contains('show');
+
+                if (isShowing) {
+                    dropdownMenu.classList.remove('show');
+                    userDropdown.setAttribute('aria-expanded', 'false');
+                } else {
+                    dropdownMenu.classList.add('show');
+                    userDropdown.setAttribute('aria-expanded', 'true');
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    dropdownMenu.classList.remove('show');
+                    userDropdown.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Close dropdown when pressing Escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
+                    dropdownMenu.classList.remove('show');
+                    userDropdown.setAttribute('aria-expanded', 'false');
+                    userDropdown.focus();
+                }
+            });
+        }
+    });
+</script>
+
+<script>
+    // Logout functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const logoutForm = document.getElementById('logoutForm');
+
+        if (logoutForm) {
+            console.log('Đã tìm thấy form logout');
+            logoutForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                console.log('Form logout được submit');
+
+                // Xóa token ngay lập tức
+                if (window.TokenManager) {
+                    window.TokenManager.removeToken();
+                    console.log('Token đã được xóa khỏi localStorage');
+                }
+
+                // Lấy anti-forgery token
+                const token = logoutForm.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+                // Tạo FormData để gửi POST request với anti-forgery token
+                const formData = new FormData();
+                if (token) {
+                    formData.append('__RequestVerificationToken', token);
+                }
+
+                // Gửi request để logout
+                fetch('/Account/Logout', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Logout response:', data);
+                        if (data.success) {
+                            console.log('Logout thành công, chuyển hướng về:', data.redirectUrl);
+                            window.location.href = data.redirectUrl || '/';
+                        } else {
+                            console.error('Logout failed:', data.message);
+                            window.location.href = '/';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Logout error:', error);
+                        window.location.href = '/';
+                    });
+            });
+        } else {
+            console.log('Không tìm thấy form logout');
+        }
+    });
+</script>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">

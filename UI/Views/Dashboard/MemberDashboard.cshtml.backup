@@ -1,0 +1,474 @@
+@{
+    ViewData["Title"] = "Bảng điều khiển";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cinema City</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Homepage Base CSS for Footer -->
+    <link rel="stylesheet" href="~/css/HomePage/base.css" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles - Reuse from homepage */
+        .dashboard-header {
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand-logo {
+            width: 50px;
+            height: 40px;
+            background: #rgb(129, 85, 238);
+            border-radius: 8px;
+        }
+
+        .brand-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .brand-subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #rgb(129, 85, 238);
+        }
+
+        .nav-link.active {
+            color: #rgb(129, 85, 238);
+        }
+
+        /* Main Content */
+        .dashboard-container {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(223, 33, 68, 0.1) 0%, rgba(223, 33, 68, 0.05) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(223, 33, 68, 0.2);
+        }
+
+        .welcome-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #df2144 0%, #ff4466 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-subtitle {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+        }
+
+        .member-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #df2144;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Dashboard Cards */
+        .dashboard-card {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(45, 45, 45, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            height: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #df2144, #ff4466);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(223, 33, 68, 0.2);
+        }
+
+        .dashboard-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .card-icon {
+            font-size: 48px;
+            color: #df2144;
+            margin-bottom: 20px;
+        }
+
+        /* Quick Actions */
+        .action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            height: 100%;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #df2144;
+            color: #df2144;
+            transform: translateY(-5px);
+        }
+
+        .action-btn i {
+            font-size: 36px;
+        }
+
+        .action-btn span {
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        /* Personal Info */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: white;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .badge.bg-info {
+            background: linear-gradient(135deg, #17a2b8, #117a8b);
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+        }
+
+        /* Footer */
+        .cinema-footer {
+            background: #1a1a1a;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-content {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* User Menu */
+        .user-menu {
+            position: relative;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .user-info:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #df2144;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-name {
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .welcome-title {
+                font-size: 36px;
+            }
+
+            .member-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    @{
+        ViewBag.CurrentPage = "Dashboard";
+    }
+    
+    <!-- Header - Unified Dashboard Style -->
+    @Html.Partial("_DashboardHeader")
+
+    <!-- Main Content -->
+    <main class="dashboard-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1 class="welcome-title">Xin chào, @ViewBag.FullName!</h1>
+            <p class="welcome-subtitle">Chào mừng bạn đến với Cinema City</p>
+            
+            <div class="member-stats">
+                <div class="stat-item">
+                    <div class="stat-value">@ViewBag.Score</div>
+                    <div class="stat-label">Điểm tích lũy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">@ViewBag.TotalBookings</div>
+                    <div class="stat-label">Vé đã đặt</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">@ViewBag.MemberLevel</div>
+                    <div class="stat-label">Hạng thành viên</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="text-center mb-4" style="color: rgba(255, 255, 255, 0.9);">Thao tác nhanh</h3>
+            </div>
+            <div class="col-md-3 mb-4">
+                <a href="@Url.Action("Index", "Movies")" class="action-btn">
+                    <i class="fas fa-film"></i>
+                    <span>Xem phim</span>
+                </a>
+            </div>
+            <div class="col-md-3 mb-4">
+                <a href="#" class="action-btn">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Vé của tôi</span>
+                </a>
+            </div>
+            <div class="col-md-3 mb-4">
+                <a href="@Url.Action("Index", "Promotions")" class="action-btn">
+                    <i class="fas fa-gift"></i>
+                    <span>Khuyến mãi</span>
+                </a>
+            </div>
+            <div class="col-md-3 mb-4">
+                <a href="@Url.Action("Profile", "Account", new { area = "UserManagement" })" class="action-btn">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Chỉnh sửa hồ sơ</span>
+                </a>
+    </div>
+</div>
+
+<!-- User Info -->
+<div class="row">
+    <div class="col-12">
+        <div class="dashboard-card">
+                <h5 class="card-title">
+                    <i class="fas fa-user-circle me-2"></i>Thông tin tài khoản
+                </h5>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Tên đăng nhập</div>
+                            <div class="info-value">@ViewBag.UserName</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Email</div>
+                            <div class="info-value">@ViewBag.Email</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Họ tên</div>
+                            <div class="info-value">@ViewBag.FullName</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Vai trò</div>
+                            <div class="info-value">
+                                <span class="badge bg-info">@ViewBag.Role</span>
+                            </div>
+                    </div>
+                        <div class="info-item">
+                            <div class="info-label">Trạng thái</div>
+                            <div class="info-value">
+                            @if(ViewBag.IsActive)
+                            {
+                                <span class="badge bg-success">Hoạt động</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Không hoạt động</span>
+                            }
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Ngày tham gia</div>
+                            <div class="info-value">@ViewBag.CreatedAt</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    @Html.Partial("footer")
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

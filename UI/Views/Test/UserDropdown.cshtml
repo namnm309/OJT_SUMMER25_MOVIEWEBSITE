@@ -1,0 +1,123 @@
+@{
+    ViewData["Title"] = "Test User Dropdown";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/user-dropdown-sync.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <h1>Test User Dropdown</h1>
+    
+    <div class="d-flex justify-content-center mt-5">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user-circle"></i>
+                Test User
+            </button>
+            
+            <ul class="dropdown-menu dropdown-menu-end show" aria-labelledby="userDropdown" data-popper-placement="bottom-end" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-217px, 45px);">
+                <li class="dropdown-header">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle fa-2x mb-2"></i>
+                        <div class="user-name">tester</div>
+                        <div class="user-email">admin@example.com</div>
+                    </div>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item" href="/UserManagement/Account/Profile">
+                        <i class="fas fa-user-edit"></i>
+                        Chỉnh sửa thông tin
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="/Dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form method="post" class="m-0" action="/Account/Logout">
+                        <button type="submit" class="dropdown-item text-danger">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Đăng xuất
+                        </button>
+                        <input name="__RequestVerificationToken" type="hidden" value="test-token">
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="mt-5">
+        <h3>Màu sắc đồng bộ với Homepage:</h3>
+        <ul>
+            <li><strong>Background:</strong> rgba(0, 0, 0, 0.85) với backdrop-filter blur(25px)</li>
+            <li><strong>Border:</strong> rgba(255, 255, 255, 0.15)</li>
+            <li><strong>Dropdown items:</strong> Gradient màu tím xanh khi hover</li>
+            <li><strong>User info header:</strong> Gradient background với border</li>
+            <li><strong>Logout button:</strong> Màu đỏ với gradient khi hover</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+    }
+    
+    .container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        margin-top: 50px;
+    }
+    
+    h1, h3 {
+        color: white;
+        text-align: center;
+    }
+    
+    ul li {
+        color: rgba(255, 255, 255, 0.9);
+        margin: 10px 0;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+        border: 1px solid rgba(102, 126, 234, 0.4);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 500;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.4) 0%, rgba(118, 75, 162, 0.4) 100%);
+        border-color: rgba(102, 126, 234, 0.6);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropdownToggle = document.getElementById('userDropdown');
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+        
+        dropdownToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            dropdownMenu.classList.toggle('show');
+        });
+        
+
+        document.addEventListener('click', function(e) {
+            if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+    });
+</script> 

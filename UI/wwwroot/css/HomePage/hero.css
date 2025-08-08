@@ -1,0 +1,804 @@
+
+
+
+/* Container chính xích sát lên trên */
+.home-new-style {
+    margin-top: -40px !important;
+    padding-top: 0 !important;
+}
+
+.hero-section {
+    position: relative;
+    height: 100vh;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin-top: -40px !important; /* Xích sát lên trên */
+    padding-top: 80px; /* Bù lại để content không bị che */
+}
+
+    /* Sửa video-playing state */
+    .hero-section.video-playing {
+        margin-top: -40px !important; /* Xích sát lên trên giống như trạng thái bình thường */
+        padding-top: 80px; /* Bù lại để content không bị che */
+        position: relative;
+        z-index: 1;
+    }
+
+/* Sửa vị trí movie-content */
+.movie-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 650px;
+    align-self: flex-end;
+    position: absolute;
+    bottom: 100px; /* 🔧 FIX: Thay đổi từ -230px thành 100px */
+    right: 50px; /* 🔧 FIX: Thay đổi từ -40px thành 50px */
+    z-index: 10;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    padding: 30px;
+    background: none;
+    border-radius: 0;
+    backdrop-filter: none;
+    border: none;
+}
+
+/* Sửa vị trí movie-controls */
+.movie-controls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    position: absolute;
+    bottom: 50px; /* 🔧 FIX: Thay đổi từ -270px thành 50px */
+    right: 50px; /* 🔧 FIX: Thay đổi từ 0% thành 50px */
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+    .hero-background::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(10, 10, 10, 0.8) 0%, rgba(26, 26, 46, 0.6) 50%, rgba(22, 33, 62, 0.8) 100%);
+        z-index: 2;
+    }
+
+.hero-nav {
+    position: relative;
+    z-index: 10;
+    background: transparent;
+    backdrop-filter: none;
+    border-bottom: none;
+    padding: 1rem 0;
+}
+
+.nav-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+    .nav-link:hover {
+        color: white;
+        background: rgba(102, 126, 234, 0.2);
+        border-color: rgba(102, 126, 234, 0.3);
+    }
+
+
+
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden; /* Đảm bảo hide phần video vượt ra ngoài */
+    background: transparent; /* Bỏ background đen */
+}
+
+/* Đảm bảo background đen khi có video */
+.hero-section.video-playing .hero-background {
+    background: transparent; /* 🔧 FIX: Đổi từ #000 thành transparent */
+}
+
+/* Điều chỉnh vị trí hero-section khi đang phát video */
+.hero-section.video-playing {
+    margin-top: 0; /* 🔧 FIX: Bỏ margin-top: -20px */
+    position: relative;
+    z-index: 1;
+}
+
+
+.hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    object-fit: cover;
+    pointer-events: none;
+    border: none;
+    background: transparent;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+    .hero-video.loaded {
+        opacity: 1;
+    }
+
+/* Đảm bảo hero-section luôn có background khi chưa có video */
+.hero-section:not(.video-playing) {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+/* Đảm bảo hero-section có background khi video đang loading */
+.hero-section.video-loading {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+/* Khi video đã loaded và đang chạy thì bỏ background */
+.hero-section.video-playing.video-loaded {
+    background: transparent;
+}
+
+/* Đặc biệt cho iframe - không thể dùng object-fit */
+iframe.hero-video {
+    object-fit: none; /* Không dùng object-fit cho iframe */
+}
+
+/* Force iframe scale để cover đầy viewport */
+iframe.hero-video {
+    width: 120vw !important; 
+    height: 120vh !important; 
+    min-width: 120vw !important;
+    min-height: 120vh !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) scale(1.1) !important; 
+    border: none !important;
+    outline: none !important;
+    zoom: 1.1; 
+}
+
+    
+    iframe.hero-video[src*="player.cloudinary.com"] {
+        width: 100vw !important;
+        height: 100vh !important;
+        min-width: 100vw !important;
+        min-height: 100vh !important;
+        max-width: none !important;
+        max-height: none !important;
+        left: 0 !important;
+        top: 0 !important;
+        transform: none !important;
+        zoom: 1 !important;
+        object-fit: cover !important;
+        position: absolute !important;
+        border: none !important;
+        outline: none !important;
+        overflow: hidden !important;
+        
+        aspect-ratio: none !important;
+        pointer-events: none !important;
+        
+        clip: rect(0, 100vw, 100vh, 0) !important;
+    }
+
+        
+        iframe.hero-video[src*="player.cloudinary.com"][style] {
+            width: 100vw !important;
+            height: 100vh !important;
+            aspect-ratio: none !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+        }
+
+    /* Remove controls và UI elements của Cloudinary */
+    iframe.hero-video[src*="player.cloudinary.com"] {
+        
+        overflow: hidden !important;
+    }
+
+        /* Force fullscreen cho tất cả Cloudinary elements bên trong iframe */
+        iframe.hero-video[src*="player.cloudinary.com"] * {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+
+        /* Hide Cloudinary controls để tránh overlap với UI */
+        iframe.hero-video[src*="player.cloudinary.com"]::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+
+.hero-video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient( 107deg, rgba(0, 0, 0, 0.3) 0%, /* Giảm xuống 0.3 để sáng hơn */
+    rgba(0, 0, 0, 0.15) 40%, /* Giảm xuống 0.15 */
+    rgba(0, 0, 0, 0.05) 70%, /* Giảm xuống 0.05 */
+    rgba(0, 0, 0, 0) 100% /* Hoàn toàn trong suốt ở bên phải */
+    );
+    z-index: 3;
+    pointer-events: none; /* Cho phép click-through */
+}
+
+/* Khi có video đang chạy, overlay rất nhẹ */
+.hero-section.video-playing .hero-video-overlay {
+    background: linear-gradient( 107deg, rgba(0, 0, 0, 0.25) 0%, /* Chỉ để đọc được text */
+    rgba(0, 0, 0, 0.1) 40%, /* Rất nhẹ */
+    rgba(0, 0, 0, 0.02) 70%, /* Gần như trong suốt */
+    rgba(0, 0, 0, 0) 100% /* Hoàn toàn trong suốt */
+    );
+}
+
+
+.hero-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Để hình không bị shift */
+    z-index: 1; 
+    opacity: 0; /* Mặc định ẩn */
+    display: none; /* Mặc định ẩn */
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    /* Đảm bảo cover toàn bộ viewport */
+    min-width: 100vw;
+    min-height: 100vh;
+    object-fit: cover;
+    transform: scale(1.1); /* Slight zoom để đảm bảo không có gap */
+}
+
+    /* Chỉ hiển thị khi có class visible */
+    .hero-image.visible {
+        opacity: 1 !important;
+        display: block !important;
+    }
+
+/* Movie Content - Layout cải thiện */
+.movie-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 650px;
+    align-self: flex-end;
+    position: absolute;
+    bottom: -230px; /* Giữ nguyên vị trí dọc */
+    right: -40px; /* Thay đổi từ -90px thành 20px để dịch chuyển sang phải */
+    z-index: 10;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    padding: 30px;
+    background: none;
+    border-radius: 0;
+    backdrop-filter: none;
+    border: none;
+}
+
+.movie-header {
+    text-align: right;
+    border-bottom: none;
+    padding-bottom: 15px;
+}
+
+.movie-title {
+    font-size: 42px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0px 0px 20px rgba(0, 0, 0, 0.6);
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+}
+
+.movie-title-vn {
+    font-size: 14px;
+    color: #8B5CF6; /* Màu tím thay cho #df2144 */
+    text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
+    margin: 0;
+    font-weight: 500;
+}
+
+.movie-details {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.plot-section {
+    text-align: right;
+}
+
+    .plot-section h3,
+    .genre-section h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: white;
+        margin: 0 0 10px 0;
+        text-align: right;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+        position: relative;
+    }
+
+        .plot-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            right: 0;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #8B5CF6); /* Màu tím */
+        }
+
+        .genre-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            right: 0;
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #8B5CF6); /* Màu tím */
+        }
+
+    .plot-section p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        line-height: 1.6;
+        text-align: justify;
+        margin: 0;
+        padding: 0 10px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    }
+
+
+.genre-section {
+    display: none !important;
+}
+
+    .genre-section p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 14px;
+        margin: 0;
+        font-weight: 500;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    }
+
+.ratings-section {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    padding: 15px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rating-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+    .rating-item i {
+        color: #8B5CF6; /* Màu tím thay cho #df2144 */
+        font-size: 16px;
+    }
+
+/* Movie Controls với màu tím */
+.movie-controls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    position: absolute;
+    bottom: -270px; /* Giảm từ 5% xuống 2% để di chuyển xuống dưới hơn */
+    right: 0%;
+    z-index: 10;
+}
+
+.control-left, .control-right {
+    display: flex;
+    align-items: center;
+}
+
+.pagination-dots {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #8B5CF6; /* Màu tím */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .dot.active {
+        width: 12px;
+        height: 12px;
+        background: #8B5CF6; /* Đảm bảo active cũng là màu tím */
+        filter: drop-shadow(3px 0px 15px rgba(139, 92, 246, 0.8)); /* Shadow màu tím */
+    }
+
+.nav-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .nav-btn:hover {
+        border-color: #8B5CF6; /* Màu tím khi hover */
+        background: rgba(139, 92, 246, 0.2);
+    }
+
+.pagination-dots {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .dot.active {
+        background: linear-gradient(45deg, rgb(102, 126, 234), rgb(118, 75, 162))
+    }
+
+
+.movie-card {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+
+.hero-section,
+.hero-background,
+.movie-content,
+.dot {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+
+@media (max-width: 768px) {
+    .hero-section {
+        height: 100vh; /* Giữ nguyên full height trên mobile */
+    }
+
+    .movie-content {
+        max-width: calc(100% - 20px) !important;
+        width: calc(100% - 20px) !important;
+        bottom: 15% !important; /* Giảm khoảng cách bottom cho mobile */
+        left: 10px !important;
+        right: auto !important;
+    }
+
+    .movie-info {
+        padding: 20px 25px; /* Giảm padding cho mobile */
+        gap: 15px;
+        border-radius: 8px;
+    }
+
+    .movie-title {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+
+    .movie-subtitle {
+        font-size: 1rem;
+    }
+
+    .movie-plot {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        max-width: 100%;
+    }
+
+    .movie-info-row {
+        flex-direction: row;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .movie-genre {
+        font-size: 0.85rem;
+        padding: 4px 10px;
+    }
+
+    .movie-duration {
+        font-size: 0.85rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+        width: 100%;
+        min-width: auto;
+    }
+
+    .movie-controls {
+        right: 50%;
+        transform: translateX(50%);
+        bottom: 5%;
+        justify-content: center;
+    }
+
+    /* Video overlay cho mobile - sáng nhất */
+    .hero-video-overlay {
+        background: linear-gradient( 107deg, rgba(0, 0, 0, 0.3) 0%, /* Giảm để sáng nhất */
+        rgba(0, 0, 0, 0.15) 50%, /* Rất nhẹ */
+        rgba(0, 0, 0, 0.05) 100% /* Gần như trong suốt */
+        );
+    }
+}
+
+
+.fade-enter {
+    opacity: 0;
+     /* 🔧 REMOVE: Bỏ hiệu ứng translateY */
+}
+
+.fade-enter-active {
+    opacity: 1;
+     /* 🔧 REMOVE: Bỏ hiệu ứng translateY */
+    transition: opacity 0.5s ease-in-out; /* 🔧 FIX: Chỉ giữ opacity transition */
+}
+
+.fade-exit {
+    opacity: 1;
+     /* 🔧 REMOVE: Bỏ hiệu ứng translateY */
+}
+
+.fade-exit-active {
+    opacity: 0;
+     /* 🔧 REMOVE: Bỏ hiệu ứng translateY */
+    transition: opacity 0.5s ease-in-out; /* 🔧 FIX: Chỉ giữ opacity transition */
+}
+
+/* Hero image ẩn khi có video */
+.hero-section.video-playing .hero-image {
+    opacity: 0 !important;
+    display: none !important;
+}
+
+/* Reset để loại bỏ gaps */
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.cinema-homepage {
+    margin: 0;
+    padding: 0;
+}
+
+/* Background layers priority - PHẢI hiển thị khi không có video */
+.bg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    z-index: 1 !important; /* Background luôn ở dưới */
+}
+
+/* Video playing state - ẩy background khi có video */
+.hero-section.video-playing .bg-layer {
+    z-index: 0 !important; /* Đẩy background xuống dưới video */
+}
+
+/* Khi KHÔNG có video - hiển thị background */
+.hero-section:not(.video-playing) .bg-layer {
+    z-index: 2 !important; /* Đẩy background lên trên khi không có video */
+}
+
+
+.hero-section .hero-background iframe.hero-video[src*="player.cloudinary.com"] {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 640px !important;
+    height: 360px !important;
+    transform: translate(-50%, -50%) scale(3) !important; 
+    transform-origin: center center !important;
+    min-width: unset !important;
+    min-height: unset !important;
+    max-width: none !important;
+    max-height: none !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    scale: none !important;
+    aspect-ratio: none !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    z-index: 2 !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+
+iframe.hero-video[src*="player.cloudinary.com"].loaded {
+    width: 120vw !important;
+    height: 120vh !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    aspect-ratio: none !important;
+}
+
+/* Tạo vùng trigger ở dưới cùng */
+.hero-section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 150px; /* Vùng trigger cao 150px */
+    z-index: 5;
+    pointer-events: auto;
+    background: transparent; /* 🔧 FIX: Thêm background trong suốt */
+}
+
+.movie-controls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    position: absolute;
+    bottom: -270px;
+    right: 0%;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Hiện controls khi hover vào vùng dưới */
+.hero-section:hover .movie-controls {
+    opacity: 1;
+}
+
+
+.continuous-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2;
+}
+
+
+.hero-section.video-playing .movie-content {
+    transition: opacity 0.3s ease-in-out;
+}
+
+
+.video-progress {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 1px;
+    overflow: hidden;
+    z-index: 15;
+}
+
+.video-progress-bar {
+    height: 100%;
+    background: #8B5CF6;
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+
+/* Loại bỏ overlay màng phủ nhưng giữ video */
+.hero-background::before {
+    display: none !important;
+}
+
+.hero-video-overlay {
+    display: none !important;
+}
+
+/* Loại bỏ gradient overlay khi có video nhưng vẫn giữ video */
+.hero-section.video-playing .hero-video-overlay {
+    display: none !important;
+}
+
+/* Giữ nguyên video và chỉ loại bỏ overlay */
+.hero-video {
+    opacity: 1 !important;
+}
+
+.hero-video.loaded {
+    opacity: 1 !important;
+}

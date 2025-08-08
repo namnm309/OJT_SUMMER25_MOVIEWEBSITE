@@ -1,0 +1,106 @@
+@model List<UI.Models.MovieViewModel>
+@{
+    ViewData["Title"] = ViewData["Title"] ?? "Kết quả tìm kiếm";
+    var searchKeyword = ViewData["SearchKeyword"] as string;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Movies/modern-list.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Movies/search-modern.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/HomePage/moviecard.css" />
+    <link rel="stylesheet" href="~/css/HomePage/button.css" />
+}
+
+<div class="search-page-wrapper with-header-offset">
+    <div class="search-page-header text-center">
+        <h1 class="search-page-title"><i class="fas fa-search me-2"></i>@ViewData["Title"]</h1>
+        @if (!string.IsNullOrEmpty(searchKeyword))
+        {
+            <p class="search-page-subtitle">Từ khóa: "@searchKeyword" - Tìm thấy @Model.Count kết quả</p>
+        }
+        else
+        {
+            <p class="search-page-subtitle">Hiển thị tất cả @Model.Count phim</p>
+        }
+    </div>
+
+    <div class="search-container">
+        <div class="input-group">
+            <input type="text" class="search-form-control form-control" placeholder="Tìm kiếm phim..." id="searchInput" value="@searchKeyword">
+            <button class="search-btn btn" type="button" onclick="searchMovies()"><i class="fas fa-search"></i></button>
+            <a href="@Url.Action("Search", "Movies")" class="search-btn-outline btn"><i class="fas fa-list"></i></a>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="movie-grid">
+            @foreach (var movie in Model)
+            {
+                <div class="movie-card movie-card-search" data-id="@movie.Id">
+                    <div class="movie-poster-search">
+                        @{
+                            string imageUrl = movie.PrimaryImageUrl ?? movie.ImageUrl;
+                            if (string.IsNullOrEmpty(imageUrl) && movie.Images != null && movie.Images.Any())
+                            {
+                                var primary = movie.Images.FirstOrDefault(img => img.IsPrimary) ?? movie.Images.First();
+                                imageUrl = primary?.ImageUrl;
+                            }
+                            imageUrl ??= "https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image";
+                        }
+                        <img src="@imageUrl" alt="@movie.Title" onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/ffffff?text=No+Image'">
+                        <div class="movie-overlay-search">
+                            <div class="movie-actions-search">
+                                <a href="@Url.Action("Details", "Movies", new { id = movie.Id })" class="btn btn-primary btn-sm"><i class="fas fa-info-circle"></i> Chi tiết</a>
+                                <a href="#" class="btn btn-success btn-sm"><i class="fas fa-clock"></i> Lịch chiếu</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-info-search">
+                        <h5 class="movie-title-search">@movie.Title</h5>
+                        <p class="movie-genre-search">@(movie.Genres != null && movie.Genres.Any() ? string.Join(", ", movie.Genres.Select(g => g.Name)) : "Chưa phân loại")</p>
+                        <div class="movie-meta-search">
+                            <span><i class="fas fa-clock"></i> @movie.RunningTime phút</span>
+                            <span><i class="fas fa-film"></i> @movie.Version</span>
+                        </div>
+                        @if (movie.Rating > 0)
+                        {
+                            <div class="movie-rating"><i class="fas fa-star"></i> @movie.Rating.ToString("F1")</div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state-search">
+            <i class="fas fa-search fa-4x"></i>
+            <h4>Không tìm thấy kết quả</h4>
+            @if (!string.IsNullOrEmpty(searchKeyword))
+            {
+                <p>Không có phim nào phù hợp với từ khóa "@searchKeyword"</p>
+                <a href="@Url.Action("Search", "Movies")" class="btn btn-primary"><i class="fas fa-list"></i> Xem tất cả phim</a>
+            }
+            else
+            {
+                <p>Hiện tại chưa có phim nào trong hệ thống</p>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function searchMovies() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            const url = '@Url.Action("Search", "Movies")' + (keyword ? `?keyword=${encodeURIComponent(keyword)}` : '');
+            window.location.href = url;
+        }
+        document.getElementById('searchInput')?.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                searchMovies();
+            }
+        });
+    </script>
+}

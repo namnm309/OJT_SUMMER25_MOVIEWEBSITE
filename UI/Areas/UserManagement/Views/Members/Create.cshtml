@@ -1,0 +1,647 @@
+@{
+    ViewData["Title"] = "Thêm người dùng mới";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cinema Management</title>
+    
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="~/css/new-dashboard.css" />
+    
+    <style>
+        
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 15px;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        
+        .form-section h5 {
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+        
+        .required-field::after {
+            content: ' *';
+            color: #dc3545;
+        }
+        
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.75rem;
+        }
+        
+        .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .btn-back {
+            background-color: #6c757d;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-back:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+            color: white;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .btn-save:disabled {
+            background: #6c757d;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 2rem;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .validation-errors {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .validation-errors ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        
+        .password-strength {
+            margin-top: 0.5rem;
+        }
+        
+        .password-strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            background-color: #e9ecef;
+            overflow: hidden;
+        }
+        
+        .password-strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+        }
+        
+        .strength-weak .password-strength-fill {
+            width: 33%;
+            background-color: #dc3545;
+        }
+        
+        .strength-medium .password-strength-fill {
+            width: 66%;
+            background-color: #ffc107;
+        }
+        
+        .strength-strong .password-strength-fill {
+            width: 100%;
+            background-color: #28a745;
+        }
+        
+        .password-requirements {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+        }
+        
+        .password-requirements ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        
+        .requirement-met {
+            color: #28a745;
+        }
+        
+        
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        
+        @@media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-container {
+                padding: 1.5rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="dashboard-container">
+        
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-film"></i>
+                    <span>Cinema Admin</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="/Dashboard" class="menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="/MovieManagement/Movies" class="menu-item">
+                    <i class="fas fa-film"></i>
+                    <span>Movie</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Booking</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Showtimes</span>
+                </a>
+                <a href="/PromotionManagement/Promotions" class="menu-item">
+                    <i class="fas fa-tags"></i>
+                    <span>Promotions</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Events</span>
+                </a>
+                <a href="/UserManagement/Members" class="menu-item active">
+                    <i class="fas fa-users"></i>
+                    <span>User Management</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">@ViewBag.UserName</div>
+                        <div class="user-role">@ViewBag.UserRole</div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        
+        <main class="main-content">
+            
+            <div class="page-header">
+                <div class="container-fluid">
+                    <h1><i class="fas fa-user-plus me-3"></i>Thêm người dùng mới</h1>
+                </div>
+            </div>
+            
+            <div class="container-fluid">
+                
+                <div class="form-container fade-in">
+                    
+                    <div class="validation-errors" id="validationErrors" style="display: none;">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Vui lòng kiểm tra lại thông tin:</h6>
+                        <ul id="errorList"></ul>
+                    </div>
+                    
+                    <form id="createUserForm">
+                        
+                        <div class="form-section">
+                            <h5><i class="fas fa-user me-2"></i>Thông tin cơ bản</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label required-field">Tên đăng nhập</label>
+                                        <input type="text" class="form-control" id="username" name="username" 
+                                               placeholder="Nhập tên đăng nhập" required>
+                                        <div class="form-text">Tên đăng nhập phải có ít nhất 3 ký tự và không chứa ký tự đặc biệt</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label required-field">Họ và tên</label>
+                                        <input type="text" class="form-control" id="fullName" name="fullName" 
+                                               placeholder="Nhập họ và tên đầy đủ" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label required-field">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" 
+                                               placeholder="Nhập địa chỉ email" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Số điện thoại</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone" 
+                                               placeholder="Nhập số điện thoại">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="form-section">
+                            <h5><i class="fas fa-lock me-2"></i>Thông tin bảo mật</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label required-field">Mật khẩu</label>
+                                        <input type="password" class="form-control" id="password" name="password" 
+                                               placeholder="Nhập mật khẩu" required>
+                                        <div class="password-strength" id="passwordStrength">
+                                            <div class="password-strength-bar">
+                                                <div class="password-strength-fill"></div>
+                                            </div>
+                                        </div>
+                                        <div class="password-requirements">
+                                            <small>Yêu cầu mật khẩu:</small>
+                                            <ul>
+                                                <li id="req-length">Ít nhất 8 ký tự</li>
+                                                <li id="req-uppercase">Có ít nhất 1 chữ hoa</li>
+                                                <li id="req-lowercase">Có ít nhất 1 chữ thường</li>
+                                                <li id="req-number">Có ít nhất 1 số</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label required-field">Xác nhận mật khẩu</label>
+                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" 
+                                               placeholder="Nhập lại mật khẩu" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="form-section">
+                            <h5><i class="fas fa-user-tag me-2"></i>Vai trò và trạng thái</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label required-field">Vai trò</label>
+                                        <select class="form-select" id="role" name="role" required>
+                                            <option value="">Chọn vai trò</option>
+                                            <option value="Member">Thành viên</option>
+                                            <option value="Staff">Nhân viên</option>
+                                            <option value="Admin">Quản trị viên</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Trạng thái</label>
+                                        <select class="form-select" id="status" name="status">
+                                            <option value="true">Hoạt động</option>
+                                            <option value="false">Không hoạt động</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="form-section">
+                            <h5><i class="fas fa-info-circle me-2"></i>Thông tin bổ sung</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Ngày sinh</label>
+                                        <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Giới tính</label>
+                                        <select class="form-select" id="gender" name="gender">
+                                            <option value="">Chọn giới tính</option>
+                                            <option value="Male">Nam</option>
+                                            <option value="Female">Nữ</option>
+                                            <option value="Other">Khác</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Địa chỉ</label>
+                                <textarea class="form-control" id="address" name="address" rows="3" 
+                                          placeholder="Nhập địa chỉ"></textarea>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="form-actions">
+                            <a href="/UserManagement/Members" class="btn btn-back">
+                                <i class="fas fa-arrow-left me-1"></i>Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-save" id="saveBtn">
+                                <i class="fas fa-save me-1"></i>Thêm người dùng
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeForm();
+            setupPasswordValidation();
+        });
+        
+
+        function initializeForm() {
+            const form = document.getElementById('createUserForm');
+            form.addEventListener('submit', handleSubmit);
+            
+
+            const inputs = form.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('blur', validateField);
+                input.addEventListener('input', clearFieldError);
+            });
+        }
+        
+
+        function setupPasswordValidation() {
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            
+            passwordInput.addEventListener('input', checkPasswordStrength);
+            confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+        }
+        
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthContainer = document.getElementById('passwordStrength');
+            
+
+            const hasLength = password.length >= 8;
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasLowercase = /[a-z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            
+
+            document.getElementById('req-length').className = hasLength ? 'requirement-met' : '';
+            document.getElementById('req-uppercase').className = hasUppercase ? 'requirement-met' : '';
+            document.getElementById('req-lowercase').className = hasLowercase ? 'requirement-met' : '';
+            document.getElementById('req-number').className = hasNumber ? 'requirement-met' : '';
+            
+
+            const score = [hasLength, hasUppercase, hasLowercase, hasNumber].filter(Boolean).length;
+            
+
+            strengthContainer.className = 'password-strength';
+            if (score >= 4) {
+                strengthContainer.classList.add('strength-strong');
+            } else if (score >= 2) {
+                strengthContainer.classList.add('strength-medium');
+            } else if (score >= 1) {
+                strengthContainer.classList.add('strength-weak');
+            }
+        }
+        
+
+        function checkPasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const confirmInput = document.getElementById('confirmPassword');
+            
+            if (confirmPassword && password !== confirmPassword) {
+                confirmInput.classList.add('is-invalid');
+            } else {
+                confirmInput.classList.remove('is-invalid');
+            }
+        }
+        
+
+        function validateField(event) {
+            const field = event.target;
+            const value = field.value.trim();
+            
+
+            field.classList.remove('is-invalid', 'is-valid');
+            
+
+            let isValid = true;
+            
+            if (field.hasAttribute('required') && !value) {
+                isValid = false;
+            } else if (field.type === 'email' && value) {
+                const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+                isValid = emailRegex.test(value);
+            } else if (field.id === 'username' && value) {
+                isValid = value.length >= 3 && /^[a-zA-Z0-9_]+$/.test(value);
+            } else if (field.id === 'password' && value) {
+                isValid = value.length >= 8;
+            }
+            
+
+            if (value) {
+                field.classList.add(isValid ? 'is-valid' : 'is-invalid');
+            }
+            
+            return isValid;
+        }
+        
+
+        function clearFieldError(event) {
+            const field = event.target;
+            field.classList.remove('is-invalid');
+        }
+        
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const errors = [];
+            
+
+            const requiredFields = form.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!validateField({ target: field })) {
+                    errors.push(`${field.previousElementSibling.textContent.replace(' *', '')} không hợp lệ`);
+                }
+            });
+            
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            if (password !== confirmPassword) {
+                errors.push('Mật khẩu xác nhận không khớp');
+            }
+            
+
+            if (errors.length > 0) {
+                showValidationErrors(errors);
+                return;
+            }
+            
+
+            hideValidationErrors();
+            submitForm(formData);
+        }
+        
+
+        function showValidationErrors(errors) {
+            const errorContainer = document.getElementById('validationErrors');
+            const errorList = document.getElementById('errorList');
+            
+            errorList.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+            errorContainer.style.display = 'block';
+            
+
+            errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+
+        function hideValidationErrors() {
+            document.getElementById('validationErrors').style.display = 'none';
+        }
+        
+
+        function submitForm(formData) {
+            const saveBtn = document.getElementById('saveBtn');
+            
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Đang xử lý...';
+            
+
+            setTimeout(() => {
+                alert('Thêm người dùng thành công!');
+                window.location.href = '/UserManagement/Members';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

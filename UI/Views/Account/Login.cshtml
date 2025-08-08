@@ -1,0 +1,257 @@
+@model UI.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/LoginPage/auth.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        #togglePassword:hover {
+            color: #495057 !important;
+            background-color: rgba(0,0,0,0.05) !important;
+            border-radius: 50%;
+        }
+        #togglePassword:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        
+        /* Styling cho nút về trang chủ ở bên trái */
+        .back-home-left {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            z-index: 10;
+        }
+        
+        .btn-back-home-left {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-back-home-left:hover {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #ffffff;
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+}
+
+<div class="main-container">
+    <!-- Bên trái: ảnh background -->
+    <div class="loki-background d-none d-lg-block">
+        <!-- Nút về trang chủ ở góc trên trái -->
+        <div class="back-home-left">
+            <a href="@Url.Action("Index", "Home")" class="btn-back-home-left">
+                <i class="fas fa-arrow-left me-2"></i>Về trang chủ
+            </a>
+        </div>
+        <div class="overlay-text">CINEMA CITY</div>
+    </div>
+
+    <!-- Bên phải: nội dung form login -->
+    <div class="login-side">
+
+        <!-- Top bar ở góc trên phải -->
+        <div class="top-bar d-none d-lg-block">
+            <span class="signup-prompt">Chưa có tài khoản?</span>
+            <a asp-action="Register" class="signup-btn">Đăng ký</a>
+        </div>
+
+        <div class="login-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h2 class="auth-title">Đăng nhập</h2>
+                    <p class="auth-subtitle">Chào mừng bạn quay trở lại!</p>
+                </div>
+
+                <!-- Thêm div hiển thị thông báo lỗi -->
+                <div id="error-message" class="alert alert-danger" style="display: none;">
+                </div>
+
+                <form id="loginForm" method="post" asp-action="Login">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="ReturnUrl" />
+
+                    
+                    <div class="form-group">
+                        <label asp-for="Username" class="form-label">
+                            <i class="fas fa-user me-1"></i>@Html.DisplayNameFor(m => m.Username)
+                        </label>
+                        <div class="position-relative">
+                            <i class="fas fa-user input-icon"></i>
+                            <input asp-for="Username" name="username" class="form-control with-icon" placeholder="Tên đăng nhập hoặc email" />
+                        </div>
+                        <span asp-validation-for="Username" class="text-danger" id="loginUsernameError"></span>
+                    </div>
+
+                    
+                    <div class="form-group">
+                        <label asp-for="Password" class="form-label">
+                            <i class="fas fa-lock me-1"></i>@Html.DisplayNameFor(m => m.Password)
+                        </label>
+                        <div class="position-relative">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input asp-for="Password" name="password" class="form-control with-icon" placeholder="Mật khẩu" id="Password" type="password" style="padding-right: 45px;" />
+                            <button type="button" class="btn" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: transparent; color: #6c757d; padding: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-eye" id="togglePasswordIcon" style="font-size: 14px;"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger" id="loginPasswordError"></span>
+                    </div>
+
+                    
+                    <div class="form-check">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label">
+                            @Html.DisplayNameFor(m => m.RememberMe)
+                        </label>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    
+                    <button type="submit" class="btn btn-primary btn-lg w-100 auth-btn">
+                        <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                    </button>
+
+                    
+                    <div class="auth-footer">
+                        <p>Chưa có tài khoản? <a asp-action="Register" class="auth-link">Tạo tài khoản ngay</a></p>
+                        <p><a asp-action="ForgotPassword" class="auth-link">Quên mật khẩu?</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Tự động điền thông tin nếu đã lưu Remember Me
+            if (localStorage.getItem('rememberMe') === 'true') {
+                var savedUsername = localStorage.getItem('username');
+                if (savedUsername) {
+                    $('#Username').val(savedUsername);
+                    $('#RememberMe').prop('checked', true);
+                }
+            }
+            
+            // Toggle password visibility
+            $('#togglePassword').on('click', function() {
+                const passwordField = $('#Password');
+                const toggleIcon = $('#togglePasswordIcon');
+                
+                if (passwordField.attr('type') === 'password') {
+                    passwordField.attr('type', 'text');
+                    toggleIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordField.attr('type', 'password');
+                    toggleIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+
+            $('#loginForm').on('submit', function (e) {
+                e.preventDefault();
+                var form = $(this);
+                
+                // Validation frontend
+                var username = $('#Username').val().trim();
+                var password = $('#Password').val().trim();
+                
+                if (!username && !password) {
+                    $('#error-message')
+                        .text('Vui lòng nhập tên đăng nhập và mật khẩu')
+                        .show();
+                    return;
+                }
+                if (!username) {
+                    $('#error-message')
+                        .text('Vui lòng nhập tên đăng nhập')
+                        .show();
+                    return;
+                }
+                if (!password) {
+                    $('#error-message')
+                        .text('Vui lòng nhập mật khẩu')
+                        .show();
+                    return;
+                }
+                
+                // Ẩn thông báo lỗi trước đó
+                $('#error-message').hide();
+                
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    contentType: 'application/x-www-form-urlencoded',
+                    success: function (response) {
+                        if (response.success) {
+                            // Kiểm tra checkbox Remember Me
+                            var rememberMe = $('#RememberMe').is(':checked');
+                            var storage = rememberMe ? localStorage : sessionStorage;
+                            
+                            if (response.token) {
+                                storage.setItem('jwtToken', response.token);
+                                try {
+                                    const payload = JSON.parse(atob(response.token.split('.')[1]));
+                                    if (payload.userId) {
+                                        storage.setItem('userId', payload.userId);
+                                    }
+                                } catch (e) {
+                                    console.warn('Failed to parse userId from token', e);
+                                }
+                            }
+                            if (response.role) {
+                                storage.setItem('userRole', response.role);
+                            }
+                            
+                            // Lưu thông tin đăng nhập nếu Remember Me được chọn
+                            if (rememberMe) {
+                                localStorage.setItem('rememberMe', 'true');
+                                localStorage.setItem('username', $('#Username').val());
+                            } else {
+                                // Xóa thông tin đã lưu nếu không chọn Remember Me
+                                localStorage.removeItem('rememberMe');
+                                localStorage.removeItem('username');
+                            }
+
+                            window.location.href = response.redirectUrl || '/';
+                        } else {
+                            // Hiển thị thông báo lỗi
+                            $('#error-message')
+                                .text(response.message || 'Đăng nhập không thành công')
+                                .show();
+                        }
+                    },
+                    error: function () {
+                        $('#error-message')
+                            .text('Có lỗi xảy ra. Vui lòng thử lại sau.')
+                            .show();
+                    }
+                });
+            });
+        });
+    </script>
+}

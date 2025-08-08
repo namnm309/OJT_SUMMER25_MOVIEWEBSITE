@@ -1,0 +1,224 @@
+@{
+    ViewData["Title"] = "Quản lý phim";
+    ViewBag.PageTitle = "Quản lý phim";
+    ViewBag.ParentTitle = "Dashboard";
+    ViewBag.ParentUrl = Url.Action("AdminDashboard", "Dashboard");
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    
+    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <!-- Tagify CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/%40yaireo/tagify@4.9.10/dist/tagify.css" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="~/css/new-dashboard.css" />
+
+    <link rel="stylesheet" href="~/css/MovieManagement/index.css" />
+    <link rel="stylesheet" href="~/css/shared-action-buttons.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+    
+</head>
+<body>
+     
+     <div class="new-dashboard-layout">
+         
+         @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
+
+         
+         <main class="new-dashboard-main">
+             <div class="movie-management-content">
+                 
+                 <div class="movie-page-header">
+                     @await Html.PartialAsync("~/Views/Shared/_DashboardBreadcrumb.cshtml")
+                      <h1 class="movie-page-title">
+                          <i class="fas fa-film"></i>
+                          Quản lý phim
+                          <span id="movieListTitle" style="font-size:1rem; font-weight:400; margin-left:12px;"></span>
+                      </h1>
+                      <p class="movie-page-subtitle">Quản lý thông tin phim trong hệ thống rạp chiếu</p>
+                 </div>
+
+
+        
+                 <div class="movie-controls">
+                     <div class="movie-controls-header">
+                         <div class="movie-search-box">
+                             <i class="fas fa-search movie-search-icon"></i>
+                             <input type="text" class="movie-search-input" placeholder="Tìm kiếm phim theo tên..." id="movieSearch">
+                </div>
+                <button class="btn-add-movie" onclick="openAddMovieModal()">
+                        <i class="fas fa-plus"></i>
+                        Thêm phim mới
+                    </button>
+                </div>
+            </div>
+
+        
+        <div class="movie-table-container">
+            <table class="movie-table">
+                <thead>
+                    <tr>
+                        <th>POSTER</th>
+                        <th>THÔNG TIN PHIM</th>
+                        <th>THỂ LOẠI</th>
+                        <th>NGÀY PHÁT HÀNH</th>
+                        <th>THỜI LƯỢNG</th>
+                        <th>TRẠNG THÁI</th>
+                        <th>PHIM NỔI BẬT</th>
+                        <th>PHIM ĐỀ XUẤT</th>
+                        <th>RATING</th>
+                        <th>HÀNH ĐỘNG</th>
+                    </tr>
+                </thead>
+                <tbody id="movieTableBody">
+                    <tr>
+                        <td colspan="10" class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Đang tải dữ liệu...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+                    </div>
+        
+                
+                <div class="movie-pagination">
+            <div class="pagination-info">
+                <span id="paginationInfo">Đang tải...</span>
+            </div>
+            <div class="pagination-controls">
+                <button id="prevPageBtn" class="btn-pagination" disabled>❮ Trước</button>
+                <div id="pageNumbers" class="page-numbers"></div>
+                <button id="nextPageBtn" class="btn-pagination" disabled>Sau ❯</button>
+            </div>
+            <div class="pagination-size">
+                <select id="pageSizeSelect" class="form-select">
+                    <option value="5">5/trang</option>
+                    <option value="10" selected>10/trang</option>
+                    <option value="25">25/trang</option>
+                    <option value="50">50/trang</option>
+                </select>
+            </div>
+                    </div>
+                    </div>
+        </main>
+                </div>
+                
+
+@Html.AntiForgeryToken()
+
+
+<div id="movieDetailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-film"></i> Chi tiết phim</h3>
+            <span class="modal-close" onclick="closeModal('movieDetailModal')">&times;</span>
+                    </div>
+        <div class="modal-body">
+            
+                </div>
+                    </div>
+                </div>
+                
+
+<div id="editMovieModal" class="modal">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h3>Chỉnh sửa phim</h3>
+            <span class="modal-close" onclick="closeModal('editMovieModal')">&times;</span>
+                    </div>
+        <div class="modal-body">
+            
+                </div>
+            </div>
+                </div>
+
+    <!-- Modal thêm phim mới -->
+    <div id="addMovieModal" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3>Thêm phim mới</h3>
+                <span class="close" onclick="closeModal('addMovieModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Nội dung sẽ được tạo động bởi JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal tạo phòng chiếu mới -->
+    <div id="createRoomModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Tạo phòng chiếu mới</h3>
+                <span class="close" onclick="closeModal('createRoomModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="createRoomForm" onsubmit="createNewRoom(event)">
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="roomName">Tên phòng chiếu <span class="required-field">*</span></label>
+                            <input type="text" id="roomName" name="roomName" required placeholder="VD: Phòng 1, Phòng VIP, IMAX...">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="numberOfRows">Số hàng <span class="required-field">*</span></label>
+                            <input type="number" id="numberOfRows" name="numberOfRows" min="1" max="50" value="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="numberOfColumns">Số cột <span class="required-field">*</span></label>
+                            <input type="number" id="numberOfColumns" name="numberOfColumns" min="1" max="50" value="10" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="totalSeats">Tổng số ghế <span class="required-field">*</span></label>
+                            <input type="number" id="totalSeats" name="totalSeats" min="1" max="1000" value="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="defaultSeatPrice">Giá ghế mặc định (VNĐ)</label>
+                            <input type="number" id="defaultSeatPrice" name="defaultSeatPrice" min="0" value="100000" step="1000">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('createRoomModal')">Hủy</button>
+                        <button type="submit" class="btn-create">Tạo phòng chiếu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+        
+                        
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/MovieManagement/index.js"></script>
+    <!-- Tagify JS -->
+    <script src="https://unpkg.com/%40yaireo/tagify@4.9.10/dist/tagify.min.js"></script>
+    
+    @Html.AntiForgeryToken()
+    
+    
+    
+   
+</body>
+</html>

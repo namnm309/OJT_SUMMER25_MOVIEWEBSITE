@@ -1,0 +1,224 @@
+
+<div class="modal fade" id="createNewShowtimeModal" tabindex="-1" aria-labelledby="createNewShowtimeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createNewShowtimeModalLabel">
+                    <i class="fas fa-plus-circle text-primary me-2"></i>
+                    Thêm lịch chiếu mới
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="createNewShowtimeForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="movieSelect" class="form-label">
+                                    <i class="fas fa-film me-1"></i>
+                                    Chọn phim <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="movieSelect" name="MovieId" required>
+                                    <option value="">-- Chọn phim --</option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn phim</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="cinemaRoomSelect" class="form-label">
+                                    <i class="fas fa-door-open me-1"></i>
+                                    Chọn phòng chiếu <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="cinemaRoomSelect" name="CinemaRoomId" required>
+                                    <option value="">-- Chọn phòng chiếu --</option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn phòng chiếu</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="showDate" class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    Ngày chiếu <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" class="form-control" id="showDate" name="ShowDate" required>
+                                <div class="invalid-feedback">Vui lòng chọn ngày chiếu</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="startTime" class="form-label">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Giờ bắt đầu <span class="text-danger">*</span>
+                                </label>
+                                <input type="time" class="form-control" id="startTime" name="StartTime" required>
+                                <div class="invalid-feedback">Vui lòng nhập giờ bắt đầu</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label for="endTimeDisplay" class="form-label">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Giờ kết thúc
+                                </label>
+                                <input type="text" class="form-control" id="endTimeDisplay" readonly 
+                                       placeholder="Tự động tính dựa trên thời lượng phim">
+                                <small class="text-muted">Tự động tính = Giờ bắt đầu + Thời lượng phim + 15 phút dọn dẹp</small>
+                            </div>
+                        </div>
+                        <!-- Giờ kết thúc thực tế gửi lên server -->
+                        <input type="hidden" id="endTime" name="EndTime" />
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Giá vé mặc định 0, ẩn đi -->
+                        <input type="hidden" id="price" name="Price" value="0" />
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-toggle-on me-1"></i>
+                                    Trạng thái
+                                </label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="isActive" name="IsActive" checked>
+                                    <label class="form-check-label" for="isActive">
+                                        Kích hoạt lịch chiếu
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div id="conflictCheckResult" class="alert" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>
+                        Hủy
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveNewShowtimeBtn">
+                        <i class="fas fa-save me-1"></i>
+                        Lưu lịch chiếu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    border-bottom: none;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.form-label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    border: none;
+}
+
+.btn-info:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+}
+
+.text-danger {
+    color: #ef4444 !important;
+}
+
+.invalid-feedback {
+    display: none; /* Ẩn mặc định */
+    font-size: 0.875rem;
+    color: #ef4444;
+}
+
+/* Hiển thị khi có class was-validated hoặc is-invalid */
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.was-validated .form-select:invalid ~ .invalid-feedback,
+.form-control.is-invalid ~ .invalid-feedback,
+.form-select.is-invalid ~ .invalid-feedback {
+    display: block;
+}
+
+.alert {
+    border-radius: 8px;
+    border: none;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.alert-success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.alert-danger {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: #ef4444;
+}
+</style>

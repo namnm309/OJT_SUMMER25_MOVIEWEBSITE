@@ -1,0 +1,793 @@
+@{
+    ViewData["Title"] = "Sự Kiện - Cinema City";
+}
+
+@section Styles {
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Hero Section */
+        .events-hero-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%),
+                        linear-gradient(45deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            padding: 6rem 0 4rem;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .events-hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @@keyframes backgroundShift {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            33% { transform: translateX(-20px) translateY(-10px); }
+            66% { transform: translateX(20px) translateY(10px); }
+        }
+
+        .events-hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .events-hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .events-hero-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: rgba(26, 26, 46, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: -2rem 2rem 3rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 3;
+        }
+
+        .search-box-events {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-box-events input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box-events input:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .search-box-events .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+        }
+
+        .filter-dropdown, .date-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            padding: 0.75rem 1rem;
+            width: 100%;
+        }
+
+        .filter-dropdown:focus, .date-input:focus {
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .filter-dropdown option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        /* Events Content */
+        .events-content {
+            flex: 1;
+            padding: 0 2rem 4rem;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .event-card {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(45, 45, 65, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .event-image {
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+        }
+
+        .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .event-card:hover .event-image img {
+            transform: scale(1.1);
+        }
+
+        .event-date-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .event-date-badge .day {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            line-height: 1;
+        }
+
+        .event-date-badge .month {
+            display: block;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .event-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .event-type {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .event-type.premiere {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .event-type.contest {
+            background: linear-gradient(135deg, #ffc107, #ffb700);
+            color: #333;
+        }
+
+        .event-type.promotion {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .event-type.workshop {
+            background: linear-gradient(135deg, #6f42c1, #7952b3);
+        }
+
+        .event-type.festival {
+            background: linear-gradient(135deg, #fd7e14, #ff6b35);
+        }
+
+        .event-time {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+            line-height: 1.3;
+        }
+
+        .event-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex: 1;
+        }
+
+        .event-location {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-location i {
+            color: #667eea;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .event-actions .btn {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .event-actions .btn-primary {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .event-actions .btn-primary:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            transform: translateY(-2px);
+        }
+
+        .event-actions .btn-success {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .event-actions .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            background: rgba(26, 26, 46, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .calendar-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .calendar-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .pagination .page-link {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            margin: 0 0.25rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .pagination .page-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+            color: white;
+        }
+
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+        }
+
+        /* Page Container */
+        .cinema-events-page {
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .cinema-footer {
+            margin-top: 4rem !important;
+            position: relative !important;
+            clear: both;
+            width: 100% !important;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .events-hero-title {
+                font-size: 2.5rem;
+            }
+
+            .filter-section {
+                margin: -1.5rem 1rem 2rem;
+                padding: 1.5rem;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .events-content {
+                padding: 0 1rem 3rem;
+            }
+
+            .event-meta {
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: flex-start;
+            }
+
+            .event-actions {
+                flex-direction: column;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .events-hero-title {
+                font-size: 2rem;
+            }
+
+            .events-grid {
+                gap: 1rem;
+            }
+        }
+    </style>
+    @{
+        ViewBag.CurrentPage = "Events";
+    }
+    
+    <div class="cinema-events-page with-header-offset">
+        <!-- Hero Section -->
+        <div class="events-hero-section">
+            <div class="container">
+                <div class="events-hero-content">
+                    <h1 class="events-hero-title">
+                        <i class="fas fa-calendar-alt me-3"></i>Sự Kiện Cinema City
+                    </h1>
+                    <p class="events-hero-subtitle">Cập nhật những sự kiện thú vị và hoạt động đặc biệt tại rạp</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="search-box-events">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" placeholder="Tìm kiếm sự kiện..." id="eventSearch">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="filter-dropdown" id="eventTypeFilter">
+                            <option value="">Tất cả loại sự kiện</option>
+                            <option value="premiere">Công chiếu phim</option>
+                            <option value="contest">Cuộc thi</option>
+                            <option value="promotion">Khuyến mãi</option>
+                            <option value="workshop">Workshop</option>
+                            <option value="festival">Liên hoan phim</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="date" class="date-input" id="eventDateFilter">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Content -->
+            <div class="events-content">
+                <div class="events-grid">
+                    <!-- Event 1: Công chiếu phim -->
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Công chiếu phim">
+                            <div class="event-date-badge">
+                                <span class="day">15</span>
+                                <span class="month">THG 3</span>
+                            </div>
+                        </div>
+                        <div class="event-content">
+                            <div class="event-meta">
+                                <span class="event-type premiere">Công chiếu</span>
+                                <span class="event-time">
+                                    <i class="fas fa-clock"></i> 19:00
+                                </span>
+                            </div>
+                            <h4 class="event-title">Công Chiếu Phim Bom Tấn Mùa Hè</h4>
+                            <p class="event-description">
+                                Tham gia buổi công chiếu đặc biệt với sự góp mặt của đạo diễn và dàn diễn viên chính.
+                                Cơ hội gặp gỡ thần tượng và nhận quà tặng độc quyền.
+                            </p>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Rạp Galaxy Nguyễn Du
+                            </div>
+                            <div class="event-actions">
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <button class="btn btn-success">
+                                    <i class="fas fa-ticket-alt"></i> Đăng ký
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 2: Cuộc thi review -->
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Cuộc thi review">
+                            <div class="event-date-badge">
+                                <span class="day">20</span>
+                                <span class="month">THG 3</span>
+                            </div>
+                        </div>
+                        <div class="event-content">
+                            <div class="event-meta">
+                                <span class="event-type contest">Cuộc thi</span>
+                                <span class="event-time">
+                                    <i class="fas fa-clock"></i> Cả ngày
+                                </span>
+                            </div>
+                            <h4 class="event-title">Cuộc Thi Review Phim Hay Nhất</h4>
+                            <p class="event-description">
+                                Thể hiện tài năng viết lách của bạn trong cuộc thi review phim.
+                                Giải thưởng hấp dẫn dành cho những bài viết xuất sắc nhất.
+                            </p>
+                            <div class="event-location">
+                                <i class="fas fa-globe"></i>
+                                Online - Tất cả rạp
+                            </div>
+                            <div class="event-actions">
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <button class="btn btn-success">
+                                    <i class="fas fa-pen"></i> Tham gia
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 3: Khuyến mãi -->
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Khuyến mãi">
+                            <div class="event-date-badge">
+                                <span class="day">25</span>
+                                <span class="month">THG 3</span>
+                            </div>
+                        </div>
+                        <div class="event-content">
+                            <div class="event-meta">
+                                <span class="event-type promotion">Khuyến mãi</span>
+                                <span class="event-time">
+                                    <i class="fas fa-clock"></i> 10:00 - 22:00
+                                </span>
+                            </div>
+                            <h4 class="event-title">Ngày Hội Giảm Giá 50%</h4>
+                            <p class="event-description">
+                                Ưu đãi đặc biệt giảm giá 50% tất cả vé phim và combo bắp nước.
+                                Áp dụng cho thành viên và khách hàng mới.
+                            </p>
+                            <div class="event-location">
+                                <i class="fas fa-store"></i>
+                                Tất cả rạp trong hệ thống
+                            </div>
+                            <div class="event-actions">
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <button class="btn btn-success">
+                                    <i class="fas fa-tag"></i> Sử dụng ngay
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 4: Workshop -->
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Workshop">
+                            <div class="event-date-badge">
+                                <span class="day">30</span>
+                                <span class="month">THG 3</span>
+                            </div>
+                        </div>
+                        <div class="event-content">
+                            <div class="event-meta">
+                                <span class="event-type workshop">Workshop</span>
+                                <span class="event-time">
+                                    <i class="fas fa-clock"></i> 14:00 - 17:00
+                                </span>
+                            </div>
+                            <h4 class="event-title">Workshop Làm Phim Cơ Bản</h4>
+                            <p class="event-description">
+                                Học hỏi những kỹ năng cơ bản về làm phim từ các chuyên gia.
+                                Phù hợp cho người mới bắt đầu và yêu thích điện ảnh.
+                            </p>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Rạp CGV Vincom
+                            </div>
+                            <div class="event-actions">
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <button class="btn btn-success">
+                                    <i class="fas fa-user-plus"></i> Đăng ký
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 5: Liên hoan phim -->
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Liên hoan phim">
+                            <div class="event-date-badge">
+                                <span class="day">05</span>
+                                <span class="month">THG 4</span>
+                            </div>
+                        </div>
+                        <div class="event-content">
+                            <div class="event-meta">
+                                <span class="event-type festival">Liên hoan phim</span>
+                                <span class="event-time">
+                                    <i class="fas fa-clock"></i> 18:00 - 23:00
+                                </span>
+                            </div>
+                            <h4 class="event-title">Liên Hoan Phim Độc Lập</h4>
+                            <p class="event-description">
+                                Khám phá những tác phẩm điện ảnh độc lập xuất sắc từ các đạo diễn trẻ.
+                                Giao lưu với nghệ sĩ và thảo luận về nghệ thuật.
+                            </p>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Rạp Lotte Cinema
+                            </div>
+                            <div class="event-actions">
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <button class="btn btn-success">
+                                    <i class="fas fa-ticket-alt"></i> Mua vé
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 6: Gặp gỡ diễn viên -->
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Gặp gỡ diễn viên">
+                            <div class="event-date-badge">
+                                <span class="day">12</span>
+                                <span class="month">THG 4</span>
+                            </div>
+                        </div>
+                        <div class="event-content">
+                            <div class="event-meta">
+                                <span class="event-type premiere">Gặp gỡ</span>
+                                <span class="event-time">
+                                    <i class="fas fa-clock"></i> 20:00
+                                </span>
+                            </div>
+                            <h4 class="event-title">Gặp Gỡ Diễn Viên Nổi Tiếng</h4>
+                            <p class="event-description">
+                                Cơ hội hiếm có để gặp gỡ và chụp ảnh cùng các diễn viên nổi tiếng.
+                                Chương trình bao gồm Q&A và ký tặng.
+                            </p>
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Rạp BHD Star
+                            </div>
+                            <div class="event-actions">
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                <button class="btn btn-success">
+                                    <i class="fas fa-camera"></i> Đăng ký
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar Section -->
+                <div class="calendar-section">
+                    <h3 style="margin-bottom: 1rem; color: white;">Xem Lịch Sự Kiện Đầy Đủ</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem;">
+                        Khám phá tất cả sự kiện sắp tới trong tháng
+                    </p>
+                    <a href="#" class="calendar-btn">
+                        <i class="fas fa-calendar"></i> Xem Lịch Sự Kiện
+                    </a>
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Phân trang sự kiện">
+                    <ul class="pagination">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">
+                                <i class="fas fa-chevron-left"></i> Trước
+                            </a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                Sau <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('eventSearch');
+            const typeFilter = document.getElementById('eventTypeFilter');
+            const dateFilter = document.getElementById('eventDateFilter');
+
+            searchInput.addEventListener('input', function() {
+                console.log('Searching for events:', this.value);
+            });
+
+            typeFilter.addEventListener('change', function() {
+                console.log('Filter by type:', this.value);
+            });
+
+            dateFilter.addEventListener('change', function() {
+                console.log('Filter by date:', this.value);
+            });
+
+            // Event registration simulation
+            document.querySelectorAll('.btn-success').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (this.textContent.includes('Đăng ký') || this.textContent.includes('Tham gia') || this.textContent.includes('Mua vé')) {
+                        this.innerHTML = '<i class="fas fa-check me-2"></i>Đã đăng ký';
+                        this.disabled = true;
+                        setTimeout(() => {
+                            this.innerHTML = this.textContent.includes('Workshop') ? 
+                                '<i class="fas fa-user-plus"></i> Đăng ký' : 
+                                this.textContent.includes('Mua vé') ?
+                                '<i class="fas fa-ticket-alt"></i> Mua vé' :
+                                '<i class="fas fa-pen"></i> Tham gia';
+                            this.disabled = false;
+                        }, 3000);
+                    }
+                });
+            });
+
+            console.log('🎉 Cinema Events page initialized');
+        });
+    </script>
+    }

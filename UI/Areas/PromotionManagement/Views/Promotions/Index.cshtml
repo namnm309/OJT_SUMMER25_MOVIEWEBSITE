@@ -1,0 +1,164 @@
+﻿@{
+    ViewData["Title"] = "Quản lý khuyến mãi - Cinema City";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- New Dashboard CSS -->
+    <link rel="stylesheet" href="~/css/new-dashboard.css" />
+    
+    <link rel="stylesheet" href="~/css/PromotionManagement/index.css" />
+    <link rel="stylesheet" href="~/css/shared-action-buttons.css" />
+    
+</head>
+<body class="dashboard-body">
+
+    @await Html.PartialAsync("~/Views/Shared/_DashboardSidebar.cshtml")
+
+  
+
+        <!-- Main Content -->
+        <main class="new-dashboard-main">
+            <div class="promotion-management-content">
+                <!-- Page Header -->
+                <div class="promotion-page-header">
+                @await Html.PartialAsync("~/Views/Shared/_DashboardBreadcrumb.cshtml")
+                    <h1 class="promotion-page-title">
+                        <i class="fas fa-tags"></i>
+                        Quản lý khuyến mãi
+                        <span id="promotionListTitle" style="font-size:1rem; font-weight:400; margin-left:12px;"></span>
+                    </h1>
+                    <p class="promotion-page-subtitle">Quản lý các chương trình khuyến mãi và ưu đãi</p>
+                </div>
+
+                <!-- Controls Section -->
+                <div class="promotion-controls">
+                    <div class="promotion-controls-header">
+                        <div class="promotion-search-box">
+                            <i class="fas fa-search promotion-search-icon"></i>
+                            <input type="text" class="promotion-search-input" placeholder="Tìm kiếm khuyến mãi theo tên..." id="promotionSearch">
+                        </div>
+                        <button class="btn-add-promotion" onclick="openAddPromotionModal()">
+                            <i class="fas fa-plus"></i>
+                            Thêm khuyến mãi mới
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Promotions Table -->
+                <div class="promotion-table-container">
+                    <table class="promotion-table">
+                        <thead>
+                            <tr>
+                                <th>HÌNH ẢNH</th>
+                                <th>THÔNG TIN KHUYẾN MÃI</th>
+                                <th>THỜI GIAN</th>
+                                <th>GIẢM GIÁ</th>
+                                <th>TRẠNG THÁI</th>
+                                <th>HÀNH ĐỘNG</th>
+                            </tr>
+                        </thead>
+                        <tbody id="promotionTableBody">
+                            <tr>
+                                <td colspan="6" class="loading-spinner">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <p>Đang tải dữ liệu...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        
+                <!-- Pagination -->
+                <div class="promotion-pagination">
+                    <div class="pagination-info">
+                        <span id="paginationInfo">Đang tải...</span>
+                    </div>
+                    <div id="pagination-controls" style="margin-top: 20px; display: flex; align-items: center; gap: 10px;">
+                        <button id="prevPageBtn" onclick="goToPage(currentPage - 1)" class="btn-pagination">Trước</button>
+                        <div id="pageNumbers" style="display: flex; gap: 5px;"></div>
+                        <button id="nextPageBtn" onclick="goToPage(currentPage + 1)" class="btn-pagination">Sau</button>
+                    </div>
+                    <!-- Đã xoá thẻ trùng id paginationInfo để tránh xung đột -->
+
+                    <div class="pagination-size">
+                        <select id="pageSizeSelect" class="form-select">
+                            <option value="5">5/trang</option>
+                            <option value="10" selected>10/trang</option>
+                            <option value="25">25/trang</option>
+                            <option value="50">50/trang</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Anti-forgery token for AJAX requests -->
+    @Html.AntiForgeryToken()
+
+    <!-- Promotion Detail Modal -->
+    <div id="promotionDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-tags"></i> Chi tiết khuyến mãi</h3>
+                <span class="modal-close" onclick="closeModal('promotionDetailModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+                
+    <!-- Edit Promotion Modal -->
+    <div id="editPromotionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Chỉnh sửa khuyến mãi</h3>
+                <span class="modal-close" onclick="closeModal('editPromotionModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Promotion Modal -->
+    <div id="addPromotionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus"></i> Thêm khuyến mãi mới</h3>
+                <span class="modal-close" onclick="closeModal('addPromotionModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    
+    <!-- Anti-forgery token for AJAX requests -->
+    @Html.AntiForgeryToken()
+
+    <script src="~/js/PromotionManagement/index.js"></script>
+
+    
+</body>
+</html>

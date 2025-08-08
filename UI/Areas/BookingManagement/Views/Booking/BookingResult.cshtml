@@ -1,0 +1,737 @@
+@model BookingResultViewModel
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Kết Quả Đặt Vé";
+    Layout = "_Layout";
+}
+
+@{
+    string bookingCode = "N/A", movieTitle = "N/A", cinemaRoomName = "N/A";
+    string showDate = "N/A", showTime = "N/A", fullName = "N/A";
+    string email = "N/A", phoneNumber = "N/A", identityCard = "N/A";
+    string totalPriceFormatted = "0 VND";
+    string bookedSeats = "N/A";
+    string movieImage = "~/images/default-movie.jpg";
+    string cinemaName = "Cinema City";
+    string cinemaAddress = "Địa chỉ rạp chiếu phim";
+    decimal totalPrice = 0;
+
+    if (!string.IsNullOrEmpty(Model.Data?.ToString()))
+    {
+        try
+        {
+            using var jsonDocument = JsonDocument.Parse(Model.Data.ToString());
+            var root = jsonDocument.RootElement;
+
+            // Trích xuất dữ liệu từ JSON
+            if (root.TryGetProperty("bookingCode", out JsonElement bookingCodeElement))
+                bookingCode = bookingCodeElement.GetString() ?? "N/A";
+
+            if (root.TryGetProperty("movieTitle", out JsonElement movieTitleElement))
+                movieTitle = movieTitleElement.GetString() ?? "N/A";
+
+            if (root.TryGetProperty("cinemaRoomName", out JsonElement cinemaRoomElement))
+                cinemaRoomName = cinemaRoomElement.GetString() ?? "N/A";
+
+            if (root.TryGetProperty("showDate", out JsonElement showDateElement))
+                showDate = showDateElement.GetString() ?? "N/A";
+
+            if (root.TryGetProperty("showTime", out JsonElement showTimeElement))
+                showTime = showTimeElement.GetString() ?? "N/A";
+
+            if (root.TryGetProperty("fullName", out JsonElement fullNameElement))
+                fullName = fullNameElement.GetString() ?? "N/A";
+
+            if (root.TryGetProperty("email", out JsonElement emailElement))
+                email = emailElement.GetString() ?? "N/A";
+
+            if (root.TryGetProperty("phoneNumber", out JsonElement phoneNumberElement))
+                phoneNumber = phoneNumberElement.GetString() ?? "N/A";
+
+            if (root.TryGetProperty("identityCard", out JsonElement identityCardElement))
+                identityCard = identityCardElement.GetString() ?? "N/A";
+
+            if (root.TryGetProperty("movieImage", out JsonElement movieImageElement))
+            {
+                var imageUrl = movieImageElement.GetString();
+                if (!string.IsNullOrEmpty(imageUrl))
+                {
+                    // Đảm bảo đường dẫn ảnh đúng
+                    if (imageUrl.StartsWith("http"))
+                        movieImage = imageUrl;
+                    else if (imageUrl.StartsWith("/"))
+                        movieImage = imageUrl;
+                    else
+                        movieImage = $"~/images/{imageUrl}";
+                }
+            }
+
+            if (root.TryGetProperty("cinemaName", out JsonElement cinemaNameElement))
+                cinemaName = cinemaNameElement.GetString() ?? "Cinema City";
+
+            if (root.TryGetProperty("cinemaAddress", out JsonElement cinemaAddressElement))
+                cinemaAddress = cinemaAddressElement.GetString() ?? "Địa chỉ rạp chiếu phim";
+
+            // Xử lý totalPrice
+            if (root.TryGetProperty("totalPrice", out JsonElement totalPriceElement))
+            {
+                if (totalPriceElement.ValueKind == JsonValueKind.Number)
+                {
+                    totalPrice = totalPriceElement.GetDecimal();
+                    totalPriceFormatted = string.Format("{0:N0} VND", totalPrice);
+                }
+                else if (totalPriceElement.ValueKind == JsonValueKind.String)
+                {
+                    var priceString = totalPriceElement.GetString();
+                    if (decimal.TryParse(priceString, out decimal price))
+                    {
+                        totalPrice = price;
+                        totalPriceFormatted = string.Format("{0:N0} VND", price);
+                    }
+                }
+            }
+
+            // Xử lý bookedSeats array
+            if (root.TryGetProperty("bookedSeats", out JsonElement bookedSeatsElement) &&
+                bookedSeatsElement.ValueKind == JsonValueKind.Array)
+            {
+                var seatCodes = new List<string>();
+                foreach (var seat in bookedSeatsElement.EnumerateArray())
+                {
+                    if (seat.ValueKind == JsonValueKind.String)
+                    {
+                        var seatCode = seat.GetString();
+                        if (!string.IsNullOrEmpty(seatCode))
+                            seatCodes.Add(seatCode);
+                    }
+                    else if (seat.ValueKind == JsonValueKind.Object &&
+                            seat.TryGetProperty("seatCode", out JsonElement seatCodeElement))
+                    {
+                        var seatCode = seatCodeElement.GetString();
+                        if (!string.IsNullOrEmpty(seatCode))
+                            seatCodes.Add(seatCode);
+                    }
+                }
+                bookedSeats = seatCodes.Count > 0 ? string.Join(", ", seatCodes) : "N/A";
+            }
+        }
+        catch (JsonException jsonEx)
+        {
+            // Log JSON parsing error
+            <div style="color: red; margin-bottom: 10px;">Lỗi phân tích JSON: @jsonEx.Message</div>
+        }
+        catch (Exception ex)
+        {
+            // Log general error
+            <div style="color: red; margin-bottom: 10px;">Lỗi: @ex.Message</div>
+        }
+    }
+}
+
+<style>
+    /* Thêm vào phần <style> */
+
+    /* Thay thế styles cho movie-poster */
+    .ticket-details-section {
+        width: 200px;
+        background: rgba(26, 26, 46, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+        border: 2px solid #1a1a2e;
+    }
+
+    .booking-info h3 {
+        color: #1a1a2e;
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-align: center;
+        border-bottom: 2px solid #4fc3f7;
+        padding-bottom: 8px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 12px;
+    }
+
+        .info-row .label {
+            font-weight: bold;
+            color: #666;
+        }
+
+        .info-row .value {
+            color: #2C2C2C;
+            font-weight: 500;
+        }
+
+    .seat-price-info {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #ddd;
+    }
+
+    .seat-numbers {
+        color: #4fc3f7 !important;
+        font-weight: bold !important;
+    }
+
+    .total-price .price {
+        color:rgb(129, 85, 238) !important;
+        font-weight: bold !important;
+        font-size: 14px !important;
+    }
+
+    /* Cinema logo thay thế cho movie-poster-small */
+    .cinema-logo {
+        width: 120px;
+        height: 160px;
+        background: linear-gradient(135deg, #1a1a2e, #4fc3f7);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-align: center;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .logo-placeholder i {
+        font-size: 40px;
+        margin-bottom: 10px;
+        color: #F5F5DC;
+    }
+
+    .logo-placeholder span {
+        display: block;
+        font-weight: bold;
+        font-size: 14px;
+        letter-spacing: 1px;
+        color: #F5F5DC;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .ticket-details-section {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .cinema-logo {
+            width: 100%;
+            height: 100px;
+            flex-direction: row;
+            gap: 15px;
+        }
+
+        .logo-placeholder {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .logo-placeholder span {
+                display: inline;
+            }
+    }
+
+    /* Sử dụng màu sắc giống Home/Index */
+    body {
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+        color: white;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .ticket-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+        min-height: 100vh;
+    }
+
+    .ticket {
+        width: 600px;
+        background: #F5F5DC;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .ticket-header {
+        background: #1a1a2e;
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Căn giữa thay vì dùng gap */
+    }
+
+    /* Xóa crown-icon styles */
+
+    .ticket-title {
+        color: #F5F5DC;
+        font-weight: bold;
+        font-size: 16px;
+        letter-spacing: 1px;
+        text-align: center;
+    }
+
+    .separator {
+        margin: 0 10px;
+    }
+
+    .ticket-content {
+        padding: 30px;
+        display: flex;
+        gap: 30px;
+        background: #F5F5DC;
+    }
+
+    .movie-poster {
+        width: 200px;
+        height: 280px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+        .movie-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block; /* Đảm bảo ảnh hiển thị đúng */
+        }
+
+    .movie-poster-small img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block; /* Đảm bảo ảnh hiển thị đúng */
+    }
+
+    .ticket-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .event-details {
+        color: #4A4A4A;
+    }
+
+    .date-time {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .event-title h2 {
+        font-size: 32px;
+        font-weight: bold;
+        margin: 0 0 10px 0;
+        color: #2C2C2C;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .event-title h3 {
+        font-size: 20px;
+        margin: 0 0 20px 0;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .location {
+        margin-bottom: 20px;
+    }
+
+    .address {
+        font-size: 14px;
+        line-height: 1.5;
+        color: #666;
+    }
+
+    .barcode {
+        text-align: right;
+    }
+
+    .barcode-lines {
+        height: 60px;
+        background: repeating-linear-gradient( 90deg, #000 0px, #000 2px, transparent 2px, transparent 4px );
+        margin-bottom: 10px;
+        border-radius: 3px;
+    }
+
+    .barcode-number {
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        color: #666;
+        letter-spacing: 1px;
+    }
+
+    .ticket-perforation {
+        height: 2px;
+        background: repeating-linear-gradient( 90deg, #1a1a2e 0px, #1a1a2e 10px, transparent 10px, transparent 20px );
+        position: relative;
+    }
+
+        .ticket-perforation::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: -8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+        }
+
+        .ticket-perforation::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: -8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+        }
+
+    .ticket-bottom {
+        background: #F5F5DC;
+    }
+
+    .movie-poster-small {
+        width: 120px;
+        height: 160px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+        .movie-poster-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .ticket-info-bottom {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .event-details-bottom {
+        color: #4A4A4A;
+    }
+
+    .event-title-bottom h2 {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0 0 8px 0;
+        color: #2C2C2C;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .event-title-bottom h3 {
+        font-size: 16px;
+        margin: 0 0 15px 0;
+        color: #666;
+        text-transform: uppercase;
+    }
+
+    .date-time-bottom {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .additional-info {
+        font-size: 14px;
+        line-height: 1.5;
+        color: #666;
+    }
+
+    .barcode-small {
+        text-align: right;
+        margin-top: 20px;
+    }
+
+    .barcode-lines-small {
+        height: 40px;
+        background: repeating-linear-gradient( 90deg, #000 0px, #000 2px, transparent 2px, transparent 4px );
+        border-radius: 3px;
+    }
+
+    /* Success message styles với màu giống Home */
+    .success-message {
+        text-align: center;
+        padding: 20px;
+        background: rgba(79, 195, 247, 0.1);
+        border: 2px solid #4fc3f7;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        color: #4fc3f7;
+        backdrop-filter: blur(10px);
+    }
+
+    .success-icon {
+        font-size: 3rem;
+        color: #4fc3f7;
+        margin-bottom: 10px;
+    }
+
+    /* Action buttons với màu giống Home */
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+        padding: 20px;
+    }
+
+    .btn {
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        border: none;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #4fc3f7, #29b6f6);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #29b6f6, #4fc3f7);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: #4fc3f7;
+    }
+
+    @@media (max-width: 768px) {
+        .ticket {
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .ticket-content {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 200px;
+        }
+
+        .event-title h2 {
+            font-size: 24px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+</style>
+
+    @if (Model.Success)
+    {
+    <!-- Success message -->
+    <div class="success-message">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h2>Đặt Vé Thành Công!</h2>
+        <p>Cảm ơn bạn đã đặt vé. Dưới đây là thông tin vé của bạn:</p>
+    </div>
+    }
+    else
+    {
+    <div class="success-message" style="background: rgba(244, 67, 54, 0.1); border-color: #f44336; color: #f44336;">
+        <i class="fas fa-times-circle success-icon" style="color: #f44336;"></i>
+        <h2>Đặt Vé Thất Bại!</h2>
+        <p>Có lỗi xảy ra trong quá trình đặt vé. Vui lòng thử lại.</p>
+    </div>
+    }
+
+    @if (Model.Success)
+    {
+    <!-- Main ticket design -->
+    <div class="ticket-container">
+        <div class="ticket">
+            <!-- Phần trên của vé -->
+            <div class="ticket-top">
+                <div class="ticket-header">
+                    <div class="ticket-title">
+                        <span>TICKET</span>
+                        <span class="separator">|</span>
+                        <span>CINEMA CITY</span>
+                        <span class="separator">|</span>
+                        <span>PREMIUM</span>
+                    </div>
+                </div>
+
+                <div class="ticket-content">
+                    <!-- Thay thế ảnh bằng thông tin chi tiết -->
+                    <div class="ticket-details-section">
+                        <div class="booking-info">
+                            <h3>THÔNG TIN ĐẶT VÉ</h3>
+                            <div class="info-row">
+                                <span class="label">Mã đặt vé:</span>
+                                <span class="value">@bookingCode</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Khách hàng:</span>
+                                <span class="value">@fullName</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Số điện thoại:</span>
+                                <span class="value">@phoneNumber</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Email:</span>
+                                <span class="value">@email</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">CMND/CCCD:</span>
+                                <span class="value">@identityCard</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ticket-info">
+                        <div class="event-details">
+                            <div class="date-time">
+                                <span class="time">@showTime</span>
+                                <span class="date">@showDate</span>
+                            </div>
+
+                            <div class="event-title">
+                                <h2>@movieTitle</h2>
+                                <h3>@cinemaRoomName</h3>
+                            </div>
+
+                            <div class="location">
+                                <div class="address">
+                                    <span>@cinemaName</span><br>
+                                    <span>@cinemaAddress</span>
+                                </div>
+                            </div>
+
+                            <div class="seat-price-info">
+                                <div class="info-row">
+                                    <span class="label">Ghế ngồi:</span>
+                                    <span class="value seat-numbers">@bookedSeats</span>
+                                </div>
+                                <div class="info-row total-price">
+                                    <span class="label">Tổng tiền:</span>
+                                    <span class="value price">@totalPriceFormatted</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="barcode">
+                            <div class="barcode-lines"></div>
+                            <div class="barcode-number">@bookingCode</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Đường cắt -->
+            <div class="ticket-perforation"></div>
+
+            <!-- Phần dưới của vé -->
+            <div class="ticket-bottom">
+                <div class="ticket-content">
+                    <!-- Thay thế ảnh nhỏ bằng logo hoặc thông tin -->
+                    <div class="cinema-logo">
+                        <div class="logo-placeholder">
+                            <i class="fas fa-film"></i>
+                            <span>CINEMA</span>
+                            <span>CITY</span>
+                        </div>
+                    </div>
+
+                    <div class="ticket-info-bottom">
+                        <div class="event-details-bottom">
+                            <div class="event-title-bottom">
+                                <h2>@movieTitle</h2>
+                                <h3>@cinemaRoomName</h3>
+                            </div>
+
+                            <div class="date-time-bottom">
+                                <span class="date">@showDate</span>
+                                <span class="time">@showTime</span>
+                            </div>
+
+                            <div class="additional-info">
+                                <span><strong>Ghế:</strong> @bookedSeats</span><br>
+                                <span><strong>Giá:</strong> @totalPriceFormatted</span><br>
+                                <span><strong>Khách hàng:</strong> @fullName</span><br>
+                                <span><strong>SĐT:</strong> @phoneNumber</span>
+                            </div>
+                        </div>
+
+                        <div class="barcode-small">
+                            <div class="barcode-lines-small"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="action-buttons">
+        <a href="@Url.Action("TicketInfo", new { bookingCode = bookingCode })" class="btn btn-primary">
+            <i class="fas fa-print"></i>
+            In Vé
+        </a>
+        <a href="@Url.Action("Index", "Movies", new { area = "" })" class="btn btn-secondary">
+            <i class="fas fa-film"></i>
+            Đặt Vé Mới
+        </a>
+        <a href="@Url.Action("Index", "Home", new { area = "" })" class="btn btn-secondary">
+            <i class="fas fa-home"></i>
+            Trang Chủ
+        </a>
+    </div>
+    }
+

@@ -1,0 +1,1026 @@
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Vouchers của bạn - Cinema City";
+}
+
+@section Styles {
+    <!-- Header CSS đã nằm trong _Layout. -->
+    <link rel="stylesheet" href="~/css/Shared/fix-header-offset.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/HomePage/layout.css" />
+    <link rel="stylesheet" href="~/css/HomePage/movie-poster-overlay.css" />
+    <link rel="stylesheet" href="~/css/HomePage/responsive.css" />
+    <link rel="stylesheet" href="~/css/MovieDetails/movie-details-mostly.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/MovieDetails/movie-details.css" asp-append-version="true" />
+    
+    <style>
+        html, body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            background-attachment: fixed;
+            background-size: 100% 100%;
+            margin: 0 !important;
+            padding: 0 !important;
+            min-height: 100vh;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Ensure header offset works */
+        .voucher-container.modern.with-header-offset {
+            padding-top: 110px !important;
+        }
+        @@media (max-width: 992px) {
+            .voucher-container.modern.with-header-offset {
+                padding-top: 130px !important;
+            }
+        }
+        .cinema-vouchers-page {
+            min-height: 100vh;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+        }
+        .hero-section-voucher {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            padding-top: 20px;
+        }
+        .hero-section-voucher::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        .hero-content-voucher {
+            max-width: 600px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title-voucher {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #8155EE);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .hero-subtitle-voucher {
+            font-size: 1.1rem;
+            color: #b3b3ff;
+            opacity: 0.8;
+        }
+        .user-points-info {
+            background: linear-gradient(135deg, rgba(129, 85, 238, 0.1) 0%, rgba(79, 195, 247, 0.1) 100%);
+            border: 1px solid rgba(129, 85, 238, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .user-points-info h3 {
+            color: #8155EE;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .user-points-info .points-display {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4FC3F7;
+            margin-bottom: 5px;
+        }
+        .user-points-info .points-label {
+            color: #b3b3ff;
+            font-size: 0.9rem;
+        }
+        .containers {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        .filter-section {
+            margin-bottom: 40px;
+        }
+        .filter-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .filter-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #8155EE);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .filter-subtitle {
+            color: #b3b3ff;
+            font-size: 1rem;
+        }
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .filter-tab {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            padding: 12px 24px;
+            color: #fff;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .filter-tab.active,
+        .filter-tab:hover {
+            background: #8155EE;
+            border-color: #8155EE;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .search-box-vouchers {
+            position: relative;
+            max-width: 400px;
+            width: 100%;
+        }
+        .search-box-vouchers input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: #fff;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .search-box-vouchers input:focus {
+            outline: none;
+            border-color: #8155EE;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .search-box-vouchers input::placeholder {
+            color: #b3b3ff;
+        }
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #b3b3ff;
+            cursor: pointer;
+        }
+        .vouchers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .voucher-card {
+            background: linear-gradient(135deg, rgba(26, 26, 40, 0.98) 0%, rgba(45, 45, 70, 0.98) 100%);
+            border: 1.5px solid rgba(120, 120, 255, 0.12);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 340px;
+            box-shadow: 0 4px 24px 0 rgba(60, 60, 120, 0.12);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .voucher-card.show {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .voucher-card:hover {
+            box-shadow: 0 12px 32px 0 rgba(80, 80, 200, 0.18);
+            border-color: #6c63ff;
+        }
+        .voucher-image {
+            width: 100%;
+            height: 250px;
+            background: #181830;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .voucher-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+        }
+        .voucher-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            background: linear-gradient(0deg, rgba(40,40,80,0.7) 60%, rgba(40,40,80,0.1) 100%);
+            opacity: 1;
+            transition: opacity 0.2s;
+        }
+        .voucher-card:hover .voucher-overlay {
+            opacity: 1;
+        }
+        .voucher-detail-btn {
+            background: linear-gradient(45deg, #8155EE, #4FC3F7);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .voucher-detail-btn:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(129, 85, 238, 0.3);
+        }
+        .voucher-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .voucher-date {
+            color: #b3b3ff;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .voucher-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .voucher-required-points {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+            align-self: flex-start;
+        }
+        .voucher-saved-badge {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            align-self: flex-start;
+        }
+        .no-vouchers {
+            text-align: center;
+            color: #b3b3ff;
+            font-size: 1.2rem;
+            padding: 60px 20px;
+            grid-column: 1 / -1;
+        }
+        .modal-content {
+            background: #181830 !important;
+            color: #fff !important;
+            border-radius: 18px !important;
+        }
+        .modal-header {
+            border-bottom: 1px solid #333 !important;
+        }
+        .modal-footer {
+            border-top: 1px solid #333 !important;
+        }
+        .btn-gradient-save {
+            background: linear-gradient(45deg, #8155EE, #4FC3F7) !important;
+            border: none !important;
+            color: #fff !important;
+            font-weight: 600 !important;
+            padding: 12px 24px !important;
+            border-radius: 25px !important;
+            transition: all 0.3s ease !important;
+        }
+        .btn-gradient-save:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 20px rgba(129, 85, 238, 0.3) !important;
+        }
+        .btn-gradient-save:disabled {
+            opacity: 0.6 !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #4CAF50, #45a049) !important;
+            border: none !important;
+            color: #fff !important;
+        }
+        .points-insufficient {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53) !important;
+            border: none !important;
+            color: #fff !important;
+            font-weight: 600 !important;
+            padding: 12px 24px !important;
+            border-radius: 25px !important;
+            transition: all 0.3s ease !important;
+        }
+        .points-insufficient:hover {
+            background: linear-gradient(45deg, #FF5252, #FF7043) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3) !important;
+        }
+        
+        /* Modal button styles */
+        .modal .btn-secondary {
+            background: linear-gradient(45deg, #6c757d, #5a6268) !important;
+            border: none !important;
+            color: #fff !important;
+            font-weight: 600 !important;
+            padding: 12px 24px !important;
+            border-radius: 25px !important;
+            transition: all 0.3s ease !important;
+        }
+        .modal .btn-secondary:hover {
+            background: linear-gradient(45deg, #5a6268, #495057) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3) !important;
+        }
+        
+        .required-points-info {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .required-points-info h5 {
+            color: #FF6B6B;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .required-points-info p {
+            color: #b3b3ff;
+            margin-bottom: 5px;
+        }
+        .points-comparison {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .user-points {
+            color: #4FC3F7;
+            font-weight: 600;
+        }
+        .required-points {
+            color: #FF6B6B;
+            font-weight: 600;
+        }
+        .points-sufficient {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        .points-sufficient h5 {
+            color: #4CAF50;
+        }
+
+        /* Custom Toast Notification Styles */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+        .toast-notification {
+            background: linear-gradient(135deg, rgba(26, 26, 40, 0.98) 0%, rgba(45, 45, 70, 0.98) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .toast-notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .toast-notification.success {
+            border-left: 4px solid #4CAF50;
+        }
+        .toast-notification.error {
+            border-left: 4px solid #FF6B6B;
+        }
+        .toast-notification.warning {
+            border-left: 4px solid #FF9800;
+        }
+        .toast-notification.info {
+            border-left: 4px solid #2196F3;
+        }
+        .toast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .toast-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast-close {
+            background: none;
+            border: none;
+            color: #b3b3ff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        .toast-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .toast-message {
+            color: #b3b3ff;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        .toast-icon {
+            font-size: 1.2rem;
+        }
+        .toast-success .toast-icon {
+            color: #4CAF50;
+        }
+        .toast-error .toast-icon {
+            color: #FF6B6B;
+        }
+        .toast-warning .toast-icon {
+            color: #FF9800;
+        }
+        .toast-info .toast-icon {
+            color: #2196F3;
+        }
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #8155EE, #4FC3F7);
+            transition: width 0.1s linear;
+        }
+        .toast-success .toast-progress {
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+        }
+        .toast-error .toast-progress {
+            background: linear-gradient(90deg, #FF6B6B, #FF5252);
+        }
+        .toast-warning .toast-progress {
+            background: linear-gradient(90deg, #FF9800, #FF8F00);
+        }
+        .toast-info .toast-progress {
+            background: linear-gradient(90deg, #2196F3, #1976D2);
+        }
+        
+        /* Modal button styles */
+        .modal .btn-secondary {
+            background: linear-gradient(45deg, #6c757d, #5a6268) !important;
+            border: none !important;
+            color: #fff !important;
+            font-weight: 600 !important;
+            padding: 12px 24px !important;
+            border-radius: 25px !important;
+            transition: all 0.3s ease !important;
+        }
+        .modal .btn-secondary:hover {
+            background: linear-gradient(45deg, #5a6268, #495057) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3) !important;
+        }
+    </style>
+}
+
+<div class="voucher-container modern with-header-offset">
+    <div class="hero-section-voucher">
+        <div class="hero-content-voucher">
+            <div class="hero-title-voucher"><i class="fas fa-gift"></i> Voucher của bạn</div>
+            <div class="hero-subtitle-voucher">Đổi voucher bằng điểm thưởng của bạn tại Cinema City.</div>
+        </div>
+    </div>
+    
+    <!-- User Points Info -->
+    <div class="containers">
+        <div class="user-points-info">
+            <h3><i class="fas fa-coins"></i> Điểm thưởng của bạn</h3>
+            <div class="points-display">@ViewBag.UserScore.ToString("N0")</div>
+            <div class="points-label">Điểm có thể sử dụng để đổi voucher</div>
+        </div>
+    </div>
+    
+    <div class="containers">
+        <div class="filter-section">
+            <div class="filter-header">
+                <h2 class="filter-title">Lọc Voucher</h2>
+                <p class="filter-subtitle">Tìm kiếm voucher theo trạng thái hoặc tên</p>
+            </div>
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all">
+                    <i class="fas fa-th-large"></i> Tất cả
+                </button>
+                <button class="filter-tab" data-filter="expiring">
+                    <i class="fas fa-hourglass-half"></i> Sắp hết hạn
+                </button>
+                <button class="filter-tab" data-filter="expired" style="display:none">
+                    <i class="fas fa-times-circle"></i> Đã hết hạn
+                </button>
+            </div>
+            <div class="search-container">
+                <div class="search-box-vouchers">
+                    <i class="fas fa-search search-icon" id="searchBtn"></i>
+                    <input type="text" placeholder="Tìm kiếm voucher theo tên, mô tả..." id="voucherSearch">
+                </div>
+            </div>
+        </div>
+        <div class="vouchers-grid" id="vouchersGrid">
+            <!-- Voucher cards will be rendered here by JS -->
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Voucher Detail Modal -->
+<div class="modal fade" id="voucherDetailModal" tabindex="-1" aria-labelledby="voucherDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="background: #181830; color: #fff; border-radius: 18px;">
+      <div class="modal-header" style="border-bottom: 1px solid #333;">
+        <h5 class="modal-title" id="voucherDetailModalLabel"><i class="fas fa-tag"></i> Chi tiết Voucher</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-5 mb-3 mb-md-0">
+            <img id="modalVoucherImage" src="" alt="Voucher Image" style="width:100%;border-radius:12px;object-fit:cover;max-height:260px;">
+          </div>
+          <div class="col-md-7">
+            <h4 id="modalVoucherTitle" style="font-weight:700;"></h4>
+            <div style="margin-bottom:8px;">
+              <span class="badge bg-primary" id="modalVoucherDiscount" style="font-size:1rem;"></span>
+            </div>
+            <div style="margin-bottom:8px; color:#b3b3ff;">
+              <i class="fas fa-calendar-alt"></i> <span id="modalVoucherDate"></span>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span id="modalVoucherDescription"></span>
+            </div>
+            <div style="color:#aaa;">
+              <i class="fas fa-clock"></i> Hạn sử dụng: <span id="modalVoucherUsage"></span>
+            </div>
+            
+            <!-- Required Points Info -->
+            <div id="requiredPointsInfo" class="required-points-info" style="margin-top: 15px;">
+              <h5><i class="fas fa-coins"></i> Điểm yêu cầu</h5>
+              <p>Để đổi voucher này, bạn cần:</p>
+              <div class="points-comparison">
+                <span class="user-points">Điểm của bạn: <span id="modalUserPoints">@ViewBag.UserScore.ToString("N0")</span></span>
+                <span class="required-points">Cần: <span id="modalRequiredPoints">0</span> điểm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top: 1px solid #333;">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button type="button" id="saveVoucherBtn" class="btn btn-gradient-save">
+            <i class="fas fa-gift"></i> ĐỔI VOUCHER
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // User points from server
+        const userPoints = @ViewBag.UserScore;
+        
+        // Toast Notification System
+        class ToastNotification {
+            constructor() {
+                this.container = document.getElementById('toastContainer');
+            }
+            
+            show(message, type = 'info', duration = 5000) {
+                const toast = document.createElement('div');
+                toast.className = `toast-notification ${type}`;
+                
+                const icon = this.getIcon(type);
+                const title = this.getTitle(type);
+                
+                toast.innerHTML = `
+                    <div class="toast-header">
+                        <div class="toast-title">
+                            <i class="fas ${icon} toast-icon"></i>
+                            ${title}
+                        </div>
+                        <button class="toast-close" onclick="this.parentElement.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="toast-message">${message}</div>
+                    <div class="toast-progress"></div>
+                `;
+                
+                this.container.appendChild(toast);
+                
+                // Animate in
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 100);
+                
+                // Auto remove
+                if (duration > 0) {
+                    const progress = toast.querySelector('.toast-progress');
+                    const startTime = Date.now();
+                    
+                    const updateProgress = () => {
+                        const elapsed = Date.now() - startTime;
+                        const progressPercent = (elapsed / duration) * 100;
+                        progress.style.width = `${100 - progressPercent}%`;
+                        
+                        if (elapsed < duration) {
+                            requestAnimationFrame(updateProgress);
+                        } else {
+                            this.remove(toast);
+                        }
+                    };
+                    
+                    requestAnimationFrame(updateProgress);
+                }
+                
+                return toast;
+            }
+            
+            getIcon(type) {
+                const icons = {
+                    success: 'fa-check-circle',
+                    error: 'fa-exclamation-circle',
+                    warning: 'fa-exclamation-triangle',
+                    info: 'fa-info-circle'
+                };
+                return icons[type] || icons.info;
+            }
+            
+            getTitle(type) {
+                const titles = {
+                    success: 'Thành công',
+                    error: 'Lỗi',
+                    warning: 'Cảnh báo',
+                    info: 'Thông báo'
+                };
+                return titles[type] || titles.info;
+            }
+            
+            remove(toast) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.parentElement.removeChild(toast);
+                    }
+                }, 300);
+            }
+            
+            success(message, duration = 5000) {
+                return this.show(message, 'success', duration);
+            }
+            
+            error(message, duration = 7000) {
+                return this.show(message, 'error', duration);
+            }
+            
+            warning(message, duration = 6000) {
+                return this.show(message, 'warning', duration);
+            }
+            
+            info(message, duration = 5000) {
+                return this.show(message, 'info', duration);
+            }
+        }
+        
+        // Initialize toast system
+        const toast = new ToastNotification();
+        
+        // Prepare voucher data from server
+        const allVouchers = [];
+        @if(ViewBag.AllVouchers != null && ((IEnumerable<JsonElement>)ViewBag.AllVouchers).Any())
+        {
+            foreach(var voucherEl in (IEnumerable<JsonElement>)ViewBag.AllVouchers)
+            {
+                var id = voucherEl.GetProperty("id").GetString();
+                var title = voucherEl.GetProperty("title").GetString();
+                var discount = voucherEl.TryGetProperty("discountPercent", out var discProp) ? discProp.GetInt32() : 0;
+                var description = voucherEl.GetProperty("description").GetString();
+                var endDate = voucherEl.GetProperty("endDate").GetDateTime();
+                var startDate = voucherEl.TryGetProperty("startDate", out var startProp) ? startProp.GetDateTime() : endDate.AddDays(-7);
+                var imageUrl = voucherEl.TryGetProperty("imageUrl", out var imgProp) ? imgProp.GetString() : null;
+                var requiredPoints = voucherEl.TryGetProperty("requiredPoints", out var reqProp) ? reqProp.GetDouble() : 0;
+                <text>
+                allVouchers.push({
+                    id: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(id)),
+                    title: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(title)),
+                    discount: @discount,
+                    description: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(description)),
+                    endDate: '@endDate.ToString("yyyy-MM-dd")',
+                    startDate: '@startDate.ToString("yyyy-MM-dd")',
+                    imageUrl: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(imageUrl)),
+                    requiredPoints: @requiredPoints
+                });
+                </text>
+            }
+        }
+
+        // Prepare user's saved vouchers data
+        const userSavedVouchers = new Set();
+        @if(ViewBag.UserVouchers != null && ((IEnumerable<JsonElement>)ViewBag.UserVouchers).Any())
+        {
+            foreach(var userVoucherEl in (IEnumerable<JsonElement>)ViewBag.UserVouchers)
+            {
+                var promotionId = userVoucherEl.GetProperty("promotionId").GetString();
+                <text>
+                userSavedVouchers.add(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promotionId)));
+                </text>
+            }
+        }
+
+        let currentFilter = 'all';
+        let searchTerm = '';
+
+        function filterVouchers() {
+            const now = new Date();
+            let filtered = allVouchers.filter(v => {
+                // Only show vouchers that are not expired
+                if (new Date(v.endDate) < now.setHours(0,0,0,0)) return false;
+                // Filter by search
+                const matchSearch = !searchTerm || v.title.toLowerCase().includes(searchTerm) || v.description.toLowerCase().includes(searchTerm);
+                if (!matchSearch) return false;
+                // Filter by tab
+                if (currentFilter === 'expiring') {
+                    const end = new Date(v.endDate);
+                    const diff = (end - new Date()) / (1000*60*60*24);
+                    return diff >= 0 && diff <= 7; // 7 ngày tới
+                }
+                // Remove 'expired' tab logic, as we don't want to show expired vouchers
+                return true;
+            });
+            return filtered;
+        }
+
+        function renderVouchers() {
+            const grid = document.getElementById('vouchersGrid');
+            const vouchers = filterVouchers();
+            if (!vouchers.length) {
+                grid.innerHTML = `<div class="no-vouchers">Không có voucher nào phù hợp.</div>`;
+                return;
+            }
+            grid.innerHTML = vouchers.map((v, idx) => {
+                const isSaved = userSavedVouchers.has(v.id);
+                const canRedeem = userPoints >= v.requiredPoints;
+                const pointsClass = canRedeem ? 'points-sufficient' : '';
+                
+                return `
+                <div class="voucher-card" style="transition-delay:${idx*80}ms">
+                    <div class="voucher-image">
+                        <img src="${v.imageUrl || 'https://via.placeholder.com/400x140/181830/ffffff?text=%25'}" alt="Voucher Image">
+                        <div class="voucher-overlay">
+                            <a href="#" class="voucher-detail-btn" data-idx="${idx}"><i class="fas fa-tag"></i> XEM CHI TIẾT</a>
+                        </div>
+                    </div>
+                    <div class="voucher-info">
+                        <div class="voucher-date"><i class="fas fa-calendar-alt"></i> ${formatDate(v.startDate)} - ${formatDate(v.endDate)}</div>
+                        <div class="voucher-title">${v.title}</div>
+                        <div class="voucher-required-points">
+                            <i class="fas fa-coins"></i> ${v.requiredPoints.toLocaleString()} điểm
+                        </div>
+                        ${isSaved ? '<div class="voucher-saved-badge"><i class="fas fa-check-circle"></i> Đã đổi</div>' : ''}
+                    </div>
+                </div>
+            `;
+            }).join('');
+            // Animate cards
+            setTimeout(() => {
+                document.querySelectorAll('.voucher-card').forEach((card, i) => {
+                    setTimeout(() => card.classList.add('show'), i*80);
+                });
+            }, 30);
+            // Modal logic
+            document.querySelectorAll('.voucher-detail-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const idx = parseInt(this.getAttribute('data-idx'));
+                    showVoucherModal(vouchers[idx]);
+                });
+            });
+        }
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('vi-VN');
+        }
+
+        let lastModalVoucher = null;
+        function showVoucherModal(v) {
+            document.getElementById('modalVoucherImage').src = v.imageUrl || 'https://via.placeholder.com/400x140/181830/ffffff?text=%25';
+            document.getElementById('modalVoucherTitle').textContent = v.title;
+            document.getElementById('modalVoucherDiscount').textContent = v.discount + '% giảm giá';
+            document.getElementById('modalVoucherDate').textContent = formatDate(v.startDate) + ' - ' + formatDate(v.endDate);
+            document.getElementById('modalVoucherDescription').textContent = v.description;
+            
+            // Update required points info
+            document.getElementById('modalUserPoints').textContent = userPoints.toLocaleString();
+            document.getElementById('modalRequiredPoints').textContent = v.requiredPoints.toLocaleString();
+            
+            // Update points info styling
+            const pointsInfo = document.getElementById('requiredPointsInfo');
+            const canRedeem = userPoints >= v.requiredPoints;
+            if (canRedeem) {
+                pointsInfo.className = 'required-points-info points-sufficient';
+                pointsInfo.querySelector('h5').innerHTML = '<i class="fas fa-check-circle"></i> Đủ điểm để đổi';
+            } else {
+                pointsInfo.className = 'required-points-info';
+                pointsInfo.querySelector('h5').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Không đủ điểm';
+            }
+            
+            // Calculate days left
+            const now = new Date();
+            const end = new Date(v.endDate);
+            const diffDays = Math.ceil((end.setHours(0,0,0,0) - now.setHours(0,0,0,0)) / (1000*60*60*24));
+            let usageText = '';
+            if (diffDays < 0) usageText = 'Đã hết hạn';
+            else if (diffDays === 0) usageText = 'Hết hạn hôm nay';
+            else usageText = diffDays + ' ngày';
+            document.getElementById('modalVoucherUsage').textContent = usageText;
+            lastModalVoucher = v;
+            
+            // Update redeem button based on saved status and points
+            const redeemBtn = document.getElementById('saveVoucherBtn');
+            const isSaved = userSavedVouchers.has(v.id);
+            
+            if (isSaved) {
+                redeemBtn.innerHTML = '<i class="fas fa-check-circle"></i> ĐÃ ĐỔI';
+                redeemBtn.className = 'btn btn-success';
+                redeemBtn.disabled = true;
+            } else if (!canRedeem) {
+                redeemBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> KHÔNG ĐỦ ĐIỂM';
+                redeemBtn.className = 'btn points-insufficient';
+                redeemBtn.disabled = true;
+            } else {
+                redeemBtn.innerHTML = '<i class="fas fa-gift"></i> ĐỔI VOUCHER';
+                redeemBtn.className = 'btn btn-gradient-save';
+                redeemBtn.disabled = false;
+            }
+            
+            const modal = new bootstrap.Modal(document.getElementById('voucherDetailModal'));
+            modal.show();
+        }
+
+        // Function to redeem voucher for user
+        async function redeemVoucherForUser(promotionId) {
+            try {
+                // Show loading state
+                const redeemBtn = document.getElementById('saveVoucherBtn');
+                const originalText = redeemBtn.innerHTML;
+                redeemBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang đổi...';
+                redeemBtn.disabled = true;
+
+                const response = await fetch('/Vouchers/SaveUserPromotion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        promotionId: promotionId
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Success - add to saved vouchers set
+                    userSavedVouchers.add(promotionId);
+                    
+                    // Update button state
+                    redeemBtn.innerHTML = '<i class="fas fa-check-circle"></i> ĐÃ ĐỔI';
+                    redeemBtn.className = 'btn btn-success';
+                    redeemBtn.disabled = true;
+                    
+                    // Show success message
+                    toast.success('Đã đổi voucher thành công! 🎉');
+                    
+                    // Update the voucher card to show redeemed badge
+                    renderVouchers();
+                } else {
+                    // Error
+                    const errorMessage = result.message || 'Không thể đổi voucher. Vui lòng thử lại.';
+                    toast.error(errorMessage);
+                    
+                    // Restore button state
+                    redeemBtn.innerHTML = '<i class="fas fa-gift"></i> ĐỔI VOUCHER';
+                    redeemBtn.className = 'btn btn-gradient-save';
+                    redeemBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error redeeming voucher:', error);
+                toast.error('Có lỗi xảy ra khi đổi voucher. Vui lòng thử lại sau.');
+                
+                // Restore button state
+                const redeemBtn = document.getElementById('saveVoucherBtn');
+                redeemBtn.innerHTML = '<i class="fas fa-gift"></i> ĐỔI VOUCHER';
+                redeemBtn.className = 'btn btn-gradient-save';
+                redeemBtn.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Filter tab click
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', function () {
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.getAttribute('data-filter');
+                    renderVouchers();
+                });
+            });
+            // Search
+            document.getElementById('voucherSearch').addEventListener('input', function () {
+                searchTerm = this.value.trim().toLowerCase();
+                renderVouchers();
+            });
+            // Initial render
+            renderVouchers();
+            // Redeem voucher button handler
+            document.getElementById('saveVoucherBtn').addEventListener('click', function() {
+                if (lastModalVoucher) {
+                    redeemVoucherForUser(lastModalVoucher.id);
+                }
+            });
+        });
+    </script>
+} 

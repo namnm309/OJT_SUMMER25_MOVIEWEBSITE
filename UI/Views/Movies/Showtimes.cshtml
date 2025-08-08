@@ -1,0 +1,470 @@
+@{
+    ViewData["Title"] = "Lịch chiếu";
+    var movieId = ViewData["MovieId"];
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="movie-header">
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <img id="moviePoster" src="https://via.placeholder.com/150x225?text=Movie" alt="Movie Poster" class="img-fluid rounded">
+                    </div>
+                    <div class="col-md-10">
+                        <h1 id="movieTitle" class="movie-title">Đang tải...</h1>
+                        <div class="movie-info">
+                            <span id="movieDuration" class="duration"><i class="fas fa-clock"></i> -- phút</span>
+                            <span id="movieGenre" class="genre"><i class="fas fa-tags"></i> --</span>
+                            <span id="movieRating" class="rating"><i class="fas fa-star"></i> --/10</span>
+                        </div>
+                        <a href="@Url.Action("Details", new { id = movieId })" class="btn btn-outline-primary">
+                            <i class="fas fa-info-circle"></i> Xem chi tiết phim
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="date-selector">
+                <label for="showDate" class="form-label">Chọn ngày:</label>
+                <div class="date-buttons">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="cinema-filter">
+                <label for="cinemaSelect" class="form-label">Chọn rạp:</label>
+                <select class="form-select" id="cinemaSelect">
+                    <option value="">Tất cả rạp</option>
+                    <option value="galaxy">Galaxy Cinema</option>
+                    <option value="cgv">CGV Cinema</option>
+                    <option value="lotte">Lotte Cinema</option>
+                    <option value="bhd">BHD Star Cinema</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="format-filter">
+                <label for="formatSelect" class="form-label">Định dạng:</label>
+                <select class="form-select" id="formatSelect">
+                    <option value="">Tất cả định dạng</option>
+                    <option value="2d">2D</option>
+                    <option value="3d">3D</option>
+                    <option value="imax">IMAX</option>
+                    <option value="4dx">4DX</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="showtimes-container">
+        
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Đang tải...</span>
+            </div>
+            <p class="mt-2 text-muted">Đang tải lịch chiếu...</p>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .movie-header {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .movie-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .movie-info {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .movie-info span {
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .movie-info .rating {
+            color: #ffa500;
+            font-weight: 600;
+        }
+
+        .date-selector, .cinema-filter, .format-filter {
+            margin-bottom: 1rem;
+        }
+
+        .date-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .date-buttons .btn {
+            padding: 0.5rem 1rem;
+            text-align: center;
+        }
+
+        .date-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .date-info .day {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .date-info .date {
+            font-size: 0.9rem;
+        }
+
+        .cinema-showtimes {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cinema-header h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .cinema-address {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .showtimes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .showtime-card {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .showtime-card:hover {
+            border-color: #dc3545;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .showtime-card.sold-out {
+            background: #f8f9fa;
+            border-color: #dee2e6;
+            opacity: 0.7;
+        }
+
+        .showtime-info {
+            flex: 1;
+        }
+
+        .showtime-info .time {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .showtime-info .format {
+            font-size: 0.9rem;
+            color: #dc3545;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .showtime-info .room {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .seat-info {
+            text-align: center;
+            margin-right: 1rem;
+        }
+
+        .available-seats {
+            font-size: 0.8rem;
+            color: #28a745;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .sold-out-text {
+            font-size: 0.8rem;
+            color: #dc3545;
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .price {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .btn-book {
+            min-width: 80px;
+            font-weight: 600;
+        }
+
+        @@media (max-width: 768px) {
+            .movie-title {
+                font-size: 1.5rem;
+            }
+
+            .movie-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .showtimes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .showtime-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .seat-info {
+                margin-right: 0;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            const movieId = '@ViewData["MovieId"]';
+            let selectedDate = new Date().toISOString().split('T')[0]; // Today's date
+            
+            console.log('MovieId from ViewData:', movieId);
+            
+
+            if (!movieId || movieId === '') {
+                console.error('MovieId is empty or undefined');
+                $('#movieTitle').text('Lỗi: Không tìm thấy ID phim');
+                return;
+            }
+            
+
+            loadMovieDetails(movieId);
+            
+
+            generateDateButtons();
+            
+
+            loadShowtimes(movieId, selectedDate);
+            
+            function loadMovieDetails(movieId) {
+                console.log('Loading movie details for movieId:', movieId);
+                $.ajax({
+                    url: '/Movies/GetMovieDetails',
+                    method: 'GET',
+                    data: { movieId: movieId },
+                    success: function(response) {
+                        console.log('Movie details response:', response);
+                        
+                        if (response.success) {
+
+                            const movie = response.data.data || response.data;
+                            
+                            $('#movieTitle').text(movie.title || 'Tên phim');
+                            $('#movieDuration').html(`<i class="fas fa-clock"></i> ${movie.runningTime || movie.duration || '--'} phút`);
+                            
+
+                            let genreText = '--';
+                            if (movie.genres && Array.isArray(movie.genres)) {
+                                genreText = movie.genres.map(g => g.name || g).join(', ');
+                            } else if (movie.genre) {
+                                genreText = movie.genre;
+                            }
+                            $('#movieGenre').html(`<i class="fas fa-tags"></i> ${genreText}`);
+                            
+                            $('#movieRating').html(`<i class="fas fa-star"></i> ${movie.rating || '--'}/10`);
+                            
+
+                            if (movie.primaryImageUrl) {
+                                $('#moviePoster').attr('src', movie.primaryImageUrl);
+                            } else if (movie.posterUrl) {
+                                $('#moviePoster').attr('src', movie.posterUrl);
+                            } else if (movie.imageUrl) {
+                                $('#moviePoster').attr('src', movie.imageUrl);
+                            }
+                        } else {
+                            console.error('Error in response:', response.message);
+                            $('#movieTitle').text('Không thể tải thông tin phim');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error loading movie details:', error);
+                        console.error('Status:', status);
+                        console.error('XHR status:', xhr.status);
+                        console.error('Response:', xhr.responseText);
+                        $('#movieTitle').text('Không thể tải thông tin phim');
+                    }
+                });
+            }
+            
+            function generateDateButtons() {
+                const dateContainer = $('.date-buttons');
+                const today = new Date();
+                
+                for (let i = 0; i < 7; i++) {
+                    const date = new Date(today);
+                    date.setDate(today.getDate() + i);
+                    
+                    const dateStr = date.toISOString().split('T')[0];
+                    const dayNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+                    const dayName = i === 0 ? 'Hôm nay' : dayNames[date.getDay()];
+                    const dateDisplay = `${date.getDate()}/${date.getMonth() + 1}`;
+                    
+                    const isActive = i === 0 ? 'active' : '';
+                    
+                    const dateButton = `
+                        <button class="btn btn-outline-primary ${isActive}" data-date="${dateStr}">
+                            <div class="date-info">
+                                <span class="day">${dayName}</span>
+                                <span class="date">${dateDisplay}</span>
+                            </div>
+                        </button>
+                    `;
+                    
+                    dateContainer.append(dateButton);
+                }
+            }
+            
+
+            $(document).on('click', '.date-buttons .btn', function() {
+                $('.date-buttons .btn').removeClass('active');
+                $(this).addClass('active');
+                selectedDate = $(this).data('date');
+                loadShowtimes(movieId, selectedDate);
+            });
+            
+
+            function loadShowtimes(movieId, date) {
+                console.log('Loading showtimes for movieId:', movieId, 'date:', date);
+                const showtimesContainer = $('.showtimes-container');
+                showtimesContainer.html('<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Đang tải...</span></div><p class="mt-2 text-muted">Đang tải lịch chiếu...</p></div>');
+                
+
+                const formattedDate = new Date(date).toISOString();
+                console.log('Formatted date for API:', formattedDate);
+                
+                $.ajax({
+                    url: '/Movies/GetShowtimes',
+                    method: 'GET',
+                    data: { movieId: movieId, date: formattedDate },
+                    success: function(response) {
+                        console.log('Showtimes response:', response);
+                        if (response.success) {
+                            displayShowtimes(response.data.data || response.data);
+                        } else {
+                            console.error('Error in showtimes response:', response.message);
+                            showtimesContainer.html('<div class="text-center py-5"><i class="fas fa-calendar-times fa-3x text-muted mb-3"></i><h4 class="text-muted">Không có suất chiếu</h4><p class="text-muted">Hiện tại không có suất chiếu nào cho ngày đã chọn.</p></div>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error loading showtimes:', error);
+                        console.error('Status:', status);
+                        console.error('XHR status:', xhr.status);
+                        console.error('Response:', xhr.responseText);
+                        showtimesContainer.html('<div class="text-center py-5"><i class="fas fa-calendar-times fa-3x text-muted mb-3"></i><h4 class="text-muted">Không có suất chiếu</h4><p class="text-muted">Hiện tại không có suất chiếu nào cho ngày đã chọn.</p></div>');
+                    }
+                });
+            }
+            
+
+            function displayShowtimes(showtimes) {
+                const showtimesContainer = $('.showtimes-container');
+                
+                if (!showtimes || showtimes.length === 0) {
+                    showtimesContainer.html('<div class="text-center py-5"><i class="fas fa-calendar-times fa-3x text-muted mb-3"></i><h4 class="text-muted">Không có suất chiếu</h4><p class="text-muted">Hiện tại không có suất chiếu nào cho ngày đã chọn.</p></div>');
+                    return;
+                }
+                
+
+                const cinemaShowtimes = `
+                    <div class="cinema-showtimes">
+                        <div class="cinema-header">
+                            <h4>
+                                <i class="fas fa-building"></i>
+                                Cinema City
+                            </h4>
+                            <p class="cinema-address">Địa chỉ rạp chiếu phim</p>
+                        </div>
+                        <div class="showtimes-grid">
+                            ${showtimes.map(showtime => `
+                                <div class="showtime-card">
+                                    <div class="showtime-info">
+                                        <div class="time">${showtime.time}</div>
+                                        <div class="format">2D Phụ đề</div>
+                                        <div class="room">Phòng chiếu</div>
+                                    </div>
+                                    <div class="seat-info">
+                                        <span class="available-seats">Còn chỗ</span>
+                                        <div class="price">85.000đ</div>
+                                    </div>
+                                    <button class="btn btn-primary btn-book" data-showtime-id="${showtime.id}">
+                                        Đặt vé
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                showtimesContainer.html(cinemaShowtimes);
+            }
+            
+
+            $(document).on('click', '.btn-book', function() {
+                const showtimeId = $(this).data('showtime-id');
+                window.location.href = `/BookingTicket/SelectSeat?showtimeId=${showtimeId}`;
+            });
+            
+
+            $('#cinemaSelect').change(function() {
+                console.log('Cinema filter:', $(this).val());
+
+            });
+
+            $('#formatSelect').change(function() {
+                console.log('Format filter:', $(this).val());
+
+            });
+        });
+    </script>
+}

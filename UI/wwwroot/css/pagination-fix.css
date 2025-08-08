@@ -1,0 +1,109 @@
+
+
+
+.btn-load-more {
+    margin: 20px auto;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #4a3aff, #8270ff);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.btn-load-more:hover {
+    background: linear-gradient(135deg, #5a4aff, #9280ff);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(74, 58, 255, 0.4);
+}
+
+.btn-load-more i {
+    transition: transform 0.3s ease;
+}
+
+.btn-load-more:hover i {
+    transform: rotate(180deg);
+}
+
+
+.btn-load-more.hidden {
+    display: none !important;
+}
+
+
+.pagination-info {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 12px 16px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+.pagination-info .info-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.pagination-info .info-content i {
+    color: #4a3aff;
+}
+
+
+.pagination-controls.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.pagination-controls.loading .btn-load-more {
+    background: linear-gradient(135deg, rgba(74, 58, 255, 0.6), rgba(130, 112, 255, 0.6));
+}
+
+.pagination-controls.loading .btn-load-more i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+
+.recommended-grid .dynamic-item {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.debug-pagination .btn-load-more {
+    background: lime !important;
+    color: black !important;
+    border: 2px solid red !important;
+}
+
+.debug-pagination .pagination-info {
+    background: yellow !important;
+    color: black !important;
+} 
